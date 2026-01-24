@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSecretRequest;
 use App\Models\Secret;
+use App\Services\SecretStorageService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SecretsController extends Controller
 {
-    public function __construct(private TokenService $tokenService)
-    {
+    public function __construct(
+        private TokenService $tokenService,
+        private SecretStorageService $storage,
+    ) {
     }
 
     public function create(): View
@@ -44,8 +46,7 @@ class SecretsController extends Controller
             $secretData['ciphertext'] = $validated['ciphertext'];
         } else {
             $file = $request->file('encrypted_file');
-            $filePath = "secrets/{$token}";
-            Storage::disk('local')->put($filePath, $file->getContent());
+            $filePath = $this->storage->store($token, $file);
 
             $secretData['file_path'] = $filePath;
             $secretData['filename'] = $validated['filename'];
@@ -115,15 +116,11 @@ class SecretsController extends Controller
             return response('Secret indisponible', 410);
         }
 
-        if (! Storage::disk('local')->exists($secret->file_path)) {
+        if (! $this->storage->exists($secret->file_path)) {
             return response('Fichier introuvable', 404);
         }
 
-        return Storage::disk('local')->download(
-            $secret->file_path,
-            'encrypted',
-            ['Content-Type' => 'application/octet-stream']
-        );
+        return $this->storage->download($secret->file_path);
     }
 
     private function getInaccessibleReason(Secret $secret): string

@@ -60,6 +60,20 @@ return [
             'report' => false,
         ],
 
+        'secrets' => [
+            'driver' => env('SECRETS_DISK_DRIVER', 'local'),
+            'root' => storage_path('app/secrets'),
+            'throw' => true,
+            'report' => true,
+            // S3-specific options (ignored for local driver)
+            'key' => env('SECRETS_AWS_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('SECRETS_AWS_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => env('SECRETS_AWS_DEFAULT_REGION', env('AWS_DEFAULT_REGION', 'eu-west-3')),
+            'bucket' => env('SECRETS_AWS_BUCKET', env('AWS_BUCKET')),
+            'endpoint' => env('SECRETS_AWS_ENDPOINT', env('AWS_ENDPOINT')),
+            'use_path_style_endpoint' => env('SECRETS_AWS_USE_PATH_STYLE_ENDPOINT', env('AWS_USE_PATH_STYLE_ENDPOINT', false)),
+        ],
+
     ],
 
     /*
