@@ -48,7 +48,7 @@
                         class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-xl overflow-hidden transition-colors"
                     >
                         {{-- Secret header --}}
-                        <div class="p-5 flex items-center justify-between cursor-pointer" @click="expanded = !expanded">
+                        <button type="button" class="w-full p-5 flex items-center justify-between cursor-pointer text-left" @click="expanded = !expanded" :aria-expanded="expanded" aria-label="{{ __('messages.a11y_expand_secret') }}">
                             <div class="flex items-center gap-4">
                                 {{-- Type icon --}}
                                 <div class="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 {{ $secret->type === 'text' ? 'bg-blue-100 dark:bg-blue-500/10' : 'bg-purple-100 dark:bg-purple-500/10' }}">

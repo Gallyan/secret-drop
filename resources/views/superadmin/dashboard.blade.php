@@ -10,7 +10,7 @@
             </div>
             <div class="flex items-center gap-4">
                 <form method="GET" class="flex items-center gap-2">
-                    <select name="period" onchange="this.form.submit()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                    <select name="period" onchange="this.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
                         <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
                         <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
                         <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
@@ -51,13 +51,13 @@
                     @php
                         $bytes = $allTime['total_file_size_bytes'] ?? 0;
                         if ($bytes >= 1073741824) {
-                            echo number_format($bytes / 1073741824, 1) . ' Go';
+                            echo number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
                         } elseif ($bytes >= 1048576) {
-                            echo number_format($bytes / 1048576, 1) . ' Mo';
+                            echo number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
                         } elseif ($bytes >= 1024) {
-                            echo number_format($bytes / 1024, 1) . ' Ko';
+                            echo number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
                         } else {
-                            echo $bytes . ' o';
+                            echo $bytes . ' ' . __('messages.unit_bytes');
                         }
                     @endphp
                 </div>
@@ -68,37 +68,37 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_created') }}</h2>
-                <canvas id="secretsCreatedChart" height="200"></canvas>
+                <canvas id="secretsCreatedChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_created') }}"></canvas>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_read') }}</h2>
-                <canvas id="secretsReadChart" height="200"></canvas>
+                <canvas id="secretsReadChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_read') }}"></canvas>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_types') }}</h2>
-                <canvas id="secretTypesChart" height="200"></canvas>
+                <canvas id="secretTypesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_options') }}</h2>
-                <canvas id="secretOptionsChart" height="200"></canvas>
+                <canvas id="secretOptionsChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_outcomes') }}</h2>
-                <canvas id="secretOutcomesChart" height="200"></canvas>
+                <canvas id="secretOutcomesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
             </div>
         </div>
 
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_admin_activity') }}</h2>
-            <canvas id="adminActivityChart" height="150"></canvas>
+            <canvas id="adminActivityChart" height="150" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
         </div>
     </div>
 </div>
 
-<script @nonce>
+<script nonce="@nonce">
     window.superAdminData = {
         stats: @json($stats),
         allTime: @json($allTime),

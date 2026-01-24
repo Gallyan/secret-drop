@@ -227,4 +227,16 @@ return [
     'chart_secret_options' => 'Options utilisées',
     'chart_secret_outcomes' => 'Devenir des secrets',
     'chart_admin_activity' => 'Activité admin',
+
+    // File size units
+    'unit_bytes' => 'o',
+    'unit_kilobytes' => 'Ko',
+    'unit_megabytes' => 'Mo',
+    'unit_gigabytes' => 'Go',
+
+    // Accessibility
+    'a11y_back' => 'Retour',
+    'a11y_period_selector' => 'Sélectionner la période',
+    'a11y_extend_days' => 'Nombre de jours de prolongation',
+    'a11y_expand_secret' => 'Afficher les détails du secret',
 ];

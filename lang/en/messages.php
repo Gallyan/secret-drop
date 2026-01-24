@@ -227,4 +227,16 @@ return [
     'chart_secret_options' => 'Options used',
     'chart_secret_outcomes' => 'Secret outcomes',
     'chart_admin_activity' => 'Admin activity',
+
+    // File size units
+    'unit_bytes' => 'B',
+    'unit_kilobytes' => 'KB',
+    'unit_megabytes' => 'MB',
+    'unit_gigabytes' => 'GB',
+
+    // Accessibility
+    'a11y_back' => 'Back',
+    'a11y_period_selector' => 'Select period',
+    'a11y_extend_days' => 'Number of days to extend',
+    'a11y_expand_secret' => 'Show secret details',
 ];
