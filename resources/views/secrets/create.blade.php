@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center md:p-4 transition-colors">
     <div class="w-full max-w-5xl">
         <div
             x-data="secretForm()"
-            class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
+            class="md:bg-white/80 md:dark:bg-slate-800/50 md:backdrop-blur-xl md:border md:border-gray-200 md:dark:border-slate-700/50 md:rounded-2xl md:shadow-2xl overflow-hidden transition-colors"
         >
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}
-                <div class="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-violet-600/5 to-indigo-600/5 dark:from-violet-600/10 dark:to-indigo-600/10 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-slate-700/50 transition-colors">
+                <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-gradient-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
                 </div>
 
                 {{-- Right: Form --}}
-                <div class="p-8 lg:p-12">
+                <div class="p-6 md:p-8 lg:p-12">
                     {{-- Form --}}
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5">
                         {{-- Mode tabs --}}
