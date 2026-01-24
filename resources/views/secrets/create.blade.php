@@ -426,7 +426,7 @@
                             </div>
                         </div>
 
-                        <p class="text-sm text-gray-600 dark:text-slate-400 text-center">
+                        <p x-show="creatorEmail" class="text-sm text-gray-600 dark:text-slate-400 text-center">
                             {{ __('messages.success_admin_hint', ['link' => __('messages.footer_manage')]) }}
                         </p>
 
