@@ -1,59 +1,162 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Secret Drop
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Application de partage de secrets et fichiers chiffrés côté client. Le serveur ne voit jamais les données en clair.
 
-## About Laravel
+## Principe Zero-Knowledge
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Le navigateur génère la clé et chiffre localement (AES-256-GCM)
+- Le serveur stocke uniquement le ciphertext + métadonnées
+- La clé est transmise via le fragment URL (`#...`) qui n'est jamais envoyé au serveur
+- Passphrase optionnelle avec dérivation PBKDF2
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fonctionnalités
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Secrets texte** : messages chiffrés avec copie facile
+- **Fichiers chiffrés** : upload/download avec chiffrement côté client
+- **Usage unique** : destruction après première lecture
+- **Expiration** : 1h, 1j, 7j ou 30j
+- **Limite de lectures** : max_views configurable
+- **Révocation** : annulation immédiate via admin_token
+- **Passphrase** : protection supplémentaire optionnelle
 
-## Learning Laravel
+## Stack technique
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Backend** : Laravel 12, PHP 8.4
+- **Frontend** : Alpine.js 3.14, Tailwind CSS 4.0
+- **Crypto** : Web Crypto API (navigateur)
+- **Base de données** : SQLite
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+```bash
+# Cloner le repo
+git clone https://github.com/Gallyan/secret-drop.git
+cd secret-drop
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Installation et configuration
+composer setup
 
-### Premium Partners
+# Lancer en développement
+composer dev
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+La commande `composer setup` exécute :
+- Installation des dépendances PHP et npm
+- Génération de la clé d'application
+- Migration de la base de données
+- Build des assets
 
-## Contributing
+## Commandes
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Développement
 
-## Code of Conduct
+```bash
+composer dev      # Serveur + queue + logs + Vite
+composer test     # Tests PHPUnit
+npm run build     # Build production
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Artisan
 
-## Security Vulnerabilities
+```bash
+# Nettoyer les secrets expirés/révoqués/consommés
+php artisan secrets:clean
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Mode dry-run (affiche sans supprimer)
+php artisan secrets:clean --dry-run
+```
 
-## License
+Cette commande supprime :
+- Les secrets expirés (`expire_at` dépassé)
+- Les secrets révoqués (`revoked_at` défini)
+- Les secrets ayant atteint leur limite de lectures
+- Les secrets à usage unique déjà lus
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## API
+
+### Endpoints publics
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| `GET` | `/` | Page de création |
+| `POST` | `/api/secrets` | Créer un secret |
+| `GET` | `/s/{token}` | Page de lecture |
+| `GET` | `/api/secrets/{token}` | Récupérer les métadonnées + ciphertext |
+| `POST` | `/api/secrets/{token}/read` | Confirmer la lecture (après déchiffrement) |
+| `GET` | `/s/{token}/download` | Télécharger un fichier chiffré |
+
+### Endpoints admin
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| `POST` | `/api/secrets/{adminToken}/revoke` | Révoquer un secret |
+
+## Sécurité
+
+### Ce que le serveur ne voit jamais
+- Le secret en clair
+- La clé de chiffrement
+- Le fragment URL
+
+### Mesures de protection
+- CSP stricte avec nonce
+- Headers de sécurité (HSTS, X-Frame-Options, etc.)
+- Sanitization des logs (pas de tokens, pas de secrets)
+- Tokens cryptographiquement sécurisés (128+ bits)
+
+### Données stockées
+- `ciphertext` : contenu chiffré (base64url)
+- `cipher_meta` : iv, salt, version de l'algorithme
+- Métadonnées : type, expiration, compteurs
+
+## Configuration
+
+Variables d'environnement principales :
+
+```env
+APP_URL=https://your-domain.com
+APP_ENV=production
+
+# Base de données
+DB_CONNECTION=sqlite
+DB_DATABASE=/path/to/database.sqlite
+
+# Mail (optionnel)
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM_ADDRESS=noreply@example.com
+```
+
+## Scheduler
+
+Pour la suppression automatique des secrets expirés, ajouter au crontab :
+
+```cron
+* * * * * cd /path/to/secret-drop && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Puis dans `routes/console.php` :
+
+```php
+Schedule::command('secrets:clean')->daily();
+```
+
+## Tests
+
+```bash
+# Tous les tests
+composer test
+
+# Un test spécifique
+php artisan test --filter=ShowSecretTest
+
+# Avec couverture
+php artisan test --coverage
+```
+
+## Licence
+
+MIT
