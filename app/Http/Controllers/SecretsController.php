@@ -6,6 +6,7 @@ use App\Http\Requests\StoreSecretRequest;
 use App\Models\Secret;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class SecretsController extends Controller
