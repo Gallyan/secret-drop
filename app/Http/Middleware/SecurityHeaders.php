@@ -31,23 +31,23 @@ class SecurityHeaders
 
     private function buildCsp(string $nonce): string
     {
+        $isLocal = app()->environment('local');
+        $connectSrc = $isLocal
+            ? "connect-src 'self' ws://localhost:* http://localhost:*"
+            : "connect-src 'self'";
+
         $directives = [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}'",
-            "style-src 'self' 'nonce-{$nonce}'",
+            "script-src 'self' 'nonce-{$nonce}' 'unsafe-eval'",
+            "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline'",
             "img-src 'self' data: https:",
             "font-src 'self'",
-            "connect-src 'self'",
+            $connectSrc,
             "frame-ancestors 'self'",
             "form-action 'self'",
             "base-uri 'self'",
             "object-src 'none'",
         ];
-
-        if (app()->environment('local')) {
-            $directives[1] = "script-src 'self' 'nonce-{$nonce}' 'unsafe-eval'";
-            $directives[4] = "connect-src 'self' ws://localhost:* http://localhost:*";
-        }
 
         return implode('; ', $directives);
     }

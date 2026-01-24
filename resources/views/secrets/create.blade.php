@@ -1,155 +1,50 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-5xl">
         <div
-            x-data="{
-                secret: '',
-                expiration: '7d',
-                usageUnique: true,
-                maxViews: null,
-                passphrase: '',
-                showPassphrase: false,
-                showAdvanced: false,
-                creatorEmail: '',
-                isSubmitting: false,
-                error: null,
-                shareUrl: null,
-                passphraseUsed: false,
-                copied: false,
-
-                async handleSubmit() {
-                    this.error = null;
-                    this.isSubmitting = true;
-
-                    try {
-                        // Check WebCrypto availability
-                        if (!window.SecretCrypto?.isCryptoAvailable()) {
-                            throw new Error('Votre navigateur ne supporte pas le chiffrement sécurisé');
-                        }
-
-                        // Encrypt the secret
-                        const passphrase = this.passphrase?.trim() || null;
-                        const encrypted = await window.SecretCrypto.encryptSecret(this.secret, passphrase);
-
-                        // Build cipher metadata
-                        const cipherMeta = {
-                            alg: 'AES-256-GCM',
-                            iv: encrypted.iv,
-                            version: encrypted.version
-                        };
-                        if (encrypted.salt) {
-                            cipherMeta.salt = encrypted.salt;
-                            cipherMeta.kdf = 'PBKDF2-SHA256-200k';
-                        }
-
-                        // Send to API
-                        const response = await fetch('/api/secrets', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content
-                            },
-                            body: JSON.stringify({
-                                type: 'text',
-                                ciphertext: encrypted.ciphertext,
-                                cipher_meta: cipherMeta,
-                                expiration: this.expiration,
-                                usage_unique: this.usageUnique,
-                                max_views: this.maxViews || null,
-                                creator_email: this.creatorEmail?.trim() || null
-                            })
-                        });
-
-                        if (!response.ok) {
-                            const data = await response.json();
-                            throw new Error(data.message || 'Erreur lors de la création du secret');
-                        }
-
-                        const data = await response.json();
-
-                        // Build share URL with key in fragment
-                        const hasPassphrase = !!passphrase;
-                        const keyFragment = window.SecretCrypto.buildKeyFragment(
-                            encrypted.keyMaterial,
-                            hasPassphrase,
-                            encrypted.version
-                        );
-                        this.shareUrl = `${window.location.origin}/s/${data.token}#${keyFragment}`;
-                        this.passphraseUsed = hasPassphrase;
-                    } catch (e) {
-                        console.error('Encryption error:', e);
-                        this.error = e.message || 'Une erreur est survenue lors du chiffrement';
-                    } finally {
-                        this.isSubmitting = false;
-                    }
-                },
-
-                async copyToClipboard() {
-                    try {
-                        await navigator.clipboard.writeText(this.shareUrl);
-                        this.copied = true;
-                        setTimeout(() => this.copied = false, 2000);
-                    } catch (e) {
-                        this.error = 'Impossible de copier dans le presse-papier';
-                    }
-                },
-
-                reset() {
-                    this.secret = '';
-                    this.expiration = '7d';
-                    this.usageUnique = true;
-                    this.maxViews = null;
-                    this.passphrase = '';
-                    this.creatorEmail = '';
-                    this.showAdvanced = false;
-                    this.shareUrl = null;
-                    this.passphraseUsed = false;
-                    this.error = null;
-                }
-            }"
-            class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden"
+            x-data="secretForm()"
+            class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
         >
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}
-                <div class="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-violet-600/10 to-indigo-600/10 border-b lg:border-b-0 lg:border-r border-slate-700/50">
+                <div class="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-violet-600/5 to-indigo-600/5 dark:from-violet-600/10 dark:to-indigo-600/10 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-slate-700/50 transition-colors">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25">
                         <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                     </div>
 
-                    <h1 class="text-3xl font-bold text-white tracking-tight mb-3">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3 transition-colors">
                         Secret Drop
                     </h1>
 
-                    <p class="text-slate-400 mb-8">
+                    <p class="text-gray-600 dark:text-slate-400 mb-8 transition-colors">
                         Partagez des informations sensibles en toute sécurité avec un chiffrement de bout en bout.
                     </p>
 
                     <ul class="space-y-3 text-sm">
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Chiffrement AES-256-GCM dans votre navigateur
                         </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Le serveur ne voit jamais vos données en clair
                         </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Auto-destruction après lecture
                         </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Expiration automatique configurable
@@ -163,7 +58,7 @@
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5">
                         {{-- Secret textarea --}}
                         <div>
-                            <label for="secret" class="block text-sm font-medium text-slate-300 mb-2">
+                            <label for="secret" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                 Votre secret
                             </label>
                             <textarea
@@ -172,7 +67,7 @@
                                 rows="4"
                                 required
                                 placeholder="Entrez votre message confidentiel..."
-                                class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
+                                class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                             ></textarea>
                         </div>
 
@@ -180,13 +75,13 @@
                         <div class="grid grid-cols-2 gap-4">
                             {{-- Expiration --}}
                             <div>
-                                <label for="expiration" class="block text-sm font-medium text-slate-300 mb-2">
+                                <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                     Expire dans
                                 </label>
                                 <select
                                     id="expiration"
                                     x-model="expiration"
-                                    class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                                     <option value="1h">1 heure</option>
                                     <option value="1d">1 jour</option>
@@ -197,7 +92,7 @@
 
                             {{-- Max views --}}
                             <div>
-                                <label for="maxViews" class="block text-sm font-medium text-slate-300 mb-2">
+                                <label for="maxViews" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                     Lectures max
                                 </label>
                                 <input
@@ -207,7 +102,7 @@
                                     min="1"
                                     max="100"
                                     placeholder="Illimité"
-                                    class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                         </div>
@@ -216,10 +111,10 @@
                         <label class="flex items-center gap-3 cursor-pointer group">
                             <div class="relative">
                                 <input type="checkbox" x-model="usageUnique" class="sr-only peer">
-                                <div class="w-11 h-6 bg-slate-700 rounded-full peer-checked:bg-violet-600 transition"></div>
+                                <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 transition"></div>
                                 <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
                             </div>
-                            <span class="text-sm text-slate-300 group-hover:text-white transition">
+                            <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
                                 Détruire après lecture
                             </span>
                         </label>
@@ -229,7 +124,7 @@
                             <button
                                 type="button"
                                 @click="showAdvanced = !showAdvanced"
-                                class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition"
+                                class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                             >
                                 <svg
                                     class="w-4 h-4 transition-transform"
@@ -246,7 +141,7 @@
                             <div x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
                                 {{-- Passphrase --}}
                                 <div>
-                                    <label for="passphrase" class="block text-sm font-medium text-slate-300 mb-2">
+                                    <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                         Passphrase
                                     </label>
                                     <div class="relative">
@@ -255,12 +150,12 @@
                                             :type="showPassphrase ? 'text' : 'password'"
                                             x-model="passphrase"
                                             placeholder="Protection supplémentaire"
-                                            class="w-full px-4 py-2.5 pr-12 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                            class="w-full px-4 py-2.5 pr-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
-                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
                                         >
                                             <svg x-show="!showPassphrase" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -275,7 +170,7 @@
 
                                 {{-- Creator email --}}
                                 <div>
-                                    <label for="creatorEmail" class="block text-sm font-medium text-slate-300 mb-2">
+                                    <label for="creatorEmail" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                         Votre email
                                     </label>
                                     <input
@@ -283,15 +178,15 @@
                                         type="email"
                                         x-model="creatorEmail"
                                         placeholder="pour gérer votre secret"
-                                        class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     >
                                 </div>
                             </div>
                         </div>
 
                         {{-- Error message --}}
-                        <div x-show="error" x-cloak class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-                            <p class="text-sm text-red-400" x-text="error"></p>
+                        <div x-show="error" x-cloak class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                            <p class="text-sm text-red-600 dark:text-red-400" x-text="error"></p>
                         </div>
 
                         {{-- Submit button --}}
@@ -314,13 +209,13 @@
                     {{-- Success state --}}
                     <div x-show="shareUrl" x-cloak class="space-y-6">
                         <div class="text-center">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 mb-4">
-                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors">
+                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-semibold text-white">Secret créé</h2>
-                            <p class="mt-1 text-sm text-slate-400">Partagez ce lien avec votre destinataire</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white transition-colors">Secret créé</h2>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">Partagez ce lien avec votre destinataire</p>
                         </div>
 
                         <div class="relative">
@@ -328,7 +223,7 @@
                                 type="text"
                                 readonly
                                 :value="shareUrl"
-                                class="w-full px-4 py-3 pr-24 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white text-sm font-mono"
+                                class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
                             >
                             <button
                                 type="button"
@@ -340,11 +235,11 @@
                             </button>
                         </div>
 
-                        <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
-                            <p class="text-xs text-amber-400" x-show="!passphraseUsed">
+                        <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                            <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
                                 <strong>Important :</strong> Ce lien contient la clé de déchiffrement. Ne le partagez qu'avec le destinataire.
                             </p>
-                            <p class="text-xs text-amber-400" x-show="passphraseUsed">
+                            <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
                                 <strong>Important :</strong> Le destinataire devra entrer la passphrase pour déchiffrer le secret.
                             </p>
                         </div>
@@ -352,7 +247,7 @@
                         <button
                             type="button"
                             @click="reset()"
-                            class="w-full py-2.5 text-sm text-slate-400 hover:text-white border border-slate-600/50 hover:border-slate-500 rounded-xl transition"
+                            class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
                         >
                             Créer un nouveau secret
                         </button>
