@@ -199,6 +199,7 @@ return [
     'period_30d' => '30 derniers jours',
     'period_90d' => '90 derniers jours',
     'period_1y' => 'Dernière année',
+    'period_all' => 'Depuis toujours',
 
     // Stats
     'stat_total_secrets' => 'Total secrets',

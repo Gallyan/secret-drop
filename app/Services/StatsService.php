@@ -56,23 +56,29 @@ class StatsService
             '30d' => 30,
             '90d' => 90,
             '1y' => 365,
+            'all' => null,
             default => 30,
         };
 
-        $startDate = now()->subDays($days)->toDateString();
+        $startDate = $days ? now()->subDays($days)->toDateString() : null;
 
-        $stats = DB::table('stats_daily')
-            ->where('date', '>=', $startDate)
-            ->orderBy('date')
-            ->get()
+        $query = DB::table('stats_daily')->orderBy('date');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $stats = $query->get()
             ->groupBy('metric')
             ->map(fn ($items) => $items->pluck('count', 'date')->toArray())
             ->toArray();
 
+        $firstDate = $startDate ?? DB::table('stats_daily')->min('date') ?? now()->toDateString();
+
         return [
             'period' => $period,
             'days' => $days,
-            'start_date' => $startDate,
+            'start_date' => $firstDate,
             'end_date' => now()->toDateString(),
             'metrics' => $stats,
             'totals' => $this->getTotals($startDate),
