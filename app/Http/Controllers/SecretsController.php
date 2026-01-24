@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSecretRequest;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
+use App\Services\StatsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -16,6 +17,7 @@ class SecretsController extends Controller
     public function __construct(
         private TokenService $tokenService,
         private SecretStorageService $storage,
+        private StatsService $stats,
     ) {
     }
 
@@ -58,10 +60,34 @@ class SecretsController extends Controller
 
         $secret = Secret::create($secretData);
 
+        $this->trackCreationStats($secret, $validated);
+
         return response()->json([
             'token' => $secret->token,
             'expire_at' => $expireAt->toIso8601String(),
         ], 201);
+    }
+
+    private function trackCreationStats(Secret $secret, array $validated): void
+    {
+        if ($secret->type === 'text') {
+            $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
+        } else {
+            $this->stats->increment(StatsService::SECRETS_CREATED_FILE);
+            $this->stats->increment(StatsService::TOTAL_FILE_SIZE_BYTES, $secret->size ?? 0);
+        }
+
+        if (! empty($validated['cipher_meta']['has_passphrase'])) {
+            $this->stats->increment(StatsService::SECRETS_WITH_PASSPHRASE);
+        }
+
+        if ($secret->usage_unique) {
+            $this->stats->increment(StatsService::SECRETS_SINGLE_USE);
+        }
+
+        if ($secret->max_views !== null) {
+            $this->stats->increment(StatsService::SECRETS_WITH_MAX_VIEWS);
+        }
     }
 
     public function show(string $token): View
@@ -120,12 +146,17 @@ class SecretsController extends Controller
         }
 
         $secret->incrementReadCount();
+        $this->stats->increment(StatsService::SECRETS_READ);
 
         if ($secret->shouldBeDestroyed()) {
             if ($secret->type === 'file' && $secret->file_path) {
                 $this->storage->delete($secret->file_path);
             }
             $secret->destroyContent();
+
+            if ($secret->hasReachedMaxViews()) {
+                $this->stats->increment(StatsService::SECRETS_MAX_VIEWS_REACHED);
+            }
         }
 
         return response()->json(['success' => true]);

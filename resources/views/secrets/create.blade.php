@@ -56,7 +56,7 @@
                 {{-- Right: Form --}}
                 <div class="p-6 md:p-8 lg:p-12">
                     {{-- Form --}}
-                    <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5">
+                    <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5" autocomplete="off">
                         {{-- Mode tabs --}}
                         <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button
@@ -240,6 +240,7 @@
                                             id="passphrase"
                                             :type="showPassphrase ? 'text' : 'password'"
                                             x-model="passphrase"
+                                            autocomplete="off"
                                             placeholder="{{ __('messages.passphrase_placeholder') }}"
                                             class="w-full px-4 py-2.5 pr-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
@@ -269,9 +270,13 @@
                                         id="creatorEmail"
                                         type="email"
                                         x-model="creatorEmail"
+                                        autocomplete="off"
                                         placeholder="{{ __('messages.email_placeholder') }}"
                                         class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     >
+                                    <p class="mt-1.5 text-xs text-gray-500 dark:text-slate-500">
+                                        {{ __('messages.email_hint') }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -338,6 +343,10 @@
                                 <strong>Important :</strong> {{ __('messages.warning_passphrase_required') }}
                             </p>
                         </div>
+
+                        <p class="text-sm text-gray-600 dark:text-slate-400 text-center">
+                            {{ __('messages.success_admin_hint', ['link' => __('messages.footer_manage')]) }}
+                        </p>
 
                         <button
                             type="button"

@@ -7,24 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
+        Schema::dropIfExists('magic_links');
+
         Schema::create('magic_links', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
-            $table->uuid('secret_id');
-            $table->foreign('secret_id')
-                ->references('id')
-                ->on('secrets')
-                ->cascadeOnDelete();
-
-            $table->string('email');
+            $table->string('email_hash', 64);
             $table->string('token_hash', 64)->unique();
-
-            $table->timestamp('expire_at')->index();
+            $table->timestamp('expire_at');
             $table->timestamp('used_at')->nullable();
+            $table->timestamps();
 
-            $table->timestamp('created_at')->nullable();
-
-            $table->index(['secret_id', 'email']);
+            $table->index('email_hash');
         });
     }
 };

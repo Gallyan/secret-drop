@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\TokenService;
@@ -167,5 +168,59 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->artisan('secrets:clean')
             ->expectsOutput('No expired secrets to clean.')
             ->assertSuccessful();
+    }
+
+    public function testDeletesExpiredMagicLinks(): void
+    {
+        $expiredLink = MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => hash('sha256', 'expired-token'),
+            'expire_at' => now()->subMinutes(10),
+        ]);
+
+        $validLink = MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test2@example.com'),
+            'token_hash' => hash('sha256', 'valid-token'),
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->artisan('secrets:clean')
+            ->assertSuccessful();
+
+        $this->assertNull(MagicLink::find($expiredLink->id));
+        $this->assertNotNull(MagicLink::find($validLink->id));
+
+        $validLink->delete();
+    }
+
+    public function testDeletesUsedMagicLinks(): void
+    {
+        $usedLink = MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => hash('sha256', 'used-token'),
+            'expire_at' => now()->addMinutes(5),
+            'used_at' => now(),
+        ]);
+
+        $this->artisan('secrets:clean')
+            ->assertSuccessful();
+
+        $this->assertNull(MagicLink::find($usedLink->id));
+    }
+
+    public function testDryRunDoesNotDeleteMagicLinks(): void
+    {
+        $expiredLink = MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => hash('sha256', 'dryrun-token'),
+            'expire_at' => now()->subMinutes(10),
+        ]);
+
+        $this->artisan('secrets:clean --dry-run')
+            ->assertSuccessful();
+
+        $this->assertNotNull(MagicLink::find($expiredLink->id));
+
+        $expiredLink->delete();
     }
 }

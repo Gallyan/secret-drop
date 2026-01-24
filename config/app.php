@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Super Admin Email
+    |--------------------------------------------------------------------------
+    |
+    | Email address that can access the super admin dashboard with usage stats.
+    |
+    */
+
+    'super_admin_email' => env('SUPER_ADMIN_EMAIL'),
+
 ];

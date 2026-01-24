@@ -35,5 +35,19 @@
     <main>
         @yield('content')
     </main>
+
+    <footer class="fixed bottom-4 left-0 right-0 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
+        <div class="flex items-center justify-center gap-2">
+            <span>&copy; {{ date('Y') }} {{ config('app.name') }}</span>
+            <span>·</span>
+            <a href="{{ route('admin.index') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+                {{ __('messages.footer_manage') }}
+            </a>
+            <span>·</span>
+            <a href="{{ route('legal') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+                {{ __('messages.footer_legal') }}
+            </a>
+        </div>
+    </footer>
 </body>
 </html>
