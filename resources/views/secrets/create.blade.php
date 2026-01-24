@@ -11,7 +11,7 @@
                 {{-- Left: Branding & Info --}}
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-gradient-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0">
+                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
@@ -27,25 +27,25 @@
 
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Chiffrement AES-256-GCM dans votre navigateur
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Le serveur ne voit jamais vos données en clair
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Auto-destruction après lecture
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             Expiration automatique configurable
@@ -58,25 +58,29 @@
                     {{-- Form --}}
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5">
                         {{-- Mode tabs --}}
-                        <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1">
+                        <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="Type de secret">
                             <button
                                 type="button"
+                                role="tab"
+                                :aria-selected="mode === 'text'"
                                 @click="setMode('text')"
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition"
                             >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 Texte
                             </button>
                             <button
                                 type="button"
+                                role="tab"
+                                :aria-selected="mode === 'file'"
                                 @click="setMode('file')"
                                 :class="mode === 'file' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition"
                             >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                                 Fichier
@@ -98,7 +102,7 @@
 
                         {{-- File mode: Drag & drop zone --}}
                         <div x-show="mode === 'file'" x-cloak>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
+                            <label for="fileInput" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                 Votre fichier
                             </label>
 
@@ -112,6 +116,7 @@
                                 class="relative flex flex-col items-center justify-center h-[118px] border border-dashed rounded-xl cursor-pointer transition"
                             >
                                 <input
+                                    id="fileInput"
                                     type="file"
                                     @change="handleFileSelect($event)"
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -144,9 +149,10 @@
                                 <button
                                     type="button"
                                     @click="file = null"
+                                    aria-label="Supprimer le fichier"
                                     class="p-2 text-gray-400 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition"
                                 >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
@@ -190,10 +196,10 @@
                         </div>
 
                         {{-- Usage unique toggle --}}
-                        <label class="flex items-center gap-3 cursor-pointer group">
+                        <label for="usageUnique" class="flex items-center gap-3 cursor-pointer group">
                             <div class="relative">
-                                <input type="checkbox" x-model="usageUnique" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 transition"></div>
+                                <input type="checkbox" id="usageUnique" x-model="usageUnique" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
                                 <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
                             </div>
                             <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
@@ -206,11 +212,14 @@
                             <button
                                 type="button"
                                 @click="showAdvanced = !showAdvanced"
+                                :aria-expanded="showAdvanced"
+                                aria-controls="advancedOptions"
                                 class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                             >
                                 <svg
                                     class="w-4 h-4 transition-transform"
                                     :class="{ 'rotate-90': showAdvanced }"
+                                    aria-hidden="true"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -220,7 +229,7 @@
                                 Options avancées
                             </button>
 
-                            <div x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
+                            <div id="advancedOptions" x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
                                 {{-- Passphrase --}}
                                 <div>
                                     <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
@@ -237,13 +246,14 @@
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
+                                            :aria-label="showPassphrase ? 'Masquer la passphrase' : 'Afficher la passphrase'"
                                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
                                         >
-                                            <svg x-show="!showPassphrase" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg x-show="!showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
-                                            <svg x-show="showPassphrase" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg x-show="showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                                             </svg>
                                         </button>
@@ -267,7 +277,7 @@
                         </div>
 
                         {{-- Error message --}}
-                        <div x-show="error" x-cloak class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                        <div x-show="error" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
                             <p class="text-sm text-red-600 dark:text-red-400" x-text="error"></p>
                         </div>
 
@@ -278,8 +288,8 @@
                             class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
                         >
                             <span x-show="!isSubmitting">Chiffrer et créer le lien</span>
-                            <span x-show="isSubmitting" class="inline-flex items-center justify-center gap-2">
-                                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
+                                <svg class="animate-spin h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
@@ -291,7 +301,7 @@
                     {{-- Success state --}}
                     <div x-show="shareUrl" x-cloak class="space-y-6">
                         <div class="text-center">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors">
+                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors" aria-hidden="true">
                                 <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
@@ -301,7 +311,9 @@
                         </div>
 
                         <div class="relative">
+                            <label for="shareUrl" class="sr-only">Lien de partage</label>
                             <input
+                                id="shareUrl"
                                 type="text"
                                 readonly
                                 :value="shareUrl"
@@ -310,6 +322,7 @@
                             <button
                                 type="button"
                                 @click="copyToClipboard()"
+                                :aria-label="copied ? 'Lien copié' : 'Copier le lien'"
                                 class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
                             >
                                 <span x-show="!copied">Copier</span>
