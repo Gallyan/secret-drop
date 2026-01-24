@@ -110,14 +110,14 @@
                                 @dragleave.prevent="isDragging = false"
                                 @drop.prevent="handleFileDrop($event)"
                                 :class="isDragging ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500'"
-                                class="relative flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-xl cursor-pointer transition"
+                                class="relative flex flex-col items-center justify-center h-[118px] border-2 border-dashed rounded-xl cursor-pointer transition"
                             >
                                 <input
                                     type="file"
                                     @change="handleFileSelect($event)"
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 >
-                                <svg class="w-10 h-10 mb-3 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-8 h-8 mb-2 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                                 <p class="text-sm text-gray-600 dark:text-slate-400">
@@ -131,7 +131,7 @@
                             {{-- File preview (when file selected) --}}
                             <div
                                 x-show="file"
-                                class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl"
+                                class="flex items-center gap-4 p-4 h-[118px] bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl"
                             >
                                 <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-500/10 shrink-0">
                                     <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
