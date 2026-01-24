@@ -48,13 +48,26 @@ class SecretStorageService
     /**
      * Stream download the encrypted file.
      * Returns the raw encrypted bytes for client-side decryption.
+     *
+     * Security headers:
+     * - X-Content-Type-Options: nosniff - Prevents MIME type sniffing
+     * - Content-Disposition: attachment - Forces download, never inline
+     * - Cache-Control: no-store - Prevents caching of sensitive data
+     * - X-Download-Options: noopen - IE: prevents direct open
      */
     public function download(string $path): StreamedResponse
     {
         return $this->disk()->download(
             $path,
             'encrypted',
-            ['Content-Type' => 'application/octet-stream']
+            [
+                'Content-Type' => 'application/octet-stream',
+                'X-Content-Type-Options' => 'nosniff',
+                'Content-Disposition' => 'attachment; filename="encrypted"',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma' => 'no-cache',
+                'X-Download-Options' => 'noopen',
+            ]
         );
     }
 
