@@ -13,7 +13,7 @@ class CaptchaServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->captcha = new CaptchaService;
+        $this->captcha = new CaptchaService();
     }
 
     public function test_generate_returns_token_and_challenge(): void
@@ -30,7 +30,7 @@ class CaptchaServiceTest extends TestCase
     {
         $result = $this->captcha->generate('test-identifier');
 
-        $this->assertNotNull(Cache::get('captcha:' . $result['token']));
+        $this->assertNotNull(Cache::get('captcha:'.$result['token']));
     }
 
     public function test_verify_returns_true_for_correct_answer(): void
