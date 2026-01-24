@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ForceHttps;
+use App\Http\Middleware\SanitizeRequestLogging;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottleWithCaptcha;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(SanitizeRequestLogging::class);
         $middleware->prepend(ForceHttps::class);
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);

@@ -181,6 +181,52 @@ Tâches planifiées (configurées dans `routes/console.php`) :
 
 Les deux commandes supportent l'option `--dry-run` pour prévisualiser les suppressions.
 
+## Logs Apache (zero-knowledge)
+
+Pour respecter le principe zero-knowledge, les logs Apache ne doivent pas contenir les tokens des URLs sensibles. Utilisez un format de log personnalisé :
+
+```apache
+# Dans /etc/apache2/conf-available/secret-drop-log.conf
+
+# Format qui masque les tokens dans les URLs sensibles
+LogFormat "%h %l %u %t \"%m %U\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" secretdrop
+
+# %U = URI sans query string (le fragment # n'est jamais envoyé au serveur)
+# Les tokens dans /s/{token} restent visibles, voir ci-dessous pour les masquer
+```
+
+Pour masquer complètement les tokens, utilisez `mod_rewrite` avec une variable d'environnement :
+
+```apache
+<VirtualHost *:443>
+    ServerName secret-drop.example.com
+    DocumentRoot /var/www/secret-drop/public
+
+    # Masquer les tokens dans les logs
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} ^/s/[^/]+
+    RewriteRule ^/s/(.*)$ - [E=SANITIZED_URI:/s/[TOKEN]]
+
+    RewriteCond %{REQUEST_URI} ^/api/secrets/[^/]+
+    RewriteRule ^/api/secrets/(.*)$ - [E=SANITIZED_URI:/api/secrets/[TOKEN]]
+
+    RewriteCond %{REQUEST_URI} ^/admin/verify/[^/]+
+    RewriteRule ^/admin/verify/(.*)$ - [E=SANITIZED_URI:/admin/verify/[TOKEN]]
+
+    RewriteCond %{REQUEST_URI} ^/superadmin/verify/[^/]+
+    RewriteRule ^/superadmin/verify/(.*)$ - [E=SANITIZED_URI:/superadmin/verify/[TOKEN]]
+
+    # Format de log sécurisé
+    LogFormat "%h %l %u %t \"%m %{SANITIZED_URI}e\" %>s %b" secretdrop_safe
+    SetEnvIf Request_URI "." SANITIZED_URI=%{REQUEST_URI}
+
+    CustomLog ${APACHE_LOG_DIR}/secret-drop-access.log secretdrop_safe
+    ErrorLog ${APACHE_LOG_DIR}/secret-drop-error.log
+</VirtualHost>
+```
+
+Note : Le fragment URL (`#...` contenant la clé de chiffrement) n'est **jamais** envoyé au serveur par le navigateur, donc il n'apparaît jamais dans les logs serveur.
+
 ## Tests
 
 ```bash

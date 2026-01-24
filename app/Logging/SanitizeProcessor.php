@@ -5,6 +5,12 @@ namespace App\Logging;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
+/**
+ * Monolog processor to sanitize sensitive data from logs.
+ *
+ * Zero-knowledge principle: tokens, URLs with fragments, ciphertext,
+ * and other sensitive data must never appear in logs.
+ */
 class SanitizeProcessor implements ProcessorInterface
 {
     private const SENSITIVE_KEYS = [
@@ -12,6 +18,7 @@ class SanitizeProcessor implements ProcessorInterface
         'password_confirmation',
         'secret',
         'token',
+        'admin_token',
         'api_key',
         'apikey',
         'authorization',
@@ -20,6 +27,11 @@ class SanitizeProcessor implements ProcessorInterface
         'cvv',
         'ssn',
         'private_key',
+        'ciphertext',
+        'cipher_meta',
+        'passphrase',
+        'key',
+        'fragment',
     ];
 
     public function __invoke(LogRecord $record): LogRecord
@@ -57,8 +69,29 @@ class SanitizeProcessor implements ProcessorInterface
     private function sanitizeString(string $value): string
     {
         $patterns = [
-            '/("(?:password|secret|token|api_key|authorization)":\s*")[^"]*(")/i' => '$1[REDACTED]$2',
+            // JSON keys with sensitive values
+            '/("(?:password|secret|token|api_key|authorization|ciphertext|passphrase)":\s*")[^"]*(")/i' => '$1[REDACTED]$2',
+
+            // Bearer tokens
             '/(Bearer\s+)[^\s]+/i' => '$1[REDACTED]',
+
+            // URLs with fragments (the fragment contains the encryption key)
+            '/(https?:\/\/[^#\s]+)#[^\s]*/i' => '$1#[REDACTED]',
+
+            // Secret URLs: /s/{token}
+            '#(/s/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
+
+            // API secret URLs: /api/secrets/{token}
+            '#(/api/secrets/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
+
+            // Admin verify URLs: /admin/verify/{token}
+            '#(/admin/verify/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
+
+            // Superadmin verify URLs: /superadmin/verify/{token}
+            '#(/superadmin/verify/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
+
+            // Base64-encoded data (potential ciphertext) - long strings
+            '/[A-Za-z0-9_-]{100,}/i' => '[REDACTED_DATA]',
         ];
 
         foreach ($patterns as $pattern => $replacement) {
