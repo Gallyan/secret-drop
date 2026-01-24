@@ -89,6 +89,10 @@ class SecretsController extends Controller
             $this->stats->increment(StatsService::SECRETS_WITH_MAX_VIEWS);
         }
 
+        if (! empty($validated['split_mode'])) {
+            $this->stats->increment(StatsService::SECRETS_SPLIT_MODE);
+        }
+
         $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
     }
 

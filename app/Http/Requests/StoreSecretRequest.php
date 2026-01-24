@@ -26,6 +26,12 @@ class StoreSecretRequest extends FormRequest
                 'usage_unique' => in_array($this->usage_unique, ['1', 'true', 'on'], true),
             ]);
         }
+
+        if ($this->has('split_mode') && is_string($this->split_mode)) {
+            $this->merge([
+                'split_mode' => in_array($this->split_mode, ['1', 'true', 'on'], true),
+            ]);
+        }
     }
 
     /**
@@ -56,6 +62,7 @@ class StoreSecretRequest extends FormRequest
             'usage_unique' => ['boolean'],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
+            'split_mode' => ['boolean'],
         ];
     }
 

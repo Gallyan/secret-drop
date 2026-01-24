@@ -29,13 +29,15 @@ export default function secretViewer(token) {
         error: null,
         copied: false,
         needsPassphrase: false,
+        needsManualKey: false,
+        manualKey: '',
         keyMaterial: null,
         version: 1,
 
         async init() {
             await this.loadSecret();
 
-            if (!this.loadError && !this.needsPassphrase && !this.error) {
+            if (!this.loadError && !this.needsPassphrase && !this.needsManualKey && !this.error) {
                 this.decrypt();
             }
         },
@@ -110,17 +112,35 @@ export default function secretViewer(token) {
             const fragment = window.location.hash.substring(1);
 
             if (!fragment) {
-                this.error = t('crypto_key_missing');
+                this.needsManualKey = true;
                 return;
             }
 
+            this.applyKeyFragment(fragment);
+        },
+
+        applyKeyFragment(fragment) {
             try {
                 const parsed = window.SecretCrypto.parseKeyFragment(fragment);
                 this.keyMaterial = parsed.keyMaterial;
                 this.needsPassphrase = parsed.hasPassphrase;
                 this.version = parsed.version;
+                this.needsManualKey = false;
             } catch (e) {
                 this.error = e.message || t('crypto_fragment_invalid');
+            }
+        },
+
+        submitManualKey() {
+            if (!this.manualKey.trim()) {
+                return;
+            }
+
+            this.error = null;
+            this.applyKeyFragment(this.manualKey.trim());
+
+            if (!this.error && !this.needsPassphrase) {
+                this.decrypt();
             }
         },
 

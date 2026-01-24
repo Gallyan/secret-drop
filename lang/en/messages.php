@@ -253,4 +253,17 @@ return [
     'a11y_period_selector' => 'Select period',
     'a11y_extend_days' => 'Number of days to extend',
     'a11y_expand_secret' => 'Show secret details',
+
+    // Split mode
+    'split_mode' => 'Separate link and key',
+    'split_mode_hint' => 'Send the link and key through different channels for better security',
+    'share_link_label' => 'Share link',
+    'share_key_label' => 'Decryption key',
+    'split_mode_warning' => 'Send the key through a different channel (SMS, phone call, in person...).',
+    'enter_key_manually' => 'Enter the decryption key',
+    'key_placeholder' => 'Key received separately',
+    'btn_unlock' => 'Unlock',
+
+    // Stats
+    'stat_split_mode' => 'Split mode',
 ];

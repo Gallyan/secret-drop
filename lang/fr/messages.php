@@ -253,4 +253,17 @@ return [
     'a11y_period_selector' => 'Sélectionner la période',
     'a11y_extend_days' => 'Nombre de jours de prolongation',
     'a11y_expand_secret' => 'Afficher les détails du secret',
+
+    // Split mode
+    'split_mode' => 'Séparer le lien et la clé',
+    'split_mode_hint' => 'Transmettez le lien et la clé par des canaux différents pour plus de sécurité',
+    'share_link_label' => 'Lien de partage',
+    'share_key_label' => 'Clé de déchiffrement',
+    'split_mode_warning' => 'Transmettez la clé par un canal différent (SMS, téléphone, en personne...).',
+    'enter_key_manually' => 'Entrez la clé de déchiffrement',
+    'key_placeholder' => 'Clé reçue séparément',
+    'btn_unlock' => 'Déverrouiller',
+
+    // Stats
+    'stat_split_mode' => 'Mode split',
 ];

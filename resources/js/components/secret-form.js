@@ -22,13 +22,16 @@ export default function secretForm() {
         showPassphrase: false,
         showAdvanced: false,
         creatorEmail: '',
+        splitMode: false,
 
         // State
         isSubmitting: false,
         error: null,
         shareUrl: null,
+        shareKey: null,
         passphraseUsed: false,
         copied: false,
+        keyCopied: false,
 
         setMode(newMode) {
             this.mode = newMode;
@@ -143,7 +146,8 @@ export default function secretForm() {
                     expiration: this.expiration,
                     usage_unique: this.usageUnique,
                     max_views: this.maxViews || null,
-                    creator_email: this.creatorEmail?.trim() || null
+                    creator_email: this.creatorEmail?.trim() || null,
+                    split_mode: this.splitMode
                 })
             });
 
@@ -192,6 +196,9 @@ export default function secretForm() {
             if (this.creatorEmail?.trim()) {
                 formData.append('creator_email', this.creatorEmail.trim());
             }
+            if (this.splitMode) {
+                formData.append('split_mode', '1');
+            }
 
             const response = await fetch('/api/secrets', {
                 method: 'POST',
@@ -213,7 +220,15 @@ export default function secretForm() {
 
         buildShareUrl(token, keyMaterial, hasPassphrase, version) {
             const keyFragment = window.SecretCrypto.buildKeyFragment(keyMaterial, hasPassphrase, version);
-            this.shareUrl = `${window.location.origin}/s/${token}#${keyFragment}`;
+
+            if (this.splitMode) {
+                this.shareUrl = `${window.location.origin}/s/${token}`;
+                this.shareKey = keyFragment;
+            } else {
+                this.shareUrl = `${window.location.origin}/s/${token}#${keyFragment}`;
+                this.shareKey = null;
+            }
+
             this.passphraseUsed = hasPassphrase;
         },
 
@@ -222,6 +237,16 @@ export default function secretForm() {
                 await navigator.clipboard.writeText(this.shareUrl);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
+            } catch (e) {
+                this.error = t('crypto_clipboard_failed');
+            }
+        },
+
+        async copyKeyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(this.shareKey);
+                this.keyCopied = true;
+                setTimeout(() => this.keyCopied = false, 2000);
             } catch (e) {
                 this.error = t('crypto_clipboard_failed');
             }
@@ -236,8 +261,10 @@ export default function secretForm() {
             this.maxViews = null;
             this.passphrase = '';
             this.creatorEmail = '';
+            this.splitMode = false;
             this.showAdvanced = false;
             this.shareUrl = null;
+            this.shareKey = null;
             this.passphraseUsed = false;
             this.error = null;
         }

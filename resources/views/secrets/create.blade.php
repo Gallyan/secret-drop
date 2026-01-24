@@ -278,6 +278,23 @@
                                         {{ __('messages.email_hint') }}
                                     </p>
                                 </div>
+
+                                {{-- Split mode --}}
+                                <label for="splitMode" class="flex items-start gap-3 cursor-pointer group">
+                                    <div class="relative mt-0.5">
+                                        <input type="checkbox" id="splitMode" x-model="splitMode" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
+                                        <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                                    </div>
+                                    <div>
+                                        <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
+                                            {{ __('messages.split_mode') }}
+                                        </span>
+                                        <p class="mt-0.5 text-xs text-gray-500 dark:text-slate-500">
+                                            {{ __('messages.split_mode_hint') }}
+                                        </p>
+                                    </div>
+                                </label>
                             </div>
                         </div>
 
@@ -315,33 +332,98 @@
                             <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">{{ __('messages.share_link_instruction') }}</p>
                         </div>
 
-                        <div class="relative">
-                            <label for="shareUrl" class="sr-only">{{ __('messages.share_link_instruction') }}</label>
-                            <input
-                                id="shareUrl"
-                                type="text"
-                                readonly
-                                :value="shareUrl"
-                                class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
-                            >
-                            <button
-                                type="button"
-                                @click="copyToClipboard()"
-                                :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
-                            >
-                                <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
-                                <span x-show="copied">{{ __('messages.btn_copied') }}</span>
-                            </button>
+                        {{-- Standard mode: single URL with key in fragment --}}
+                        <div x-show="!shareKey" class="space-y-4">
+                            <div class="relative">
+                                <label for="shareUrl" class="sr-only">{{ __('messages.share_link_instruction') }}</label>
+                                <input
+                                    id="shareUrl"
+                                    type="text"
+                                    readonly
+                                    :value="shareUrl"
+                                    class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                >
+                                <button
+                                    type="button"
+                                    @click="copyToClipboard()"
+                                    :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                >
+                                    <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
+                                    <span x-show="copied">{{ __('messages.btn_copied') }}</span>
+                                </button>
+                            </div>
+
+                            <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                                <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
+                                    <strong>Important :</strong> {{ __('messages.warning_link_contains_key') }}
+                                </p>
+                                <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
+                                    <strong>Important :</strong> {{ __('messages.warning_passphrase_required') }}
+                                </p>
+                            </div>
                         </div>
 
-                        <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
-                                <strong>Important :</strong> {{ __('messages.warning_link_contains_key') }}
-                            </p>
-                            <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
-                                <strong>Important :</strong> {{ __('messages.warning_passphrase_required') }}
-                            </p>
+                        {{-- Split mode: separate URL and key --}}
+                        <div x-show="shareKey" class="space-y-4">
+                            {{-- Share link --}}
+                            <div>
+                                <label for="shareUrlSplit" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
+                                    {{ __('messages.share_link_label') }}
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        id="shareUrlSplit"
+                                        type="text"
+                                        readonly
+                                        :value="shareUrl"
+                                        class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                    >
+                                    <button
+                                        type="button"
+                                        @click="copyToClipboard()"
+                                        :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                    >
+                                        <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
+                                        <span x-show="copied">{{ __('messages.btn_copied') }}</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Decryption key --}}
+                            <div>
+                                <label for="shareKeySplit" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
+                                    {{ __('messages.share_key_label') }}
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        id="shareKeySplit"
+                                        type="text"
+                                        readonly
+                                        :value="shareKey"
+                                        class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                    >
+                                    <button
+                                        type="button"
+                                        @click="copyKeyToClipboard()"
+                                        :aria-label="keyCopied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                    >
+                                        <span x-show="!keyCopied">{{ __('messages.btn_copy') }}</span>
+                                        <span x-show="keyCopied">{{ __('messages.btn_copied') }}</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                                <p class="text-xs text-amber-700 dark:text-amber-400">
+                                    <strong>Important :</strong> {{ __('messages.split_mode_warning') }}
+                                </p>
+                                <p class="text-xs text-amber-700 dark:text-amber-400 mt-1" x-show="passphraseUsed">
+                                    {{ __('messages.warning_passphrase_required') }}
+                                </p>
+                            </div>
                         </div>
 
                         <p class="text-sm text-gray-600 dark:text-slate-400 text-center">

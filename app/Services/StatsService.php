@@ -16,6 +16,8 @@ class StatsService
 
     public const SECRETS_WITH_MAX_VIEWS = 'secrets_with_max_views';
 
+    public const SECRETS_SPLIT_MODE = 'secrets_split_mode';
+
     public const TOTAL_FILE_SIZE_BYTES = 'total_file_size_bytes';
 
     public const SECRETS_READ = 'secrets_read';

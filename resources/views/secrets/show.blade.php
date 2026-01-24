@@ -105,8 +105,39 @@
                         </div>
                     </div>
 
+                    {{-- Manual key input (split mode) --}}
+                    <div x-show="needsManualKey && !decrypted && !error" x-cloak class="space-y-4">
+                        <p class="text-sm text-gray-700 dark:text-slate-300 text-center transition-colors">
+                            {{ __('messages.enter_key_manually') }}
+                        </p>
+                        <form @submit.prevent="submitManualKey()" class="space-y-4">
+                            <div>
+                                <label for="manualKey" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
+                                    {{ __('messages.share_key_label') }}
+                                </label>
+                                <input
+                                    id="manualKey"
+                                    type="text"
+                                    x-model="manualKey"
+                                    required
+                                    autofocus
+                                    autocomplete="off"
+                                    placeholder="{{ __('messages.key_placeholder') }}"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                >
+                            </div>
+                            <button
+                                type="submit"
+                                :disabled="!manualKey.trim()"
+                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            >
+                                {{ __('messages.btn_unlock') }}
+                            </button>
+                        </form>
+                    </div>
+
                     {{-- Passphrase input --}}
-                    <div x-show="needsPassphrase && !decrypted && !error" x-cloak class="space-y-4">
+                    <div x-show="needsPassphrase && !needsManualKey && !decrypted && !error" x-cloak class="space-y-4">
                         <p class="text-sm text-gray-700 dark:text-slate-300 text-center transition-colors">
                             {{ __('messages.passphrase_protected') }}
                         </p>
@@ -210,9 +241,9 @@
                             <p class="text-sm text-red-600 dark:text-red-400" x-text="error"></p>
                         </div>
                         <button
-                            x-show="needsPassphrase"
+                            x-show="needsPassphrase || needsManualKey"
                             type="button"
-                            @click="error = null"
+                            @click="error = null; if (needsManualKey) { manualKey = ''; }"
                             class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
                         >
                             {{ __('messages.btn_retry') }}

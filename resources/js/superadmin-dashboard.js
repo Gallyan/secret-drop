@@ -114,14 +114,20 @@ function initDashboard() {
     new Chart(document.getElementById('secretOptionsChart'), {
         type: 'bar',
         data: {
-            labels: [translations.stat_passphrase, translations.stat_single_use, translations.stat_max_views],
+            labels: [
+                translations.stat_passphrase,
+                translations.stat_single_use,
+                translations.stat_max_views,
+                translations.stat_split_mode
+            ],
             datasets: [{
                 data: [
                     allTime.secrets_with_passphrase || 0,
                     allTime.secrets_single_use || 0,
-                    allTime.secrets_with_max_views || 0
+                    allTime.secrets_with_max_views || 0,
+                    allTime.secrets_split_mode || 0
                 ],
-                backgroundColor: ['#ec4899', '#06b6d4', '#84cc16']
+                backgroundColor: ['#ec4899', '#06b6d4', '#84cc16', '#f97316']
             }]
         },
         options: {
