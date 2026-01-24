@@ -115,4 +115,24 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | DKIM Signing Configuration
+    |--------------------------------------------------------------------------
+    |
+    | If your SMTP server doesn't sign emails with DKIM, you can enable
+    | application-level DKIM signing here. Leave 'private_key_path' empty
+    | to disable DKIM signing.
+    |
+    | See docs/email-configuration.md for setup instructions.
+    |
+    */
+
+    'dkim' => [
+        'domain' => env('MAIL_DKIM_DOMAIN'),
+        'selector' => env('MAIL_DKIM_SELECTOR', 'secretdrop'),
+        'private_key_path' => env('MAIL_DKIM_PRIVATE_KEY_PATH'),
+        'passphrase' => env('MAIL_DKIM_PASSPHRASE', ''),
+    ],
+
 ];
