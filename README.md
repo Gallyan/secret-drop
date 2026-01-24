@@ -166,17 +166,20 @@ Pour plus de détails (SPF, DMARC, OVH), voir [docs/email-configuration.md](docs
 
 ## Scheduler
 
-Pour la suppression automatique des secrets expirés, ajouter au crontab :
+Pour la purge automatique des données, ajouter au crontab :
 
 ```cron
 * * * * * cd /path/to/secret-drop && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-Puis dans `routes/console.php` :
+Tâches planifiées (configurées dans `routes/console.php`) :
 
-```php
-Schedule::command('secrets:clean')->daily();
-```
+| Commande | Fréquence | Description |
+|----------|-----------|-------------|
+| `secrets:clean` | Toutes les heures | Supprime les secrets expirés, révoqués, consommés et les magic links |
+| `secrets:clean-blobs` | Quotidien | Supprime les fichiers orphelins (sans secret correspondant) |
+
+Les deux commandes supportent l'option `--dry-run` pour prévisualiser les suppressions.
 
 ## Tests
 
