@@ -66,6 +66,30 @@ class ShowSecretTest extends TestCase
         ]);
 
         $secret->refresh();
+        $this->assertEquals(0, $secret->read_count);
+        $this->assertNull($secret->first_read_at);
+
+        $secret->delete();
+    }
+
+    public function testApiConfirmReadIncrementsReadCount(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'encryptedcontent',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $response = $this->postJson("/api/secrets/{$secret->token}/read");
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $secret->refresh();
         $this->assertEquals(1, $secret->read_count);
         $this->assertNotNull($secret->first_read_at);
 
@@ -152,7 +176,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
-    public function testApiFetchIncrementsReadCount(): void
+    public function testApiFetchDoesNotIncrementReadCount(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -166,16 +190,39 @@ class ShowSecretTest extends TestCase
 
         $this->getJson("/api/secrets/{$secret->token}");
         $secret->refresh();
-        $this->assertEquals(1, $secret->read_count);
+        $this->assertEquals(0, $secret->read_count);
 
         $this->getJson("/api/secrets/{$secret->token}");
+        $secret->refresh();
+        $this->assertEquals(0, $secret->read_count);
+
+        $secret->delete();
+    }
+
+    public function testApiConfirmReadIncrementsReadCountMultipleTimes(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'counting',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
+        $secret->refresh();
+        $this->assertEquals(1, $secret->read_count);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
         $secret->refresh();
         $this->assertEquals(2, $secret->read_count);
 
         $secret->delete();
     }
 
-    public function testApiSingleUseSecretBecomesInaccessibleAfterFirstRead(): void
+    public function testApiSingleUseSecretBecomesInaccessibleAfterConfirmRead(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -190,9 +237,43 @@ class ShowSecretTest extends TestCase
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
         $response->assertStatus(200);
+        $response->assertJson(['will_be_destroyed' => true]);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
         $response->assertStatus(410);
+
+        $secret->delete();
+    }
+
+    public function testApiConfirmReadReturns404ForNonExistentSecret(): void
+    {
+        $response = $this->postJson('/api/secrets/nonexistenttoken12345678901/read');
+
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
+    }
+
+    public function testApiConfirmReadReturns410ForExpiredSecret(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'expired',
+            'usage_unique' => false,
+            'expire_at' => now()->subHour(),
+        ]);
+
+        $response = $this->postJson("/api/secrets/{$secret->token}/read");
+
+        $response->assertStatus(410);
+        $response->assertJson([
+            'error' => 'unavailable',
+            'reason' => 'expired',
+        ]);
 
         $secret->delete();
     }

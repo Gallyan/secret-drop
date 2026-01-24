@@ -145,6 +145,7 @@ export default function secretViewer(token) {
                 }
 
                 this.decrypted = true;
+                await this.confirmRead();
             } catch (e) {
                 console.error('Decryption error:', e);
 
@@ -228,6 +229,20 @@ export default function secretViewer(token) {
                 setTimeout(() => this.copied = false, 2000);
             } catch (e) {
                 this.error = 'Impossible de copier dans le presse-papier';
+            }
+        },
+
+        async confirmRead() {
+            try {
+                await fetch(`/api/secrets/${this.token}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    },
+                });
+            } catch (e) {
+                console.error('Failed to confirm read:', e);
             }
         }
     };

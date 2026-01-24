@@ -82,15 +82,13 @@ class SecretsController extends Controller
             ], 410);
         }
 
-        $secret->incrementReadCount();
-
-        $shouldDestroy = $secret->usage_unique
-            || ($secret->max_views !== null && $secret->read_count >= $secret->max_views);
+        $willBeDestroyed = $secret->usage_unique
+            || ($secret->max_views !== null && $secret->read_count + 1 >= $secret->max_views);
 
         $data = [
             'type' => $secret->type,
             'cipher_meta' => $secret->cipher_meta,
-            'will_be_destroyed' => $shouldDestroy,
+            'will_be_destroyed' => $willBeDestroyed,
         ];
 
         if ($secret->type === 'text') {
@@ -102,6 +100,26 @@ class SecretsController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function confirmRead(string $token): JsonResponse
+    {
+        $secret = Secret::where('token', $token)->first();
+
+        if (! $secret) {
+            return response()->json(['error' => 'not_found'], 404);
+        }
+
+        if (! $secret->isAccessible()) {
+            return response()->json([
+                'error' => 'unavailable',
+                'reason' => $this->getInaccessibleReason($secret),
+            ], 410);
+        }
+
+        $secret->incrementReadCount();
+
+        return response()->json(['success' => true]);
     }
 
     public function download(string $token): StreamedResponse|Response
@@ -116,7 +134,7 @@ class SecretsController extends Controller
             return response('Secret indisponible', 410);
         }
 
-        if (! $this->storage->exists($secret->file_path)) {
+        if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
             return response('Fichier introuvable', 404);
         }
 
