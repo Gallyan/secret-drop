@@ -202,6 +202,18 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, pa
 }
 
 /**
+ * Fragment format (compact, no exposed metadata):
+ * - 'A' + keyMaterial = version 1, key in URL
+ * - 'P' = version 1, passphrase required
+ * - 'B' + keyMaterial = version 2, key in URL (future)
+ * - 'Q' = version 2, passphrase required (future)
+ */
+const FRAGMENT_PREFIXES = {
+    1: { key: 'A', passphrase: 'P' },
+    2: { key: 'B', passphrase: 'Q' },
+};
+
+/**
  * Build the URL fragment containing key material
  * @param {string} keyMaterial - Base64URL encoded key
  * @param {boolean} hasPassphrase - Whether a passphrase was used
@@ -209,16 +221,13 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, pa
  * @returns {string}
  */
 export function buildKeyFragment(keyMaterial, hasPassphrase, version = CRYPTO_VERSION) {
-    const params = new URLSearchParams();
-    params.set('v', version.toString());
+    const prefixes = FRAGMENT_PREFIXES[version] || FRAGMENT_PREFIXES[1];
 
     if (hasPassphrase) {
-        params.set('p', '1'); // indicates passphrase is required
-    } else {
-        params.set('k', keyMaterial);
+        return prefixes.passphrase;
     }
 
-    return params.toString();
+    return prefixes.key + keyMaterial;
 }
 
 /**
@@ -227,13 +236,34 @@ export function buildKeyFragment(keyMaterial, hasPassphrase, version = CRYPTO_VE
  * @returns {{keyMaterial: string|null, hasPassphrase: boolean, version: number}}
  */
 export function parseKeyFragment(fragment) {
-    const params = new URLSearchParams(fragment);
+    if (!fragment || fragment.length === 0) {
+        return { keyMaterial: null, hasPassphrase: false, version: 1 };
+    }
 
-    return {
-        keyMaterial: params.get('k') || null,
-        hasPassphrase: params.get('p') === '1',
-        version: parseInt(params.get('v') || '1', 10)
-    };
+    const prefix = fragment.charAt(0);
+    const rest = fragment.substring(1);
+
+    switch (prefix) {
+        case 'A':
+            return { keyMaterial: rest, hasPassphrase: false, version: 1 };
+        case 'P':
+            return { keyMaterial: null, hasPassphrase: true, version: 1 };
+        case 'B':
+            return { keyMaterial: rest, hasPassphrase: false, version: 2 };
+        case 'Q':
+            return { keyMaterial: null, hasPassphrase: true, version: 2 };
+        default:
+            // Fallback: legacy format with URLSearchParams
+            if (fragment.includes('=')) {
+                const params = new URLSearchParams(fragment);
+                return {
+                    keyMaterial: params.get('k') || null,
+                    hasPassphrase: params.get('p') === '1',
+                    version: parseInt(params.get('v') || '1', 10)
+                };
+            }
+            return { keyMaterial: null, hasPassphrase: false, version: 1 };
+    }
 }
 
 /**
