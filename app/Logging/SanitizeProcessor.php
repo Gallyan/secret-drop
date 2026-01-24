@@ -35,6 +35,10 @@ class SanitizeProcessor implements ProcessorInterface
         );
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return array<string, mixed>
+     */
     private function sanitizeArray(array $data): array
     {
         foreach ($data as $key => $value) {
