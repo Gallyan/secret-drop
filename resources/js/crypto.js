@@ -237,7 +237,7 @@ export function buildKeyFragment(keyMaterial, hasPassphrase, version = CRYPTO_VE
  */
 export function parseKeyFragment(fragment) {
     if (!fragment || fragment.length === 0) {
-        return { keyMaterial: null, hasPassphrase: false, version: 1 };
+        throw new Error('Fragment de clé manquant');
     }
 
     const prefix = fragment.charAt(0);
@@ -253,16 +253,7 @@ export function parseKeyFragment(fragment) {
         case 'Q':
             return { keyMaterial: null, hasPassphrase: true, version: 2 };
         default:
-            // Fallback: legacy format with URLSearchParams
-            if (fragment.includes('=')) {
-                const params = new URLSearchParams(fragment);
-                return {
-                    keyMaterial: params.get('k') || null,
-                    hasPassphrase: params.get('p') === '1',
-                    version: parseInt(params.get('v') || '1', 10)
-                };
-            }
-            return { keyMaterial: null, hasPassphrase: false, version: 1 };
+            throw new Error('Format de fragment invalide');
     }
 }
 
