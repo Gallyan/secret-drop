@@ -109,7 +109,7 @@
                                 @dragleave.prevent="isDragging = false"
                                 @drop.prevent="handleFileDrop($event)"
                                 :class="isDragging ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500'"
-                                class="relative flex flex-col items-center justify-center h-[118px] border-2 border-dashed rounded-xl cursor-pointer transition"
+                                class="relative flex flex-col items-center justify-center h-[118px] border border-dashed rounded-xl cursor-pointer transition"
                             >
                                 <input
                                     type="file"
