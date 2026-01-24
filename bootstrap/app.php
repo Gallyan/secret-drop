@@ -3,6 +3,7 @@
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\ThrottleWithCaptcha;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(ForceHttps::class);
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);
+
+        $middleware->alias([
+            'throttle.captcha' => ThrottleWithCaptcha::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

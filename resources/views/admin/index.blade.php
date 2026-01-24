@@ -27,8 +27,9 @@
                         name="email"
                         type="email"
                         required
-                        autofocus
+                        @if(!session('captcha_required')) autofocus @endif
                         autocomplete="off"
+                        value="{{ old('email') }}"
                         placeholder="{{ __('messages.admin_email_placeholder') }}"
                         class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                     >
@@ -36,6 +37,35 @@
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
+
+                @if(session('captcha_required'))
+                    <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl">
+                        <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">
+                            {{ __('messages.rate_limit_exceeded') }}
+                        </p>
+                        <label for="captcha_answer" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                            {{ __('messages.captcha_label') }}
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg font-mono text-lg text-gray-900 dark:text-white">
+                                {{ session('captcha_challenge') }} = ?
+                            </div>
+                            <input
+                                id="captcha_answer"
+                                name="captcha_answer"
+                                type="number"
+                                required
+                                autofocus
+                                placeholder="{{ __('messages.captcha_placeholder') }}"
+                                class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                            >
+                        </div>
+                        <input type="hidden" name="captcha_token" value="{{ session('captcha_token') }}">
+                        @error('captcha')
+                            <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endif
 
                 <button
                     type="submit"

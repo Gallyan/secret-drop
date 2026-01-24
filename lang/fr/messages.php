@@ -266,4 +266,11 @@ return [
 
     // Stats
     'stat_split_mode' => 'Mode split',
+
+    // Rate limiting & Captcha
+    'rate_limit_exceeded' => 'Trop de requêtes. Veuillez résoudre le calcul ci-dessous pour continuer.',
+    'captcha_label' => 'Vérification anti-robot',
+    'captcha_placeholder' => 'Votre réponse',
+    'captcha_hint' => 'Résolvez : :challenge = ?',
+    'captcha_invalid' => 'Réponse incorrecte. Veuillez réessayer.',
 ];

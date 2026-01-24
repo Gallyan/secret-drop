@@ -33,6 +33,14 @@ export default function secretForm() {
         copied: false,
         keyCopied: false,
 
+        // Captcha state
+        captchaRequired: false,
+        captchaToken: null,
+        captchaChallenge: null,
+        captchaAnswer: '',
+        pendingEncrypted: null,
+        pendingPassphrase: null,
+
         setMode(newMode) {
             this.mode = newMode;
             this.error = null;
@@ -132,6 +140,23 @@ export default function secretForm() {
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
+            const payload = {
+                type: 'text',
+                ciphertext: encrypted.ciphertext,
+                cipher_meta: cipherMeta,
+                expiration: this.expiration,
+                usage_unique: this.usageUnique,
+                max_views: this.maxViews || null,
+                creator_email: this.creatorEmail?.trim() || null,
+                split_mode: this.splitMode
+            };
+
+            // Add captcha if required
+            if (this.captchaToken && this.captchaAnswer) {
+                payload.captcha_token = this.captchaToken;
+                payload.captcha_answer = this.captchaAnswer;
+            }
+
             const response = await fetch('/api/secrets', {
                 method: 'POST',
                 headers: {
@@ -139,24 +164,25 @@ export default function secretForm() {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify({
-                    type: 'text',
-                    ciphertext: encrypted.ciphertext,
-                    cipher_meta: cipherMeta,
-                    expiration: this.expiration,
-                    usage_unique: this.usageUnique,
-                    max_views: this.maxViews || null,
-                    creator_email: this.creatorEmail?.trim() || null,
-                    split_mode: this.splitMode
-                })
+                body: JSON.stringify(payload)
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const data = await response.json();
+                if (response.status === 429 && data.captcha_required) {
+                    this.captchaRequired = true;
+                    this.captchaToken = data.captcha_token;
+                    this.captchaChallenge = data.captcha_challenge;
+                    this.captchaAnswer = '';
+                    this.pendingEncrypted = encrypted;
+                    this.pendingPassphrase = passphrase;
+                    return;
+                }
                 throw new Error(data.message || t('crypto_creation_error'));
             }
 
-            const data = await response.json();
+            this.clearCaptcha();
             this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase, encrypted.version);
         },
 
@@ -200,6 +226,12 @@ export default function secretForm() {
                 formData.append('split_mode', '1');
             }
 
+            // Add captcha if required
+            if (this.captchaToken && this.captchaAnswer) {
+                formData.append('captcha_token', this.captchaToken);
+                formData.append('captcha_answer', this.captchaAnswer);
+            }
+
             const response = await fetch('/api/secrets', {
                 method: 'POST',
                 headers: {
@@ -209,12 +241,22 @@ export default function secretForm() {
                 body: formData
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const data = await response.json();
+                if (response.status === 429 && data.captcha_required) {
+                    this.captchaRequired = true;
+                    this.captchaToken = data.captcha_token;
+                    this.captchaChallenge = data.captcha_challenge;
+                    this.captchaAnswer = '';
+                    this.pendingEncrypted = encrypted;
+                    this.pendingPassphrase = passphrase;
+                    return;
+                }
                 throw new Error(data.message || t('crypto_creation_error'));
             }
 
-            const data = await response.json();
+            this.clearCaptcha();
             this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase, encrypted.version);
         },
 
@@ -252,6 +294,38 @@ export default function secretForm() {
             }
         },
 
+        clearCaptcha() {
+            this.captchaRequired = false;
+            this.captchaToken = null;
+            this.captchaChallenge = null;
+            this.captchaAnswer = '';
+            this.pendingEncrypted = null;
+            this.pendingPassphrase = null;
+        },
+
+        async submitWithCaptcha() {
+            if (!this.captchaAnswer.trim()) {
+                this.error = t('captcha_invalid');
+                return;
+            }
+
+            this.error = null;
+            this.isSubmitting = true;
+
+            try {
+                if (this.mode === 'text') {
+                    await this.submitText(this.pendingPassphrase);
+                } else {
+                    await this.submitFile(this.pendingPassphrase);
+                }
+            } catch (e) {
+                console.error('Submission error:', e);
+                this.error = e.message || t('crypto_creation_error');
+            } finally {
+                this.isSubmitting = false;
+            }
+        },
+
         reset() {
             this.mode = 'text';
             this.secret = '';
@@ -267,6 +341,7 @@ export default function secretForm() {
             this.shareKey = null;
             this.passphraseUsed = false;
             this.error = null;
+            this.clearCaptcha();
         }
     };
 }
