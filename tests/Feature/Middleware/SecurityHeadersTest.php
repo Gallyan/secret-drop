@@ -1,0 +1,163 @@
+<?php
+
+namespace Tests\Feature\Middleware;
+
+use App\Http\Middleware\SecurityHeaders;
+use Illuminate\Http\Request;
+use Tests\TestCase;
+
+class SecurityHeadersTest extends TestCase
+{
+    private SecurityHeaders $middleware;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->middleware = new SecurityHeaders();
+    }
+
+    public function testSetsXContentTypeOptions(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('nosniff', $response->headers->get('X-Content-Type-Options'));
+    }
+
+    public function testSetsXFrameOptions(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('SAMEORIGIN', $response->headers->get('X-Frame-Options'));
+    }
+
+    public function testSetsXXssProtection(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('1; mode=block', $response->headers->get('X-XSS-Protection'));
+    }
+
+    public function testSetsReferrerPolicy(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('strict-origin-when-cross-origin', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testSetsPermissionsPolicy(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('camera=(), microphone=(), geolocation=()', $response->headers->get('Permissions-Policy'));
+    }
+
+    public function testSetsContentSecurityPolicy(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertNotNull($csp);
+        $this->assertStringContainsString("default-src 'self'", $csp);
+        $this->assertStringContainsString("script-src 'self'", $csp);
+        $this->assertStringContainsString("style-src 'self'", $csp);
+        $this->assertStringContainsString("object-src 'none'", $csp);
+    }
+
+    public function testCspContainsNonce(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertMatchesRegularExpression("/nonce-[A-Za-z0-9+\/=]+/", $csp);
+    }
+
+    public function testSetsHstsInProduction(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $hsts = $response->headers->get('Strict-Transport-Security');
+        $this->assertNotNull($hsts);
+        $this->assertStringContainsString('max-age=31536000', $hsts);
+        $this->assertStringContainsString('includeSubDomains', $hsts);
+    }
+
+    public function testDoesNotSetHstsInLocal(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertNull($response->headers->get('Strict-Transport-Security'));
+    }
+
+    public function testCspAllowsWebsocketInLocal(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringContainsString('ws://localhost:', $csp);
+    }
+
+    public function testCspDoesNotAllowWebsocketInProduction(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringNotContainsString('ws://localhost:', $csp);
+        $this->assertStringContainsString("connect-src 'self'", $csp);
+    }
+
+    public function testCspBlocksFrameAncestors(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringContainsString("frame-ancestors 'self'", $csp);
+    }
+
+    public function testCspBlocksFormActionToExternal(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringContainsString("form-action 'self'", $csp);
+    }
+}
