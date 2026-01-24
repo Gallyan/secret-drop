@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Secret;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ShowSecretTest extends TestCase
@@ -278,6 +279,55 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    public function testSingleUseSecretCiphertextIsDestroyedAfterRead(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'topsecretdata',
+            'usage_unique' => true,
+            'max_views' => 1,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $response = $this->getJson("/api/secrets/{$secret->token}");
+        $response->assertStatus(200);
+        $response->assertJson(['ciphertext' => 'topsecretdata']);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
+
+        $secret->refresh();
+        $this->assertNull($secret->ciphertext);
+
+        $secret->delete();
+    }
+
+    public function testMaxViewsSecretCiphertextIsDestroyedAfterLastRead(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'limitedviewsdata',
+            'usage_unique' => false,
+            'max_views' => 2,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
+        $secret->refresh();
+        $this->assertEquals('limitedviewsdata', $secret->ciphertext);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
+        $secret->refresh();
+        $this->assertNull($secret->ciphertext);
+
+        $secret->delete();
+    }
+
     public function testApiFetchReturnsFileMetadata(): void
     {
         $secret = Secret::create([
@@ -304,6 +354,38 @@ class ShowSecretTest extends TestCase
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
         ]);
         $response->assertJsonMissing(['ciphertext']);
+
+        $secret->delete();
+    }
+
+    public function testSingleUseFileSecretIsDeletedAfterRead(): void
+    {
+        Storage::fake('secrets');
+
+        $token = $this->tokenService->generatePublicToken();
+        $filePath = $token;
+
+        Storage::disk('secrets')->put($filePath, 'encrypted-file-content');
+
+        $secret = Secret::create([
+            'token' => $token,
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'file',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'file_path' => $filePath,
+            'filename' => 'secret.pdf',
+            'mime' => 'application/pdf',
+            'size' => 1234,
+            'usage_unique' => true,
+            'max_views' => 1,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        Storage::disk('secrets')->assertExists($filePath);
+
+        $this->postJson("/api/secrets/{$secret->token}/read");
+
+        Storage::disk('secrets')->assertMissing($filePath);
 
         $secret->delete();
     }

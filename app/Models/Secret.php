@@ -100,4 +100,19 @@ class Secret extends Model
 
         $this->save();
     }
+
+    public function shouldBeDestroyed(): bool
+    {
+        return $this->usage_unique
+            || ($this->max_views !== null && $this->read_count >= $this->max_views);
+    }
+
+    public function destroyContent(): void
+    {
+        if ($this->type === 'text') {
+            $this->ciphertext = null;
+        }
+
+        $this->save();
+    }
 }

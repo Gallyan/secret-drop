@@ -119,6 +119,13 @@ class SecretsController extends Controller
 
         $secret->incrementReadCount();
 
+        if ($secret->shouldBeDestroyed()) {
+            if ($secret->type === 'file' && $secret->file_path) {
+                $this->storage->delete($secret->file_path);
+            }
+            $secret->destroyContent();
+        }
+
         return response()->json(['success' => true]);
     }
 
