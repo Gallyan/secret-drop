@@ -58,6 +58,7 @@ class DemoSeeder extends Seeder
     {
         // Nettoyer les stats existantes
         DB::table('stats_daily')->delete();
+        DB::table('stats_heatmap')->delete();
 
         $metrics = [
             StatsService::SECRETS_CREATED_TEXT => [5, 15],
@@ -76,6 +77,8 @@ class DemoSeeder extends Seeder
         ];
 
         $days = 90;
+        $totalFirstReadDelay = 0;
+        $firstReadCount = 0;
 
         for ($i = $days; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
@@ -91,11 +94,87 @@ class DemoSeeder extends Seeder
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
+
+                    if ($metric === StatsService::SECRETS_READ) {
+                        $firstReadCount += $count;
+                        $totalFirstReadDelay += $count * fake()->numberBetween(60, 86400);
+                    }
                 }
             }
         }
 
+        if ($firstReadCount > 0) {
+            DB::table('stats_daily')->insert([
+                'date' => now()->toDateString(),
+                'metric' => StatsService::FIRST_READ_DELAY_TOTAL,
+                'count' => $totalFirstReadDelay,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            DB::table('stats_daily')->insert([
+                'date' => now()->toDateString(),
+                'metric' => StatsService::FIRST_READ_DELAY_COUNT,
+                'count' => $firstReadCount,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->seedHeatmap();
+
         $this->command->info('  -> 90 jours de statistiques générées');
+    }
+
+    private function seedHeatmap(): void
+    {
+        $heatmapMetrics = [
+            StatsService::HEATMAP_SECRETS_CREATED,
+            StatsService::HEATMAP_SECRETS_READ,
+        ];
+
+        foreach ($heatmapMetrics as $metric) {
+            for ($day = 0; $day < 7; $day++) {
+                for ($hour = 0; $hour < 24; $hour++) {
+                    $baseCount = $this->getHeatmapBaseCount($day, $hour);
+                    $count = fake()->numberBetween(
+                        max(0, $baseCount - 5),
+                        $baseCount + 10
+                    );
+
+                    if ($count > 0) {
+                        DB::table('stats_heatmap')->insert([
+                            'day_of_week' => $day,
+                            'hour' => $hour,
+                            'metric' => $metric,
+                            'count' => $count,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    private function getHeatmapBaseCount(int $day, int $hour): int
+    {
+        $isWeekend = $day === 0 || $day === 6;
+        $isNight = $hour >= 22 || $hour <= 6;
+        $isPeakHour = $hour >= 9 && $hour <= 11 || $hour >= 14 && $hour <= 17;
+
+        if ($isNight) {
+            return fake()->numberBetween(0, 3);
+        }
+
+        if ($isWeekend) {
+            return fake()->numberBetween(2, 8);
+        }
+
+        if ($isPeakHour) {
+            return fake()->numberBetween(10, 25);
+        }
+
+        return fake()->numberBetween(5, 12);
     }
 
     private function seedMagicLinks(): void
