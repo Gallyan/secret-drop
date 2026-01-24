@@ -69,7 +69,7 @@ class CreateSecretTest extends TestCase
         $secret = Secret::where('token', $response->json('token'))->first();
         $this->assertFalse($secret->usage_unique);
         $this->assertEquals(5, $secret->max_views);
-        $this->assertEquals('test@example.com', $secret->creator_email);
+        $this->assertTrue($secret->verifyCreatorEmail('test@example.com'));
         $this->assertEquals('randomsalt', $secret->cipher_meta['salt']);
 
         $secret->delete();

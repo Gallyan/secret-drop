@@ -11,31 +11,31 @@
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                Secret indisponible
+                {{ __('messages.error_unavailable') }}
             </h1>
 
             @switch($reason)
                 @case('expired')
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors">
-                        Ce secret a expiré et n'est plus accessible.
+                        {{ __('messages.secret_expired') }}
                     </p>
                     @break
 
                 @case('revoked')
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors">
-                        Ce secret a été révoqué par son créateur.
+                        {{ __('messages.secret_revoked') }}
                     </p>
                     @break
 
                 @case('max_views')
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors">
-                        Ce secret a atteint son nombre maximum de lectures et n'est plus accessible.
+                        {{ __('messages.secret_max_views') }}
                     </p>
                     @break
 
                 @default
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors">
-                        Ce secret n'est plus accessible.
+                        {{ __('messages.secret_unavailable_generic') }}
                     </p>
             @endswitch
 
@@ -43,7 +43,7 @@
                 href="{{ route('secrets.create') }}"
                 class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
             >
-                Créer un nouveau secret
+                {{ __('messages.btn_create_new') }}
             </a>
         </div>
     </div>

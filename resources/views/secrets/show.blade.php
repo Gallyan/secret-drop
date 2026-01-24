@@ -14,7 +14,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">Chargement du secret...</p>
+                    <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">{{ __('messages.loading_secret') }}</p>
                 </div>
 
                 {{-- Not found error --}}
@@ -25,14 +25,14 @@
                         </svg>
                     </div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        Secret introuvable
+                        {{ __('messages.error_not_found') }}
                     </h1>
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
                         href="{{ route('secrets.create') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
                     >
-                        Créer un nouveau secret
+                        {{ __('messages.btn_create_new') }}
                     </a>
                 </div>
 
@@ -44,14 +44,14 @@
                         </svg>
                     </div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        Secret indisponible
+                        {{ __('messages.error_unavailable') }}
                     </h1>
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
                         href="{{ route('secrets.create') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
                     >
-                        Créer un nouveau secret
+                        {{ __('messages.btn_create_new') }}
                     </a>
                 </div>
 
@@ -63,7 +63,7 @@
                         </svg>
                     </div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        Erreur
+                        {{ __('messages.error_generic') }}
                     </h1>
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <button
@@ -71,7 +71,7 @@
                         @click="window.location.reload()"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
                     >
-                        Réessayer
+                        {{ __('messages.btn_retry') }}
                     </button>
                 </div>
 
@@ -93,10 +93,10 @@
                             </template>
                         </div>
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
-                            <span x-text="type === 'text' ? 'Message secret' : 'Fichier secret'"></span>
+                            <span x-text="type === 'text' ? window.translations.secret_message : window.translations.secret_file"></span>
                         </h1>
                         <p class="mt-2 text-gray-600 dark:text-slate-400 transition-colors" x-show="!decrypted && !error">
-                            <span x-text="type === 'text' ? 'Ce message a été chiffré de bout en bout' : 'Ce fichier a été chiffré de bout en bout'"></span>
+                            <span x-text="type === 'text' ? window.translations.encrypted_end_to_end_message : window.translations.encrypted_end_to_end_file"></span>
                         </p>
                         <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-500 dark:text-slate-500">
                             <span class="font-medium text-gray-700 dark:text-slate-300" x-text="filename"></span>
@@ -108,12 +108,12 @@
                     {{-- Passphrase input --}}
                     <div x-show="needsPassphrase && !decrypted && !error" x-cloak class="space-y-4">
                         <p class="text-sm text-gray-700 dark:text-slate-300 text-center transition-colors">
-                            Ce secret est protégé par une passphrase.
+                            {{ __('messages.passphrase_protected') }}
                         </p>
                         <form @submit.prevent="decrypt()" class="space-y-4">
                             <div>
                                 <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                    Passphrase
+                                    {{ __('messages.passphrase') }}
                                 </label>
                                 <input
                                     id="passphrase"
@@ -121,7 +121,7 @@
                                     x-model="passphrase"
                                     required
                                     autofocus
-                                    placeholder="Entrez la passphrase"
+                                    placeholder="{{ __('messages.passphrase_input_placeholder') }}"
                                     class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
@@ -130,13 +130,13 @@
                                 :disabled="isDecrypting || !passphrase.trim()"
                                 class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
-                                <span x-show="!isDecrypting">Déchiffrer</span>
+                                <span x-show="!isDecrypting">{{ __('messages.btn_decrypt') }}</span>
                                 <span x-show="isDecrypting" role="status" class="inline-flex items-center justify-center gap-2">
                                     <svg class="animate-spin h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Déchiffrement...
+                                    {{ __('messages.btn_decrypting') }}
                                 </span>
                             </button>
                         </form>
@@ -149,7 +149,7 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                         <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">
-                            <span x-text="type === 'text' ? 'Déchiffrement en cours...' : 'Téléchargement et déchiffrement...'"></span>
+                            <span x-text="type === 'text' ? window.translations.decrypting_message : window.translations.decrypting_file"></span>
                         </p>
                     </div>
 
@@ -163,17 +163,17 @@
                             <button
                                 type="button"
                                 @click="copyToClipboard()"
-                                :aria-label="copied ? 'Secret copié' : 'Copier le secret'"
+                                :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
                                 class="absolute top-3 right-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition"
                             >
-                                <span x-show="!copied">Copier</span>
-                                <span x-show="copied">Copié !</span>
+                                <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
+                                <span x-show="copied">{{ __('messages.btn_copied') }}</span>
                             </button>
                         </div>
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <p class="text-xs text-amber-700 dark:text-amber-400">
-                                <strong>Note :</strong> Ce secret a été configuré pour être détruit après lecture. Il n'est plus accessible.
+                                <strong>Note :</strong> {{ __('messages.note_destroyed_text') }}
                             </p>
                         </div>
                     </div>
@@ -186,20 +186,20 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <p class="text-gray-900 dark:text-white font-medium mb-1">Fichier déchiffré</p>
+                            <p class="text-gray-900 dark:text-white font-medium mb-1">{{ __('messages.file_decrypted') }}</p>
                             <p class="text-sm text-gray-500 dark:text-slate-400 mb-4" x-text="filename"></p>
                             <button
                                 type="button"
                                 @click="downloadAgain()"
                                 class="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-medium rounded-lg shadow transition-all"
                             >
-                                Télécharger à nouveau
+                                {{ __('messages.btn_download_again') }}
                             </button>
                         </div>
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <p class="text-xs text-amber-700 dark:text-amber-400">
-                                <strong>Note :</strong> Ce fichier a été configuré pour être détruit après lecture. Il n'est plus accessible sur le serveur.
+                                <strong>Note :</strong> {{ __('messages.note_destroyed_file') }}
                             </p>
                         </div>
                     </div>
@@ -215,7 +215,7 @@
                             @click="error = null"
                             class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
                         >
-                            Réessayer
+                            {{ __('messages.btn_retry') }}
                         </button>
                     </div>
 
@@ -225,7 +225,7 @@
                             href="{{ route('secrets.create') }}"
                             class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                         >
-                            Créer un nouveau secret
+                            {{ __('messages.btn_create_new') }}
                         </a>
                     </div>
                 </div>

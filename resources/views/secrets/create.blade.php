@@ -22,7 +22,7 @@
                     </div>
 
                     <p class="text-gray-600 dark:text-slate-400 mb-8 transition-colors">
-                        Partagez des informations sensibles en toute sécurité avec un chiffrement de bout en bout.
+                        {{ __('messages.app_description') }}
                     </p>
 
                     <ul class="space-y-3 text-sm">
@@ -30,25 +30,25 @@
                             <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Chiffrement AES-256-GCM dans votre navigateur
+                            {{ __('messages.feature_encryption') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Le serveur ne voit jamais vos données en clair
+                            {{ __('messages.feature_zero_knowledge') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Auto-destruction après lecture
+                            {{ __('messages.feature_auto_destroy') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            Expiration automatique configurable
+                            {{ __('messages.feature_expiration') }}
                         </li>
                     </ul>
                 </div>
@@ -58,7 +58,7 @@
                     {{-- Form --}}
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5">
                         {{-- Mode tabs --}}
-                        <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="Type de secret">
+                        <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button
                                 type="button"
                                 role="tab"
@@ -70,7 +70,7 @@
                                 <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                Texte
+                                {{ __('messages.tab_text') }}
                             </button>
                             <button
                                 type="button"
@@ -83,19 +83,19 @@
                                 <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
-                                Fichier
+                                {{ __('messages.tab_file') }}
                             </button>
                         </div>
 
                         {{-- Text mode: Secret textarea --}}
                         <div x-show="mode === 'text'">
                             <label for="secret" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                Votre secret
+                                {{ __('messages.your_secret') }}
                             </label>
                             <textarea
                                 id="secret"
                                 x-model="secret"
-                                placeholder="Entrez votre message confidentiel..."
+                                placeholder="{{ __('messages.secret_placeholder') }}"
                                 class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                             ></textarea>
                         </div>
@@ -103,7 +103,7 @@
                         {{-- File mode: Drag & drop zone --}}
                         <div x-show="mode === 'file'" x-cloak>
                             <label for="fileInput" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                Votre fichier
+                                {{ __('messages.your_file') }}
                             </label>
 
                             {{-- Drop zone (when no file selected) --}}
@@ -125,10 +125,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                                 <p class="text-sm text-gray-600 dark:text-slate-400">
-                                    <span class="font-medium text-violet-600 dark:text-violet-400">Cliquez pour choisir</span> ou glissez un fichier
+                                    <span class="font-medium text-violet-600 dark:text-violet-400">{{ __('messages.file_drop_click') }}</span> {{ __('messages.file_drop_or_drag') }}
                                 </p>
                                 <p class="mt-1 text-xs text-gray-500 dark:text-slate-500">
-                                    Maximum 100 Mo
+                                    {{ __('messages.file_max_size') }}
                                 </p>
                             </div>
 
@@ -164,24 +164,24 @@
                             {{-- Expiration --}}
                             <div>
                                 <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                    Expire dans
+                                    {{ __('messages.expires_in') }}
                                 </label>
                                 <select
                                     id="expiration"
                                     x-model="expiration"
                                     class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
-                                    <option value="1h">1 heure</option>
-                                    <option value="1d">1 jour</option>
-                                    <option value="7d">7 jours</option>
-                                    <option value="30d">30 jours</option>
+                                    <option value="1h">{{ __('messages.expiration_1h') }}</option>
+                                    <option value="1d">{{ __('messages.expiration_1d') }}</option>
+                                    <option value="7d">{{ __('messages.expiration_7d') }}</option>
+                                    <option value="30d">{{ __('messages.expiration_30d') }}</option>
                                 </select>
                             </div>
 
                             {{-- Max views --}}
                             <div>
                                 <label for="maxViews" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                    Lectures max
+                                    {{ __('messages.max_reads') }}
                                 </label>
                                 <input
                                     id="maxViews"
@@ -189,7 +189,7 @@
                                     x-model="maxViews"
                                     min="1"
                                     max="100"
-                                    placeholder="Illimité"
+                                    placeholder="{{ __('messages.max_reads_placeholder') }}"
                                     class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
@@ -203,7 +203,7 @@
                                 <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
                             </div>
                             <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
-                                Détruire après lecture
+                                {{ __('messages.destroy_after_read') }}
                             </span>
                         </label>
 
@@ -226,21 +226,21 @@
                                 >
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
-                                Options avancées
+                                {{ __('messages.advanced_options') }}
                             </button>
 
                             <div id="advancedOptions" x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
                                 {{-- Passphrase --}}
                                 <div>
                                     <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                        Passphrase
+                                        {{ __('messages.passphrase') }}
                                     </label>
                                     <div class="relative">
                                         <input
                                             id="passphrase"
                                             :type="showPassphrase ? 'text' : 'password'"
                                             x-model="passphrase"
-                                            placeholder="Protection supplémentaire"
+                                            placeholder="{{ __('messages.passphrase_placeholder') }}"
                                             class="w-full px-4 py-2.5 pr-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
                                         <button
@@ -263,13 +263,13 @@
                                 {{-- Creator email --}}
                                 <div>
                                     <label for="creatorEmail" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                        Votre email
+                                        {{ __('messages.your_email') }}
                                     </label>
                                     <input
                                         id="creatorEmail"
                                         type="email"
                                         x-model="creatorEmail"
-                                        placeholder="pour gérer votre secret"
+                                        placeholder="{{ __('messages.email_placeholder') }}"
                                         class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     >
                                 </div>
@@ -287,13 +287,13 @@
                             :disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
                             class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
                         >
-                            <span x-show="!isSubmitting">Chiffrer et créer le lien</span>
+                            <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
                                 <svg class="animate-spin h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                <span x-text="mode === 'file' ? 'Chiffrement et upload...' : 'Chiffrement...'"></span>
+                                <span x-text="mode === 'file' ? window.translations.btn_encrypting_upload : window.translations.btn_encrypting"></span>
                             </span>
                         </button>
                     </form>
@@ -306,12 +306,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white transition-colors">Secret créé</h2>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">Partagez ce lien avec votre destinataire</p>
+                            <h2 class="text-xl font-semibold text-gray-900 dark:text-white transition-colors">{{ __('messages.secret_created') }}</h2>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">{{ __('messages.share_link_instruction') }}</p>
                         </div>
 
                         <div class="relative">
-                            <label for="shareUrl" class="sr-only">Lien de partage</label>
+                            <label for="shareUrl" class="sr-only">{{ __('messages.share_link_instruction') }}</label>
                             <input
                                 id="shareUrl"
                                 type="text"
@@ -322,20 +322,20 @@
                             <button
                                 type="button"
                                 @click="copyToClipboard()"
-                                :aria-label="copied ? 'Lien copié' : 'Copier le lien'"
+                                :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
                                 class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
                             >
-                                <span x-show="!copied">Copier</span>
-                                <span x-show="copied">Copié !</span>
+                                <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
+                                <span x-show="copied">{{ __('messages.btn_copied') }}</span>
                             </button>
                         </div>
 
                         <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
-                                <strong>Important :</strong> Ce lien contient la clé de déchiffrement. Ne le partagez qu'avec le destinataire.
+                                <strong>Important :</strong> {{ __('messages.warning_link_contains_key') }}
                             </p>
                             <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
-                                <strong>Important :</strong> Le destinataire devra entrer la passphrase pour déchiffrer le secret.
+                                <strong>Important :</strong> {{ __('messages.warning_passphrase_required') }}
                             </p>
                         </div>
 
@@ -344,7 +344,7 @@
                             @click="reset()"
                             class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
                         >
-                            Créer un nouveau secret
+                            {{ __('messages.btn_create_new') }}
                         </button>
                     </div>
                 </div>

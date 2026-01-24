@@ -31,6 +31,8 @@ class SecretsController extends Controller
         $expireAt = $this->calculateExpireAt($validated['expiration']);
         $token = $this->tokenService->generatePublicToken();
 
+        $creatorEmail = $validated['creator_email'] ?? null;
+
         $secretData = [
             'token' => $token,
             'admin_token' => $this->tokenService->generateAdminToken(),
@@ -39,7 +41,7 @@ class SecretsController extends Controller
             'usage_unique' => $validated['usage_unique'] ?? ($validated['type'] === 'text'),
             'max_views' => $validated['max_views'] ?? null,
             'expire_at' => $expireAt,
-            'creator_email' => $validated['creator_email'] ?? null,
+            'creator_email_hash' => $creatorEmail ? hash('sha256', strtolower(trim($creatorEmail))) : null,
         ];
 
         if ($validated['type'] === 'text') {

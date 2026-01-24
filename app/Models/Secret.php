@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $last_read_at
  * @property Carbon|null $expire_at
  * @property Carbon|null $revoked_at
- * @property string|null $creator_email
+ * @property string|null $creator_email_hash
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -47,7 +47,7 @@ class Secret extends Model
         'read_count',
         'expire_at',
         'revoked_at',
-        'creator_email',
+        'creator_email_hash',
     ];
 
     /**
@@ -120,5 +120,22 @@ class Secret extends Model
         }
 
         $this->save();
+    }
+
+    public function hasCreatorEmail(): bool
+    {
+        return $this->creator_email_hash !== null;
+    }
+
+    public function verifyCreatorEmail(string $email): bool
+    {
+        if (! $this->hasCreatorEmail()) {
+            return false;
+        }
+
+        return hash_equals(
+            $this->creator_email_hash,
+            hash('sha256', strtolower(trim($email)))
+        );
     }
 }

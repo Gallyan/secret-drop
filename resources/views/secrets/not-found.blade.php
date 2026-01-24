@@ -11,17 +11,17 @@
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                Secret introuvable
+                {{ __('messages.error_not_found') }}
             </h1>
             <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors">
-                Ce secret n'existe pas ou a peut-être été supprimé.
+                {{ __('messages.secret_not_exist') }}
             </p>
 
             <a
                 href="{{ route('secrets.create') }}"
                 class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
             >
-                Créer un nouveau secret
+                {{ __('messages.btn_create_new') }}
             </a>
         </div>
     </div>

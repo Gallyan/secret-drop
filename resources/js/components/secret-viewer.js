@@ -1,3 +1,7 @@
+function t(key) {
+    return window.translations?.[key] || key;
+}
+
 export default function secretViewer(token) {
     return {
         token,
@@ -45,7 +49,7 @@ export default function secretViewer(token) {
                     if (response.status === 404) {
                         this.loadError = {
                             type: 'not_found',
-                            message: 'Ce secret n\'existe pas ou a peut-être été supprimé.',
+                            message: t('secret_not_exist'),
                         };
                     } else if (response.status === 410) {
                         this.loadError = {
@@ -56,7 +60,7 @@ export default function secretViewer(token) {
                     } else {
                         this.loadError = {
                             type: 'error',
-                            message: 'Une erreur est survenue lors du chargement du secret.',
+                            message: t('error_loading'),
                         };
                     }
 
@@ -80,7 +84,7 @@ export default function secretViewer(token) {
                 console.error('Load error:', e);
                 this.loadError = {
                     type: 'error',
-                    message: 'Impossible de charger le secret. Vérifiez votre connexion.',
+                    message: t('error_connection'),
                 };
             } finally {
                 this.isLoading = false;
@@ -90,15 +94,15 @@ export default function secretViewer(token) {
         getUnavailableMessage(reason) {
             switch (reason) {
                 case 'expired':
-                    return 'Ce secret a expiré et n\'est plus accessible.';
+                    return t('secret_expired');
                 case 'revoked':
-                    return 'Ce secret a été révoqué par son créateur.';
+                    return t('secret_revoked');
                 case 'already_read':
-                    return 'Ce secret à usage unique a déjà été lu et n\'est plus accessible.';
+                    return t('secret_max_views');
                 case 'max_views':
-                    return 'Ce secret a atteint son nombre maximum de lectures et n\'est plus accessible.';
+                    return t('secret_max_views');
                 default:
-                    return 'Ce secret n\'est plus accessible.';
+                    return t('secret_unavailable_generic');
             }
         },
 
@@ -106,7 +110,7 @@ export default function secretViewer(token) {
             const fragment = window.location.hash.substring(1);
 
             if (!fragment) {
-                this.error = 'Clé de déchiffrement manquante dans l\'URL';
+                this.error = t('crypto_key_missing');
                 return;
             }
 
@@ -116,7 +120,7 @@ export default function secretViewer(token) {
                 this.needsPassphrase = parsed.hasPassphrase;
                 this.version = parsed.version;
             } catch (e) {
-                this.error = e.message || 'Fragment de clé invalide';
+                this.error = e.message || t('crypto_fragment_invalid');
             }
         },
 
@@ -130,14 +134,14 @@ export default function secretViewer(token) {
 
             try {
                 if (!window.SecretCrypto?.isCryptoAvailable()) {
-                    throw new Error('Votre navigateur ne supporte pas le déchiffrement sécurisé');
+                    throw new Error(t('crypto_not_supported'));
                 }
 
                 const salt = this.cipherMeta.salt || null;
                 const passphrase = this.needsPassphrase ? this.passphrase : null;
 
                 if (this.needsPassphrase && !passphrase?.trim()) {
-                    throw new Error('La passphrase est requise');
+                    throw new Error(t('crypto_passphrase_required'));
                 }
 
                 if (this.type === 'text') {
@@ -153,10 +157,10 @@ export default function secretViewer(token) {
 
                 if (e.name === 'OperationError') {
                     this.error = this.needsPassphrase
-                        ? 'Passphrase incorrecte ou données corrompues'
-                        : 'Échec du déchiffrement. La clé est peut-être incorrecte.';
+                        ? t('crypto_passphrase_incorrect')
+                        : t('crypto_decryption_failed');
                 } else {
-                    this.error = e.message || 'Une erreur est survenue lors du déchiffrement';
+                    this.error = e.message || t('crypto_decryption_error');
                 }
             } finally {
                 this.isDecrypting = false;
@@ -177,7 +181,7 @@ export default function secretViewer(token) {
         async decryptFile(salt, passphrase) {
             const response = await fetch(`/s/${this.token}/download`);
             if (!response.ok) {
-                throw new Error('Impossible de télécharger le fichier chiffré');
+                throw new Error(t('crypto_file_download_failed'));
             }
 
             const encryptedData = await response.arrayBuffer();
@@ -230,7 +234,7 @@ export default function secretViewer(token) {
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
             } catch (e) {
-                this.error = 'Impossible de copier dans le presse-papier';
+                this.error = t('crypto_clipboard_failed');
             }
         },
 

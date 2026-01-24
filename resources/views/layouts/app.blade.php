@@ -11,8 +11,11 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#8b5cf6">
-    <meta name="description" content="Partagez des secrets en toute sécurité avec un chiffrement de bout en bout.">
+    <meta name="description" content="{{ __('messages.app_description') }}">
 
+    <script nonce="@nonce">
+        window.translations = @json(__('messages'));
+    </script>
     <script nonce="@nonce">
         (function() {
             const theme = localStorage.getItem('theme');

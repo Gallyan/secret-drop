@@ -1,3 +1,7 @@
+function t(key) {
+    return window.translations?.[key] || key;
+}
+
 export default function secretForm() {
     return {
         // Mode: 'text' or 'file'
@@ -55,7 +59,7 @@ export default function secretForm() {
         selectFile(file) {
             const maxSize = 100 * 1024 * 1024; // 100MB
             if (file.size > maxSize) {
-                this.error = 'Le fichier est trop volumineux (max 100 Mo)';
+                this.error = t('file_too_large');
                 return;
             }
             this.file = file;
@@ -87,7 +91,7 @@ export default function secretForm() {
 
             try {
                 if (!window.SecretCrypto?.isCryptoAvailable()) {
-                    throw new Error('Votre navigateur ne supporte pas le chiffrement sécurisé');
+                    throw new Error(t('crypto_not_supported'));
                 }
 
                 const passphrase = this.passphrase?.trim() || null;
@@ -99,7 +103,7 @@ export default function secretForm() {
                 }
             } catch (e) {
                 console.error('Encryption error:', e);
-                this.error = e.message || 'Une erreur est survenue lors du chiffrement';
+                this.error = e.message || t('crypto_creation_error');
             } finally {
                 this.isSubmitting = false;
             }
@@ -107,7 +111,7 @@ export default function secretForm() {
 
         async submitText(passphrase) {
             if (!this.secret.trim()) {
-                throw new Error('Veuillez entrer un secret');
+                throw new Error(t('crypto_enter_secret'));
             }
 
             const encrypted = await window.SecretCrypto.encryptSecret(this.secret, passphrase);
@@ -145,7 +149,7 @@ export default function secretForm() {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Erreur lors de la création du secret');
+                throw new Error(data.message || t('crypto_creation_error'));
             }
 
             const data = await response.json();
@@ -154,7 +158,7 @@ export default function secretForm() {
 
         async submitFile(passphrase) {
             if (!this.file) {
-                throw new Error('Veuillez sélectionner un fichier');
+                throw new Error(t('crypto_select_file'));
             }
 
             const encrypted = await window.SecretCrypto.encryptFile(this.file, passphrase);
@@ -200,7 +204,7 @@ export default function secretForm() {
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || 'Erreur lors de la création du secret');
+                throw new Error(data.message || t('crypto_creation_error'));
             }
 
             const data = await response.json();
@@ -219,7 +223,7 @@ export default function secretForm() {
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
             } catch (e) {
-                this.error = 'Impossible de copier dans le presse-papier';
+                this.error = t('crypto_clipboard_failed');
             }
         },
 
