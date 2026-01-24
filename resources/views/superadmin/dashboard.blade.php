@@ -98,188 +98,25 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+@vite('resources/js/superadmin-dashboard.js')
 <script @nonce>
-    const isDark = document.documentElement.classList.contains('dark');
-    const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.1)';
-    const textColor = isDark ? '#94a3b8' : '#6b7280';
-
-    Chart.defaults.color = textColor;
-    Chart.defaults.borderColor = gridColor;
-
-    const stats = @json($stats);
-    const totals = @json($stats['totals']);
-    const allTime = @json($allTime);
-
-    function generateDateLabels(startDate, days) {
-        const labels = [];
-        const start = new Date(startDate);
-        for (let i = 0; i <= days; i++) {
-            const date = new Date(start);
-            date.setDate(start.getDate() + i);
-            labels.push(date.toISOString().split('T')[0]);
-        }
-        return labels;
-    }
-
-    const dateLabels = generateDateLabels(stats.start_date, stats.days);
-
-    function getDataForMetric(metric) {
-        const data = stats.metrics[metric] || {};
-        return dateLabels.map(date => data[date] || 0);
-    }
-
-    new Chart(document.getElementById('secretsCreatedChart'), {
-        type: 'line',
-        data: {
-            labels: dateLabels,
-            datasets: [
-                {
-                    label: '{{ __('messages.stat_text') }}',
-                    data: getDataForMetric('secrets_created_text'),
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: '{{ __('messages.stat_file') }}',
-                    data: getDataForMetric('secrets_created_file'),
-                    borderColor: '#f59e0b',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                    fill: true,
-                    tension: 0.3
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
-        }
-    });
-
-    new Chart(document.getElementById('secretsReadChart'), {
-        type: 'line',
-        data: {
-            labels: dateLabels,
-            datasets: [{
-                label: '{{ __('messages.stat_reads') }}',
-                data: getDataForMetric('secrets_read'),
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
-        }
-    });
-
-    new Chart(document.getElementById('secretTypesChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['{{ __('messages.stat_text') }}', '{{ __('messages.stat_file') }}'],
-            datasets: [{
-                data: [allTime.secrets_created_text || 0, allTime.secrets_created_file || 0],
-                backgroundColor: ['#8b5cf6', '#f59e0b']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
-
-    new Chart(document.getElementById('secretOptionsChart'), {
-        type: 'bar',
-        data: {
-            labels: ['{{ __('messages.stat_passphrase') }}', '{{ __('messages.stat_single_use') }}', '{{ __('messages.stat_max_views') }}'],
-            datasets: [{
-                data: [
-                    allTime.secrets_with_passphrase || 0,
-                    allTime.secrets_single_use || 0,
-                    allTime.secrets_with_max_views || 0
-                ],
-                backgroundColor: ['#ec4899', '#06b6d4', '#84cc16']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
-        }
-    });
-
-    new Chart(document.getElementById('secretOutcomesChart'), {
-        type: 'doughnut',
-        data: {
-            labels: [
-                '{{ __('messages.stat_read') }}',
-                '{{ __('messages.stat_expired_unread') }}',
-                '{{ __('messages.stat_revoked') }}',
-                '{{ __('messages.stat_max_reached') }}'
-            ],
-            datasets: [{
-                data: [
-                    allTime.secrets_read || 0,
-                    allTime.secrets_expired_unread || 0,
-                    allTime.secrets_revoked || 0,
-                    allTime.secrets_max_views_reached || 0
-                ],
-                backgroundColor: ['#10b981', '#6b7280', '#ef4444', '#f59e0b']
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
-
-    new Chart(document.getElementById('adminActivityChart'), {
-        type: 'line',
-        data: {
-            labels: dateLabels,
-            datasets: [
-                {
-                    label: '{{ __('messages.stat_magic_links_requested') }}',
-                    data: getDataForMetric('magic_links_requested'),
-                    borderColor: '#8b5cf6',
-                    tension: 0.3
-                },
-                {
-                    label: '{{ __('messages.stat_magic_links_used') }}',
-                    data: getDataForMetric('magic_links_used'),
-                    borderColor: '#10b981',
-                    tension: 0.3
-                },
-                {
-                    label: '{{ __('messages.stat_secrets_extended') }}',
-                    data: getDataForMetric('secrets_extended'),
-                    borderColor: '#06b6d4',
-                    tension: 0.3
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
-        }
+    window.translations = {
+        stat_text: '{{ __('messages.stat_text') }}',
+        stat_file: '{{ __('messages.stat_file') }}',
+        stat_reads: '{{ __('messages.stat_reads') }}',
+        stat_passphrase: '{{ __('messages.stat_passphrase') }}',
+        stat_single_use: '{{ __('messages.stat_single_use') }}',
+        stat_max_views: '{{ __('messages.stat_max_views') }}',
+        stat_read: '{{ __('messages.stat_read') }}',
+        stat_expired_unread: '{{ __('messages.stat_expired_unread') }}',
+        stat_revoked: '{{ __('messages.stat_revoked') }}',
+        stat_max_reached: '{{ __('messages.stat_max_reached') }}',
+        stat_magic_links_requested: '{{ __('messages.stat_magic_links_requested') }}',
+        stat_magic_links_used: '{{ __('messages.stat_magic_links_used') }}',
+        stat_secrets_extended: '{{ __('messages.stat_secrets_extended') }}'
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        window.initSuperAdminDashboard(@json($stats), @json($allTime));
     });
 </script>
 @endsection
