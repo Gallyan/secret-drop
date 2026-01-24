@@ -1,76 +1,68 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-2xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-                {{ config('app.name') }}
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div class="max-w-xl mx-auto px-4 py-16 sm:py-24">
+        {{-- Header --}}
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                Secret Drop
             </h1>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">
-                Partagez un secret en toute sécurité. Le chiffrement se fait dans votre navigateur.
+            <p class="mt-3 text-slate-400 max-w-sm mx-auto">
+                Partagez des informations sensibles en toute sécurité. Chiffrement de bout en bout.
             </p>
         </div>
 
+        {{-- Form card --}}
         <div
             x-data="secretForm()"
-            class="bg-white dark:bg-gray-800 shadow rounded-lg p-6"
+            x-show="!shareUrl"
+            class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 sm:p-8 shadow-2xl"
         >
-            <form @submit.prevent="handleSubmit" class="space-y-6">
+            <form @submit.prevent="handleSubmit" class="space-y-5">
                 {{-- Secret textarea --}}
                 <div>
-                    <label for="secret" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label for="secret" class="block text-sm font-medium text-slate-300 mb-2">
                         Votre secret
                     </label>
                     <textarea
                         id="secret"
                         x-model="secret"
-                        rows="6"
+                        rows="5"
                         required
-                        placeholder="Entrez votre message secret ici..."
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        placeholder="Entrez votre message confidentiel..."
+                        class="w-full px-4 py-3 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                     ></textarea>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Ce contenu sera chiffré avant d'être envoyé au serveur.
-                    </p>
                 </div>
 
-                {{-- Expiration --}}
-                <div>
-                    <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Expiration
-                    </label>
-                    <select
-                        id="expiration"
-                        x-model="expiration"
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    >
-                        <option value="1h">1 heure</option>
-                        <option value="1d">1 jour</option>
-                        <option value="7d" selected>7 jours</option>
-                        <option value="30d">30 jours</option>
-                    </select>
-                </div>
-
-                {{-- Options row --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {{-- Usage unique --}}
-                    <div class="flex items-center">
-                        <input
-                            id="usageUnique"
-                            type="checkbox"
-                            x-model="usageUnique"
-                            class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        >
-                        <label for="usageUnique" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                            Usage unique (détruit après lecture)
+                {{-- Options grid --}}
+                <div class="grid grid-cols-2 gap-4">
+                    {{-- Expiration --}}
+                    <div>
+                        <label for="expiration" class="block text-sm font-medium text-slate-300 mb-2">
+                            Expire dans
                         </label>
+                        <select
+                            id="expiration"
+                            x-model="expiration"
+                            class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                        >
+                            <option value="1h">1 heure</option>
+                            <option value="1d">1 jour</option>
+                            <option value="7d" selected>7 jours</option>
+                            <option value="30d">30 jours</option>
+                        </select>
                     </div>
 
                     {{-- Max views --}}
                     <div>
-                        <label for="maxViews" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nombre max de lectures
+                        <label for="maxViews" class="block text-sm font-medium text-slate-300 mb-2">
+                            Lectures max
                         </label>
                         <input
                             id="maxViews"
@@ -79,124 +71,169 @@
                             min="1"
                             max="100"
                             placeholder="Illimité"
-                            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                         >
                     </div>
                 </div>
 
-                {{-- Passphrase --}}
-                <div>
-                    <div class="flex items-center justify-between">
-                        <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Passphrase (optionnelle)
-                        </label>
-                        <button
-                            type="button"
-                            @click="showPassphrase = !showPassphrase"
-                            class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
-                        >
-                            <span x-show="!showPassphrase">Afficher</span>
-                            <span x-show="showPassphrase">Masquer</span>
-                        </button>
+                {{-- Usage unique toggle --}}
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <div class="relative">
+                        <input type="checkbox" x-model="usageUnique" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-700 rounded-full peer-checked:bg-violet-600 transition"></div>
+                        <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
                     </div>
-                    <input
-                        id="passphrase"
-                        :type="showPassphrase ? 'text' : 'password'"
-                        x-model="passphrase"
-                        placeholder="Protection supplémentaire"
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    >
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Le destinataire devra entrer cette passphrase pour déchiffrer le secret.
-                    </p>
-                </div>
+                    <span class="text-sm text-slate-300 group-hover:text-white transition">
+                        Détruire après lecture
+                    </span>
+                </label>
 
-                {{-- Creator email --}}
-                <div>
-                    <label for="creatorEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Votre email (optionnel)
-                    </label>
-                    <input
-                        id="creatorEmail"
-                        type="email"
-                        x-model="creatorEmail"
-                        placeholder="pour gérer votre secret"
-                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                {{-- Collapsible options --}}
+                <div class="pt-2">
+                    <button
+                        type="button"
+                        @click="showAdvanced = !showAdvanced"
+                        class="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition"
                     >
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                        Recevez un lien d'administration pour suivre et révoquer votre secret.
-                    </p>
+                        <svg
+                            class="w-4 h-4 transition-transform"
+                            :class="{ 'rotate-90': showAdvanced }"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        Options avancées
+                    </button>
+
+                    <div x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
+                        {{-- Passphrase --}}
+                        <div>
+                            <label for="passphrase" class="block text-sm font-medium text-slate-300 mb-2">
+                                Passphrase
+                            </label>
+                            <div class="relative">
+                                <input
+                                    id="passphrase"
+                                    :type="showPassphrase ? 'text' : 'password'"
+                                    x-model="passphrase"
+                                    placeholder="Protection supplémentaire"
+                                    class="w-full px-4 py-2.5 pr-12 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                >
+                                <button
+                                    type="button"
+                                    @click="showPassphrase = !showPassphrase"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
+                                >
+                                    <svg x-show="!showPassphrase" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showPassphrase" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="mt-1.5 text-xs text-slate-500">
+                                Le destinataire devra saisir cette passphrase
+                            </p>
+                        </div>
+
+                        {{-- Creator email --}}
+                        <div>
+                            <label for="creatorEmail" class="block text-sm font-medium text-slate-300 mb-2">
+                                Votre email
+                            </label>
+                            <input
+                                id="creatorEmail"
+                                type="email"
+                                x-model="creatorEmail"
+                                placeholder="pour gérer votre secret"
+                                class="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                            >
+                            <p class="mt-1.5 text-xs text-slate-500">
+                                Recevez un lien pour suivre et révoquer votre secret
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Error message --}}
-                <div x-show="error" x-cloak class="rounded-md bg-red-50 dark:bg-red-900/50 p-4">
-                    <p class="text-sm text-red-700 dark:text-red-300" x-text="error"></p>
+                <div x-show="error" x-cloak class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+                    <p class="text-sm text-red-400" x-text="error"></p>
                 </div>
 
                 {{-- Submit button --}}
-                <div>
-                    <button
-                        type="submit"
-                        :disabled="isSubmitting || !secret"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <span x-show="!isSubmitting">Chiffrer et générer le lien</span>
-                        <span x-show="isSubmitting" class="flex items-center gap-2">
-                            <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Chiffrement en cours...
-                        </span>
-                    </button>
-                </div>
-            </form>
-
-            {{-- Result section --}}
-            <div x-show="shareUrl" x-cloak class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                    Votre lien de partage
-                </h3>
-
-                <div class="flex gap-2">
-                    <input
-                        type="text"
-                        readonly
-                        :value="shareUrl"
-                        class="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white bg-gray-50 text-sm"
-                    >
-                    <button
-                        type="button"
-                        @click="copyToClipboard()"
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <span x-show="!copied">Copier</span>
-                        <span x-show="copied">Copié !</span>
-                    </button>
-                </div>
-
-                <p class="mt-4 text-sm text-amber-600 dark:text-amber-400">
-                    Attention : ce lien contient la clé de déchiffrement. Ne le partagez qu'avec le destinataire.
-                </p>
-
-                <div x-show="adminUrl" class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-md">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Un email avec le lien d'administration a été envoyé à <span x-text="creatorEmail" class="font-medium"></span>.
-                    </p>
-                </div>
-
                 <button
-                    type="button"
-                    @click="reset()"
-                    class="mt-4 text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+                    type="submit"
+                    :disabled="isSubmitting || !secret.trim()"
+                    class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
                 >
-                    Créer un nouveau secret
+                    <span x-show="!isSubmitting">Chiffrer et créer le lien</span>
+                    <span x-show="isSubmitting" class="inline-flex items-center gap-2">
+                        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Chiffrement...
+                    </span>
                 </button>
-            </div>
+            </form>
         </div>
 
-        <p class="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
-            Le serveur ne voit jamais votre secret en clair. Tout le chiffrement se fait dans votre navigateur.
+        {{-- Success card --}}
+        <div
+            x-data="secretForm()"
+            x-show="shareUrl"
+            x-cloak
+            class="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 sm:p-8 shadow-2xl"
+        >
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 mb-4">
+                    <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold text-white">Secret créé</h2>
+                <p class="mt-1 text-sm text-slate-400">Partagez ce lien avec votre destinataire</p>
+            </div>
+
+            <div class="relative">
+                <input
+                    type="text"
+                    readonly
+                    :value="shareUrl"
+                    class="w-full px-4 py-3 pr-24 bg-slate-900/50 border border-slate-600/50 rounded-xl text-white text-sm font-mono"
+                >
+                <button
+                    type="button"
+                    @click="copyToClipboard()"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                >
+                    <span x-show="!copied">Copier</span>
+                    <span x-show="copied">Copié !</span>
+                </button>
+            </div>
+
+            <div class="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                <p class="text-xs text-amber-400">
+                    <strong>Important :</strong> Ce lien contient la clé de déchiffrement. Ne le partagez qu'avec le destinataire.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                @click="reset()"
+                class="w-full mt-6 py-2.5 text-sm text-slate-400 hover:text-white border border-slate-600/50 hover:border-slate-500 rounded-xl transition"
+            >
+                Créer un nouveau secret
+            </button>
+        </div>
+
+        {{-- Footer --}}
+        <p class="mt-8 text-center text-xs text-slate-500">
+            Chiffrement AES-256-GCM dans votre navigateur. Le serveur ne voit jamais vos données en clair.
         </p>
     </div>
 </div>
@@ -210,6 +247,7 @@ function secretForm() {
         maxViews: null,
         passphrase: '',
         showPassphrase: false,
+        showAdvanced: false,
         creatorEmail: '',
         isSubmitting: false,
         error: null,
@@ -223,7 +261,6 @@ function secretForm() {
 
             try {
                 // TODO: Implement encryption and API call
-                // For now, just show a placeholder
                 console.log('Form submitted', {
                     secret: this.secret,
                     expiration: this.expiration,
@@ -258,6 +295,7 @@ function secretForm() {
             this.maxViews = null;
             this.passphrase = '';
             this.creatorEmail = '';
+            this.showAdvanced = false;
             this.shareUrl = null;
             this.adminUrl = null;
             this.error = null;
