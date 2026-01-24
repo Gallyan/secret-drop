@@ -75,6 +75,9 @@ class ThrottleWithCaptcha
         return $decayMinutes * 60;
     }
 
+    /**
+     * @param  array{token: string, challenge: string}  $captchaData
+     */
     private function buildCaptchaResponse(array $captchaData, int $retryAfter, Request $request): Response
     {
         $data = [
@@ -88,7 +91,7 @@ class ThrottleWithCaptcha
 
         if ($request->expectsJson()) {
             return response()->json($data, 429)
-                ->header('Retry-After', $retryAfter)
+                ->header('Retry-After', (string) $retryAfter)
                 ->header('X-Captcha-Required', 'true');
         }
 

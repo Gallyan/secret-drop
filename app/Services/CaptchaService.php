@@ -10,6 +10,9 @@ class CaptchaService
 
     private const TTL_SECONDS = 300; // 5 minutes
 
+    /**
+     * @return array{token: string, challenge: string}
+     */
     public function generate(string $identifier): array
     {
         $operators = ['+', '-', '*'];

@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Secret extends Model
 {
+    /** @use HasFactory<\Database\Factories\SecretFactory> */
     use HasFactory;
     use HasUuids;
 

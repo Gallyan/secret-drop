@@ -59,6 +59,9 @@ class StatsService
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getStats(string $period = '30d'): array
     {
         $days = match ($period) {
@@ -95,6 +98,9 @@ class StatsService
         ];
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getTotals(?string $startDate = null): array
     {
         $query = DB::table('stats_daily')
@@ -108,6 +114,9 @@ class StatsService
         return $query->pluck('total', 'metric')->toArray();
     }
 
+    /**
+     * @return array<string, int>
+     */
     public function getAllTimeTotals(): array
     {
         return $this->getTotals(null);
@@ -133,6 +142,9 @@ class StatsService
         );
     }
 
+    /**
+     * @return array<int, array<int, int>>
+     */
     public function getHeatmap(string $metric): array
     {
         $data = DB::table('stats_heatmap')

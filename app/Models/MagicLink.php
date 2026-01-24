@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MagicLink extends Model
 {
+    /** @use HasFactory<\Database\Factories\MagicLinkFactory> */
     use HasFactory;
     use HasUuids;
 

@@ -68,6 +68,9 @@ class SecretsController extends Controller
         ], 201);
     }
 
+    /**
+     * @param  array<string, mixed>  $validated
+     */
     private function trackCreationStats(Secret $secret, array $validated): void
     {
         if ($secret->type === 'text') {
