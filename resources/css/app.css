@@ -15,3 +15,25 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* Heatmap intensity classes */
+.heatmap-empty {
+    background-color: rgb(241 245 249);
+}
+.dark .heatmap-empty {
+    background-color: rgb(51 65 85 / 0.3);
+}
+
+.heatmap-violet-1 { background-color: rgb(139 92 246 / 0.2); }
+.heatmap-violet-2 { background-color: rgb(139 92 246 / 0.35); }
+.heatmap-violet-3 { background-color: rgb(139 92 246 / 0.5); }
+.heatmap-violet-4 { background-color: rgb(139 92 246 / 0.65); }
+.heatmap-violet-5 { background-color: rgb(139 92 246 / 0.8); color: white; }
+.heatmap-violet-6 { background-color: rgb(139 92 246 / 1); color: white; }
+
+.heatmap-green-1 { background-color: rgb(16 185 129 / 0.2); }
+.heatmap-green-2 { background-color: rgb(16 185 129 / 0.35); }
+.heatmap-green-3 { background-color: rgb(16 185 129 / 0.5); }
+.heatmap-green-4 { background-color: rgb(16 185 129 / 0.65); }
+.heatmap-green-5 { background-color: rgb(16 185 129 / 0.8); color: white; }
+.heatmap-green-6 { background-color: rgb(16 185 129 / 1); color: white; }
