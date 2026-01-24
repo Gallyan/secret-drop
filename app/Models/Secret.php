@@ -80,11 +80,17 @@ class Secret extends Model
         return $this->max_views !== null && $this->read_count >= $this->max_views;
     }
 
+    public function hasBeenRead(): bool
+    {
+        return $this->usage_unique && $this->read_count > 0;
+    }
+
     public function isAccessible(): bool
     {
         return ! $this->isExpired()
             && ! $this->isRevoked()
-            && ! $this->hasReachedMaxViews();
+            && ! $this->hasReachedMaxViews()
+            && ! $this->hasBeenRead();
     }
 
     public function incrementReadCount(): void
