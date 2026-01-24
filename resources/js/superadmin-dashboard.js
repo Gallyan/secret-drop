@@ -195,7 +195,7 @@ function initDashboard() {
         }
     });
 
-    // Heatmaps
+    // Heatmaps (hours as rows, days as columns)
     function renderHeatmap(containerId, heatmapData, color) {
         const container = document.getElementById(containerId);
         if (!container) {
@@ -214,25 +214,39 @@ function initDashboard() {
             }
         }
 
-        let html = '<div class="overflow-x-auto"><table class="w-full text-xs">';
+        const baseColor = color === 'violet' ? [139, 92, 246] : [16, 185, 129];
 
-        html += '<tr><td class="w-12"></td>';
-        for (let h = 0; h < 24; h++) {
-            html += `<td class="text-center text-gray-500 dark:text-slate-500 pb-1">${h}</td>`;
+        let html = '<div class="overflow-x-auto"><table class="w-full border-collapse text-xs">';
+
+        // Header row with day names
+        html += '<tr><td class="w-8"></td>';
+        for (let day = 0; day < 7; day++) {
+            html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${days[day]}</td>`;
         }
         html += '</tr>';
 
-        for (let day = 0; day < 7; day++) {
-            html += `<tr><td class="text-right pr-2 text-gray-600 dark:text-slate-400 whitespace-nowrap">${days[day]}</td>`;
-            for (let hour = 0; hour < 24; hour++) {
+        // Rows for each hour
+        for (let hour = 0; hour < 24; hour++) {
+            html += `<tr><td class="text-right pr-2 text-gray-500 dark:text-slate-500 text-[10px]">${hour}h</td>`;
+            for (let day = 0; day < 7; day++) {
                 const val = heatmapData[day]?.[hour] || 0;
                 const intensity = maxValue > 0 ? val / maxValue : 0;
-                const opacity = Math.max(0.1, intensity);
-                const bgColor = color === 'violet'
-                    ? `rgba(139, 92, 246, ${opacity})`
-                    : `rgba(16, 185, 129, ${opacity})`;
-                const textColor = intensity > 0.5 ? 'white' : (isDark ? '#94a3b8' : '#6b7280');
-                html += `<td class="text-center p-1"><div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: ${bgColor}; color: ${textColor}" title="${days[day]} ${hour}h: ${val}">${val > 0 ? val : ''}</div></td>`;
+
+                let bgStyle;
+                if (val === 0) {
+                    bgStyle = isDark ? 'background-color: rgba(51, 65, 85, 0.3)' : 'background-color: rgba(241, 245, 249, 1)';
+                } else {
+                    const alpha = 0.2 + (intensity * 0.8);
+                    bgStyle = `background-color: rgba(${baseColor[0]}, ${baseColor[1]}, ${baseColor[2]}, ${alpha})`;
+                }
+
+                const textColor = intensity > 0.5 ? 'color: white' : '';
+                const title = `${days[day]} ${hour}h: ${val}`;
+
+                html += `<td class="p-0.5">`;
+                html += `<div class="h-5 rounded-sm flex items-center justify-center text-[10px]" style="${bgStyle}; ${textColor}" title="${title}">`;
+                html += val > 0 ? val : '';
+                html += `</div></td>`;
             }
             html += '</tr>';
         }
