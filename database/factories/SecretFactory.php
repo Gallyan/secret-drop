@@ -50,8 +50,8 @@ class SecretFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'type' => 'file',
             'ciphertext' => null,
-            'file_path' => 'secrets/' . Str::random(40) . '.enc',
-            'filename' => fake()->word() . '.pdf',
+            'file_path' => 'secrets/'.Str::random(40).'.enc',
+            'filename' => fake()->word().'.pdf',
             'mime' => 'application/pdf',
             'size' => fake()->numberBetween(1024, 1024 * 1024),
         ]);

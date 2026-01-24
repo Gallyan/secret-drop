@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Secret extends Model
 {
+    use HasFactory;
     use HasUuids;
 
     protected $fillable = [
@@ -129,7 +131,7 @@ class Secret extends Model
 
     public function verifyCreatorEmail(string $email): bool
     {
-        if (! $this->hasCreatorEmail()) {
+        if ($this->creator_email_hash === null) {
             return false;
         }
 

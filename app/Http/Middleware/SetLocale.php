@@ -10,6 +10,8 @@ class SetLocale
 {
     private const SUPPORTED_LOCALES = ['en', 'fr'];
 
+    private const DEFAULT_LOCALE = 'fr';
+
     public function handle(Request $request, Closure $next): Response
     {
         $locale = $this->detectLocale($request);
@@ -25,10 +27,9 @@ class SetLocale
     private function detectLocale(Request $request): string
     {
         $acceptLanguage = $request->header('Accept-Language', '');
-        $defaultLocale = config('app.locale', 'en');
 
         if (empty($acceptLanguage)) {
-            return $defaultLocale;
+            return self::DEFAULT_LOCALE;
         }
 
         $preferredLocales = $this->parseAcceptLanguage($acceptLanguage);
@@ -40,7 +41,7 @@ class SetLocale
             }
         }
 
-        return $defaultLocale;
+        return self::DEFAULT_LOCALE;
     }
 
     /**

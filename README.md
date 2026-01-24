@@ -128,7 +128,41 @@ MAIL_PORT=587
 MAIL_USERNAME=
 MAIL_PASSWORD=
 MAIL_FROM_ADDRESS=noreply@example.com
+
+# DKIM (optionnel, si votre SMTP ne signe pas)
+# MAIL_DKIM_DOMAIN=example.com
+# MAIL_DKIM_SELECTOR=secretdrop
+# MAIL_DKIM_PRIVATE_KEY_PATH=storage/dkim/private.key
 ```
+
+### Configuration DKIM (optionnel)
+
+Si votre serveur SMTP ne signe pas les emails en DKIM, l'application peut le faire :
+
+```bash
+# Générer la clé privée
+mkdir -p storage/dkim
+openssl genrsa -out storage/dkim/private.key 2048
+chmod 600 storage/dkim/private.key
+
+# Extraire la clé publique pour le DNS
+openssl rsa -in storage/dkim/private.key -pubout -out storage/dkim/public.key
+cat storage/dkim/public.key | grep -v "PUBLIC KEY" | tr -d '\n'
+```
+
+Puis configurer dans `.env` :
+```env
+MAIL_DKIM_DOMAIN=votredomaine.com
+MAIL_DKIM_SELECTOR=secretdrop
+MAIL_DKIM_PRIVATE_KEY_PATH=storage/dkim/private.key
+```
+
+Et ajouter l'enregistrement DNS TXT :
+```
+secretdrop._domainkey.votredomaine.com  TXT  "v=DKIM1; k=rsa; p=VOTRE_CLE_PUBLIQUE"
+```
+
+Pour plus de détails (SPF, DMARC, OVH), voir [docs/email-configuration.md](docs/email-configuration.md).
 
 ## Scheduler
 

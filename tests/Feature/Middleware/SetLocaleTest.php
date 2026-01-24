@@ -13,32 +13,29 @@ class SetLocaleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        app()->setLocale(config('app.locale'));
         $this->middleware = new SetLocale();
     }
 
-    public function testDefaultsToAppLocaleWithoutHeader(): void
+    public function testDefaultsToFrenchWithoutHeader(): void
     {
         $request = Request::create('/test', 'GET');
         $request->headers->remove('Accept-Language');
-        $expectedLocale = config('app.locale');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals($expectedLocale, app()->getLocale());
-        $this->assertEquals($expectedLocale, $response->headers->get('Content-Language'));
+        $this->assertEquals('fr', app()->getLocale());
+        $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
-    public function testDefaultsToAppLocaleWithEmptyHeader(): void
+    public function testDefaultsToFrenchWithEmptyHeader(): void
     {
         $request = Request::create('/test', 'GET');
         $request->headers->set('Accept-Language', '');
-        $expectedLocale = config('app.locale');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals($expectedLocale, app()->getLocale());
-        $this->assertEquals($expectedLocale, $response->headers->get('Content-Language'));
+        $this->assertEquals('fr', app()->getLocale());
+        $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
     public function testDetectsEnglishFromHeader(): void
@@ -96,16 +93,15 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
-    public function testFallsBackToAppLocaleForUnsupportedLanguage(): void
+    public function testFallsBackToFrenchForUnsupportedLanguage(): void
     {
         $request = Request::create('/test', 'GET');
         $request->headers->set('Accept-Language', 'de,es,it');
-        $expectedLocale = config('app.locale');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals($expectedLocale, app()->getLocale());
-        $this->assertEquals($expectedLocale, $response->headers->get('Content-Language'));
+        $this->assertEquals('fr', app()->getLocale());
+        $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
     public function testPrefersFrenchOverEnglishWhenHigherQuality(): void
