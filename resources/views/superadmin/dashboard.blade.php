@@ -98,25 +98,26 @@
     </div>
 </div>
 
-@vite('resources/js/superadmin-dashboard.js')
 <script @nonce>
-    window.translations = {
-        stat_text: '{{ __('messages.stat_text') }}',
-        stat_file: '{{ __('messages.stat_file') }}',
-        stat_reads: '{{ __('messages.stat_reads') }}',
-        stat_passphrase: '{{ __('messages.stat_passphrase') }}',
-        stat_single_use: '{{ __('messages.stat_single_use') }}',
-        stat_max_views: '{{ __('messages.stat_max_views') }}',
-        stat_read: '{{ __('messages.stat_read') }}',
-        stat_expired_unread: '{{ __('messages.stat_expired_unread') }}',
-        stat_revoked: '{{ __('messages.stat_revoked') }}',
-        stat_max_reached: '{{ __('messages.stat_max_reached') }}',
-        stat_magic_links_requested: '{{ __('messages.stat_magic_links_requested') }}',
-        stat_magic_links_used: '{{ __('messages.stat_magic_links_used') }}',
-        stat_secrets_extended: '{{ __('messages.stat_secrets_extended') }}'
+    window.superAdminData = {
+        stats: @json($stats),
+        allTime: @json($allTime),
+        translations: {
+            stat_text: '{{ __('messages.stat_text') }}',
+            stat_file: '{{ __('messages.stat_file') }}',
+            stat_reads: '{{ __('messages.stat_reads') }}',
+            stat_passphrase: '{{ __('messages.stat_passphrase') }}',
+            stat_single_use: '{{ __('messages.stat_single_use') }}',
+            stat_max_views: '{{ __('messages.stat_max_views') }}',
+            stat_read: '{{ __('messages.stat_read') }}',
+            stat_expired_unread: '{{ __('messages.stat_expired_unread') }}',
+            stat_revoked: '{{ __('messages.stat_revoked') }}',
+            stat_max_reached: '{{ __('messages.stat_max_reached') }}',
+            stat_magic_links_requested: '{{ __('messages.stat_magic_links_requested') }}',
+            stat_magic_links_used: '{{ __('messages.stat_magic_links_used') }}',
+            stat_secrets_extended: '{{ __('messages.stat_secrets_extended') }}'
+        }
     };
-    document.addEventListener('DOMContentLoaded', function() {
-        window.initSuperAdminDashboard(@json($stats), @json($allTime));
-    });
 </script>
+@vite('resources/js/superadmin-dashboard.js')
 @endsection
