@@ -267,4 +267,194 @@ class SecretModelTest extends TestCase
 
         $secret->delete();
     }
+
+    public function testShouldBeDestroyedReturnsTrueForSingleUse(): void
+    {
+        $secret = $this->createSecret(['usage_unique' => true]);
+
+        $this->assertTrue($secret->shouldBeDestroyed());
+
+        $secret->delete();
+    }
+
+    public function testShouldBeDestroyedReturnsTrueWhenMaxViewsReached(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => false,
+            'max_views' => 3,
+            'read_count' => 3,
+        ]);
+
+        $this->assertTrue($secret->shouldBeDestroyed());
+
+        $secret->delete();
+    }
+
+    public function testShouldBeDestroyedReturnsFalseForMultiUseUnderLimit(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => false,
+            'max_views' => 5,
+            'read_count' => 2,
+        ]);
+
+        $this->assertFalse($secret->shouldBeDestroyed());
+
+        $secret->delete();
+    }
+
+    public function testShouldBeDestroyedReturnsFalseForUnlimitedViews(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => false,
+            'max_views' => null,
+            'read_count' => 100,
+        ]);
+
+        $this->assertFalse($secret->shouldBeDestroyed());
+
+        $secret->delete();
+    }
+
+    public function testDestroyContentClearsCiphertextForTextType(): void
+    {
+        $secret = $this->createSecret([
+            'type' => 'text',
+            'ciphertext' => 'encrypted_content',
+        ]);
+
+        $this->assertNotNull($secret->ciphertext);
+
+        $secret->destroyContent();
+        $secret->refresh();
+
+        $this->assertNull($secret->ciphertext);
+
+        $secret->delete();
+    }
+
+    public function testDestroyContentDoesNotClearFileType(): void
+    {
+        $secret = $this->createSecret([
+            'type' => 'file',
+            'ciphertext' => null,
+            'file_path' => 'some/path',
+        ]);
+
+        $secret->destroyContent();
+        $secret->refresh();
+
+        $this->assertEquals('some/path', $secret->file_path);
+
+        $secret->delete();
+    }
+
+    public function testHasCreatorEmailReturnsTrueWhenSet(): void
+    {
+        $secret = $this->createSecret([
+            'creator_email_hash' => hash('sha256', 'test@example.com'),
+        ]);
+
+        $this->assertTrue($secret->hasCreatorEmail());
+
+        $secret->delete();
+    }
+
+    public function testHasCreatorEmailReturnsFalseWhenNotSet(): void
+    {
+        $secret = $this->createSecret(['creator_email_hash' => null]);
+
+        $this->assertFalse($secret->hasCreatorEmail());
+
+        $secret->delete();
+    }
+
+    public function testVerifyCreatorEmailReturnsTrueForCorrectEmail(): void
+    {
+        $email = 'test@example.com';
+        $secret = $this->createSecret([
+            'creator_email_hash' => hash('sha256', strtolower(trim($email))),
+        ]);
+
+        $this->assertTrue($secret->verifyCreatorEmail($email));
+        $this->assertTrue($secret->verifyCreatorEmail('TEST@EXAMPLE.COM'));
+        $this->assertTrue($secret->verifyCreatorEmail('  test@example.com  '));
+
+        $secret->delete();
+    }
+
+    public function testVerifyCreatorEmailReturnsFalseForWrongEmail(): void
+    {
+        $secret = $this->createSecret([
+            'creator_email_hash' => hash('sha256', 'correct@example.com'),
+        ]);
+
+        $this->assertFalse($secret->verifyCreatorEmail('wrong@example.com'));
+
+        $secret->delete();
+    }
+
+    public function testVerifyCreatorEmailReturnsFalseWhenNoEmailSet(): void
+    {
+        $secret = $this->createSecret(['creator_email_hash' => null]);
+
+        $this->assertFalse($secret->verifyCreatorEmail('any@example.com'));
+
+        $secret->delete();
+    }
+
+    public function testHasBeenReadReturnsTrueForSingleUseWithReads(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => true,
+            'read_count' => 1,
+        ]);
+
+        $this->assertTrue($secret->hasBeenRead());
+
+        $secret->delete();
+    }
+
+    public function testHasBeenReadReturnsFalseForSingleUseWithNoReads(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => true,
+            'read_count' => 0,
+        ]);
+
+        $this->assertFalse($secret->hasBeenRead());
+
+        $secret->delete();
+    }
+
+    public function testHasBeenReadReturnsFalseForMultiUse(): void
+    {
+        $secret = $this->createSecret([
+            'usage_unique' => false,
+            'read_count' => 5,
+        ]);
+
+        $this->assertFalse($secret->hasBeenRead());
+
+        $secret->delete();
+    }
+
+    public function testLastReadAtUpdatesOnEachRead(): void
+    {
+        $secret = $this->createSecret(['read_count' => 0]);
+
+        $secret->incrementReadCount();
+        $secret->refresh();
+        $firstLastRead = $secret->last_read_at;
+
+        usleep(10000);
+
+        $secret->incrementReadCount();
+        $secret->refresh();
+        $secondLastRead = $secret->last_read_at;
+
+        $this->assertTrue($secondLastRead->gte($firstLastRead));
+
+        $secret->delete();
+    }
 }
