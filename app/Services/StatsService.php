@@ -32,6 +32,14 @@ class StatsService
 
     public const SECRETS_EXTENDED = 'secrets_extended';
 
+    public const FIRST_READ_DELAY_TOTAL = 'first_read_delay_total';
+
+    public const FIRST_READ_DELAY_COUNT = 'first_read_delay_count';
+
+    public const HEATMAP_SECRETS_CREATED = 'secrets_created';
+
+    public const HEATMAP_SECRETS_READ = 'secrets_read';
+
     public function increment(string $metric, int $amount = 1): void
     {
         $date = now()->toDateString();
@@ -101,5 +109,63 @@ class StatsService
     public function getAllTimeTotals(): array
     {
         return $this->getTotals(null);
+    }
+
+    public function incrementHeatmap(string $metric): void
+    {
+        $now = now();
+        $dayOfWeek = (int) $now->dayOfWeek;
+        $hour = (int) $now->hour;
+
+        DB::table('stats_heatmap')->upsert(
+            [
+                'day_of_week' => $dayOfWeek,
+                'hour' => $hour,
+                'metric' => $metric,
+                'count' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['day_of_week', 'hour', 'metric'],
+            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+        );
+    }
+
+    public function getHeatmap(string $metric): array
+    {
+        $data = DB::table('stats_heatmap')
+            ->where('metric', $metric)
+            ->get()
+            ->keyBy(fn ($row) => "{$row->day_of_week}-{$row->hour}");
+
+        $heatmap = [];
+        for ($day = 0; $day < 7; $day++) {
+            $heatmap[$day] = [];
+            for ($hour = 0; $hour < 24; $hour++) {
+                $key = "{$day}-{$hour}";
+                $heatmap[$day][$hour] = isset($data[$key]) ? (int) $data[$key]->count : 0;
+            }
+        }
+
+        return $heatmap;
+    }
+
+    public function trackFirstReadDelay(int $delaySeconds): void
+    {
+        $this->increment(self::FIRST_READ_DELAY_TOTAL, $delaySeconds);
+        $this->increment(self::FIRST_READ_DELAY_COUNT);
+    }
+
+    public function getAverageFirstReadDelay(): ?float
+    {
+        $totals = $this->getAllTimeTotals();
+        $total = $totals[self::FIRST_READ_DELAY_TOTAL] ?? 0;
+        $count = $totals[self::FIRST_READ_DELAY_COUNT] ?? 0;
+
+        if ($count === 0) {
+            return null;
+        }
+
+        return $total / $count;
     }
 }

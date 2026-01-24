@@ -227,6 +227,20 @@ return [
     'chart_secret_options' => 'Options utilisées',
     'chart_secret_outcomes' => 'Devenir des secrets',
     'chart_admin_activity' => 'Activité admin',
+    'chart_heatmap_created' => 'Heatmap création (jour/heure)',
+    'chart_heatmap_read' => 'Heatmap lecture (jour/heure)',
+
+    // Stats
+    'stat_avg_first_read' => 'Délai moyen 1ère lecture',
+
+    // Days
+    'day_sunday' => 'Dim',
+    'day_monday' => 'Lun',
+    'day_tuesday' => 'Mar',
+    'day_wednesday' => 'Mer',
+    'day_thursday' => 'Jeu',
+    'day_friday' => 'Ven',
+    'day_saturday' => 'Sam',
 
     // File size units
     'unit_bytes' => 'o',

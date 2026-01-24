@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
                     {{ number_format(($allTime['secrets_created_text'] ?? 0) + ($allTime['secrets_created_file'] ?? 0)) }}
@@ -39,6 +39,24 @@
                     {{ number_format($allTime['secrets_read'] ?? 0) }}
                 </div>
                 <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_reads') }}</div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">
+                    @php
+                        if ($avgFirstReadDelay === null) {
+                            echo '-';
+                        } elseif ($avgFirstReadDelay < 60) {
+                            echo number_format($avgFirstReadDelay, 0) . 's';
+                        } elseif ($avgFirstReadDelay < 3600) {
+                            echo number_format($avgFirstReadDelay / 60, 1) . 'm';
+                        } elseif ($avgFirstReadDelay < 86400) {
+                            echo number_format($avgFirstReadDelay / 3600, 1) . 'h';
+                        } else {
+                            echo number_format($avgFirstReadDelay / 86400, 1) . 'j';
+                        }
+                    @endphp
+                </div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_avg_first_read') }}</div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -91,9 +109,20 @@
             </div>
         </div>
 
-        <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+        <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_admin_activity') }}</h2>
             <canvas id="adminActivityChart" height="150" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_heatmap_created') }}</h2>
+                <div id="heatmapCreated" class="heatmap-container"></div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_heatmap_read') }}</h2>
+                <div id="heatmapRead" class="heatmap-container"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -102,6 +131,8 @@
     window.superAdminData = {
         stats: @json($stats),
         allTime: @json($allTime),
+        heatmapCreated: @json($heatmapCreated),
+        heatmapRead: @json($heatmapRead),
         translations: {
             stat_text: '{{ __('messages.stat_text') }}',
             stat_file: '{{ __('messages.stat_file') }}',
@@ -115,7 +146,16 @@
             stat_max_reached: '{{ __('messages.stat_max_reached') }}',
             stat_magic_links_requested: '{{ __('messages.stat_magic_links_requested') }}',
             stat_magic_links_used: '{{ __('messages.stat_magic_links_used') }}',
-            stat_secrets_extended: '{{ __('messages.stat_secrets_extended') }}'
+            stat_secrets_extended: '{{ __('messages.stat_secrets_extended') }}',
+            days: [
+                '{{ __('messages.day_sunday') }}',
+                '{{ __('messages.day_monday') }}',
+                '{{ __('messages.day_tuesday') }}',
+                '{{ __('messages.day_wednesday') }}',
+                '{{ __('messages.day_thursday') }}',
+                '{{ __('messages.day_friday') }}',
+                '{{ __('messages.day_saturday') }}'
+            ]
         }
     };
 </script>

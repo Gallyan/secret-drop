@@ -7,7 +7,7 @@ function initDashboard() {
         return;
     }
 
-    const { stats, allTime, translations } = data;
+    const { stats, allTime, heatmapCreated, heatmapRead, translations } = data;
 
     const isDark = document.documentElement.classList.contains('dark');
     const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -194,6 +194,60 @@ function initDashboard() {
             }
         }
     });
+
+    // Heatmaps
+    function renderHeatmap(containerId, heatmapData, color) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            return;
+        }
+
+        const days = translations.days || ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+
+        let maxValue = 0;
+        for (let day = 0; day < 7; day++) {
+            for (let hour = 0; hour < 24; hour++) {
+                const val = heatmapData[day]?.[hour] || 0;
+                if (val > maxValue) {
+                    maxValue = val;
+                }
+            }
+        }
+
+        let html = '<div class="overflow-x-auto"><table class="w-full text-xs">';
+
+        html += '<tr><td class="w-12"></td>';
+        for (let h = 0; h < 24; h++) {
+            html += `<td class="text-center text-gray-500 dark:text-slate-500 pb-1">${h}</td>`;
+        }
+        html += '</tr>';
+
+        for (let day = 0; day < 7; day++) {
+            html += `<tr><td class="text-right pr-2 text-gray-600 dark:text-slate-400 whitespace-nowrap">${days[day]}</td>`;
+            for (let hour = 0; hour < 24; hour++) {
+                const val = heatmapData[day]?.[hour] || 0;
+                const intensity = maxValue > 0 ? val / maxValue : 0;
+                const opacity = Math.max(0.1, intensity);
+                const bgColor = color === 'violet'
+                    ? `rgba(139, 92, 246, ${opacity})`
+                    : `rgba(16, 185, 129, ${opacity})`;
+                const textColor = intensity > 0.5 ? 'white' : (isDark ? '#94a3b8' : '#6b7280');
+                html += `<td class="text-center p-1"><div class="w-6 h-6 rounded flex items-center justify-center" style="background-color: ${bgColor}; color: ${textColor}" title="${days[day]} ${hour}h: ${val}">${val > 0 ? val : ''}</div></td>`;
+            }
+            html += '</tr>';
+        }
+
+        html += '</table></div>';
+        container.innerHTML = html;
+    }
+
+    if (heatmapCreated) {
+        renderHeatmap('heatmapCreated', heatmapCreated, 'violet');
+    }
+
+    if (heatmapRead) {
+        renderHeatmap('heatmapRead', heatmapRead, 'green');
+    }
 }
 
 // Run when DOM is ready

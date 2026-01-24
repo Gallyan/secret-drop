@@ -88,6 +88,8 @@ class SecretsController extends Controller
         if ($secret->max_views !== null) {
             $this->stats->increment(StatsService::SECRETS_WITH_MAX_VIEWS);
         }
+
+        $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
     }
 
     public function show(string $token): View
@@ -145,8 +147,17 @@ class SecretsController extends Controller
             ], 410);
         }
 
+        $isFirstRead = $secret->first_read_at === null;
+        $createdAt = $secret->created_at;
+
         $secret->incrementReadCount();
         $this->stats->increment(StatsService::SECRETS_READ);
+        $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_READ);
+
+        if ($isFirstRead) {
+            $delaySeconds = (int) $createdAt->diffInSeconds(now());
+            $this->stats->trackFirstReadDelay($delaySeconds);
+        }
 
         if ($secret->shouldBeDestroyed()) {
             if ($secret->type === 'file' && $secret->file_path) {
