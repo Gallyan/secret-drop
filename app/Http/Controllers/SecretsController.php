@@ -7,7 +7,9 @@ use App\Models\Secret;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SecretsController extends Controller
 {
@@ -25,18 +27,33 @@ class SecretsController extends Controller
         $validated = $request->validated();
 
         $expireAt = $this->calculateExpireAt($validated['expiration']);
+        $token = $this->tokenService->generatePublicToken();
 
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
+        $secretData = [
+            'token' => $token,
             'admin_token' => $this->tokenService->generateAdminToken(),
             'type' => $validated['type'],
             'cipher_meta' => $validated['cipher_meta'],
-            'ciphertext' => $validated['ciphertext'] ?? null,
-            'usage_unique' => $validated['usage_unique'] ?? true,
+            'usage_unique' => $validated['usage_unique'] ?? ($validated['type'] === 'text'),
             'max_views' => $validated['max_views'] ?? null,
             'expire_at' => $expireAt,
             'creator_email' => $validated['creator_email'] ?? null,
-        ]);
+        ];
+
+        if ($validated['type'] === 'text') {
+            $secretData['ciphertext'] = $validated['ciphertext'];
+        } else {
+            $file = $request->file('encrypted_file');
+            $filePath = "secrets/{$token}";
+            Storage::disk('local')->put($filePath, $file->getContent());
+
+            $secretData['file_path'] = $filePath;
+            $secretData['filename'] = $validated['filename'];
+            $secretData['mime'] = $validated['mime'];
+            $secretData['size'] = (int) $validated['size'];
+        }
+
+        $secret = Secret::create($secretData);
 
         return response()->json([
             'token' => $secret->token,
@@ -44,18 +61,24 @@ class SecretsController extends Controller
         ], 201);
     }
 
-    public function show(string $token): View|Response
+    public function show(string $token): View
+    {
+        return view('secrets.show', ['token' => $token]);
+    }
+
+    public function fetch(string $token): JsonResponse
     {
         $secret = Secret::where('token', $token)->first();
 
         if (! $secret) {
-            return response()->view('secrets.not-found', [], 404);
+            return response()->json(['error' => 'not_found'], 404);
         }
 
         if (! $secret->isAccessible()) {
-            $reason = $this->getInaccessibleReason($secret);
-
-            return response()->view('secrets.unavailable', ['reason' => $reason], 410);
+            return response()->json([
+                'error' => 'unavailable',
+                'reason' => $this->getInaccessibleReason($secret),
+            ], 410);
         }
 
         $secret->incrementReadCount();
@@ -63,11 +86,44 @@ class SecretsController extends Controller
         $shouldDestroy = $secret->usage_unique
             || ($secret->max_views !== null && $secret->read_count >= $secret->max_views);
 
-        return view('secrets.show', [
-            'ciphertext' => $secret->ciphertext,
-            'cipherMeta' => $secret->cipher_meta,
-            'willBeDestroyed' => $shouldDestroy,
-        ]);
+        $data = [
+            'type' => $secret->type,
+            'cipher_meta' => $secret->cipher_meta,
+            'will_be_destroyed' => $shouldDestroy,
+        ];
+
+        if ($secret->type === 'text') {
+            $data['ciphertext'] = $secret->ciphertext;
+        } else {
+            $data['filename'] = $secret->filename;
+            $data['mime'] = $secret->mime;
+            $data['size'] = $secret->size;
+        }
+
+        return response()->json($data);
+    }
+
+    public function download(string $token): StreamedResponse|Response
+    {
+        $secret = Secret::where('token', $token)->first();
+
+        if (! $secret || $secret->type !== 'file') {
+            return response()->view('secrets.not-found', [], 404);
+        }
+
+        if (! $secret->isAccessible()) {
+            return response('Secret indisponible', 410);
+        }
+
+        if (! Storage::disk('local')->exists($secret->file_path)) {
+            return response('Fichier introuvable', 404);
+        }
+
+        return Storage::disk('local')->download(
+            $secret->file_path,
+            'encrypted',
+            ['Content-Type' => 'application/octet-stream']
+        );
     }
 
     private function getInaccessibleReason(Secret $secret): string

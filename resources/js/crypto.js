@@ -258,6 +258,84 @@ export function parseKeyFragment(fragment) {
 }
 
 /**
+ * Encrypt a file using AES-256-GCM
+ * @param {File} file - The file to encrypt
+ * @param {string|null} passphrase - Optional passphrase for additional protection
+ * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, keyMaterial: string, version: number, filename: string, mime: string, size: number}>}
+ */
+export async function encryptFile(file, passphrase = null) {
+    const arrayBuffer = await file.arrayBuffer();
+    const fileBytes = new Uint8Array(arrayBuffer);
+    const iv = generateRandomBytes(IV_LENGTH);
+
+    let key;
+    let salt = null;
+    let keyMaterial;
+
+    if (passphrase && passphrase.trim()) {
+        salt = generateRandomBytes(SALT_LENGTH);
+        key = await deriveKeyFromPassphrase(passphrase, salt);
+        keyMaterial = '';
+    } else {
+        key = await generateKey();
+        const rawKey = await exportKey(key);
+        keyMaterial = bytesToBase64Url(rawKey);
+    }
+
+    const ciphertextBytes = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        fileBytes
+    );
+
+    return {
+        encryptedBlob: new Blob([ciphertextBytes], { type: 'application/octet-stream' }),
+        iv: bytesToBase64Url(iv),
+        salt: salt ? bytesToBase64Url(salt) : null,
+        keyMaterial,
+        version: CRYPTO_VERSION,
+        filename: file.name,
+        mime: file.type || 'application/octet-stream',
+        size: file.size
+    };
+}
+
+/**
+ * Decrypt file data using AES-256-GCM
+ * @param {ArrayBuffer} encryptedData - The encrypted file data
+ * @param {string} iv - Base64URL encoded IV
+ * @param {string} keyMaterial - Base64URL encoded key (empty if passphrase was used)
+ * @param {string|null} salt - Base64URL encoded salt (if passphrase was used)
+ * @param {string|null} passphrase - Passphrase (if used during encryption)
+ * @param {number} version - Crypto version
+ * @returns {Promise<ArrayBuffer>}
+ */
+export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, passphrase = null, version = CRYPTO_VERSION) {
+    if (version !== CRYPTO_VERSION) {
+        throw new Error(`Unsupported crypto version: ${version}`);
+    }
+
+    const ivBytes = base64UrlToBytes(iv);
+
+    let key;
+    if (salt && passphrase) {
+        const saltBytes = base64UrlToBytes(salt);
+        key = await deriveKeyFromPassphrase(passphrase, saltBytes);
+    } else if (keyMaterial) {
+        const rawKey = base64UrlToBytes(keyMaterial);
+        key = await importKey(rawKey);
+    } else {
+        throw new Error('Either keyMaterial or passphrase+salt must be provided');
+    }
+
+    return crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: ivBytes },
+        key,
+        encryptedData
+    );
+}
+
+/**
  * Check if Web Crypto API is available
  * @returns {boolean}
  */

@@ -16,7 +16,7 @@ class ShowSecretTest extends TestCase
         $this->tokenService = app(TokenService::class);
     }
 
-    public function testCanViewSecret(): void
+    public function testShowPageReturns200WithToken(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -31,7 +31,39 @@ class ShowSecretTest extends TestCase
         $response = $this->get("/s/{$secret->token}");
 
         $response->assertStatus(200);
-        $response->assertSee('encryptedcontent');
+        $response->assertSee($secret->token);
+
+        $secret->delete();
+    }
+
+    public function testShowPageReturns200EvenForNonExistentToken(): void
+    {
+        $response = $this->get('/s/nonexistenttoken12345678901');
+
+        $response->assertStatus(200);
+    }
+
+    public function testApiFetchReturnsSecretData(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'encryptedcontent',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $response = $this->getJson("/api/secrets/{$secret->token}");
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'type' => 'text',
+            'ciphertext' => 'encryptedcontent',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'will_be_destroyed' => false,
+        ]);
 
         $secret->refresh();
         $this->assertEquals(1, $secret->read_count);
@@ -40,15 +72,15 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
-    public function testReturns404ForNonExistentSecret(): void
+    public function testApiFetchReturns404ForNonExistentSecret(): void
     {
-        $response = $this->get('/s/nonexistenttoken12345678901');
+        $response = $this->getJson('/api/secrets/nonexistenttoken12345678901');
 
         $response->assertStatus(404);
-        $response->assertSee('Secret introuvable');
+        $response->assertJson(['error' => 'not_found']);
     }
 
-    public function testReturns410ForExpiredSecret(): void
+    public function testApiFetchReturns410ForExpiredSecret(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -60,15 +92,18 @@ class ShowSecretTest extends TestCase
             'expire_at' => now()->subHour(),
         ]);
 
-        $response = $this->get("/s/{$secret->token}");
+        $response = $this->getJson("/api/secrets/{$secret->token}");
 
         $response->assertStatus(410);
-        $response->assertSee('expiré');
+        $response->assertJson([
+            'error' => 'unavailable',
+            'reason' => 'expired',
+        ]);
 
         $secret->delete();
     }
 
-    public function testReturns410ForRevokedSecret(): void
+    public function testApiFetchReturns410ForRevokedSecret(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -81,15 +116,18 @@ class ShowSecretTest extends TestCase
             'revoked_at' => now(),
         ]);
 
-        $response = $this->get("/s/{$secret->token}");
+        $response = $this->getJson("/api/secrets/{$secret->token}");
 
         $response->assertStatus(410);
-        $response->assertSee('révoqué');
+        $response->assertJson([
+            'error' => 'unavailable',
+            'reason' => 'revoked',
+        ]);
 
         $secret->delete();
     }
 
-    public function testReturns410WhenMaxViewsReached(): void
+    public function testApiFetchReturns410WhenMaxViewsReached(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -103,15 +141,18 @@ class ShowSecretTest extends TestCase
             'expire_at' => now()->addDay(),
         ]);
 
-        $response = $this->get("/s/{$secret->token}");
+        $response = $this->getJson("/api/secrets/{$secret->token}");
 
         $response->assertStatus(410);
-        $response->assertSee('maximum de lectures');
+        $response->assertJson([
+            'error' => 'unavailable',
+            'reason' => 'max_views',
+        ]);
 
         $secret->delete();
     }
 
-    public function testIncrementsReadCount(): void
+    public function testApiFetchIncrementsReadCount(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -123,18 +164,18 @@ class ShowSecretTest extends TestCase
             'expire_at' => now()->addDay(),
         ]);
 
-        $this->get("/s/{$secret->token}");
+        $this->getJson("/api/secrets/{$secret->token}");
         $secret->refresh();
         $this->assertEquals(1, $secret->read_count);
 
-        $this->get("/s/{$secret->token}");
+        $this->getJson("/api/secrets/{$secret->token}");
         $secret->refresh();
         $this->assertEquals(2, $secret->read_count);
 
         $secret->delete();
     }
 
-    public function testSingleUseSecretBecomesInaccessibleAfterFirstRead(): void
+    public function testApiSingleUseSecretBecomesInaccessibleAfterFirstRead(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
@@ -147,11 +188,41 @@ class ShowSecretTest extends TestCase
             'expire_at' => now()->addDay(),
         ]);
 
-        $response = $this->get("/s/{$secret->token}");
+        $response = $this->getJson("/api/secrets/{$secret->token}");
         $response->assertStatus(200);
 
-        $response = $this->get("/s/{$secret->token}");
+        $response = $this->getJson("/api/secrets/{$secret->token}");
         $response->assertStatus(410);
+
+        $secret->delete();
+    }
+
+    public function testApiFetchReturnsFileMetadata(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'file',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'file_path' => 'secrets/test',
+            'filename' => 'document.pdf',
+            'mime' => 'application/pdf',
+            'size' => 12345,
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $response = $this->getJson("/api/secrets/{$secret->token}");
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'type' => 'file',
+            'filename' => 'document.pdf',
+            'mime' => 'application/pdf',
+            'size' => 12345,
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+        ]);
+        $response->assertJsonMissing(['ciphertext']);
 
         $secret->delete();
     }
