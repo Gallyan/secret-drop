@@ -44,6 +44,49 @@ class SecretsController extends Controller
         ], 201);
     }
 
+    public function show(string $token): View|Response
+    {
+        $secret = Secret::where('token', $token)->first();
+
+        if (! $secret) {
+            return response()->view('secrets.not-found', [], 404);
+        }
+
+        if (! $secret->isAccessible()) {
+            $reason = $this->getInaccessibleReason($secret);
+
+            return response()->view('secrets.unavailable', ['reason' => $reason], 410);
+        }
+
+        $secret->incrementReadCount();
+
+        $shouldDestroy = $secret->usage_unique
+            || ($secret->max_views !== null && $secret->read_count >= $secret->max_views);
+
+        return view('secrets.show', [
+            'ciphertext' => $secret->ciphertext,
+            'cipherMeta' => $secret->cipher_meta,
+            'willBeDestroyed' => $shouldDestroy,
+        ]);
+    }
+
+    private function getInaccessibleReason(Secret $secret): string
+    {
+        if ($secret->isRevoked()) {
+            return 'revoked';
+        }
+
+        if ($secret->isExpired()) {
+            return 'expired';
+        }
+
+        if ($secret->hasReachedMaxViews()) {
+            return 'max_views';
+        }
+
+        return 'unknown';
+    }
+
     private function calculateExpireAt(string $expiration): \Carbon\Carbon
     {
         return match ($expiration) {
