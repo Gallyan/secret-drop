@@ -5,7 +5,7 @@
     <div class="w-full max-w-5xl">
         <div
             x-data="secretForm()"
-            class="md:bg-white/80 md:dark:bg-slate-800/50 md:backdrop-blur-xl md:border md:border-gray-200 md:dark:border-slate-700/50 md:rounded-2xl md:shadow-2xl overflow-hidden transition-colors"
+            class="relative z-20 pb-16 md:pb-0 md:bg-white/80 md:dark:bg-slate-800/50 md:backdrop-blur-xl md:border md:border-gray-200 md:dark:border-slate-700/50 md:rounded-2xl md:shadow-2xl overflow-hidden transition-colors"
         >
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}

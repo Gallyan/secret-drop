@@ -36,7 +36,7 @@
         @yield('content')
     </main>
 
-    <footer class="fixed bottom-4 left-0 right-0 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
+    <footer class="fixed bottom-4 left-0 right-0 z-10 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
         <div class="flex items-center justify-center gap-2">
             <span>&copy; {{ date('Y') }} {{ config('app.name') }}</span>
             <span>·</span>
