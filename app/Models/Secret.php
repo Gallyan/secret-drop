@@ -44,7 +44,9 @@ class Secret extends Model
         'size',
         'usage_unique',
         'max_views',
+        'read_count',
         'expire_at',
+        'revoked_at',
         'creator_email',
     ];
 

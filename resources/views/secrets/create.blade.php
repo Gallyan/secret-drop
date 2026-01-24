@@ -10,15 +10,16 @@
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}
                 <div class="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-violet-600/5 to-indigo-600/5 dark:from-violet-600/10 dark:to-indigo-600/10 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-slate-700/50 transition-colors">
-                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25">
-                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
+                            Secret Drop
+                        </h1>
                     </div>
-
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-3 transition-colors">
-                        Secret Drop
-                    </h1>
 
                     <p class="text-gray-600 dark:text-slate-400 mb-8 transition-colors">
                         Partagez des informations sensibles en toute sécurité avec un chiffrement de bout en bout.
