@@ -93,6 +93,8 @@ export default function secretViewer(token) {
                     return 'Ce secret a expiré et n\'est plus accessible.';
                 case 'revoked':
                     return 'Ce secret a été révoqué par son créateur.';
+                case 'already_read':
+                    return 'Ce secret à usage unique a déjà été lu et n\'est plus accessible.';
                 case 'max_views':
                     return 'Ce secret a atteint son nombre maximum de lectures et n\'est plus accessible.';
                 default:

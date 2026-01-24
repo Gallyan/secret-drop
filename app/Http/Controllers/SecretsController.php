@@ -148,6 +148,28 @@ class SecretsController extends Controller
         return $this->storage->download($secret->file_path);
     }
 
+    public function revoke(string $adminToken): JsonResponse
+    {
+        $secret = Secret::where('admin_token', $adminToken)->first();
+
+        if (! $secret) {
+            return response()->json(['error' => 'not_found'], 404);
+        }
+
+        if ($secret->isRevoked()) {
+            return response()->json(['error' => 'already_revoked'], 409);
+        }
+
+        if ($secret->type === 'file' && $secret->file_path) {
+            $this->storage->delete($secret->file_path);
+        }
+
+        $secret->revoked_at = now();
+        $secret->destroyContent();
+
+        return response()->json(['success' => true]);
+    }
+
     private function getInaccessibleReason(Secret $secret): string
     {
         if ($secret->isRevoked()) {
@@ -156,6 +178,10 @@ class SecretsController extends Controller
 
         if ($secret->isExpired()) {
             return 'expired';
+        }
+
+        if ($secret->hasBeenRead()) {
+            return 'already_read';
         }
 
         if ($secret->hasReachedMaxViews()) {

@@ -389,4 +389,116 @@ class ShowSecretTest extends TestCase
 
         $secret->delete();
     }
+
+    public function testRevokeSecretDeletesCiphertextAndMarksRevoked(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'secretdata',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $response = $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertNotNull($secret->revoked_at);
+        $this->assertNull($secret->ciphertext);
+
+        $secret->delete();
+    }
+
+    public function testRevokeSecretDeletesFile(): void
+    {
+        Storage::fake('secrets');
+
+        $token = $this->tokenService->generatePublicToken();
+        $filePath = $token;
+
+        Storage::disk('secrets')->put($filePath, 'encrypted-file-content');
+
+        $secret = Secret::create([
+            'token' => $token,
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'file',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'file_path' => $filePath,
+            'filename' => 'secret.pdf',
+            'mime' => 'application/pdf',
+            'size' => 1234,
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        Storage::disk('secrets')->assertExists($filePath);
+
+        $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+
+        Storage::disk('secrets')->assertMissing($filePath);
+
+        $secret->refresh();
+        $this->assertNotNull($secret->revoked_at);
+
+        $secret->delete();
+    }
+
+    public function testRevokeReturns404ForInvalidAdminToken(): void
+    {
+        $response = $this->postJson('/api/secrets/invalidtoken123/revoke');
+
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
+    }
+
+    public function testRevokeReturns409ForAlreadyRevokedSecret(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'secretdata',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+            'revoked_at' => now(),
+        ]);
+
+        $response = $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+
+        $response->assertStatus(409);
+        $response->assertJson(['error' => 'already_revoked']);
+
+        $secret->delete();
+    }
+
+    public function testRevokedSecretIsInaccessible(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token' => $this->tokenService->generateAdminToken(),
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'secretdata',
+            'usage_unique' => false,
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+
+        $response = $this->getJson("/api/secrets/{$secret->token}");
+
+        $response->assertStatus(410);
+        $response->assertJson([
+            'error' => 'unavailable',
+            'reason' => 'revoked',
+        ]);
+
+        $secret->delete();
+    }
 }
