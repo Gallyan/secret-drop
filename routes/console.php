@@ -3,3 +3,4 @@
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('secrets:clean')->hourly();
+Schedule::command('secrets:clean-blobs')->daily();
