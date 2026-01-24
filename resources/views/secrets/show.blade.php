@@ -128,6 +128,7 @@
                             </div>
                             <button
                                 type="submit"
+                                dusk="unlock-button"
                                 :disabled="!manualKey.trim()"
                                 class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
@@ -158,6 +159,7 @@
                             </div>
                             <button
                                 type="submit"
+                                dusk="decrypt-button"
                                 :disabled="isDecrypting || !passphrase.trim()"
                                 class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
@@ -243,6 +245,7 @@
                         <button
                             x-show="needsPassphrase || needsManualKey"
                             type="button"
+                            dusk="retry-button"
                             @click="error = null; if (needsManualKey) { manualKey = ''; }"
                             class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
                         >

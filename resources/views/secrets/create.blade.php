@@ -214,6 +214,7 @@
                                 @click="showAdvanced = !showAdvanced"
                                 :aria-expanded="showAdvanced"
                                 aria-controls="advancedOptions"
+                                dusk="advanced-options-toggle"
                                 class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                             >
                                 <svg
@@ -331,6 +332,7 @@
                         <button
                             x-show="!captchaRequired"
                             type="submit"
+                            dusk="submit-button"
                             :disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
                             class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
                         >
