@@ -1,0 +1,298 @@
+<?php
+
+return [
+    // App
+    'app_name' => 'Secret Drop',
+    'app_description' => 'Teilen Sie vertrauliche Informationen sicher mit Ende-zu-Ende-Verschlüsselung.',
+
+    // Features
+    'feature_encryption' => 'AES-256-GCM-Verschlüsselung in Ihrem Browser',
+    'feature_zero_knowledge' => 'Der Server sieht niemals Ihre Klartextdaten',
+    'feature_auto_destroy' => 'Automatische Zerstörung nach dem Lesen',
+    'feature_expiration' => 'Konfigurierbare automatische Ablaufzeit',
+
+    // Form labels
+    'your_secret' => 'Ihr Geheimnis',
+    'your_file' => 'Ihre Datei',
+    'expires_in' => 'Läuft ab in',
+    'max_reads' => 'Maximale Lesevorgänge',
+    'destroy_after_read' => 'Nach dem Lesen zerstören',
+    'advanced_options' => 'Erweiterte Optionen',
+    'passphrase' => 'Passphrase',
+    'passphrase_placeholder' => 'Zusätzlicher Schutz',
+    'your_email' => 'Ihre E-Mail',
+    'email_placeholder' => 'ihre@email.de',
+    'email_hint' => 'Um Ihre Geheimnisse später zu verwalten (widerrufen, verlängern)',
+
+    // Form tabs
+    'tab_text' => 'Text',
+    'tab_file' => 'Datei',
+
+    // Form placeholders
+    'secret_placeholder' => 'Geben Sie Ihre vertrauliche Nachricht ein...',
+    'max_reads_placeholder' => 'Unbegrenzt',
+
+    // Expiration options
+    'expiration_1h' => '1 Stunde',
+    'expiration_1d' => '1 Tag',
+    'expiration_7d' => '7 Tage',
+    'expiration_30d' => '30 Tage',
+
+    // File upload
+    'file_drop_click' => 'Zum Auswählen klicken',
+    'file_drop_or_drag' => 'oder Datei hierher ziehen',
+    'file_max_size' => 'Maximal 100 MB',
+    'file_too_large' => 'Die Datei ist zu groß (max. 100 MB)',
+
+    // Buttons
+    'btn_encrypt' => 'Verschlüsseln und Link erstellen',
+    'btn_encrypting' => 'Verschlüsseln...',
+    'btn_encrypting_upload' => 'Verschlüsseln und hochladen...',
+    'btn_copy' => 'Kopieren',
+    'btn_copied' => 'Kopiert!',
+    'btn_decrypt' => 'Entschlüsseln',
+    'btn_decrypting' => 'Entschlüsseln...',
+    'btn_retry' => 'Erneut versuchen',
+    'btn_cancel' => 'Abbrechen',
+    'btn_download_again' => 'Erneut herunterladen',
+    'btn_create_new' => 'Neues Geheimnis erstellen',
+
+    // Success
+    'secret_created' => 'Geheimnis erstellt',
+    'share_link_instruction' => 'Teilen Sie diesen Link mit Ihrem Empfänger',
+    'warning_link_contains_key' => 'Dieser Link enthält den Entschlüsselungsschlüssel. Teilen Sie ihn nur mit dem beabsichtigten Empfänger.',
+    'warning_passphrase_required' => 'Der Empfänger muss die Passphrase eingeben, um das Geheimnis zu entschlüsseln.',
+    'success_admin_hint' => 'Sie können dieses Geheimnis (widerrufen, verlängern) über den Link ":link" am unteren Rand der Seite verwalten.',
+
+    // QR Code
+    'show_qr_code' => 'QR-Code anzeigen',
+    'hide_qr_code' => 'QR-Code ausblenden',
+    'download_qr_code' => 'QR-Code herunterladen',
+    'qr_code_hint' => 'Scannen Sie diesen QR-Code, um den Link auf einem anderen Gerät zu öffnen.',
+    'qr_code_alt' => 'QR-Code mit dem Freigabelink',
+    'qr_generation_failed' => 'QR-Code konnte nicht generiert werden.',
+
+    // View secret
+    'secret_message' => 'Geheime Nachricht',
+    'secret_file' => 'Geheime Datei',
+    'encrypted_end_to_end_message' => 'Diese Nachricht wurde Ende-zu-Ende verschlüsselt',
+    'encrypted_end_to_end_file' => 'Diese Datei wurde Ende-zu-Ende verschlüsselt',
+    'passphrase_protected' => 'Dieses Geheimnis ist durch eine Passphrase geschützt.',
+    'passphrase_input_placeholder' => 'Passphrase eingeben',
+    'decrypting_message' => 'Entschlüsseln...',
+    'decrypting_file' => 'Herunterladen und entschlüsseln...',
+    'file_decrypted' => 'Datei entschlüsselt',
+    'note_destroyed_text' => 'Dieses Geheimnis wurde so konfiguriert, dass es nach dem Lesen zerstört wird. Es ist nicht mehr zugänglich.',
+    'note_destroyed_file' => 'Diese Datei wurde so konfiguriert, dass sie nach dem Lesen zerstört wird. Sie ist auf dem Server nicht mehr zugänglich.',
+
+    // Errors
+    'error_not_found' => 'Geheimnis nicht gefunden',
+    'error_unavailable' => 'Geheimnis nicht verfügbar',
+    'error_generic' => 'Fehler',
+    'secret_not_exist' => 'Dieses Geheimnis existiert nicht oder wurde möglicherweise gelöscht.',
+    'secret_expired' => 'Dieses Geheimnis ist abgelaufen und nicht mehr zugänglich.',
+    'secret_revoked' => 'Dieses Geheimnis wurde von seinem Ersteller widerrufen.',
+    'secret_max_views' => 'Dieses Geheimnis hat die maximale Anzahl von Aufrufen erreicht und ist nicht mehr zugänglich.',
+    'secret_unavailable_generic' => 'Dieses Geheimnis ist nicht mehr zugänglich.',
+    'error_loading' => 'Beim Laden des Geheimnisses ist ein Fehler aufgetreten.',
+    'error_connection' => 'Das Geheimnis konnte nicht geladen werden. Überprüfen Sie Ihre Verbindung.',
+
+    // Crypto errors
+    'crypto_not_supported' => 'Ihr Browser unterstützt keine sichere Verschlüsselung',
+    'crypto_key_missing' => 'Entschlüsselungsschlüssel fehlt in der URL',
+    'crypto_fragment_invalid' => 'Ungültiges Fragment-Format',
+    'crypto_passphrase_required' => 'Passphrase erforderlich',
+    'crypto_passphrase_incorrect' => 'Falsche Passphrase oder beschädigte Daten',
+    'crypto_decryption_failed' => 'Entschlüsselung fehlgeschlagen. Der Schlüssel könnte falsch sein.',
+    'crypto_decryption_error' => 'Bei der Entschlüsselung ist ein Fehler aufgetreten',
+    'crypto_file_download_failed' => 'Verschlüsselte Datei konnte nicht heruntergeladen werden',
+    'crypto_clipboard_failed' => 'Konnte nicht in die Zwischenablage kopieren',
+    'crypto_enter_secret' => 'Bitte geben Sie ein Geheimnis ein',
+    'crypto_select_file' => 'Bitte wählen Sie eine Datei aus',
+    'crypto_creation_error' => 'Fehler beim Erstellen des Geheimnisses',
+
+    // Loading
+    'loading' => 'Laden...',
+    'loading_secret' => 'Geheimnis laden...',
+
+    // Emails
+    'email_secret_created_subject' => 'Ihr Geheimnis wurde erstellt',
+    'email_secret_created_intro' => 'Sie haben ein neues Geheimnis erstellt. Verwenden Sie den folgenden Link, um es zu verwalten (Status anzeigen, widerrufen, verlängern).',
+    'email_type' => 'Typ',
+    'email_expires' => 'Läuft ab',
+    'email_manage_secret' => 'Mein Geheimnis verwalten',
+    'email_save_link_warning' => 'Speichern Sie diesen Link! Er ist der einzige Weg, um auf die Verwaltung Ihres Geheimnisses zuzugreifen.',
+    'email_link_label' => 'Oder kopieren Sie diesen Link:',
+    'email_footer' => 'Diese E-Mail wurde von :app gesendet.',
+    'type_text' => 'Text',
+    'type_file' => 'Datei',
+
+    // Footer
+    'footer_manage' => 'Meine Geheimnisse verwalten',
+    'footer_legal' => 'Impressum',
+
+    // Legal page
+    'legal_title' => 'Impressum',
+    'legal_editor_title' => 'Website-Herausgeber',
+    'legal_editor_text' => 'Diese Website wird herausgegeben von :name.',
+    'legal_hosting_title' => 'Hosting',
+    'legal_hosting_text' => 'Diese Website wird gehostet von:',
+    'legal_hosting_phone' => 'Telefon:',
+    'legal_data_title' => 'Datenschutz',
+    'legal_data_text' => 'Secret Drop wurde nach dem "Zero-Knowledge"-Prinzip entwickelt. Geheimnisse werden in Ihrem Browser verschlüsselt, bevor sie an den Server gesendet werden. Der Server speichert nur verschlüsselte Daten und kann nicht auf den Klartext-Inhalt Ihrer Geheimnisse zugreifen.',
+    'legal_data_stored' => 'Gespeicherte Daten:',
+    'legal_data_item_ciphertext' => 'Verschlüsselte Daten (Chiffretext, IV, Salt)',
+    'legal_data_item_metadata' => 'Metadaten (Erstellungsdatum, Ablauf, Lesezähler)',
+    'legal_data_item_email' => 'E-Mail-Hash (falls angegeben, für Admin-Zugriff)',
+    'legal_data_not_stored' => 'NICHT gespeicherte Daten:',
+    'legal_data_not_item_plaintext' => 'Klartext-Inhalt der Geheimnisse',
+    'legal_data_not_item_key' => 'Verschlüsselungsschlüssel (nur über URL-Fragment übertragen)',
+    'legal_cookies_title' => 'Cookies',
+    'legal_cookies_text' => 'Diese Website verwendet nur essentielle technische Cookies (Sitzung, Theme-Präferenz). Es werden keine Tracking- oder Werbe-Cookies verwendet.',
+    'legal_cookies_cnil' => 'Gemäß den CNIL-Empfehlungen sind diese streng notwendigen Cookies von der Einwilligungspflicht ausgenommen.',
+    'legal_contact_title' => 'Kontakt',
+    'legal_contact_text' => 'Bei Fragen zu dieser Website können Sie uns unter :email kontaktieren.',
+
+    // Admin
+    'admin_title' => 'Verwalten Sie Ihre Geheimnisse',
+    'admin_description' => 'Geben Sie die E-Mail-Adresse ein, die Sie beim Erstellen Ihrer Geheimnisse verwendet haben, um auf das Admin-Panel zuzugreifen.',
+    'admin_email_placeholder' => 'ihre@email.de',
+    'admin_send_link' => 'Magic Link senden',
+    'admin_back_home' => 'Zurück zur Startseite',
+    'admin_link_sent_title' => 'Überprüfen Sie Ihren Posteingang',
+    'admin_link_sent_description' => 'Wenn Geheimnisse für diese E-Mail existieren, wurde ein Magic Link gesendet.',
+    'admin_link_sent_warning' => 'Der Link ist 5 Minuten gültig und kann nur einmal verwendet werden.',
+    'admin_invalid_link_title' => 'Ungültiger oder abgelaufener Link',
+    'admin_invalid_link_description' => 'Dieser Magic Link ist ungültig oder wurde bereits verwendet. Bitte fordern Sie einen neuen an.',
+    'admin_not_found_title' => 'Geheimnis nicht gefunden',
+    'admin_not_found_description' => 'Dieses Geheimnis existiert nicht oder wurde gelöscht.',
+    'admin_dashboard_title' => 'Meine Geheimnisse',
+    'admin_secrets_count' => ':count Geheimnis(se)',
+    'admin_logout' => 'Abmelden',
+    'admin_no_secrets' => 'Keine Geheimnisse gefunden',
+    'admin_no_secrets_description' => 'Sie haben keine Geheimnisse mit dieser E-Mail-Adresse erstellt.',
+    'admin_status_active' => 'Aktiv',
+    'admin_status_expired' => 'Abgelaufen',
+    'admin_status_revoked' => 'Widerrufen',
+    'admin_status_consumed' => 'Verbraucht',
+    'admin_created' => 'Erstellt',
+    'admin_expires' => 'Läuft ab',
+    'admin_read_count' => 'Lesezähler',
+    'admin_first_read' => 'Erste Lesung',
+    'admin_mode' => 'Modus',
+    'admin_single_use' => 'Einmalige Verwendung',
+    'admin_multi_use' => 'Mehrfache Verwendung',
+    'admin_day' => 'Tag',
+    'admin_days' => 'Tage',
+    'admin_extend' => 'Verlängern',
+    'admin_revoke' => 'Widerrufen',
+    'admin_revoke_confirm' => 'Sind Sie sicher, dass Sie dieses Geheimnis widerrufen möchten? Diese Aktion ist unwiderruflich.',
+
+    // Magic link email
+    'email_magic_link_subject' => 'Ihr Zugangslink zu Secret Drop',
+    'email_magic_link_intro' => 'Sie haben Zugang zur Verwaltung Ihrer Geheimnisse angefordert. Klicken Sie auf die Schaltfläche unten, um sich anzumelden.',
+    'email_magic_link_button' => 'Auf meine Geheimnisse zugreifen',
+    'email_magic_link_warning' => 'Dieser Link läuft in 5 Minuten ab und kann nur einmal verwendet werden.',
+
+    // Super Admin
+    'superadmin_title' => 'Super Admin',
+    'superadmin_description' => '',
+    'email_superadmin_subject' => 'Super Admin Zugang - Secret Drop',
+    'email_superadmin_intro' => 'Ein Super-Admin-Zugang wurde angefordert. Klicken Sie auf die Schaltfläche unten, um auf das Dashboard zuzugreifen.',
+    'email_superadmin_button' => 'Dashboard aufrufen',
+    'superadmin_link_sent_description' => 'Wenn diese E-Mail autorisiert ist, wurde ein Magic Link gesendet.',
+    'superadmin_dashboard_title' => 'Nutzungsstatistiken',
+    'superadmin_dashboard_subtitle' => 'Anonyme Nutzungsdaten für Ihre Secret Drop-Instanz.',
+
+    // Periods
+    'period_7d' => 'Letzte 7 Tage',
+    'period_30d' => 'Letzte 30 Tage',
+    'period_90d' => 'Letzte 90 Tage',
+    'period_1y' => 'Letztes Jahr',
+    'period_all' => 'Gesamte Zeit',
+
+    // Stats
+    'stat_secrets_created' => 'Geheimnisse erstellt',
+    'stat_secrets_read' => 'Geheimnisse gelesen',
+    'stat_files_shared' => 'Dateien geteilt',
+    'stat_volume' => 'Volumen',
+    'stat_current_disk_usage' => 'Aktuelle Festplattennutzung',
+    'stat_text' => 'Text',
+    'stat_file' => 'Datei',
+    'stat_reads' => 'Lesevorgänge',
+    'stat_passphrase' => 'Mit Passphrase',
+    'stat_single_use' => 'Einmalige Verwendung',
+    'stat_max_views' => 'Maximale Aufrufe begrenzt',
+    'stat_read' => 'Gelesen',
+    'stat_expired_unread' => 'Ungelesen abgelaufen',
+    'stat_revoked' => 'Widerrufen',
+    'stat_max_reached' => 'Max. Aufrufe erreicht',
+    'stat_magic_links_requested' => 'Magic Links angefordert',
+    'stat_magic_links_used' => 'Magic Links verwendet',
+    'stat_secrets_extended' => 'Geheimnisse verlängert',
+
+    // Charts
+    'chart_secrets_created' => 'Geheimnisse erstellt',
+    'chart_secrets_read' => 'Geheimnisse gelesen',
+    'chart_secret_types' => 'Geheimnis-Typen',
+    'chart_secret_options' => 'Verwendete Optionen',
+    'chart_secret_outcomes' => 'Ergebnisse der Geheimnisse',
+    'chart_admin_activity' => 'Admin-Aktivität',
+    'chart_heatmap_created' => 'Erstellungs-Heatmap (nach Tag/Stunde)',
+    'chart_heatmap_read' => 'Lese-Heatmap (nach Tag/Stunde)',
+
+    // Stats
+    'stat_avg_first_read' => 'Durchschn. Verzögerung erste Lesung',
+
+    // Days
+    'day_sunday' => 'So',
+    'day_monday' => 'Mo',
+    'day_tuesday' => 'Di',
+    'day_wednesday' => 'Mi',
+    'day_thursday' => 'Do',
+    'day_friday' => 'Fr',
+    'day_saturday' => 'Sa',
+
+    // File size units
+    'unit_bytes' => 'B',
+    'unit_kilobytes' => 'KB',
+    'unit_megabytes' => 'MB',
+    'unit_gigabytes' => 'GB',
+
+    // Accessibility
+    'a11y_back' => 'Zurück',
+    'a11y_period_selector' => 'Zeitraum auswählen',
+    'a11y_extend_days' => 'Anzahl der Tage zur Verlängerung',
+    'a11y_expand_secret' => 'Geheimnis-Details anzeigen',
+
+    // Split mode
+    'split_mode' => 'Link und Schlüssel trennen',
+    'split_mode_hint' => 'Senden Sie Link und Schlüssel über verschiedene Kanäle für mehr Sicherheit',
+    'share_link_label' => 'Freigabelink',
+    'share_key_label' => 'Entschlüsselungsschlüssel',
+    'split_mode_warning' => 'Senden Sie den Schlüssel über einen anderen Kanal (SMS, Telefonanruf, persönlich...).',
+    'enter_key_manually' => 'Entschlüsselungsschlüssel eingeben',
+    'key_placeholder' => 'Separat erhaltener Schlüssel',
+    'btn_unlock' => 'Entsperren',
+
+    // Stats
+    'stat_split_mode' => 'Geteilter Modus',
+
+    // Rate limiting & Captcha
+    'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte lösen Sie die Berechnung unten, um fortzufahren.',
+    'captcha_label' => 'Anti-Roboter-Verifizierung',
+    'captcha_placeholder' => 'Ihre Antwort',
+    'captcha_hint' => 'Lösen Sie: :challenge = ?',
+    'captcha_invalid' => 'Falsche Antwort. Bitte versuchen Sie es erneut.',
+
+    // Labels
+    'label_important' => 'Wichtig:',
+    'label_note' => 'Hinweis:',
+
+    // Passphrase strength criteria
+    'passphrase_min_length' => 'Mind. 12 Zeichen',
+    'passphrase_lowercase' => 'Kleinbuchstabe',
+    'passphrase_uppercase' => 'Großbuchstabe',
+    'passphrase_digit' => 'Ziffer',
+    'passphrase_special' => 'Sonderzeichen',
+];
