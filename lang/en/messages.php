@@ -281,6 +281,10 @@ return [
     'captcha_hint' => 'Solve: :challenge = ?',
     'captcha_invalid' => 'Incorrect answer. Please try again.',
 
+    // Labels
+    'label_important' => 'Important:',
+    'label_note' => 'Note:',
+
     // Passphrase strength criteria
     'passphrase_min_length' => '12 characters min.',
     'passphrase_lowercase' => 'Lowercase',

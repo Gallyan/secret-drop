@@ -161,12 +161,12 @@ export default function secretForm() {
 
         formatFileSize(bytes) {
             if (bytes < 1024) {
-                return bytes + ' o';
+                return bytes + ' ' + t('unit_bytes');
             }
             if (bytes < 1024 * 1024) {
-                return (bytes / 1024).toFixed(1) + ' Ko';
+                return (bytes / 1024).toFixed(1) + ' ' + t('unit_kilobytes');
             }
-            return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' ' + t('unit_megabytes');
         },
 
         async handleSubmit() {

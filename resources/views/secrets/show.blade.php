@@ -204,7 +204,7 @@
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <p class="text-xs text-amber-700 dark:text-amber-400">
-                                <strong>Note :</strong> {{ __('messages.note_destroyed_text') }}
+                                <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_text') }}
                             </p>
                         </div>
                     </div>
@@ -230,7 +230,7 @@
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <p class="text-xs text-amber-700 dark:text-amber-400">
-                                <strong>Note :</strong> {{ __('messages.note_destroyed_file') }}
+                                <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_file') }}
                             </p>
                         </div>
                     </div>

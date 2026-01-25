@@ -443,10 +443,10 @@
 
                             <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                                 <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
-                                    <strong>Important :</strong> {{ __('messages.warning_link_contains_key') }}
+                                    <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.warning_link_contains_key') }}
                                 </p>
                                 <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
-                                    <strong>Important :</strong> {{ __('messages.warning_passphrase_required') }}
+                                    <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.warning_passphrase_required') }}
                                 </p>
                             </div>
                         </div>
@@ -505,7 +505,7 @@
 
                             <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                                 <p class="text-xs text-amber-700 dark:text-amber-400">
-                                    <strong>Important :</strong> {{ __('messages.split_mode_warning') }}
+                                    <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.split_mode_warning') }}
                                 </p>
                                 <p class="text-xs text-amber-700 dark:text-amber-400 mt-1" x-show="passphraseUsed">
                                     {{ __('messages.warning_passphrase_required') }}
