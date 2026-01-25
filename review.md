@@ -20,29 +20,24 @@ Cette revue est centrée sur sécurité, zero‑knowledge, robustesse, UX/a11y e
 
 ## Élevée
 
-4) **Aucun rate limit sur lecture / download**  
-**Fichiers** : `routes/api.php`, `routes/web.php`  
-**Constat** : `/api/secrets/{token}`, `/api/secrets/{token}/read`, `/s/{token}/download` ne sont pas throttlés.  
-**Risque** : bruteforce du token et DoS.  
-**Action** : ajouter un middleware de throttle (même léger) sur ces routes.
+4) ~~**Aucun rate limit sur lecture / download**~~
+**Fichiers** : `routes/api.php`, `routes/web.php`
+**Statut** : CORRIGÉ - Throttle 60/min sur fetch, confirmRead et download. Throttle 10/min sur revoke.
 
-5) **Headers cache manquants pour pages/API secrets**  
-**Fichiers** : `app/Http/Middleware/SecurityHeaders.php`, `app/Http/Controllers/SecretsController.php`  
-**Constat** : le download force `no-store`, mais pas la page `/s/{token}` ni l’API `/api/secrets/{token}`.  
-**Risque** : contenu sensible ou métadonnées en cache navigateur/proxy.  
-**Action** : ajouter `Cache-Control: no-store` et `Pragma: no-cache` sur ces endpoints.
+5) ~~**Headers cache manquants pour pages/API secrets**~~
+**Fichiers** : `app/Http/Middleware/NoCacheHeaders.php`, `routes/api.php`, `routes/web.php`
+**Statut** : CORRIGÉ - Middleware `no.cache` ajouté sur `/s/{token}`, `/s/{token}/download`, `/api/secrets/{token}`, `/api/secrets/{token}/read`.
 
-6) **Paramètres prod dangereux dans `.env`**  
-**Fichier** : `.env`  
-**Constat** : `APP_DEBUG=true`, `LOG_LEVEL=debug`, `APP_URL=http://localhost`.  
-**Risque** : fuites d’informations + URLs erronées en emails.  
-**Action** : hardening pour prod (debug=false, log_level=info/warn, APP_URL=https…).
+6) **Paramètres prod dangereux dans `.env`**
+**Fichier** : `.env`
+**Constat** : `APP_DEBUG=true`, `LOG_LEVEL=debug`, `APP_URL=http://localhost`.
+**Risque** : fuites d'informations + URLs erronées en emails.
+**Action** : hardening pour prod (debug=false, log_level=warning, APP_URL=https…).
+**Note** : `.env.example` mis à jour avec les valeurs de production commentées.
 
-7) **Cookies de session pas forcés en secure**  
-**Fichiers** : `.env`, `config/session.php`  
-**Constat** : `SESSION_SECURE_COOKIE` absent dans `.env`.  
-**Risque** : cookie envoyé en HTTP si mal configuré.  
-**Action** : `SESSION_SECURE_COOKIE=true` en prod + vérifier `SESSION_SAME_SITE`.
+7) ~~**Cookies de session pas forcés en secure**~~
+**Fichiers** : `.env.example`
+**Statut** : CORRIGÉ - `SESSION_SECURE_COOKIE=true` et `SESSION_SAME_SITE=strict` documentés dans `.env.example` (à décommenter en production).
 
 ## Moyenne
 

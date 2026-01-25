@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ForceHttps;
+use App\Http\Middleware\NoCacheHeaders;
 use App\Http\Middleware\SanitizeRequestLogging;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'throttle.captcha' => ThrottleWithCaptcha::class,
+            'no.cache' => NoCacheHeaders::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

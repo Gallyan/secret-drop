@@ -12,8 +12,12 @@ Route::get('/sitemap.xml', fn () => response(view('sitemap')->render(), 200, ['C
 Route::get('/sitemap.xsl', function () {
     return response(file_get_contents(resource_path('sitemap.xsl')), 200, ['Content-Type' => 'text/xsl']);
 });
-Route::get('/s/{token}', [SecretsController::class, 'show'])->name('secrets.show');
-Route::get('/s/{token}/download', [SecretsController::class, 'download'])->name('secrets.download');
+Route::get('/s/{token}', [SecretsController::class, 'show'])
+    ->middleware('no.cache')
+    ->name('secrets.show');
+Route::get('/s/{token}/download', [SecretsController::class, 'download'])
+    ->middleware(['throttle:60,1', 'no.cache']) // 60 per minute
+    ->name('secrets.download');
 
 Route::view('/legal', 'legal')->name('legal');
 
