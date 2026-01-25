@@ -280,4 +280,11 @@ return [
     'captcha_placeholder' => 'Votre réponse',
     'captcha_hint' => 'Résolvez : :challenge = ?',
     'captcha_invalid' => 'Réponse incorrecte. Veuillez réessayer.',
+
+    // Passphrase strength criteria
+    'passphrase_min_length' => '12 caractères min.',
+    'passphrase_lowercase' => 'Minuscule',
+    'passphrase_uppercase' => 'Majuscule',
+    'passphrase_digit' => 'Chiffre',
+    'passphrase_special' => 'Caractère spécial',
 ];
