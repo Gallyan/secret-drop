@@ -175,6 +175,7 @@
                                     <option value="1d">{{ __('messages.expiration_1d') }}</option>
                                     <option value="7d">{{ __('messages.expiration_7d') }}</option>
                                     <option value="30d">{{ __('messages.expiration_30d') }}</option>
+                                    <option value="90d">{{ __('messages.expiration_90d') }}</option>
                                 </select>
                             </div>
 
@@ -194,18 +195,6 @@
                                 >
                             </div>
                         </div>
-
-                        {{-- Usage unique toggle --}}
-                        <label for="usageUnique" class="flex items-center gap-3 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" id="usageUnique" x-model="usageUnique" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
-                                <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
-                            </div>
-                            <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
-                                {{ __('messages.destroy_after_read') }}
-                            </span>
-                        </label>
 
                         {{-- Collapsible options --}}
                         <div>

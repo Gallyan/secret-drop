@@ -23,7 +23,7 @@ class SecretWorkflowTest extends TestCase
 
     public function testCompleteTextSecretWorkflow(): void
     {
-        // Step 1: Create secret
+        // Step 1: Create secret with max_views = 1 (single use)
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
             'ciphertext' => 'encrypted_message_content',
@@ -33,7 +33,7 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => true,
+            'max_views' => 1,
         ]);
 
         $createResponse->assertStatus(201);
@@ -57,12 +57,12 @@ class SecretWorkflowTest extends TestCase
         $readResponse->assertStatus(200);
         $readResponse->assertJson(['success' => true]);
 
-        // Step 5: Verify secret is no longer accessible
+        // Step 5: Verify secret is no longer accessible (max views reached)
         $refetchResponse = $this->getJson("/api/secrets/{$token}");
         $refetchResponse->assertStatus(410);
         $refetchResponse->assertJson([
             'error' => 'unavailable',
-            'reason' => 'already_read',
+            'reason' => 'max_views',
         ]);
 
         // Step 6: Verify ciphertext was destroyed
@@ -75,7 +75,7 @@ class SecretWorkflowTest extends TestCase
 
     public function testCompleteFileSecretWorkflow(): void
     {
-        // Step 1: Create file secret
+        // Step 1: Create file secret with max_views = 1 (single use)
         $file = UploadedFile::fake()->create('encrypted.bin', 512, 'application/octet-stream');
 
         $createResponse = $this->postJson('/api/secrets', [
@@ -90,7 +90,7 @@ class SecretWorkflowTest extends TestCase
             'mime' => 'application/pdf',
             'size' => 512,
             'expiration' => '1d',
-            'usage_unique' => true,
+            'max_views' => 1,
         ]);
 
         $createResponse->assertStatus(201);
@@ -141,7 +141,6 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
             'max_views' => 3,
         ]);
 
@@ -189,7 +188,6 @@ class SecretWorkflowTest extends TestCase
                 'kdf' => 'PBKDF2-SHA256-200k',
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
         ]);
 
         $createResponse->assertStatus(201);
@@ -217,7 +215,6 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
             'creator_email' => 'creator@example.com',
         ]);
 
@@ -246,7 +243,6 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
         ]);
 
         $createResponse->assertStatus(201);
@@ -279,7 +275,7 @@ class SecretWorkflowTest extends TestCase
 
     public function testConcurrentAccessDoesNotCorruptReadCount(): void
     {
-        // Create multi-use secret
+        // Create unlimited secret
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
             'ciphertext' => 'concurrent_access_content',
@@ -289,7 +285,6 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
         ]);
 
         $token = $createResponse->json('token');
@@ -322,7 +317,6 @@ class SecretWorkflowTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
         ]);
 
         $token = $createResponse->json('token');

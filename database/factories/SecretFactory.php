@@ -26,7 +26,6 @@ class SecretFactory extends Factory
                 'salt' => base64_encode(random_bytes(16)),
             ],
             'ciphertext' => base64_encode(random_bytes(64)),
-            'usage_unique' => false,
             'max_views' => null,
             'read_count' => 0,
             'expire_at' => now()->addDays(7),
@@ -60,7 +59,7 @@ class SecretFactory extends Factory
     public function singleUse(): static
     {
         return $this->state(fn (array $attributes) => [
-            'usage_unique' => true,
+            'max_views' => 1,
         ]);
     }
 

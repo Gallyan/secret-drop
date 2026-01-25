@@ -40,7 +40,6 @@ class SecretsController extends Controller
             'admin_token' => $this->tokenService->generateAdminToken(),
             'type' => $validated['type'],
             'cipher_meta' => $validated['cipher_meta'],
-            'usage_unique' => $validated['usage_unique'] ?? ($validated['type'] === 'text'),
             'max_views' => $validated['max_views'] ?? null,
             'expire_at' => $expireAt,
             'creator_email_hash' => $creatorEmail ? hash('sha256', strtolower(trim($creatorEmail))) : null,
@@ -84,10 +83,6 @@ class SecretsController extends Controller
             $this->stats->increment(StatsService::SECRETS_WITH_PASSPHRASE);
         }
 
-        if ($secret->usage_unique) {
-            $this->stats->increment(StatsService::SECRETS_SINGLE_USE);
-        }
-
         if ($secret->max_views !== null) {
             $this->stats->increment(StatsService::SECRETS_WITH_MAX_VIEWS);
         }
@@ -119,8 +114,8 @@ class SecretsController extends Controller
             ], 410);
         }
 
-        $willBeDestroyed = $secret->usage_unique
-            || ($secret->max_views !== null && $secret->read_count + 1 >= $secret->max_views);
+        $willBeDestroyed = $secret->max_views !== null
+            && $secret->read_count + 1 >= $secret->max_views;
 
         $data = [
             'type' => $secret->type,
@@ -231,10 +226,6 @@ class SecretsController extends Controller
             return 'expired';
         }
 
-        if ($secret->hasBeenRead()) {
-            return 'already_read';
-        }
-
         if ($secret->hasReachedMaxViews()) {
             return 'max_views';
         }
@@ -249,6 +240,7 @@ class SecretsController extends Controller
             '1d' => now()->addDay(),
             '7d' => now()->addDays(7),
             '30d' => now()->addDays(30),
+            '90d' => now()->addDays(90),
             default => now()->addDays(7),
         };
     }

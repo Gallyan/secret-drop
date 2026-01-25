@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $filename
  * @property string|null $mime
  * @property int|null $size
- * @property bool $usage_unique
  * @property int|null $max_views
  * @property int $read_count
  * @property Carbon|null $first_read_at
@@ -45,7 +44,6 @@ class Secret extends Model
         'filename',
         'mime',
         'size',
-        'usage_unique',
         'max_views',
         'read_count',
         'expire_at',
@@ -60,7 +58,6 @@ class Secret extends Model
     {
         return [
             'cipher_meta' => 'array',
-            'usage_unique' => 'boolean',
             'first_read_at' => 'datetime',
             'last_read_at' => 'datetime',
             'expire_at' => 'datetime',
@@ -83,17 +80,11 @@ class Secret extends Model
         return $this->max_views !== null && $this->read_count >= $this->max_views;
     }
 
-    public function hasBeenRead(): bool
-    {
-        return $this->usage_unique && $this->read_count > 0;
-    }
-
     public function isAccessible(): bool
     {
         return ! $this->isExpired()
             && ! $this->isRevoked()
-            && ! $this->hasReachedMaxViews()
-            && ! $this->hasBeenRead();
+            && ! $this->hasReachedMaxViews();
     }
 
     public function incrementReadCount(): void
@@ -112,8 +103,7 @@ class Secret extends Model
 
     public function shouldBeDestroyed(): bool
     {
-        return $this->usage_unique
-            || ($this->max_views !== null && $this->read_count >= $this->max_views);
+        return $this->max_views !== null && $this->read_count >= $this->max_views;
     }
 
     public function destroyContent(): void

@@ -95,29 +95,6 @@ class StatsTrackingTest extends TestCase
         $secret->delete();
     }
 
-    public function testSingleUseSecretIncrementsStats(): void
-    {
-        $initialCount = $this->getMetricTotal(StatsService::SECRETS_SINGLE_USE);
-
-        $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'single_use_content',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-            'usage_unique' => true,
-        ]);
-
-        $newCount = $this->getMetricTotal(StatsService::SECRETS_SINGLE_USE);
-        $this->assertEquals($initialCount + 1, $newCount);
-
-        // Cleanup
-        Secret::orderBy('id', 'desc')->first()->delete();
-    }
-
     public function testMaxViewsSecretIncrementsStats(): void
     {
         $initialCount = $this->getMetricTotal(StatsService::SECRETS_WITH_MAX_VIEWS);
@@ -131,7 +108,6 @@ class StatsTrackingTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
             'max_views' => 5,
         ]);
 
@@ -197,7 +173,6 @@ class StatsTrackingTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
             'max_views' => 1,
         ]);
 
@@ -276,7 +251,6 @@ class StatsTrackingTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => false,
         ]);
 
         $token = $response->json('token');
@@ -294,7 +268,7 @@ class StatsTrackingTest extends TestCase
 
     public function testFirstReadDelayNotTrackedOnSubsequentReads(): void
     {
-        $secret = $this->createTextSecret(['usage_unique' => false]);
+        $secret = $this->createTextSecret();
 
         // First read
         $this->postJson("/api/secrets/{$secret->token}/read");
@@ -324,7 +298,6 @@ class StatsTrackingTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'test_content',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ], $attributes));
     }

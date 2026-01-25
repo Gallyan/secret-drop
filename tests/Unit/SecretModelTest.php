@@ -24,7 +24,6 @@ class SecretModelTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encrypted',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ], $attributes));
     }
@@ -152,23 +151,11 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
-    public function testIsAccessibleReturnsFalseWhenSingleUseAndAlreadyRead(): void
+    public function testIsAccessibleReturnsTrueWhenUnderMaxViews(): void
     {
         $secret = $this->createSecret([
-            'usage_unique' => true,
-            'read_count' => 1,
-        ]);
-
-        $this->assertFalse($secret->isAccessible());
-
-        $secret->delete();
-    }
-
-    public function testIsAccessibleReturnsTrueForUnreadSingleUse(): void
-    {
-        $secret = $this->createSecret([
-            'usage_unique' => true,
-            'read_count' => 0,
+            'max_views' => 3,
+            'read_count' => 2,
         ]);
 
         $this->assertTrue($secret->isAccessible());
@@ -268,19 +255,9 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
-    public function testShouldBeDestroyedReturnsTrueForSingleUse(): void
-    {
-        $secret = $this->createSecret(['usage_unique' => true]);
-
-        $this->assertTrue($secret->shouldBeDestroyed());
-
-        $secret->delete();
-    }
-
     public function testShouldBeDestroyedReturnsTrueWhenMaxViewsReached(): void
     {
         $secret = $this->createSecret([
-            'usage_unique' => false,
             'max_views' => 3,
             'read_count' => 3,
         ]);
@@ -290,10 +267,9 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
-    public function testShouldBeDestroyedReturnsFalseForMultiUseUnderLimit(): void
+    public function testShouldBeDestroyedReturnsFalseWhenUnderLimit(): void
     {
         $secret = $this->createSecret([
-            'usage_unique' => false,
             'max_views' => 5,
             'read_count' => 2,
         ]);
@@ -306,7 +282,6 @@ class SecretModelTest extends TestCase
     public function testShouldBeDestroyedReturnsFalseForUnlimitedViews(): void
     {
         $secret = $this->createSecret([
-            'usage_unique' => false,
             'max_views' => null,
             'read_count' => 100,
         ]);
@@ -405,42 +380,6 @@ class SecretModelTest extends TestCase
         $secret = $this->createSecret(['creator_email_hash' => null]);
 
         $this->assertFalse($secret->verifyCreatorEmail('any@example.com'));
-
-        $secret->delete();
-    }
-
-    public function testHasBeenReadReturnsTrueForSingleUseWithReads(): void
-    {
-        $secret = $this->createSecret([
-            'usage_unique' => true,
-            'read_count' => 1,
-        ]);
-
-        $this->assertTrue($secret->hasBeenRead());
-
-        $secret->delete();
-    }
-
-    public function testHasBeenReadReturnsFalseForSingleUseWithNoReads(): void
-    {
-        $secret = $this->createSecret([
-            'usage_unique' => true,
-            'read_count' => 0,
-        ]);
-
-        $this->assertFalse($secret->hasBeenRead());
-
-        $secret->delete();
-    }
-
-    public function testHasBeenReadReturnsFalseForMultiUse(): void
-    {
-        $secret = $this->createSecret([
-            'usage_unique' => false,
-            'read_count' => 5,
-        ]);
-
-        $this->assertFalse($secret->hasBeenRead());
 
         $secret->delete();
     }

@@ -139,7 +139,7 @@
                                             <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
                                                 {{ __('messages.admin_status_expired') }}
                                             </span>
-                                        @elseif($secret->hasBeenRead() || $secret->hasReachedMaxViews())
+                                        @elseif($secret->hasReachedMaxViews())
                                             <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-slate-300">
                                                 {{ __('messages.admin_status_consumed') }}
                                             </span>
@@ -187,7 +187,7 @@
                                     <div class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
                                         <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_mode') }}</p>
                                         <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $secret->usage_unique ? __('messages.admin_single_use') : __('messages.admin_multi_use') }}
+                                            {{ $secret->max_views ? __('messages.admin_limited_views', ['count' => $secret->max_views]) : __('messages.admin_unlimited') }}
                                         </p>
                                     </div>
                                 </div>

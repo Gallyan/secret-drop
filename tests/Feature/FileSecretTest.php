@@ -162,7 +162,6 @@ class FileSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encrypted',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -197,7 +196,6 @@ class FileSecretTest extends TestCase
             'filename' => 'expired.pdf',
             'mime' => 'application/pdf',
             'size' => 256,
-            'usage_unique' => false,
             'expire_at' => now()->subHour(),
         ]);
 
@@ -221,7 +219,6 @@ class FileSecretTest extends TestCase
             'filename' => 'missing.pdf',
             'mime' => 'application/pdf',
             'size' => 1024,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -232,7 +229,7 @@ class FileSecretTest extends TestCase
         $secret->delete();
     }
 
-    public function testFileSecretDefaultsToNonSingleUse(): void
+    public function testFileSecretDefaultsToUnlimitedViews(): void
     {
         $file = UploadedFile::fake()->create('encrypted', 256);
 
@@ -253,7 +250,7 @@ class FileSecretTest extends TestCase
         $token = $response->json('token');
         $secret = Secret::where('token', $token)->first();
 
-        $this->assertFalse($secret->usage_unique);
+        $this->assertNull($secret->max_views);
 
         // Cleanup
         $this->storage->delete($secret->file_path);

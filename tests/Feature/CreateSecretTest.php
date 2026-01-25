@@ -26,7 +26,7 @@ class CreateSecretTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => true,
+            'max_views' => 1,
         ]);
 
         $response->assertStatus(201)
@@ -40,7 +40,7 @@ class CreateSecretTest extends TestCase
         $this->assertNotNull($secret);
         $this->assertEquals('text', $secret->type);
         $this->assertEquals('base64encodedciphertext', $secret->ciphertext);
-        $this->assertTrue($secret->usage_unique);
+        $this->assertEquals(1, $secret->max_views);
         $this->assertNotNull($secret->expire_at);
 
         $secret->delete();
@@ -59,7 +59,6 @@ class CreateSecretTest extends TestCase
                 'kdf' => 'PBKDF2-SHA256-200k',
             ],
             'expiration' => '1h',
-            'usage_unique' => false,
             'max_views' => 5,
             'creator_email' => 'test@example.com',
         ]);
@@ -67,7 +66,6 @@ class CreateSecretTest extends TestCase
         $response->assertStatus(201);
 
         $secret = Secret::where('token', $response->json('token'))->first();
-        $this->assertFalse($secret->usage_unique);
         $this->assertEquals(5, $secret->max_views);
         $this->assertTrue($secret->verifyCreatorEmail('test@example.com'));
         $this->assertEquals('randomsalt', $secret->cipher_meta['salt']);

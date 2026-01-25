@@ -18,7 +18,6 @@ export default function secretForm() {
 
         // Common options
         expiration: '7d',
-        usageUnique: true,
         maxViews: null,
         passphrase: '',
         showPassphrase: false,
@@ -217,7 +216,6 @@ export default function secretForm() {
                 ciphertext: encrypted.ciphertext,
                 cipher_meta: cipherMeta,
                 expiration: this.expiration,
-                usage_unique: this.usageUnique,
                 max_views: this.maxViews || null,
                 creator_email: this.creatorEmail?.trim() || null,
                 split_mode: this.splitMode
@@ -289,7 +287,6 @@ export default function secretForm() {
             formData.append('mime', encrypted.mime);
             formData.append('size', encrypted.size.toString());
             formData.append('expiration', this.expiration);
-            formData.append('usage_unique', this.usageUnique ? '1' : '0');
             if (this.maxViews) {
                 formData.append('max_views', this.maxViews.toString());
             }
@@ -448,7 +445,6 @@ export default function secretForm() {
             this.secret = '';
             this.file = null;
             this.expiration = '7d';
-            this.usageUnique = true;
             this.maxViews = null;
             this.passphrase = '';
             this.creatorEmail = '';

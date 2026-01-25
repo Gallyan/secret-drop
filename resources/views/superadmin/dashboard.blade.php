@@ -159,7 +159,6 @@
             stat_file: '{{ __('messages.stat_file') }}',
             stat_reads: '{{ __('messages.stat_reads') }}',
             stat_passphrase: '{{ __('messages.stat_passphrase') }}',
-            stat_single_use: '{{ __('messages.stat_single_use') }}',
             stat_max_views: '{{ __('messages.stat_max_views') }}',
             stat_split_mode: '{{ __('messages.stat_split_mode') }}',
             stat_read: '{{ __('messages.stat_read') }}',

@@ -117,18 +117,16 @@ function initDashboard() {
         data: {
             labels: [
                 translations.stat_passphrase,
-                translations.stat_single_use,
                 translations.stat_max_views,
                 translations.stat_split_mode
             ],
             datasets: [{
                 data: [
                     totals.secrets_with_passphrase || 0,
-                    totals.secrets_single_use || 0,
                     totals.secrets_with_max_views || 0,
                     totals.secrets_split_mode || 0
                 ],
-                backgroundColor: ['#ec4899', '#06b6d4', '#84cc16', '#f97316']
+                backgroundColor: ['#ec4899', '#84cc16', '#f97316']
             }]
         },
         options: {

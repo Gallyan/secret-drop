@@ -13,8 +13,6 @@ class StatsService
 
     public const SECRETS_WITH_PASSPHRASE = 'secrets_with_passphrase';
 
-    public const SECRETS_SINGLE_USE = 'secrets_single_use';
-
     public const SECRETS_WITH_MAX_VIEWS = 'secrets_with_max_views';
 
     public const SECRETS_SPLIT_MODE = 'secrets_split_mode';

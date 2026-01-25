@@ -21,12 +21,6 @@ class StoreSecretRequest extends FormRequest
         }
 
         // Convert string booleans from FormData
-        if ($this->has('usage_unique') && is_string($this->usage_unique)) {
-            $this->merge([
-                'usage_unique' => in_array($this->usage_unique, ['1', 'true', 'on'], true),
-            ]);
-        }
-
         if ($this->has('split_mode') && is_string($this->split_mode)) {
             $this->merge([
                 'split_mode' => in_array($this->split_mode, ['1', 'true', 'on'], true),
@@ -60,8 +54,7 @@ class StoreSecretRequest extends FormRequest
             'cipher_meta.iv2' => ['nullable', 'string'],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
-            'expiration' => ['required', 'in:1h,1d,7d,30d'],
-            'usage_unique' => ['boolean'],
+            'expiration' => ['required', 'in:1h,1d,7d,30d,90d'],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],
