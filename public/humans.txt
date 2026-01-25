@@ -7,7 +7,7 @@ Location: France
 Claude (Anthropic) - AI pair programming assistant
 
 /* SITE */
-Last update: 2025/01
+Last update: 2026/01
 Language: French / English
 Standards: HTML5, CSS3, ES6+
 Components: Laravel, Alpine.js, Tailwind CSS
