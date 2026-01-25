@@ -161,4 +161,23 @@ class SuperAdminControllerTest extends TestCase
 
         $response->assertRedirect(route('superadmin.index'));
     }
+
+    public function testDashboardWithInvalidPeriodFallsBackToDefault(): void
+    {
+        $response = $this->withSession(['super_admin_verified' => true])
+            ->get('/superadmin/dashboard?period=2d');
+
+        $response->assertStatus(200);
+        $response->assertViewIs('superadmin.dashboard');
+        $response->assertViewHas('period', '30d');
+    }
+
+    public function testDashboardWithValidPeriodUsesRequestedPeriod(): void
+    {
+        $response = $this->withSession(['super_admin_verified' => true])
+            ->get('/superadmin/dashboard?period=7d');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('period', '7d');
+    }
 }

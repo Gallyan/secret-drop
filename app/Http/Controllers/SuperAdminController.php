@@ -78,6 +78,8 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.dashboard');
     }
 
+    private const VALID_PERIODS = ['7d', '30d', '90d', '1y', 'all'];
+
     public function dashboard(Request $request): View|RedirectResponse
     {
         if (! $this->isAuthenticated($request)) {
@@ -85,6 +87,9 @@ class SuperAdminController extends Controller
         }
 
         $period = $request->input('period', '30d');
+        if (! in_array($period, self::VALID_PERIODS, true)) {
+            $period = '30d';
+        }
         $stats = $this->stats->getStats($period);
         $allTime = $this->stats->getAllTimeTotals();
         $heatmapCreated = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
