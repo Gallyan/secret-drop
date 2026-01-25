@@ -128,28 +128,6 @@
             font-weight: 600;
         }
 
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1.25rem;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .feature svg {
-            width: 1.25rem;
-            height: 1.25rem;
-            color: var(--emerald-500);
-            flex-shrink: 0;
-        }
-
         .content {
             padding: 1.5rem 2rem 2rem;
         }
@@ -257,34 +235,10 @@
             text-decoration: underline;
         }
 
-        .info-box {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .info-box code {
-            background: rgba(139, 92, 246, 0.1);
-            color: var(--violet-600);
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace;
-            font-size: 0.8125rem;
-        }
-
-        .dark .info-box code {
-            color: var(--violet-500);
-        }
-
         @media (max-width: 640px) {
             .header { padding: 1.5rem; }
             .content { padding: 1rem 1.5rem 1.5rem; }
             th, td { padding: 0.75rem; }
-            .features { flex-direction: column; gap: 0.5rem; }
         }
     </style>
     <script>
@@ -308,23 +262,8 @@
                     <h1>Sitemap XML</h1>
                 </div>
                 <p class="subtitle">
-                    Ce fichier sitemap aide les moteurs de recherche a indexer <strong>Secret Drop</strong>.
-                    Il contient <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> URL(s).
+                    <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> URL(s)
                 </p>
-                <div class="features">
-                    <div class="feature">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Format standard sitemaps.org
-                    </div>
-                    <div class="feature">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Compatible Google, Bing, etc.
-                    </div>
-                </div>
             </div>
 
             <div class="content">
@@ -353,14 +292,10 @@
                     </tbody>
                 </table>
 
-                <div class="info-box">
-                    Les URLs de partage de secrets (<code>/s/{'{'}token{'}'}</code>) ne sont pas incluses dans ce sitemap
-                    car elles sont privees et ephemeres.
-                </div>
             </div>
 
             <footer>
-                <a href="/">Secret Drop</a> - Partage securise de secrets avec chiffrement de bout en bout
+                <a href="/">Secret Drop</a>
             </footer>
         </div>
     </div>
