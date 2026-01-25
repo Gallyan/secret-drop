@@ -39,7 +39,7 @@
                         {{ __('messages.legal_hosting_text') }}
                     </p>
                     <div class="text-gray-600 dark:text-slate-400 space-y-1">
-                        <p class="font-medium text-gray-900 dark:text-white">{{ config('legal.hosting.name') }}</p>
+                        <p>{{ config('legal.hosting.name') }}</p>
                         <p>{{ config('legal.hosting.address') }}</p>
                         <p>{{ __('messages.legal_hosting_phone') }} {{ config('legal.hosting.phone') }}</p>
                     </div>
