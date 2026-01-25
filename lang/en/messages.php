@@ -53,6 +53,7 @@ return [
     'btn_decrypt' => 'Decrypt',
     'btn_decrypting' => 'Decrypting...',
     'btn_retry' => 'Retry',
+    'btn_cancel' => 'Cancel',
     'btn_download_again' => 'Download again',
     'btn_create_new' => 'Create a new secret',
 

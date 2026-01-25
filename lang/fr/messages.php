@@ -53,6 +53,7 @@ return [
     'btn_decrypt' => 'Déchiffrer',
     'btn_decrypting' => 'Déchiffrement...',
     'btn_retry' => 'Réessayer',
+    'btn_cancel' => 'Annuler',
     'btn_download_again' => 'Télécharger à nouveau',
     'btn_create_new' => 'Créer un nouveau secret',
 

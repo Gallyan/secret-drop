@@ -1,6 +1,28 @@
 export default function adminSecrets() {
     return {
         extendDays: '7',
+        showRevokeModal: false,
+        pendingRevokeId: null,
+        pendingRevokeEl: null,
+
+        openRevokeModal(secretId, buttonEl) {
+            this.pendingRevokeId = secretId;
+            this.pendingRevokeEl = buttonEl;
+            this.showRevokeModal = true;
+        },
+
+        closeRevokeModal() {
+            this.showRevokeModal = false;
+            this.pendingRevokeId = null;
+            this.pendingRevokeEl = null;
+        },
+
+        async confirmRevoke() {
+            if (this.pendingRevokeId && this.pendingRevokeEl) {
+                this.showRevokeModal = false;
+                await this.revoke(this.pendingRevokeId, this.pendingRevokeEl);
+            }
+        },
 
         async extend(secretId, buttonEl) {
             const card = buttonEl.closest('[x-data]');
