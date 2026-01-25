@@ -171,9 +171,9 @@ class StatsService
         $this->increment(self::FIRST_READ_DELAY_COUNT);
     }
 
-    public function getAverageFirstReadDelay(): ?float
+    public function getAverageFirstReadDelay(?string $startDate = null): ?float
     {
-        $totals = $this->getAllTimeTotals();
+        $totals = $this->getTotals($startDate);
         $total = $totals[self::FIRST_READ_DELAY_TOTAL] ?? 0;
         $count = $totals[self::FIRST_READ_DELAY_COUNT] ?? 0;
 
