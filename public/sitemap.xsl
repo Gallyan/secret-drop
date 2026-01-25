@@ -127,31 +127,13 @@
             color: #059669;
         }
 
-        #sitemap__footer {
-            text-align: center;
-            padding: 20px;
-            color: #94a3b8;
-            font-size: 13px;
-        }
-
-        #sitemap__footer a {
-            color: #7c3aed;
-            text-decoration: none;
-        }
-
-        #sitemap__footer a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
     <div id="sitemap">
         <div id="sitemap__header">
-            <h1>Sitemap XML</h1>
-            <p>
-                <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URL(s) -
-                <a href="/">Secret Drop</a>
-            </p>
+            <h1>Secret Drop - Sitemap</h1>
+            <p><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URL(s)</p>
         </div>
         <div id="sitemap__table">
             <table>
@@ -178,9 +160,6 @@
                     </xsl:for-each>
                 </tbody>
             </table>
-        </div>
-        <div id="sitemap__footer">
-            Genere par <a href="/">Secret Drop</a>
         </div>
     </div>
 </body>
