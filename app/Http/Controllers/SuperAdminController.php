@@ -92,7 +92,6 @@ class SuperAdminController extends Controller
         }
         $stats = $this->stats->getStats($period);
         $startDate = $period === 'all' ? null : $stats['start_date'];
-        $allTime = $this->stats->getAllTimeTotals();
         $heatmapCreated = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
         $heatmapRead = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ);
         $avgFirstReadDelay = $this->stats->getAverageFirstReadDelay($startDate);
@@ -100,7 +99,6 @@ class SuperAdminController extends Controller
 
         return view('superadmin.dashboard', [
             'stats' => $stats,
-            'allTime' => $allTime,
             'period' => $period,
             'heatmapCreated' => $heatmapCreated,
             'heatmapRead' => $heatmapRead,

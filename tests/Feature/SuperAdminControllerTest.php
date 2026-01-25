@@ -140,7 +140,6 @@ class SuperAdminControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.dashboard');
         $response->assertViewHas('stats');
-        $response->assertViewHas('allTime');
     }
 
     public function testLogoutClearsSession(): void

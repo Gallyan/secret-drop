@@ -7,7 +7,8 @@ function initDashboard() {
         return;
     }
 
-    const { stats, allTime, heatmapCreated, heatmapRead, translations } = data;
+    const { stats, heatmapCreated, heatmapRead, translations } = data;
+    const totals = stats.totals;
 
     const isDark = document.documentElement.classList.contains('dark');
     const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -100,7 +101,7 @@ function initDashboard() {
         data: {
             labels: [translations.stat_text, translations.stat_file],
             datasets: [{
-                data: [allTime.secrets_created_text || 0, allTime.secrets_created_file || 0],
+                data: [totals.secrets_created_text || 0, totals.secrets_created_file || 0],
                 backgroundColor: ['#8b5cf6', '#f59e0b']
             }]
         },
@@ -122,10 +123,10 @@ function initDashboard() {
             ],
             datasets: [{
                 data: [
-                    allTime.secrets_with_passphrase || 0,
-                    allTime.secrets_single_use || 0,
-                    allTime.secrets_with_max_views || 0,
-                    allTime.secrets_split_mode || 0
+                    totals.secrets_with_passphrase || 0,
+                    totals.secrets_single_use || 0,
+                    totals.secrets_with_max_views || 0,
+                    totals.secrets_split_mode || 0
                 ],
                 backgroundColor: ['#ec4899', '#06b6d4', '#84cc16', '#f97316']
             }]
@@ -151,10 +152,10 @@ function initDashboard() {
             ],
             datasets: [{
                 data: [
-                    allTime.secrets_read || 0,
-                    allTime.secrets_expired_unread || 0,
-                    allTime.secrets_revoked || 0,
-                    allTime.secrets_max_views_reached || 0
+                    totals.secrets_read || 0,
+                    totals.secrets_expired_unread || 0,
+                    totals.secrets_revoked || 0,
+                    totals.secrets_max_views_reached || 0
                 ],
                 backgroundColor: ['#10b981', '#6b7280', '#ef4444', '#f59e0b']
             }]

@@ -152,7 +152,6 @@
 <script nonce="@nonce">
     window.superAdminData = {
         stats: @json($stats),
-        allTime: @json($allTime),
         heatmapCreated: @json($heatmapCreated),
         heatmapRead: @json($heatmapRead),
         translations: {
