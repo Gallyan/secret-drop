@@ -116,24 +116,6 @@ Le projet vise un modèle **zero-knowledge** : le serveur ne doit jamais recevoi
     - avertissement : ne pas transférer le lien
     - option : inclure la clé séparément ? (par défaut non ; garder clé dans fragment URL)
 
-### 7) Option PGP pour l’email (complément)
-
-Objectif : permettre, si possible, d’envoyer **le message email** chiffré avec la clé publique du destinataire.
-
-- Deux modes :
-    1. **PGP du lien / contenu email** : chiffrer le corps email (ou une section) avec OpenPGP
-    2. **PGP d’un “secret secondaire”** : envoyer la passphrase (si passphrase activée) via PGP
-- Contraintes :
-    - PGP côté serveur nécessite gérer clés publiques -> risque / complexité
-    - PGP côté client possible mais emails sortent du navigateur => compliqué
-- Proposition réaliste :
-    - Implémenter côté serveur : si l’utilisateur fournit une clé publique ASCII armored, chiffrer une “note” ou la passphrase, et l’inclure en bloc PGP
-    - Utiliser une lib OpenPGP côté serveur (ex. `singpolyma/openpgp-php` ou équivalent stable) + tests
-- Annuaire :
-    - option “lookup WKD” (Web Key Directory) si domaine le supporte
-    - option “lookup keys.openpgp.org” (attention: politique et fiabilité)
-    - Ces lookups doivent être **optionnels** et clairement signalés
-
 ---
 
 ## Idées pertinentes à ajouter (recommandées)
@@ -282,8 +264,7 @@ Sessions admin :
 ## Livrables attendus
 
 1. Repo Laravel prêt à déployer
-2. Docker compose optionnel (app + db + mailhog en dev)
-3. Documentation :
+2. Documentation :
     - config DKIM/SPF/DMARC (checklist)
     - variables d’env (mail, storage)
     - limites de taille fichiers
@@ -386,30 +367,26 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 ### Fonctionnalités avancées
 
 - [x]   26. Implémenter le mode "split" lien / clé avec génération d'une clé séparée à transmettre out-of-band.
-- [ ]   27. (Optionnel) Implémenter le support PGP côté serveur pour chiffrer une note ou une passphrase à partir d'une clé publique fournie.
-- [ ]   28. (Optionnel) Ajouter les options de lookup PGP (WKD / keys.openpgp.org) de manière explicite et désactivable.
-- [x]   29. Mettre en place le rate limiting sur la création de secrets et les accès admin, avec captcha.
+- [x]   27. Mettre en place le rate limiting sur la création de secrets et les accès admin, avec captcha.
 
 ### Maintenance & Sécurité
 
-- [x]   30. Implémenter le scheduler Laravel pour la purge automatique des secrets expirés et des blobs orphelins.
-- [x]   31. Ajouter la journalisation minimale conforme zero-knowledge (pas d'URL complète, pas de tokens, pas de ciphertext).
-- [x]   32. Ajouter les headers sécurisés pour le téléchargement de fichiers (no sniffing, content-disposition sûr).
+- [x]   28. Implémenter le scheduler Laravel pour la purge automatique des secrets expirés et des blobs orphelins.
+- [x]   29. Ajouter la journalisation minimale conforme zero-knowledge (pas d'URL complète, pas de tokens, pas de ciphertext).
+- [x]   30. Ajouter les headers sécurisés pour le téléchargement de fichiers (no sniffing, content-disposition sûr).
 
 ### Tests
 
-- [x]   33. Implémenter les tests unitaires (tokens, expiration, révocation, magic links).
-- [x]   34. Implémenter les tests fonctionnels (création, lecture, usage unique, expiration, admin flow).
-- [x]   35. ~~(Optionnel) Ajouter des tests E2E de sanity pour le chiffrement/déchiffrement côté navigateur.~~ => Abandonné : incompatibilité WSL/Chrome.
+- [x]   31. Implémenter les tests unitaires (tokens, expiration, révocation, magic links).
+- [x]   32. Implémenter les tests fonctionnels (création, lecture, usage unique, expiration, admin flow).
 
 ### UX & Finitions
 
-- [x]   36. Ajouter les bonus UX : QR code du lien, bouton "clé séparée" (preview local ignoré).
-- [ ]   37. Ajouter une page de statut public minimal indiquant seulement "disponible / expiré / révoqué".
-- [x]   38. Ajouter l'internationalisation FR/EN de l'interface.
+- [x]   33. Ajouter les bonus UX : QR code du lien, bouton "clé séparée" (preview local ignoré).
+- [ ]   34. Ajouter une page de statut public minimal indiquant seulement "disponible / expiré / révoqué".
+- [x]   35. Ajouter l'internationalisation FR/EN de l'interface.
 
 ### Documentation & Déploiement
 
-- [x]   39. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
-- [ ]   40. (Optionnel) Fournir un docker-compose pour le dev (app, DB, mailhog).
-- [ ]   41. Travailler le SEO / Référencement du site (titre, desc, schema.org, ...)
+- [x]   36. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
+- [ ]   37. Travailler le SEO / Référencement du site (titre, desc, schema.org, ...)
