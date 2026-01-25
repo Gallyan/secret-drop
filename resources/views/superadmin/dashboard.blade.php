@@ -5,27 +5,29 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 pb-16 md:p-8 md:pb-16 transition-colors">
     <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('messages.superadmin_dashboard_title') }}</h1>
-                <p class="mt-1 text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <form method="GET" class="flex items-center gap-2" x-data>
-                    <select name="period" x-on:change="$el.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
-                        <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
-                        <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
-                        <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
-                        <option value="1y" {{ $period === '1y' ? 'selected' : '' }}>{{ __('messages.period_1y') }}</option>
-                        <option value="all" {{ $period === 'all' ? 'selected' : '' }}>{{ __('messages.period_all') }}</option>
-                    </select>
-                </form>
-                <form action="{{ route('superadmin.logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="px-4 py-2 text-gray-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition">
-                        {{ __('messages.admin_logout') }}
-                    </button>
-                </form>
+        <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('messages.superadmin_dashboard_title') }}</h1>
+                    <p class="mt-1 text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <form method="GET" class="flex items-center gap-2" x-data>
+                        <select name="period" x-on:change="$el.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                            <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
+                            <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
+                            <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
+                            <option value="1y" {{ $period === '1y' ? 'selected' : '' }}>{{ __('messages.period_1y') }}</option>
+                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>{{ __('messages.period_all') }}</option>
+                        </select>
+                    </form>
+                    <form action="{{ route('superadmin.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 text-gray-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition">
+                            {{ __('messages.admin_logout') }}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
