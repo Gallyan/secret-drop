@@ -1,0 +1,175 @@
+# Continuous Deployment - Déploiement automatique sur VPS
+#
+# Pour activer ce workflow :
+# 1. Renommer ce fichier en cd.yml (enlever .disabled)
+# 2. Configurer les secrets GitHub (Settings > Secrets and variables > Actions) :
+#    - SSH_HOST : adresse IP ou domaine du serveur
+#    - SSH_USER : utilisateur SSH (ex: deploy, www-data)
+#    - SSH_KEY : clé privée SSH (contenu de ~/.ssh/id_ed25519)
+#    - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
+# 3. Optionnel : ajuster les commandes de déploiement selon votre config
+
+name: CD
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Permet le déclenchement manuel
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    # Ne déployer que si les tests CI passent
+    needs: [] # Ajouter ici les jobs CI si dans le même fichier
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ${{ secrets.SSH_PATH }}
+
+            # Activer le mode maintenance
+            php artisan down --refresh=15 --retry=60
+
+            # Récupérer les dernières modifications
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Installer les dépendances PHP (production)
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            # Installer les dépendances npm et build
+            npm ci
+            npm run build
+
+            # Migrations base de données
+            php artisan migrate --force
+
+            # Vider et reconstruire les caches
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+
+            # Redémarrer la queue si utilisée
+            # php artisan queue:restart
+
+            # Désactiver le mode maintenance
+            php artisan up
+
+# =============================================================================
+# ALTERNATIVE : Déploiement avec rsync (plus rapide, transfert uniquement des diff)
+# =============================================================================
+#
+#   deploy-rsync:
+#     name: Deploy with rsync
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Setup PHP & build
+#         # ... (mêmes étapes que ci-dessus pour le build)
+#
+#       - name: Deploy with rsync
+#         uses: burnett01/rsync-deployments@6.0.0
+#         with:
+#           switches: -avzr --delete --exclude='.env' --exclude='storage/' --exclude='database/database.sqlite'
+#           path: ./
+#           remote_path: ${{ secrets.SSH_PATH }}
+#           remote_host: ${{ secrets.SSH_HOST }}
+#           remote_user: ${{ secrets.SSH_USER }}
+#           remote_key: ${{ secrets.SSH_KEY }}
+#
+#       - name: Run post-deploy commands
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_KEY }}
+#           script: |
+#             cd ${{ secrets.SSH_PATH }}
+#             php artisan migrate --force
+#             php artisan config:cache
+#             php artisan route:cache
+#             php artisan view:cache
+
+# =============================================================================
+# ALTERNATIVE : Déploiement Laravel Forge (si vous utilisez Forge)
+# =============================================================================
+#
+#   deploy-forge:
+#     name: Deploy via Laravel Forge
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Trigger Forge Deploy
+#         run: |
+#           curl -X POST ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
+
+# =============================================================================
+# ALTERNATIVE : Déploiement avec Laravel Envoy
+# =============================================================================
+#
+# Créer un fichier Envoy.blade.php à la racine :
+#
+# @servers(['production' => 'deploy@your-server.com'])
+#
+# @task('deploy', ['on' => 'production'])
+#     cd /var/www/secret-drop
+#     php artisan down
+#     git pull origin main
+#     composer install --no-dev --optimize-autoloader
+#     npm ci && npm run build
+#     php artisan migrate --force
+#     php artisan config:cache
+#     php artisan route:cache
+#     php artisan view:cache
+#     php artisan up
+# @endtask
+#
+# Puis dans le workflow :
+#
+#   deploy-envoy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: shivammathur/setup-php@v2
+#         with:
+#           php-version: '8.4'
+#       - run: composer global require laravel/envoy
+#       - name: Setup SSH
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#       - run: ~/.composer/vendor/bin/envoy run deploy

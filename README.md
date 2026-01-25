@@ -240,6 +240,42 @@ php artisan test --filter=ShowSecretTest
 php artisan test --coverage
 ```
 
+## CI/CD
+
+### Intégration Continue (CI)
+
+Le projet utilise GitHub Actions pour l'intégration continue (`.github/workflows/ci.yml`) :
+
+| Job | Description |
+|-----|-------------|
+| **Pint** | Vérification du style de code PHP |
+| **Larastan** | Analyse statique (PHPStan niveau max) |
+| **Tests** | Suite complète PHPUnit (262 tests) |
+
+Les checks sont exécutés sur chaque push et pull request vers `main`.
+
+### Déploiement Continu (CD)
+
+Un workflow de déploiement est disponible mais désactivé par défaut (`.github/workflows/cd.yml.disabled`).
+
+Pour l'activer :
+
+1. Renommer le fichier en `cd.yml`
+2. Configurer les secrets GitHub (Settings > Secrets and variables > Actions) :
+
+| Secret | Description |
+|--------|-------------|
+| `SSH_HOST` | Adresse IP ou domaine du serveur |
+| `SSH_USER` | Utilisateur SSH (ex: `deploy`) |
+| `SSH_KEY` | Clé privée SSH (contenu de `~/.ssh/id_ed25519`) |
+| `SSH_PATH` | Chemin du projet (ex: `/var/www/secret-drop`) |
+
+Le workflow supporte plusieurs stratégies de déploiement :
+- **SSH classique** : git pull + composer/npm + migrations + caches
+- **rsync** : transfert des différences uniquement (plus rapide)
+- **Laravel Forge** : déclenchement via webhook
+- **Laravel Envoy** : orchestration avec Blade
+
 ## Licence
 
 MIT
