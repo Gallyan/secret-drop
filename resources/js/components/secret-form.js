@@ -45,26 +45,65 @@ export default function secretForm() {
             const len = passphrase.length;
 
             // Length scoring (main factor)
-            if (len >= 8) score += 20;
+            if (len >= 6) score += 15;
+            if (len >= 8) score += 15;
             if (len >= 12) score += 20;
-            if (len >= 16) score += 15;
-            if (len >= 20) score += 15;
+            if (len >= 16) score += 20;
 
             // Character variety
-            if (/[a-z]/.test(passphrase)) score += 7;
+            if (/[a-z]/.test(passphrase)) score += 8;
             if (/[A-Z]/.test(passphrase)) score += 8;
             if (/[0-9]/.test(passphrase)) score += 7;
-            if (/[^a-zA-Z0-9]/.test(passphrase)) score += 8;
+            if (/[^a-zA-Z0-9]/.test(passphrase)) score += 7;
 
             return Math.min(100, score);
         },
 
-        getPassphraseStrengthColor() {
+        hasMinLength() {
+            return this.passphrase.length >= 12;
+        },
+
+        hasLowercase() {
+            return /[a-z]/.test(this.passphrase);
+        },
+
+        hasUppercase() {
+            return /[A-Z]/.test(this.passphrase);
+        },
+
+        hasDigit() {
+            return /[0-9]/.test(this.passphrase);
+        },
+
+        hasSpecial() {
+            return /[^a-zA-Z0-9]/.test(this.passphrase);
+        },
+
+        getPassphraseStrengthClass() {
             const strength = this.getPassphraseStrength();
-            if (strength < 25) return 'bg-red-500';
-            if (strength < 50) return 'bg-orange-500';
-            if (strength < 75) return 'bg-yellow-500';
-            return 'bg-green-500';
+
+            // Width classes
+            let widthClass;
+            if (strength <= 0) widthClass = 'w-0';
+            else if (strength <= 10) widthClass = 'w-1/12';
+            else if (strength <= 20) widthClass = 'w-2/12';
+            else if (strength <= 30) widthClass = 'w-3/12';
+            else if (strength <= 40) widthClass = 'w-4/12';
+            else if (strength <= 50) widthClass = 'w-5/12';
+            else if (strength <= 60) widthClass = 'w-6/12';
+            else if (strength <= 70) widthClass = 'w-7/12';
+            else if (strength <= 80) widthClass = 'w-8/12';
+            else if (strength <= 90) widthClass = 'w-9/12';
+            else widthClass = 'w-full';
+
+            // Color classes
+            let colorClass;
+            if (strength < 25) colorClass = 'bg-red-500';
+            else if (strength < 50) colorClass = 'bg-orange-500';
+            else if (strength < 75) colorClass = 'bg-yellow-500';
+            else colorClass = 'bg-green-500';
+
+            return `${widthClass} ${colorClass}`;
         },
 
         // Captcha state

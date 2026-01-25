@@ -265,13 +265,42 @@
                                         x-transition:enter="transition-opacity duration-200"
                                         x-transition:enter-start="opacity-0"
                                         x-transition:enter-end="opacity-100"
-                                        class="mt-1.5 h-1 w-full bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden"
+                                        class="mt-1.5"
                                     >
-                                        <div
-                                            class="h-full rounded-full transition-all duration-300"
-                                            :class="getPassphraseStrengthColor()"
-                                            :style="'width: ' + getPassphraseStrength() + '%'"
-                                        ></div>
+                                        <div class="h-1 w-full bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                            <div
+                                                class="h-full rounded-full transition-all duration-300"
+                                                :class="getPassphraseStrengthClass()"
+                                            ></div>
+                                        </div>
+                                        {{-- Criteria list --}}
+                                        <ul class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasMinLength() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                                <svg x-show="hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <span>12 caractères min.</span>
+                                            </li>
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasLowercase() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                                <svg x-show="hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <span>Minuscule</span>
+                                            </li>
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasUppercase() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                                <svg x-show="hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <span>Majuscule</span>
+                                            </li>
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasDigit() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                                <svg x-show="hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <span>Chiffre</span>
+                                            </li>
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasSpecial() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                                <svg x-show="hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <span>Caractère spécial</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
 
