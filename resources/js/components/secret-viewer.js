@@ -123,9 +123,10 @@ export default function secretViewer(token) {
             try {
                 const parsed = window.SecretCrypto.parseKeyFragment(fragment);
                 this.keyMaterial = parsed.keyMaterial;
-                this.needsPassphrase = parsed.hasPassphrase;
                 this.version = parsed.version;
                 this.needsManualKey = false;
+                // Passphrase requirement comes from server metadata, not fragment
+                this.needsPassphrase = this.cipherMeta?.has_passphrase || false;
             } catch (e) {
                 this.error = e.message || t('crypto_fragment_invalid');
             }
@@ -188,11 +189,13 @@ export default function secretViewer(token) {
         },
 
         async decryptText(salt, passphrase) {
+            const iv2 = this.cipherMeta.iv2 || null;
             this.plaintext = await window.SecretCrypto.decryptSecret(
                 this.ciphertext,
                 this.cipherMeta.iv,
                 this.keyMaterial,
                 salt,
+                iv2,
                 passphrase,
                 this.version
             );
@@ -205,12 +208,14 @@ export default function secretViewer(token) {
             }
 
             const encryptedData = await response.arrayBuffer();
+            const iv2 = this.cipherMeta.iv2 || null;
 
             const decryptedData = await window.SecretCrypto.decryptFile(
                 encryptedData,
                 this.cipherMeta.iv,
                 this.keyMaterial,
                 salt,
+                iv2,
                 passphrase,
                 this.version
             );

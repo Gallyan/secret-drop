@@ -119,42 +119,52 @@ async function importKey(rawKey) {
 
 /**
  * Encrypt plaintext using AES-256-GCM
+ * If passphrase is provided, applies double encryption:
+ * 1. First layer: random 256-bit key (transmitted in URL fragment)
+ * 2. Second layer: key derived from passphrase (shared separately)
+ *
  * @param {string} plaintext - The secret to encrypt
  * @param {string|null} passphrase - Optional passphrase for additional protection
- * @returns {Promise<{ciphertext: string, iv: string, salt: string|null, keyMaterial: string, version: number}>}
+ * @returns {Promise<{ciphertext: string, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number}>}
  */
 export async function encryptSecret(plaintext, passphrase = null) {
     const encoder = new TextEncoder();
     const plaintextBytes = encoder.encode(plaintext);
+
+    // Always generate a random key (256 bits)
+    const randomKey = await generateKey();
+    const rawKey = await exportKey(randomKey);
+    const keyMaterial = bytesToBase64Url(rawKey);
+
+    // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
-
-    let key;
-    let salt = null;
-    let keyMaterial;
-
-    if (passphrase && passphrase.trim()) {
-        // Derive key from passphrase
-        salt = generateRandomBytes(SALT_LENGTH);
-        key = await deriveKeyFromPassphrase(passphrase, salt);
-        // Key material is empty when using passphrase (key is derived from passphrase + salt)
-        keyMaterial = '';
-    } else {
-        // Generate random key
-        key = await generateKey();
-        const rawKey = await exportKey(key);
-        keyMaterial = bytesToBase64Url(rawKey);
-    }
-
-    const ciphertextBytes = await crypto.subtle.encrypt(
+    let ciphertextBytes = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
-        key,
+        randomKey,
         plaintextBytes
     );
+
+    let salt = null;
+    let iv2 = null;
+
+    // Second encryption layer with passphrase-derived key
+    if (passphrase && passphrase.trim()) {
+        salt = generateRandomBytes(SALT_LENGTH);
+        iv2 = generateRandomBytes(IV_LENGTH);
+        const passphraseKey = await deriveKeyFromPassphrase(passphrase, salt);
+
+        ciphertextBytes = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: iv2 },
+            passphraseKey,
+            ciphertextBytes
+        );
+    }
 
     return {
         ciphertext: bytesToBase64Url(new Uint8Array(ciphertextBytes)),
         iv: bytesToBase64Url(iv),
         salt: salt ? bytesToBase64Url(salt) : null,
+        iv2: iv2 ? bytesToBase64Url(iv2) : null,
         keyMaterial,
         version: CRYPTO_VERSION
     };
@@ -162,39 +172,52 @@ export async function encryptSecret(plaintext, passphrase = null) {
 
 /**
  * Decrypt ciphertext using AES-256-GCM
+ * If passphrase was used, performs double decryption:
+ * 1. First: decrypt with passphrase-derived key
+ * 2. Then: decrypt with random key from URL fragment
+ *
  * @param {string} ciphertext - Base64URL encoded ciphertext
- * @param {string} iv - Base64URL encoded IV
- * @param {string} keyMaterial - Base64URL encoded key (empty if passphrase was used)
+ * @param {string} iv - Base64URL encoded IV (for random key layer)
+ * @param {string} keyMaterial - Base64URL encoded random key
  * @param {string|null} salt - Base64URL encoded salt (if passphrase was used)
+ * @param {string|null} iv2 - Base64URL encoded IV for passphrase layer
  * @param {string|null} passphrase - Passphrase (if used during encryption)
  * @param {number} version - Crypto version
  * @returns {Promise<string>}
  */
-export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, passphrase = null, version = CRYPTO_VERSION) {
+export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv2 = null, passphrase = null, version = CRYPTO_VERSION) {
     if (version !== CRYPTO_VERSION) {
         throw new Error(`Unsupported crypto version: ${version}`);
     }
 
-    const ciphertextBytes = base64UrlToBytes(ciphertext);
-    const ivBytes = base64UrlToBytes(iv);
-
-    let key;
-    if (salt && passphrase) {
-        // Derive key from passphrase
-        const saltBytes = base64UrlToBytes(salt);
-        key = await deriveKeyFromPassphrase(passphrase, saltBytes);
-    } else if (keyMaterial) {
-        // Import the raw key
-        const rawKey = base64UrlToBytes(keyMaterial);
-        key = await importKey(rawKey);
-    } else {
-        throw new Error('Either keyMaterial or passphrase+salt must be provided');
+    if (!keyMaterial) {
+        throw new Error('Key material is required');
     }
+
+    let dataBytes = base64UrlToBytes(ciphertext);
+
+    // First: decrypt passphrase layer if present
+    if (salt && iv2 && passphrase) {
+        const saltBytes = base64UrlToBytes(salt);
+        const iv2Bytes = base64UrlToBytes(iv2);
+        const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
+
+        dataBytes = new Uint8Array(await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv2Bytes },
+            passphraseKey,
+            dataBytes
+        ));
+    }
+
+    // Then: decrypt with random key
+    const ivBytes = base64UrlToBytes(iv);
+    const rawKey = base64UrlToBytes(keyMaterial);
+    const randomKey = await importKey(rawKey);
 
     const plaintextBytes = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
-        key,
-        ciphertextBytes
+        randomKey,
+        dataBytes
     );
 
     const decoder = new TextDecoder();
@@ -202,38 +225,32 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, pa
 }
 
 /**
- * Fragment format (compact, no exposed metadata):
- * - 'A' + keyMaterial = version 1, key in URL
- * - 'P' = version 1, passphrase required
- * - 'B' + keyMaterial = version 2, key in URL (future)
- * - 'Q' = version 2, passphrase required (future)
+ * Fragment format:
+ * - 'A' + keyMaterial = version 1, key always present
+ *
+ * Note: passphrase info comes from server metadata (cipher_meta.has_passphrase),
+ * not from the fragment. The key is always in the URL for maximum security
+ * (passphrase adds a layer, doesn't replace the key).
  */
-const FRAGMENT_PREFIXES = {
-    1: { key: 'A', passphrase: 'P' },
-    2: { key: 'B', passphrase: 'Q' },
-};
+const FRAGMENT_PREFIX = 'A';
 
 /**
  * Build the URL fragment containing key material
- * @param {string} keyMaterial - Base64URL encoded key
- * @param {boolean} hasPassphrase - Whether a passphrase was used
- * @param {number} version - Crypto version
+ * @param {string} keyMaterial - Base64URL encoded key (always required now)
  * @returns {string}
  */
-export function buildKeyFragment(keyMaterial, hasPassphrase, version = CRYPTO_VERSION) {
-    const prefixes = FRAGMENT_PREFIXES[version] || FRAGMENT_PREFIXES[1];
-
-    if (hasPassphrase) {
-        return prefixes.passphrase;
+export function buildKeyFragment(keyMaterial) {
+    if (!keyMaterial) {
+        throw new Error('Key material is required');
     }
 
-    return prefixes.key + keyMaterial;
+    return FRAGMENT_PREFIX + keyMaterial;
 }
 
 /**
  * Parse key material from URL fragment
  * @param {string} fragment - URL fragment (without #)
- * @returns {{keyMaterial: string|null, hasPassphrase: boolean, version: number}}
+ * @returns {{keyMaterial: string, version: number}}
  */
 export function parseKeyFragment(fragment) {
     if (!fragment || fragment.length === 0) {
@@ -243,55 +260,63 @@ export function parseKeyFragment(fragment) {
     const prefix = fragment.charAt(0);
     const rest = fragment.substring(1);
 
-    switch (prefix) {
-        case 'A':
-            return { keyMaterial: rest, hasPassphrase: false, version: 1 };
-        case 'P':
-            return { keyMaterial: null, hasPassphrase: true, version: 1 };
-        case 'B':
-            return { keyMaterial: rest, hasPassphrase: false, version: 2 };
-        case 'Q':
-            return { keyMaterial: null, hasPassphrase: true, version: 2 };
-        default:
-            throw new Error('Format de fragment invalide');
+    if (prefix !== 'A') {
+        throw new Error('Format de fragment invalide');
     }
+
+    if (!rest) {
+        throw new Error('Clé manquante dans le fragment');
+    }
+
+    return { keyMaterial: rest, version: 1 };
 }
 
 /**
  * Encrypt a file using AES-256-GCM
+ * If passphrase is provided, applies double encryption (same as encryptSecret)
+ *
  * @param {File} file - The file to encrypt
  * @param {string|null} passphrase - Optional passphrase for additional protection
- * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, keyMaterial: string, version: number, filename: string, mime: string, size: number}>}
+ * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number, filename: string, mime: string, size: number}>}
  */
 export async function encryptFile(file, passphrase = null) {
     const arrayBuffer = await file.arrayBuffer();
     const fileBytes = new Uint8Array(arrayBuffer);
+
+    // Always generate a random key (256 bits)
+    const randomKey = await generateKey();
+    const rawKey = await exportKey(randomKey);
+    const keyMaterial = bytesToBase64Url(rawKey);
+
+    // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
-
-    let key;
-    let salt = null;
-    let keyMaterial;
-
-    if (passphrase && passphrase.trim()) {
-        salt = generateRandomBytes(SALT_LENGTH);
-        key = await deriveKeyFromPassphrase(passphrase, salt);
-        keyMaterial = '';
-    } else {
-        key = await generateKey();
-        const rawKey = await exportKey(key);
-        keyMaterial = bytesToBase64Url(rawKey);
-    }
-
-    const ciphertextBytes = await crypto.subtle.encrypt(
+    let ciphertextBytes = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
-        key,
+        randomKey,
         fileBytes
     );
+
+    let salt = null;
+    let iv2 = null;
+
+    // Second encryption layer with passphrase-derived key
+    if (passphrase && passphrase.trim()) {
+        salt = generateRandomBytes(SALT_LENGTH);
+        iv2 = generateRandomBytes(IV_LENGTH);
+        const passphraseKey = await deriveKeyFromPassphrase(passphrase, salt);
+
+        ciphertextBytes = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: iv2 },
+            passphraseKey,
+            ciphertextBytes
+        );
+    }
 
     return {
         encryptedBlob: new Blob([ciphertextBytes], { type: 'application/octet-stream' }),
         iv: bytesToBase64Url(iv),
         salt: salt ? bytesToBase64Url(salt) : null,
+        iv2: iv2 ? bytesToBase64Url(iv2) : null,
         keyMaterial,
         version: CRYPTO_VERSION,
         filename: file.name,
@@ -302,36 +327,50 @@ export async function encryptFile(file, passphrase = null) {
 
 /**
  * Decrypt file data using AES-256-GCM
+ * If passphrase was used, performs double decryption (same as decryptSecret)
+ *
  * @param {ArrayBuffer} encryptedData - The encrypted file data
- * @param {string} iv - Base64URL encoded IV
- * @param {string} keyMaterial - Base64URL encoded key (empty if passphrase was used)
+ * @param {string} iv - Base64URL encoded IV (for random key layer)
+ * @param {string} keyMaterial - Base64URL encoded random key
  * @param {string|null} salt - Base64URL encoded salt (if passphrase was used)
+ * @param {string|null} iv2 - Base64URL encoded IV for passphrase layer
  * @param {string|null} passphrase - Passphrase (if used during encryption)
  * @param {number} version - Crypto version
  * @returns {Promise<ArrayBuffer>}
  */
-export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, passphrase = null, version = CRYPTO_VERSION) {
+export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, iv2 = null, passphrase = null, version = CRYPTO_VERSION) {
     if (version !== CRYPTO_VERSION) {
         throw new Error(`Unsupported crypto version: ${version}`);
     }
 
-    const ivBytes = base64UrlToBytes(iv);
-
-    let key;
-    if (salt && passphrase) {
-        const saltBytes = base64UrlToBytes(salt);
-        key = await deriveKeyFromPassphrase(passphrase, saltBytes);
-    } else if (keyMaterial) {
-        const rawKey = base64UrlToBytes(keyMaterial);
-        key = await importKey(rawKey);
-    } else {
-        throw new Error('Either keyMaterial or passphrase+salt must be provided');
+    if (!keyMaterial) {
+        throw new Error('Key material is required');
     }
+
+    let dataBytes = new Uint8Array(encryptedData);
+
+    // First: decrypt passphrase layer if present
+    if (salt && iv2 && passphrase) {
+        const saltBytes = base64UrlToBytes(salt);
+        const iv2Bytes = base64UrlToBytes(iv2);
+        const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
+
+        dataBytes = new Uint8Array(await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv2Bytes },
+            passphraseKey,
+            dataBytes
+        ));
+    }
+
+    // Then: decrypt with random key
+    const ivBytes = base64UrlToBytes(iv);
+    const rawKey = base64UrlToBytes(keyMaterial);
+    const randomKey = await importKey(rawKey);
 
     return crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
-        key,
-        encryptedData
+        randomKey,
+        dataBytes
     );
 }
 

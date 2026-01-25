@@ -134,12 +134,14 @@ export default function secretForm() {
             const cipherMeta = {
                 alg: 'AES-256-GCM',
                 iv: encrypted.iv,
-                version: encrypted.version
+                version: encrypted.version,
+                has_passphrase: !!encrypted.salt
             };
 
             if (encrypted.salt) {
                 cipherMeta.salt = encrypted.salt;
-                cipherMeta.kdf = 'PBKDF2-SHA256-200k';
+                cipherMeta.iv2 = encrypted.iv2;
+                cipherMeta.kdf = 'PBKDF2-SHA256-600k';
             }
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -200,12 +202,14 @@ export default function secretForm() {
             const cipherMeta = {
                 alg: 'AES-256-GCM',
                 iv: encrypted.iv,
-                version: encrypted.version
+                version: encrypted.version,
+                has_passphrase: !!encrypted.salt
             };
 
             if (encrypted.salt) {
                 cipherMeta.salt = encrypted.salt;
-                cipherMeta.kdf = 'PBKDF2-SHA256-200k';
+                cipherMeta.iv2 = encrypted.iv2;
+                cipherMeta.kdf = 'PBKDF2-SHA256-600k';
             }
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -261,11 +265,11 @@ export default function secretForm() {
             }
 
             this.clearCaptcha();
-            this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase, encrypted.version);
+            this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase);
         },
 
-        buildShareUrl(token, keyMaterial, hasPassphrase, version) {
-            const keyFragment = window.SecretCrypto.buildKeyFragment(keyMaterial, hasPassphrase, version);
+        buildShareUrl(token, keyMaterial, hasPassphrase) {
+            const keyFragment = window.SecretCrypto.buildKeyFragment(keyMaterial);
 
             if (this.splitMode) {
                 this.shareUrl = `${window.location.origin}/s/${token}`;
