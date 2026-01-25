@@ -2,7 +2,7 @@
 
 return [
     'editor_name' => env('LEGAL_EDITOR_NAME', 'Secret Drop'),
-    'contact_email' => env('LEGAL_CONTACT_EMAIL', env('MAIL_FROM_ADDRESS', 'contact@example.com')),
+    'contact_email' => env('LEGAL_CONTACT_EMAIL', 'secret@orsal.fr'),
 
     'hosting' => [
         'name' => env('LEGAL_HOSTING_NAME', 'OVHcloud'),
