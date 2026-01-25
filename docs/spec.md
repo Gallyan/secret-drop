@@ -379,9 +379,9 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 
 ### Email
 
-- [ ]   23. Implémenter l'envoi d'email au destinataire depuis la plateforme avec template responsive (table-based, inline CSS). => NON ça rompt le zero-knowledge.
+- [x]   23. ~~Implémenter l'envoi d'email au destinataire depuis la plateforme avec template responsive (table-based, inline CSS).~~ => Abandonné : contrevient au principe zero-knowledge.
 - [x]   24. Documenter et configurer le support DKIM/SPF/DMARC côté infrastructure d'envoi mail.
-- [ ]   25. Ajouter l'option d'envoi du lien avec mode "clé dans fragment" par défaut et avertissements de sécurité dans l'email.
+- [x]   25. ~~Ajouter l'option d'envoi du lien avec mode "clé dans fragment" par défaut et avertissements de sécurité dans l'email.~~ => Abandonné : contrevient au principe zero-knowledge.
 
 ### Fonctionnalités avancées
 
@@ -400,7 +400,7 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 
 - [x]   33. Implémenter les tests unitaires (tokens, expiration, révocation, magic links).
 - [x]   34. Implémenter les tests fonctionnels (création, lecture, usage unique, expiration, admin flow).
-- [ ]   35. (Optionnel) Ajouter des tests E2E de sanity pour le chiffrement/déchiffrement côté navigateur.
+- [x]   35. ~~(Optionnel) Ajouter des tests E2E de sanity pour le chiffrement/déchiffrement côté navigateur.~~ => Abandonné : incompatibilité WSL/Chrome.
 
 ### UX & Finitions
 
