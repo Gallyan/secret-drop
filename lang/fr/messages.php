@@ -69,6 +69,7 @@ return [
     'hide_qr_code' => 'Masquer le QR code',
     'download_qr_code' => 'Télécharger le QR code',
     'qr_code_hint' => 'Scannez ce QR code pour ouvrir le lien de partage sur un autre appareil.',
+    'qr_code_alt' => 'QR code contenant le lien de partage',
     'qr_generation_failed' => 'Échec de la génération du QR code.',
 
     // View secret

@@ -69,6 +69,7 @@ return [
     'hide_qr_code' => 'Hide QR code',
     'download_qr_code' => 'Download QR code',
     'qr_code_hint' => 'Scan this QR code to open the share link on another device.',
+    'qr_code_alt' => 'QR code containing the share link',
     'qr_generation_failed' => 'Failed to generate QR code.',
 
     // View secret

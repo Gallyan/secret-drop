@@ -518,25 +518,27 @@
                             <button
                                 type="button"
                                 @click="toggleQrCode()"
+                                :aria-expanded="showQrCode"
+                                aria-controls="qr-code-panel"
                                 class="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition"
                             >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                                 </svg>
                                 <span x-text="showQrCode ? '{{ __('messages.hide_qr_code') }}' : '{{ __('messages.show_qr_code') }}'"></span>
                             </button>
 
-                            <div x-show="showQrCode" x-collapse class="mt-4">
+                            <div id="qr-code-panel" x-show="showQrCode" x-collapse class="mt-4">
                                 <div class="flex flex-col items-center gap-4">
                                     <div class="p-4 bg-white rounded-xl shadow-sm">
-                                        <img :src="qrCodeDataUrl" alt="QR Code" class="w-64 h-64">
+                                        <img :src="qrCodeDataUrl" :alt="'{{ __('messages.qr_code_alt') }}'" class="w-64 h-64">
                                     </div>
                                     <button
                                         type="button"
                                         @click="downloadQrCode()"
                                         class="flex items-center gap-2 px-4 py-2 text-sm text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition"
                                     >
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
                                         {{ __('messages.download_qr_code') }}
