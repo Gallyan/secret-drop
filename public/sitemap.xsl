@@ -5,155 +5,364 @@
 <xsl:output method="html" encoding="UTF-8" indent="yes"/>
 
 <xsl:template match="/">
-<html lang="fr">
+<html lang="fr" class="dark">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Sitemap - Secret Drop</title>
+    <title>Sitemap XML - Secret Drop</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --primary: #7c3aed;
-            --primary-light: #ede9fe;
+            --bg-gradient-from: #f9fafb;
+            --bg-gradient-via: #f3f4f6;
+            --bg-gradient-to: #f9fafb;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: #e5e7eb;
+            --text: #111827;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --violet-500: #8b5cf6;
+            --violet-600: #7c3aed;
+            --indigo-600: #4f46e5;
+            --emerald-500: #10b981;
+            --input-bg: #f9fafb;
+            --input-border: #d1d5db;
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #0f172a;
-                --card: #1e293b;
-                --text: #f1f5f9;
-                --text-muted: #94a3b8;
-                --border: #334155;
-                --primary: #a78bfa;
-                --primary-light: #1e1b4b;
-            }
+
+        .dark {
+            --bg-gradient-from: #0f172a;
+            --bg-gradient-via: #1e293b;
+            --bg-gradient-to: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --card-border: rgba(51, 65, 85, 0.5);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --input-bg: rgba(15, 23, 42, 0.5);
+            --input-border: rgba(71, 85, 105, 0.5);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, var(--bg-gradient-from), var(--bg-gradient-via), var(--bg-gradient-to));
             color: var(--text);
-            line-height: 1.6;
-            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            padding-bottom: 4rem;
         }
+
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 56rem;
         }
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
         }
+
+        .header {
+            padding: 2rem 2rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            background: linear-gradient(to bottom right, rgba(124, 58, 237, 0.05), rgba(79, 70, 229, 0.05));
+        }
+
+        .dark .header {
+            background: linear-gradient(to bottom right, rgba(124, 58, 237, 0.1), rgba(79, 70, 229, 0.1));
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 1rem;
+            background: linear-gradient(to bottom right, var(--violet-500), var(--indigo-600));
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.25);
+            flex-shrink: 0;
+        }
+
+        .icon-box svg {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: white;
+        }
+
         h1 {
-            font-size: 1.75rem;
+            font-size: 1.875rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), #6366f1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.025em;
         }
+
         .subtitle {
             color: var(--text-muted);
             font-size: 0.95rem;
+            line-height: 1.6;
         }
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+        .subtitle strong {
+            color: var(--text);
+            font-weight: 600;
         }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .feature svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--emerald-500);
+            flex-shrink: 0;
+        }
+
+        .content {
+            padding: 1.5rem 2rem 2rem;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
+        thead {
+            position: sticky;
+            top: 0;
+        }
+
         th {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: var(--input-bg);
+            color: var(--text-muted);
             font-weight: 600;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             padding: 0.75rem 1rem;
             text-align: left;
+            border-bottom: 1px solid var(--card-border);
         }
+
+        th:first-child {
+            border-radius: 0.75rem 0 0 0.75rem;
+        }
+
+        th:last-child {
+            border-radius: 0 0.75rem 0.75rem 0;
+            text-align: center;
+        }
+
         td {
             padding: 1rem;
-            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--card-border);
+            vertical-align: middle;
         }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
         td a {
-            color: var(--primary);
+            color: var(--violet-600);
             text-decoration: none;
             font-weight: 500;
+            word-break: break-all;
         }
+
+        .dark td a {
+            color: var(--violet-500);
+        }
+
         td a:hover {
             text-decoration: underline;
         }
+
         .badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             padding: 0.25rem 0.75rem;
-            background: var(--primary-light);
-            color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--violet-600);
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 500;
         }
-        .priority {
-            font-weight: 600;
+
+        .dark .badge {
+            color: var(--violet-500);
         }
-        footer {
+
+        .priority {
             text-align: center;
-            margin-top: 2rem;
-            color: var(--text-muted);
+            font-weight: 600;
             font-size: 0.875rem;
         }
+
+        .priority-high {
+            color: var(--emerald-500);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
         footer a {
-            color: var(--primary);
+            color: var(--violet-600);
             text-decoration: none;
+            font-weight: 500;
+        }
+
+        .dark footer a {
+            color: var(--violet-500);
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .info-box code {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--violet-600);
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+            font-size: 0.8125rem;
+        }
+
+        .dark .info-box code {
+            color: var(--violet-500);
+        }
+
+        @media (max-width: 640px) {
+            .header { padding: 1.5rem; }
+            .content { padding: 1rem 1.5rem 1.5rem; }
+            th, td { padding: 0.75rem; }
+            .features { flex-direction: column; gap: 0.5rem; }
         }
     </style>
+    <script>
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Sitemap XML</h1>
-            <p class="subtitle">
-                Ce fichier sitemap contient <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> URL(s)
-            </p>
-        </header>
         <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>URL</th>
-                        <th>Frequence</th>
-                        <th>Priorite</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <xsl:for-each select="sitemap:urlset/sitemap:url">
+            <div class="header">
+                <div class="header-content">
+                    <div class="icon-box">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <h1>Sitemap XML</h1>
+                </div>
+                <p class="subtitle">
+                    Ce fichier sitemap aide les moteurs de recherche a indexer <strong>Secret Drop</strong>.
+                    Il contient <strong><xsl:value-of select="count(sitemap:urlset/sitemap:url)"/></strong> URL(s).
+                </p>
+                <div class="features">
+                    <div class="feature">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Format standard sitemaps.org
+                    </div>
+                    <div class="feature">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Compatible Google, Bing, etc.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <table>
+                    <thead>
                         <tr>
-                            <td>
-                                <a href="{sitemap:loc}"><xsl:value-of select="sitemap:loc"/></a>
-                            </td>
-                            <td>
-                                <span class="badge"><xsl:value-of select="sitemap:changefreq"/></span>
-                            </td>
-                            <td class="priority">
-                                <xsl:value-of select="sitemap:priority"/>
-                            </td>
+                            <th>URL</th>
+                            <th>Frequence</th>
+                            <th>Priorite</th>
                         </tr>
-                    </xsl:for-each>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <xsl:for-each select="sitemap:urlset/sitemap:url">
+                            <tr>
+                                <td>
+                                    <a href="{sitemap:loc}"><xsl:value-of select="sitemap:loc"/></a>
+                                </td>
+                                <td>
+                                    <span class="badge"><xsl:value-of select="sitemap:changefreq"/></span>
+                                </td>
+                                <td class="priority priority-high">
+                                    <xsl:value-of select="sitemap:priority"/>
+                                </td>
+                            </tr>
+                        </xsl:for-each>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    Les URLs de partage de secrets (<code>/s/{'{'}token{'}'}</code>) ne sont pas incluses dans ce sitemap
+                    car elles sont privees et ephemeres.
+                </div>
+            </div>
+
+            <footer>
+                <a href="/">Secret Drop</a> - Partage securise de secrets avec chiffrement de bout en bout
+            </footer>
         </div>
-        <footer>
-            <p>Genere par <a href="/">Secret Drop</a></p>
-        </footer>
     </div>
 </body>
 </html>
