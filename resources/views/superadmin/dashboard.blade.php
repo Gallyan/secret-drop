@@ -11,8 +11,8 @@
                 <p class="mt-1 text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
             </div>
             <div class="flex items-center gap-4">
-                <form method="GET" class="flex items-center gap-2">
-                    <select name="period" onchange="this.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                <form method="GET" class="flex items-center gap-2" x-data>
+                    <select name="period" x-on:change="$el.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
                         <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
                         <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
                         <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
