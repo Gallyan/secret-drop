@@ -1,0 +1,298 @@
+<?php
+
+return [
+    // App
+    'app_name' => 'Secret Drop',
+    'app_description' => '종단간 암호화로 민감한 정보를 안전하게 공유하세요.',
+
+    // Features
+    'feature_encryption' => '브라우저에서 AES-256-GCM 암호화',
+    'feature_zero_knowledge' => '서버는 평문 데이터를 절대 보지 않습니다',
+    'feature_auto_destroy' => '읽은 후 자동 삭제',
+    'feature_expiration' => '설정 가능한 자동 만료',
+
+    // Form labels
+    'your_secret' => '비밀',
+    'your_file' => '파일',
+    'expires_in' => '만료 기간',
+    'max_reads' => '최대 조회 수',
+    'destroy_after_read' => '읽은 후 삭제',
+    'advanced_options' => '고급 옵션',
+    'passphrase' => '암호문구',
+    'passphrase_placeholder' => '추가 보호',
+    'your_email' => '이메일',
+    'email_placeholder' => 'your@email.com',
+    'email_hint' => '나중에 비밀을 관리하기 위해 (취소, 연장)',
+
+    // Form tabs
+    'tab_text' => '텍스트',
+    'tab_file' => '파일',
+
+    // Form placeholders
+    'secret_placeholder' => '기밀 메시지를 입력하세요...',
+    'max_reads_placeholder' => '무제한',
+
+    // Expiration options
+    'expiration_1h' => '1시간',
+    'expiration_1d' => '1일',
+    'expiration_7d' => '7일',
+    'expiration_30d' => '30일',
+
+    // File upload
+    'file_drop_click' => '클릭하여 선택',
+    'file_drop_or_drag' => '또는 파일 드래그',
+    'file_max_size' => '최대 100MB',
+    'file_too_large' => '파일이 너무 큽니다 (최대 100MB)',
+
+    // Buttons
+    'btn_encrypt' => '암호화하고 링크 생성',
+    'btn_encrypting' => '암호화 중...',
+    'btn_encrypting_upload' => '암호화 및 업로드 중...',
+    'btn_copy' => '복사',
+    'btn_copied' => '복사됨!',
+    'btn_decrypt' => '복호화',
+    'btn_decrypting' => '복호화 중...',
+    'btn_retry' => '다시 시도',
+    'btn_cancel' => '취소',
+    'btn_download_again' => '다시 다운로드',
+    'btn_create_new' => '새 비밀 만들기',
+
+    // Success
+    'secret_created' => '비밀이 생성되었습니다',
+    'share_link_instruction' => '이 링크를 수신자와 공유하세요',
+    'warning_link_contains_key' => '이 링크에는 복호화 키가 포함되어 있습니다. 의도한 수신자에게만 공유하세요.',
+    'warning_passphrase_required' => '수신자는 비밀을 복호화하기 위해 암호문구를 입력해야 합니다.',
+    'success_admin_hint' => '페이지 하단의 ":link" 링크를 통해 이 비밀을 관리(취소, 연장)할 수 있습니다.',
+
+    // QR Code
+    'show_qr_code' => 'QR 코드 표시',
+    'hide_qr_code' => 'QR 코드 숨기기',
+    'download_qr_code' => 'QR 코드 다운로드',
+    'qr_code_hint' => '이 QR 코드를 스캔하여 다른 기기에서 공유 링크를 열 수 있습니다.',
+    'qr_code_alt' => '공유 링크가 포함된 QR 코드',
+    'qr_generation_failed' => 'QR 코드 생성에 실패했습니다.',
+
+    // View secret
+    'secret_message' => '비밀 메시지',
+    'secret_file' => '비밀 파일',
+    'encrypted_end_to_end_message' => '이 메시지는 종단간 암호화되었습니다',
+    'encrypted_end_to_end_file' => '이 파일은 종단간 암호화되었습니다',
+    'passphrase_protected' => '이 비밀은 암호문구로 보호되어 있습니다.',
+    'passphrase_input_placeholder' => '암호문구 입력',
+    'decrypting_message' => '복호화 중...',
+    'decrypting_file' => '다운로드 및 복호화 중...',
+    'file_decrypted' => '파일 복호화 완료',
+    'note_destroyed_text' => '이 비밀은 읽은 후 삭제되도록 설정되었습니다. 더 이상 접근할 수 없습니다.',
+    'note_destroyed_file' => '이 파일은 읽은 후 삭제되도록 설정되었습니다. 서버에서 더 이상 접근할 수 없습니다.',
+
+    // Errors
+    'error_not_found' => '비밀을 찾을 수 없음',
+    'error_unavailable' => '비밀 사용 불가',
+    'error_generic' => '오류',
+    'secret_not_exist' => '이 비밀은 존재하지 않거나 삭제되었을 수 있습니다.',
+    'secret_expired' => '이 비밀은 만료되어 더 이상 접근할 수 없습니다.',
+    'secret_revoked' => '이 비밀은 작성자에 의해 취소되었습니다.',
+    'secret_max_views' => '이 비밀은 최대 조회 수에 도달하여 더 이상 접근할 수 없습니다.',
+    'secret_unavailable_generic' => '이 비밀은 더 이상 접근할 수 없습니다.',
+    'error_loading' => '비밀을 불러오는 중 오류가 발생했습니다.',
+    'error_connection' => '비밀을 불러올 수 없습니다. 연결을 확인하세요.',
+
+    // Crypto errors
+    'crypto_not_supported' => '브라우저가 보안 암호화를 지원하지 않습니다',
+    'crypto_key_missing' => 'URL에 복호화 키가 없습니다',
+    'crypto_fragment_invalid' => '잘못된 프래그먼트 형식',
+    'crypto_passphrase_required' => '암호문구가 필요합니다',
+    'crypto_passphrase_incorrect' => '암호문구가 잘못되었거나 데이터가 손상되었습니다',
+    'crypto_decryption_failed' => '복호화 실패. 키가 잘못되었을 수 있습니다.',
+    'crypto_decryption_error' => '복호화 중 오류가 발생했습니다',
+    'crypto_file_download_failed' => '암호화된 파일을 다운로드할 수 없습니다',
+    'crypto_clipboard_failed' => '클립보드에 복사할 수 없습니다',
+    'crypto_enter_secret' => '비밀을 입력하세요',
+    'crypto_select_file' => '파일을 선택하세요',
+    'crypto_creation_error' => '비밀 생성 오류',
+
+    // Loading
+    'loading' => '로딩 중...',
+    'loading_secret' => '비밀 로딩 중...',
+
+    // Emails
+    'email_secret_created_subject' => '비밀이 생성되었습니다',
+    'email_secret_created_intro' => '새 비밀을 만들었습니다. 아래 링크를 사용하여 관리(상태 확인, 취소, 연장)하세요.',
+    'email_type' => '유형',
+    'email_expires' => '만료',
+    'email_manage_secret' => '내 비밀 관리',
+    'email_save_link_warning' => '이 링크를 저장하세요! 비밀 관리에 접근하는 유일한 방법입니다.',
+    'email_link_label' => '또는 이 링크 복사:',
+    'email_footer' => '이 이메일은 :app에서 발송되었습니다.',
+    'type_text' => '텍스트',
+    'type_file' => '파일',
+
+    // Footer
+    'footer_manage' => '내 비밀 관리',
+    'footer_legal' => '법적 고지',
+
+    // Legal page
+    'legal_title' => '법적 고지',
+    'legal_editor_title' => '웹사이트 발행인',
+    'legal_editor_text' => '이 웹사이트는 :name에 의해 발행됩니다.',
+    'legal_hosting_title' => '호스팅',
+    'legal_hosting_text' => '이 웹사이트 호스팅:',
+    'legal_hosting_phone' => '전화:',
+    'legal_data_title' => '데이터 보호',
+    'legal_data_text' => 'Secret Drop은 "제로 지식" 원칙으로 설계되었습니다. 비밀은 서버로 전송되기 전에 브라우저에서 암호화됩니다. 서버는 암호화된 데이터만 저장하며 비밀의 평문 내용에 접근할 수 없습니다.',
+    'legal_data_stored' => '저장되는 데이터:',
+    'legal_data_item_ciphertext' => '암호화된 데이터 (암호문, IV, 솔트)',
+    'legal_data_item_metadata' => '메타데이터 (생성일, 만료일, 조회 수)',
+    'legal_data_item_email' => '이메일 해시 (관리자 접근을 위해 제공된 경우)',
+    'legal_data_not_stored' => '저장되지 않는 데이터:',
+    'legal_data_not_item_plaintext' => '비밀의 평문 내용',
+    'legal_data_not_item_key' => '암호화 키 (URL 프래그먼트를 통해서만 전송)',
+    'legal_cookies_title' => '쿠키',
+    'legal_cookies_text' => '이 웹사이트는 필수 기술 쿠키만 사용합니다 (세션, 테마 설정). 추적이나 광고 쿠키는 사용하지 않습니다.',
+    'legal_cookies_cnil' => 'CNIL 권고에 따라 이러한 필수 쿠키는 동의 요건에서 면제됩니다.',
+    'legal_contact_title' => '연락처',
+    'legal_contact_text' => '이 웹사이트에 대한 질문은 :email로 연락하세요.',
+
+    // Admin
+    'admin_title' => '비밀 관리',
+    'admin_description' => '관리 패널에 접근하려면 비밀 생성 시 사용한 이메일을 입력하세요.',
+    'admin_email_placeholder' => 'your@email.com',
+    'admin_send_link' => '매직 링크 전송',
+    'admin_back_home' => '홈으로 돌아가기',
+    'admin_link_sent_title' => '받은편지함 확인',
+    'admin_link_sent_description' => '이 이메일에 비밀이 있으면 매직 링크가 전송되었습니다.',
+    'admin_link_sent_warning' => '링크는 5분간 유효하며 한 번만 사용할 수 있습니다.',
+    'admin_invalid_link_title' => '유효하지 않거나 만료된 링크',
+    'admin_invalid_link_description' => '이 매직 링크는 유효하지 않거나 이미 사용되었습니다. 새로 요청하세요.',
+    'admin_not_found_title' => '비밀을 찾을 수 없음',
+    'admin_not_found_description' => '이 비밀은 존재하지 않거나 삭제되었습니다.',
+    'admin_dashboard_title' => '내 비밀',
+    'admin_secrets_count' => ':count개의 비밀',
+    'admin_logout' => '로그아웃',
+    'admin_no_secrets' => '비밀 없음',
+    'admin_no_secrets_description' => '이 이메일 주소로 만든 비밀이 없습니다.',
+    'admin_status_active' => '활성',
+    'admin_status_expired' => '만료됨',
+    'admin_status_revoked' => '취소됨',
+    'admin_status_consumed' => '소비됨',
+    'admin_created' => '생성일',
+    'admin_expires' => '만료일',
+    'admin_read_count' => '조회 수',
+    'admin_first_read' => '첫 조회',
+    'admin_mode' => '모드',
+    'admin_single_use' => '일회용',
+    'admin_multi_use' => '다회용',
+    'admin_day' => '일',
+    'admin_days' => '일',
+    'admin_extend' => '연장',
+    'admin_revoke' => '취소',
+    'admin_revoke_confirm' => '이 비밀을 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+
+    // Magic link email
+    'email_magic_link_subject' => 'Secret Drop 접근 링크',
+    'email_magic_link_intro' => '비밀 관리 접근을 요청했습니다. 아래 버튼을 클릭하여 로그인하세요.',
+    'email_magic_link_button' => '내 비밀 접근',
+    'email_magic_link_warning' => '이 링크는 5분 후 만료되며 한 번만 사용할 수 있습니다.',
+
+    // Super Admin
+    'superadmin_title' => '슈퍼 관리자',
+    'superadmin_description' => '',
+    'email_superadmin_subject' => '슈퍼 관리자 접근 - Secret Drop',
+    'email_superadmin_intro' => '슈퍼 관리자 접근이 요청되었습니다. 아래 버튼을 클릭하여 대시보드에 접근하세요.',
+    'email_superadmin_button' => '대시보드 접근',
+    'superadmin_link_sent_description' => '이 이메일이 승인되면 매직 링크가 전송되었습니다.',
+    'superadmin_dashboard_title' => '사용 통계',
+    'superadmin_dashboard_subtitle' => 'Secret Drop 인스턴스의 익명 사용 데이터.',
+
+    // Periods
+    'period_7d' => '최근 7일',
+    'period_30d' => '최근 30일',
+    'period_90d' => '최근 90일',
+    'period_1y' => '최근 1년',
+    'period_all' => '전체 기간',
+
+    // Stats
+    'stat_secrets_created' => '생성된 비밀',
+    'stat_secrets_read' => '조회된 비밀',
+    'stat_files_shared' => '공유된 파일',
+    'stat_volume' => '용량',
+    'stat_current_disk_usage' => '현재 디스크 사용량',
+    'stat_text' => '텍스트',
+    'stat_file' => '파일',
+    'stat_reads' => '조회',
+    'stat_passphrase' => '암호문구 사용',
+    'stat_single_use' => '일회용',
+    'stat_max_views' => '최대 조회 제한',
+    'stat_read' => '조회됨',
+    'stat_expired_unread' => '미조회 만료',
+    'stat_revoked' => '취소됨',
+    'stat_max_reached' => '최대 조회 도달',
+    'stat_magic_links_requested' => '요청된 매직 링크',
+    'stat_magic_links_used' => '사용된 매직 링크',
+    'stat_secrets_extended' => '연장된 비밀',
+
+    // Charts
+    'chart_secrets_created' => '생성된 비밀',
+    'chart_secrets_read' => '조회된 비밀',
+    'chart_secret_types' => '비밀 유형',
+    'chart_secret_options' => '사용된 옵션',
+    'chart_secret_outcomes' => '비밀 결과',
+    'chart_admin_activity' => '관리자 활동',
+    'chart_heatmap_created' => '생성 히트맵 (요일/시간별)',
+    'chart_heatmap_read' => '조회 히트맵 (요일/시간별)',
+
+    // Stats
+    'stat_avg_first_read' => '평균 첫 조회 시간',
+
+    // Days
+    'day_sunday' => '일',
+    'day_monday' => '월',
+    'day_tuesday' => '화',
+    'day_wednesday' => '수',
+    'day_thursday' => '목',
+    'day_friday' => '금',
+    'day_saturday' => '토',
+
+    // File size units
+    'unit_bytes' => 'B',
+    'unit_kilobytes' => 'KB',
+    'unit_megabytes' => 'MB',
+    'unit_gigabytes' => 'GB',
+
+    // Accessibility
+    'a11y_back' => '뒤로',
+    'a11y_period_selector' => '기간 선택',
+    'a11y_extend_days' => '연장할 일수',
+    'a11y_expand_secret' => '비밀 상세 보기',
+
+    // Split mode
+    'split_mode' => '링크와 키 분리',
+    'split_mode_hint' => '보안 강화를 위해 링크와 키를 다른 채널로 전송',
+    'share_link_label' => '공유 링크',
+    'share_key_label' => '복호화 키',
+    'split_mode_warning' => '키는 다른 채널(SMS, 전화, 직접 등)로 전송하세요.',
+    'enter_key_manually' => '복호화 키 입력',
+    'key_placeholder' => '별도로 받은 키',
+    'btn_unlock' => '잠금 해제',
+
+    // Stats
+    'stat_split_mode' => '분리 모드',
+
+    // Rate limiting & Captcha
+    'rate_limit_exceeded' => '요청이 너무 많습니다. 계속하려면 아래 계산을 풀어주세요.',
+    'captcha_label' => '로봇 방지 확인',
+    'captcha_placeholder' => '답변',
+    'captcha_hint' => '계산: :challenge = ?',
+    'captcha_invalid' => '답이 틀렸습니다. 다시 시도하세요.',
+
+    // Labels
+    'label_important' => '중요:',
+    'label_note' => '참고:',
+
+    // Passphrase strength criteria
+    'passphrase_min_length' => '최소 12자',
+    'passphrase_lowercase' => '소문자',
+    'passphrase_uppercase' => '대문자',
+    'passphrase_digit' => '숫자',
+    'passphrase_special' => '특수문자',
+];
