@@ -29,18 +29,19 @@
             </div>
         </div>
 
+        @php $totals = $stats['totals']; @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format(($allTime['secrets_created_text'] ?? 0) + ($allTime['secrets_created_file'] ?? 0)) }}
+                    {{ number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0)) }}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_secrets') }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_secrets_created') }}</div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format($allTime['secrets_read'] ?? 0) }}
+                    {{ number_format($totals['secrets_read'] ?? 0) }}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_reads') }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_secrets_read') }}</div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -62,14 +63,14 @@
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format($allTime['secrets_created_file'] ?? 0) }}
+                    {{ number_format($totals['secrets_created_file'] ?? 0) }}
                 </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_files') }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_files_shared') }}</div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
                     @php
-                        $bytes = $allTime['total_file_size_bytes'] ?? 0;
+                        $bytes = $totals['total_file_size_bytes'] ?? 0;
                         if ($bytes >= 1073741824) {
                             echo number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
                         } elseif ($bytes >= 1048576) {
@@ -81,7 +82,7 @@
                         }
                     @endphp
                 </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_volume') }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_volume') }}</div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">

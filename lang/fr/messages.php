@@ -212,10 +212,10 @@ return [
     'period_all' => 'Depuis toujours',
 
     // Stats
-    'stat_total_secrets' => 'Total secrets',
-    'stat_total_reads' => 'Total lectures',
-    'stat_total_files' => 'Fichiers partagés',
-    'stat_total_volume' => 'Volume total',
+    'stat_secrets_created' => 'Secrets créés',
+    'stat_secrets_read' => 'Secrets lus',
+    'stat_files_shared' => 'Fichiers partagés',
+    'stat_volume' => 'Volume',
     'stat_current_disk_usage' => 'Espace disque actuel',
     'stat_text' => 'Texte',
     'stat_file' => 'Fichier',

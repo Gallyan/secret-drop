@@ -212,10 +212,10 @@ return [
     'period_all' => 'All time',
 
     // Stats
-    'stat_total_secrets' => 'Total secrets',
-    'stat_total_reads' => 'Total reads',
-    'stat_total_files' => 'Files shared',
-    'stat_total_volume' => 'Total volume',
+    'stat_secrets_created' => 'Secrets created',
+    'stat_secrets_read' => 'Secrets read',
+    'stat_files_shared' => 'Files shared',
+    'stat_volume' => 'Volume',
     'stat_current_disk_usage' => 'Current disk usage',
     'stat_text' => 'Text',
     'stat_file' => 'File',
