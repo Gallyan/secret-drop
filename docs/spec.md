@@ -345,70 +345,70 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 
 ### Infrastructure & Configuration
 
-- [x] 1. Initialiser le projet Laravel 12 (PHP 8.4), configurer Blade, Alpine.js, stockage local/S3 et configuration mail de base.
-- [x] 2. Mettre en place les contraintes de sécurité globales : HTTPS forcé, headers sécurisés, CSP stricte, configuration des logs sans données sensibles.
-- [x] 3. Concevoir et migrer le schéma de base de données (secrets, magic_links) avec UUID, tokens non devinables et champs métier nécessaires.
-- [x] 4. Implémenter les services backend de génération de tokens sécurisés (token public, admin_token, magic link token).
+- [x]   1. Initialiser le projet Laravel 12 (PHP 8.4), configurer Blade, Alpine.js, stockage local/S3 et configuration mail de base.
+- [x]   2. Mettre en place les contraintes de sécurité globales : HTTPS forcé, headers sécurisés, CSP stricte, configuration des logs sans données sensibles.
+- [x]   3. Concevoir et migrer le schéma de base de données (secrets, magic_links) avec UUID, tokens non devinables et champs métier nécessaires.
+- [x]   4. Implémenter les services backend de génération de tokens sécurisés (token public, admin_token, magic link token).
 
 ### Création de secrets
 
-- [x] 5. Créer la page publique de création de secret (Blade + Alpine) avec formulaire texte, options (expiration, usage unique, max views, passphrase).
-- [x] 6. Implémenter le chiffrement côté client pour les secrets texte via Web Crypto API (AES-256-GCM, Base64URL, versioning crypto).
-- [x] 7. Implémenter l'API POST /api/secrets pour recevoir uniquement le ciphertext, les métadonnées et les options, sans jamais recevoir le secret en clair.
-- [x] 8. Générer côté client l'URL de partage avec clé dans le fragment (/s/{token}#key_material) et proposer la copie.
-- [x] 9. Ajouter la création de secret fichier : interface upload (drag & drop), chiffrement côté client avant upload, envoi du blob chiffré et métadonnées.
-- [x] 10. Gérer le stockage serveur des fichiers chiffrés (local/S3), sans jamais manipuler de contenu déchiffré.
+- [x]   5. Créer la page publique de création de secret (Blade + Alpine) avec formulaire texte, options (expiration, usage unique, max views, passphrase).
+- [x]   6. Implémenter le chiffrement côté client pour les secrets texte via Web Crypto API (AES-256-GCM, Base64URL, versioning crypto).
+- [x]   7. Implémenter l'API POST /api/secrets pour recevoir uniquement le ciphertext, les métadonnées et les options, sans jamais recevoir le secret en clair.
+- [x]   8. Générer côté client l'URL de partage avec clé dans le fragment (/s/{token}#key_material) et proposer la copie.
+- [x]   9. Ajouter la création de secret fichier : interface upload (drag & drop), chiffrement côté client avant upload, envoi du blob chiffré et métadonnées.
+- [x]   10. Gérer le stockage serveur des fichiers chiffrés (local/S3), sans jamais manipuler de contenu déchiffré.
 
 ### Lecture de secrets
 
-- [x] 11. Créer la page de lecture GET /s/{token} avec chargement des métadonnées et du ciphertext via API.
-- [x] 12. Implémenter le déchiffrement côté client à partir du fragment URL, avec affichage texte ou téléchargement de fichier après succès.
-- [x] 13. Implémenter l'API POST /api/secrets/{token}/read déclenchée uniquement après un déchiffrement réussi côté client.
-- [x] 14. Gérer la logique serveur de lecture : incrément des compteurs, dates de lecture, vérification max_views et expiration.
-- [x] 15. Implémenter le mode usage unique : suppression irréversible du ciphertext/blob après la première lecture validée.
-- [x] 16. Gérer les états d'erreur de lecture : expiré, révoqué, usage unique consommé, clé invalide.
-- [x] 17. Implémenter la révocation d'un secret côté serveur avec suppression du ciphertext/blob et affichage "secret indisponible".
+- [x]   11. Créer la page de lecture GET /s/{token} avec chargement des métadonnées et du ciphertext via API.
+- [x]   12. Implémenter le déchiffrement côté client à partir du fragment URL, avec affichage texte ou téléchargement de fichier après succès.
+- [x]   13. Implémenter l'API POST /api/secrets/{token}/read déclenchée uniquement après un déchiffrement réussi côté client.
+- [x]   14. Gérer la logique serveur de lecture : incrément des compteurs, dates de lecture, vérification max_views et expiration.
+- [x]   15. Implémenter le mode usage unique : suppression irréversible du ciphertext/blob après la première lecture validée.
+- [x]   16. Gérer les états d'erreur de lecture : expiré, révoqué, usage unique consommé, clé invalide.
+- [x]   17. Implémenter la révocation d'un secret côté serveur avec suppression du ciphertext/blob et affichage "secret indisponible".
 
 ### Administration
 
-- [x] 18. Ajouter la possibilité de saisir un email créateur lors de la création et stocker l'email hashé.
-- [x] 19. Implémenter la page admin avec workflow de vérification par email (magic link, pas d'accès direct).
-- [x] 20. Implémenter l'émission de magic links à usage unique avec TTL court (5 min) et protection brute force.
-- [x] 21. Implémenter la validation du magic link et l'ouverture d'une session admin courte et scoped.
-- [x] 22. Créer l'interface admin permettant de voir le statut (lu, dates, compteurs), révoquer et prolonger l'expiration.
+- [x]   18. Ajouter la possibilité de saisir un email créateur lors de la création et stocker l'email hashé.
+- [x]   19. Implémenter la page admin avec workflow de vérification par email (magic link, pas d'accès direct).
+- [x]   20. Implémenter l'émission de magic links à usage unique avec TTL court (5 min) et protection brute force.
+- [x]   21. Implémenter la validation du magic link et l'ouverture d'une session admin courte et scoped.
+- [x]   22. Créer l'interface admin permettant de voir le statut (lu, dates, compteurs), révoquer et prolonger l'expiration.
 
 ### Email
 
-- [ ] 23. Implémenter l'envoi d'email au destinataire depuis la plateforme avec template responsive (table-based, inline CSS).
-- [x] 24. Documenter et configurer le support DKIM/SPF/DMARC côté infrastructure d'envoi mail.
-- [ ] 25. Ajouter l'option d'envoi du lien avec mode "clé dans fragment" par défaut et avertissements de sécurité dans l'email.
+- [ ]   23. Implémenter l'envoi d'email au destinataire depuis la plateforme avec template responsive (table-based, inline CSS). => NON ça rompt le zero-knowledge.
+- [x]   24. Documenter et configurer le support DKIM/SPF/DMARC côté infrastructure d'envoi mail.
+- [ ]   25. Ajouter l'option d'envoi du lien avec mode "clé dans fragment" par défaut et avertissements de sécurité dans l'email.
 
 ### Fonctionnalités avancées
 
-- [x] 26. Implémenter le mode "split" lien / clé avec génération d'une clé séparée à transmettre out-of-band.
-- [ ] 27. (Optionnel) Implémenter le support PGP côté serveur pour chiffrer une note ou une passphrase à partir d'une clé publique fournie.
-- [ ] 28. (Optionnel) Ajouter les options de lookup PGP (WKD / keys.openpgp.org) de manière explicite et désactivable.
-- [x] 29. Mettre en place le rate limiting sur la création de secrets et les accès admin, avec captcha.
+- [x]   26. Implémenter le mode "split" lien / clé avec génération d'une clé séparée à transmettre out-of-band.
+- [ ]   27. (Optionnel) Implémenter le support PGP côté serveur pour chiffrer une note ou une passphrase à partir d'une clé publique fournie.
+- [ ]   28. (Optionnel) Ajouter les options de lookup PGP (WKD / keys.openpgp.org) de manière explicite et désactivable.
+- [x]   29. Mettre en place le rate limiting sur la création de secrets et les accès admin, avec captcha.
 
 ### Maintenance & Sécurité
 
-- [x] 30. Implémenter le scheduler Laravel pour la purge automatique des secrets expirés et des blobs orphelins.
-- [x] 31. Ajouter la journalisation minimale conforme zero-knowledge (pas d'URL complète, pas de tokens, pas de ciphertext).
-- [x] 32. Ajouter les headers sécurisés pour le téléchargement de fichiers (no sniffing, content-disposition sûr).
+- [x]   30. Implémenter le scheduler Laravel pour la purge automatique des secrets expirés et des blobs orphelins.
+- [x]   31. Ajouter la journalisation minimale conforme zero-knowledge (pas d'URL complète, pas de tokens, pas de ciphertext).
+- [x]   32. Ajouter les headers sécurisés pour le téléchargement de fichiers (no sniffing, content-disposition sûr).
 
 ### Tests
 
-- [x] 33. Implémenter les tests unitaires (tokens, expiration, révocation, magic links).
-- [x] 34. Implémenter les tests fonctionnels (création, lecture, usage unique, expiration, admin flow).
-- [ ] 35. (Optionnel) Ajouter des tests E2E de sanity pour le chiffrement/déchiffrement côté navigateur.
+- [x]   33. Implémenter les tests unitaires (tokens, expiration, révocation, magic links).
+- [x]   34. Implémenter les tests fonctionnels (création, lecture, usage unique, expiration, admin flow).
+- [ ]   35. (Optionnel) Ajouter des tests E2E de sanity pour le chiffrement/déchiffrement côté navigateur.
 
 ### UX & Finitions
 
-- [x] 36. Ajouter les bonus UX : QR code du lien, bouton "clé séparée" (preview local ignoré).
-- [ ] 37. Ajouter une page de statut public minimal indiquant seulement "disponible / expiré / révoqué".
-- [x] 38. Ajouter l'internationalisation FR/EN de l'interface.
+- [x]   36. Ajouter les bonus UX : QR code du lien, bouton "clé séparée" (preview local ignoré).
+- [ ]   37. Ajouter une page de statut public minimal indiquant seulement "disponible / expiré / révoqué".
+- [x]   38. Ajouter l'internationalisation FR/EN de l'interface.
 
 ### Documentation & Déploiement
 
-- [x] 39. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
-- [ ] 40. (Optionnel) Fournir un docker-compose pour le dev (app, DB, mailhog).
+- [x]   39. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
+- [ ]   40. (Optionnel) Fournir un docker-compose pour le dev (app, DB, mailhog).
