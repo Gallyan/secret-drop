@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ExtendSecretRequest;
+use App\Http\Requests\RequestAdminAccessRequest;
 use App\Mail\MagicLinkMail;
 use App\Models\MagicLink;
 use App\Models\Secret;
@@ -34,13 +36,9 @@ class AdminController extends Controller
         return view('admin.index');
     }
 
-    public function requestAccess(Request $request): View
+    public function requestAccess(RequestAdminAccessRequest $request): View
     {
-        $validated = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-        ]);
-
-        $emailHash = MagicLink::hashEmail($validated['email']);
+        $emailHash = MagicLink::hashEmail($request->validated('email'));
 
         $hasSecrets = Secret::where('creator_email_hash', $emailHash)->exists();
 
@@ -57,7 +55,7 @@ class AdminController extends Controller
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
-        Mail::to($validated['email'])->send(new MagicLinkMail($verifyUrl));
+        Mail::to($request->validated('email'))->send(new MagicLinkMail($verifyUrl));
 
         $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
 
@@ -138,12 +136,8 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function extend(Request $request, string $id): JsonResponse
+    public function extend(ExtendSecretRequest $request, string $id): JsonResponse
     {
-        $validated = $request->validate([
-            'days' => ['required', 'integer', 'min:1', 'max:30'],
-        ]);
-
         $emailHash = $request->session()->get(self::SESSION_KEY);
 
         if (! $emailHash) {
@@ -163,7 +157,7 @@ class AdminController extends Controller
         }
 
         $baseDate = $secret->expire_at->isPast() ? now() : $secret->expire_at;
-        $secret->expire_at = $baseDate->addDays($validated['days']);
+        $secret->expire_at = $baseDate->addDays($request->validated('days'));
         $secret->save();
 
         $this->stats->increment(StatsService::SECRETS_EXTENDED);

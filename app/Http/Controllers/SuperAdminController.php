@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestSuperAdminAccessRequest;
 use App\Mail\SuperAdminMagicLinkMail;
 use App\Models\MagicLink;
 use App\Services\StatsService;
@@ -30,13 +31,9 @@ class SuperAdminController extends Controller
         return view('superadmin.index');
     }
 
-    public function requestAccess(Request $request): View
+    public function requestAccess(RequestSuperAdminAccessRequest $request): View
     {
-        $request->validate([
-            'email' => ['required', 'email'],
-        ]);
-
-        $email = strtolower(trim($request->input('email')));
+        $email = strtolower(trim($request->validated('email')));
         $superAdminEmail = strtolower(trim(config('app.super_admin_email', '')));
 
         if ($email === $superAdminEmail && $superAdminEmail !== '') {
