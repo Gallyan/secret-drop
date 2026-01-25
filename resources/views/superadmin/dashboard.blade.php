@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
                     {{ number_format(($allTime['secrets_created_text'] ?? 0) + ($allTime['secrets_created_file'] ?? 0)) }}
