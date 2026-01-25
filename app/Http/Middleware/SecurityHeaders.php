@@ -22,9 +22,11 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        $nonce = csp_nonce();
-        $csp = $this->buildCsp($nonce);
-        $response->headers->set('Content-Security-Policy', $csp);
+        if (! $request->is('sitemap.xml', 'sitemap.xsl')) {
+            $nonce = csp_nonce();
+            $csp = $this->buildCsp($nonce);
+            $response->headers->set('Content-Security-Policy', $csp);
+        }
 
         return $response;
     }

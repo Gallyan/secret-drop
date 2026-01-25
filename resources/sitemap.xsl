@@ -89,12 +89,12 @@
             border-bottom: none;
         }
 
-        tr:nth-child(even) {
-            background: #fafafa;
+        tr.odd td {
+            background: #faf5ff;
         }
 
-        tr:hover {
-            background: #f5f3ff;
+        tr:hover td {
+            background: #ede9fe;
         }
 
         td a {
@@ -140,6 +140,7 @@
                 <thead>
                     <tr>
                         <th>URL</th>
+                        <th>Derniere modification</th>
                         <th>Frequence</th>
                         <th>Priorite</th>
                     </tr>
@@ -147,8 +148,14 @@
                 <tbody>
                     <xsl:for-each select="sitemap:urlset/sitemap:url">
                         <tr>
+                            <xsl:if test="position() mod 2 = 1">
+                                <xsl:attribute name="class">odd</xsl:attribute>
+                            </xsl:if>
                             <td>
                                 <a href="{sitemap:loc}"><xsl:value-of select="sitemap:loc"/></a>
+                            </td>
+                            <td>
+                                <xsl:value-of select="concat(substring(sitemap:lastmod,1,10),' ',substring(sitemap:lastmod,12,5))"/>
                             </td>
                             <td>
                                 <span class="badge"><xsl:value-of select="sitemap:changefreq"/></span>
