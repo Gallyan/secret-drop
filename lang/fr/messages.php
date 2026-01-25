@@ -63,6 +63,13 @@ return [
     'warning_passphrase_required' => 'Le destinataire devra entrer la passphrase pour déchiffrer le secret.',
     'success_admin_hint' => 'Vous pourrez gérer ce secret (révoquer, prolonger) via le lien « :link » en bas de page.',
 
+    // QR Code
+    'show_qr_code' => 'Afficher le QR code',
+    'hide_qr_code' => 'Masquer le QR code',
+    'download_qr_code' => 'Télécharger le QR code',
+    'qr_code_hint' => 'Scannez ce QR code pour ouvrir le lien de partage sur un autre appareil.',
+    'qr_generation_failed' => 'Échec de la génération du QR code.',
+
     // View secret
     'secret_message' => 'Message secret',
     'secret_file' => 'Fichier secret',

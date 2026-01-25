@@ -63,6 +63,13 @@ return [
     'warning_passphrase_required' => 'The recipient will need to enter the passphrase to decrypt the secret.',
     'success_admin_hint' => 'You can manage this secret (revoke, extend) via the ":link" link at the bottom of the page.',
 
+    // QR Code
+    'show_qr_code' => 'Show QR code',
+    'hide_qr_code' => 'Hide QR code',
+    'download_qr_code' => 'Download QR code',
+    'qr_code_hint' => 'Scan this QR code to open the share link on another device.',
+    'qr_generation_failed' => 'Failed to generate QR code.',
+
     // View secret
     'secret_message' => 'Secret message',
     'secret_file' => 'Secret file',

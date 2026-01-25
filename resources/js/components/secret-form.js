@@ -1,3 +1,5 @@
+import QRCode from 'qrcode';
+
 function t(key) {
     return window.translations?.[key] || key;
 }
@@ -32,6 +34,8 @@ export default function secretForm() {
         passphraseUsed: false,
         copied: false,
         keyCopied: false,
+        showQrCode: false,
+        qrCodeDataUrl: null,
 
         // Captcha state
         captchaRequired: false,
@@ -294,6 +298,49 @@ export default function secretForm() {
             }
         },
 
+        async toggleQrCode() {
+            if (this.showQrCode) {
+                this.showQrCode = false;
+                return;
+            }
+
+            if (!this.qrCodeDataUrl) {
+                try {
+                    // For split mode, generate QR for full URL (link + key)
+                    const fullUrl = this.shareKey
+                        ? `${this.shareUrl}#${this.shareKey}`
+                        : this.shareUrl;
+
+                    this.qrCodeDataUrl = await QRCode.toDataURL(fullUrl, {
+                        width: 256,
+                        margin: 2,
+                        color: {
+                            dark: '#1e1b4b',
+                            light: '#ffffff'
+                        },
+                        errorCorrectionLevel: 'M'
+                    });
+                } catch (e) {
+                    console.error('QR Code generation failed:', e);
+                    this.error = t('qr_generation_failed');
+                    return;
+                }
+            }
+
+            this.showQrCode = true;
+        },
+
+        async downloadQrCode() {
+            if (!this.qrCodeDataUrl) {
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.download = 'secret-drop-qrcode.png';
+            link.href = this.qrCodeDataUrl;
+            link.click();
+        },
+
         clearCaptcha() {
             this.captchaRequired = false;
             this.captchaToken = null;
@@ -341,6 +388,8 @@ export default function secretForm() {
             this.shareKey = null;
             this.passphraseUsed = false;
             this.error = null;
+            this.showQrCode = false;
+            this.qrCodeDataUrl = null;
             this.clearCaptcha();
         }
     };
