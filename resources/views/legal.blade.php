@@ -35,11 +35,13 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         {{ __('messages.legal_hosting_title') }}
                     </h2>
+                    <p class="text-gray-600 dark:text-slate-400 mb-2">
+                        {{ __('messages.legal_hosting_text') }}
+                    </p>
                     <div class="text-gray-600 dark:text-slate-400 space-y-1">
                         <p class="font-medium text-gray-900 dark:text-white">{{ config('legal.hosting.name') }}</p>
-                        <p>{{ config('legal.hosting.legal_form') }}</p>
                         <p>{{ config('legal.hosting.address') }}</p>
-                        <p>{{ config('legal.hosting.rcs') }}</p>
+                        <p>{{ __('messages.legal_hosting_phone') }} {{ config('legal.hosting.phone') }}</p>
                     </div>
                 </section>
 

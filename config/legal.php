@@ -6,8 +6,7 @@ return [
 
     'hosting' => [
         'name' => env('LEGAL_HOSTING_NAME', 'OVHcloud'),
-        'legal_form' => env('LEGAL_HOSTING_LEGAL_FORM', 'SAS au capital de 10 000 000 €'),
         'address' => env('LEGAL_HOSTING_ADDRESS', '2 rue Kellermann, 59100 Roubaix, France'),
-        'rcs' => env('LEGAL_HOSTING_RCS', 'RCS Lille Métropole 424 761 419'),
+        'phone' => env('LEGAL_HOSTING_PHONE', '+33 9 72 10 10 07'),
     ],
 ];
