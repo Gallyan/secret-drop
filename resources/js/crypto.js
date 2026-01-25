@@ -11,7 +11,7 @@ const CRYPTO_VERSION = 1;
 const AES_KEY_LENGTH = 256;
 const IV_LENGTH = 12; // 96 bits for AES-GCM
 const SALT_LENGTH = 16; // 128 bits for PBKDF2
-const PBKDF2_ITERATIONS = 200000;
+const PBKDF2_ITERATIONS = 600000;
 
 /**
  * Encode bytes to Base64URL (URL-safe, no padding)
