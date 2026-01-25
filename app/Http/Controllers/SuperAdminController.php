@@ -69,6 +69,7 @@ class SuperAdminController extends Controller
         $magicLink->markAsUsed();
         $this->stats->increment(StatsService::MAGIC_LINKS_USED);
 
+        $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
         $request->session()->put('super_admin_expires_at', now()->addHours(2)->timestamp);
 
@@ -106,8 +107,8 @@ class SuperAdminController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
-        $request->session()->forget(self::SESSION_KEY);
-        $request->session()->forget('super_admin_expires_at');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('superadmin.index');
     }

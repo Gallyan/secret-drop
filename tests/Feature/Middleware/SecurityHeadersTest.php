@@ -34,13 +34,13 @@ class SecurityHeadersTest extends TestCase
         $this->assertEquals('SAMEORIGIN', $response->headers->get('X-Frame-Options'));
     }
 
-    public function testSetsXXssProtection(): void
+    public function testDoesNotSetObsoleteXXssProtection(): void
     {
         $request = Request::create('/test', 'GET');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('1; mode=block', $response->headers->get('X-XSS-Protection'));
+        $this->assertNull($response->headers->get('X-XSS-Protection'));
     }
 
     public function testSetsReferrerPolicy(): void
@@ -159,5 +159,33 @@ class SecurityHeadersTest extends TestCase
         $csp = $response->headers->get('Content-Security-Policy');
 
         $this->assertStringContainsString("form-action 'self'", $csp);
+    }
+
+    public function testCspIsStrictInProduction(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringNotContainsString('unsafe-eval', $csp);
+        $this->assertStringNotContainsString('unsafe-inline', $csp);
+    }
+
+    public function testCspAllowsUnsafeEvalInLocal(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+
+        $this->assertStringContainsString('unsafe-eval', $csp);
+        $this->assertStringContainsString('unsafe-inline', $csp);
     }
 }

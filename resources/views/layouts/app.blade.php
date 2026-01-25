@@ -14,10 +14,12 @@
     <meta name="description" content="@yield('description', __('messages.app_description'))">
 
     {{-- SEO: noindex for sensitive pages --}}
-    @if(View::hasSection('noindex'))
+    @if(View::hasSection('noindex') || request()->is('s/*', 'admin/*', 'superadmin/*'))
     <meta name="robots" content="noindex, nofollow">
     @endif
 
+    {{-- Canonical URL, Open Graph, Twitter Card - disabled for sensitive pages --}}
+    @unless(request()->is('s/*', 'admin/*', 'superadmin/*'))
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ url()->current() }}">
 
@@ -38,6 +40,7 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
     <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
+    @endunless
 
     {{-- Schema.org JSON-LD (only on homepage) --}}
     @if(request()->routeIs('home'))

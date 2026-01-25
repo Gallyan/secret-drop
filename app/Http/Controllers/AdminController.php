@@ -77,6 +77,7 @@ class AdminController extends Controller
         $magicLink->markAsUsed();
         $this->stats->increment(StatsService::MAGIC_LINKS_USED);
 
+        $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
 
         return redirect()->route('admin.dashboard');
@@ -99,7 +100,8 @@ class AdminController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
-        $request->session()->forget(self::SESSION_KEY);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('admin.index');
     }

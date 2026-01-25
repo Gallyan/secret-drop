@@ -14,7 +14,6 @@ class SecurityHeaders
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
-        $response->headers->set('X-XSS-Protection', '1; mode=block');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
@@ -34,14 +33,25 @@ class SecurityHeaders
     private function buildCsp(string $nonce): string
     {
         $isLocal = app()->environment('local');
+
+        // En local : unsafe-eval/unsafe-inline pour Vite hot reload
+        // En production : CSP stricte avec nonce uniquement
+        $scriptSrc = $isLocal
+            ? "script-src 'self' 'nonce-{$nonce}' 'unsafe-eval'"
+            : "script-src 'self' 'nonce-{$nonce}'";
+
+        $styleSrc = $isLocal
+            ? "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline'"
+            : "style-src 'self' 'nonce-{$nonce}'";
+
         $connectSrc = $isLocal
             ? "connect-src 'self' ws://localhost:* http://localhost:*"
             : "connect-src 'self'";
 
         $directives = [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}' 'unsafe-eval'",
-            "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline'",
+            $scriptSrc,
+            $styleSrc,
             "img-src 'self' data: https:",
             "font-src 'self'",
             $connectSrc,
