@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,10 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#8b5cf6">
+
+    {{-- Fonts --}}
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700|noto-sans-arabic:400,500,600,700" rel="stylesheet">
     <meta name="description" content="@yield('description', __('messages.app_description'))">
 
     {{-- SEO: noindex for sensitive pages --}}
@@ -29,6 +33,12 @@
     <link rel="alternate" hreflang="es" href="{{ url()->current() }}">
     <link rel="alternate" hreflang="it" href="{{ url()->current() }}">
     <link rel="alternate" hreflang="de" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="pt" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="nl" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="pl" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="ja" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="ko" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="ar" href="{{ url()->current() }}">
     <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
 
     {{-- Open Graph --}}
@@ -123,7 +133,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
-    <div class="fixed top-4 right-4 z-50">
+    <div class="fixed top-4 end-4 z-50">
         <x-theme-toggle />
     </div>
 
@@ -131,7 +141,7 @@
         @yield('content')
     </main>
 
-    <footer class="fixed bottom-4 left-0 right-0 z-10 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
+    <footer class="fixed bottom-4 inset-x-0 z-10 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
         <div class="flex items-center justify-center gap-2">
             <span>&copy; {{ date('Y') }} {{ config('app.name') }}</span>
             <span>·</span>

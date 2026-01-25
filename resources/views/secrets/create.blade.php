@@ -206,7 +206,7 @@
                                 class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                             >
                                 <svg
-                                    class="w-4 h-4 transition-transform"
+                                    class="w-4 h-4 transition-transform rtl:-scale-x-100"
                                     :class="{ 'rotate-90': showAdvanced }"
                                     aria-hidden="true"
                                     fill="none"
@@ -231,13 +231,13 @@
                                             x-model="passphrase"
                                             autocomplete="off"
                                             placeholder="{{ __('messages.passphrase_placeholder') }}"
-                                            class="w-full px-4 py-2.5 pr-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                            class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
                                             :aria-label="showPassphrase ? 'Masquer la passphrase' : 'Afficher la passphrase'"
-                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
+                                            class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
                                         >
                                             <svg x-show="!showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -316,7 +316,7 @@
                                     <div class="relative mt-0.5">
                                         <input type="checkbox" id="splitMode" x-model="splitMode" class="sr-only peer">
                                         <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
-                                        <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                                        <div class="absolute start-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:ltr:translate-x-5 peer-checked:rtl:-translate-x-5"></div>
                                     </div>
                                     <div>
                                         <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
@@ -417,13 +417,13 @@
                                     type="text"
                                     readonly
                                     :value="shareUrl"
-                                    class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                    class="w-full px-4 py-3 pe-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
                                 >
                                 <button
                                     type="button"
                                     @click="copyToClipboard()"
                                     :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                    class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                    class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
                                 >
                                     <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                     <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -453,13 +453,13 @@
                                         type="text"
                                         readonly
                                         :value="shareUrl"
-                                        class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                        class="w-full px-4 py-3 pe-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
                                     >
                                     <button
                                         type="button"
                                         @click="copyToClipboard()"
                                         :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
                                     >
                                         <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -478,13 +478,13 @@
                                         type="text"
                                         readonly
                                         :value="shareKey"
-                                        class="w-full px-4 py-3 pr-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
+                                        class="w-full px-4 py-3 pe-24 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono transition-colors"
                                     >
                                     <button
                                         type="button"
                                         @click="copyKeyToClipboard()"
                                         :aria-label="keyCopied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
                                     >
                                         <span x-show="!keyCopied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="keyCopied">{{ __('messages.btn_copied') }}</span>

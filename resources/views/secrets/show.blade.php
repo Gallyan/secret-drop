@@ -200,7 +200,7 @@
                                 type="button"
                                 @click="copyToClipboard()"
                                 :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                class="absolute top-3 right-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition"
+                                class="absolute top-3 end-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition"
                             >
                                 <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                 <span x-show="copied">{{ __('messages.btn_copied') }}</span>
