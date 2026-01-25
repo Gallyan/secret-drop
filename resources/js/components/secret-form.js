@@ -37,6 +37,36 @@ export default function secretForm() {
         showQrCode: false,
         qrCodeDataUrl: null,
 
+        getPassphraseStrength() {
+            const passphrase = this.passphrase;
+            if (!passphrase) return 0;
+
+            let score = 0;
+            const len = passphrase.length;
+
+            // Length scoring (main factor)
+            if (len >= 8) score += 20;
+            if (len >= 12) score += 20;
+            if (len >= 16) score += 15;
+            if (len >= 20) score += 15;
+
+            // Character variety
+            if (/[a-z]/.test(passphrase)) score += 7;
+            if (/[A-Z]/.test(passphrase)) score += 8;
+            if (/[0-9]/.test(passphrase)) score += 7;
+            if (/[^a-zA-Z0-9]/.test(passphrase)) score += 8;
+
+            return Math.min(100, score);
+        },
+
+        getPassphraseStrengthColor() {
+            const strength = this.getPassphraseStrength();
+            if (strength < 25) return 'bg-red-500';
+            if (strength < 50) return 'bg-orange-500';
+            if (strength < 75) return 'bg-yellow-500';
+            return 'bg-green-500';
+        },
+
         // Captcha state
         captchaRequired: false,
         captchaToken: null,

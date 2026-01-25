@@ -259,6 +259,20 @@
                                             </svg>
                                         </button>
                                     </div>
+                                    {{-- Passphrase strength indicator --}}
+                                    <div
+                                        x-show="passphrase.length > 0"
+                                        x-transition:enter="transition-opacity duration-200"
+                                        x-transition:enter-start="opacity-0"
+                                        x-transition:enter-end="opacity-100"
+                                        class="mt-1.5 h-1 w-full bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full transition-all duration-300"
+                                            :class="getPassphraseStrengthColor()"
+                                            :style="'width: ' + getPassphraseStrength() + '%'"
+                                        ></div>
+                                    </div>
                                 </div>
 
                                 {{-- Creator email --}}
