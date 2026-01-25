@@ -412,3 +412,4 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 
 - [x]   39. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
 - [ ]   40. (Optionnel) Fournir un docker-compose pour le dev (app, DB, mailhog).
+- [ ]   41. Travailler le SEO / Référencement du site (titre, desc, schema.org, ...)
