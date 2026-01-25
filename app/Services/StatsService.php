@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class StatsService
 {
@@ -181,5 +182,21 @@ class StatsService
         }
 
         return $total / $count;
+    }
+
+    /**
+     * Get the current disk usage of stored secret files in bytes.
+     */
+    public function getCurrentDiskUsage(): int
+    {
+        $disk = Storage::disk('secrets');
+        $files = $disk->allFiles();
+        $totalSize = 0;
+
+        foreach ($files as $file) {
+            $totalSize += $disk->size($file);
+        }
+
+        return $totalSize;
     }
 }

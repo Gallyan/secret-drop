@@ -90,6 +90,7 @@ class SuperAdminController extends Controller
         $heatmapCreated = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
         $heatmapRead = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ);
         $avgFirstReadDelay = $this->stats->getAverageFirstReadDelay();
+        $currentDiskUsage = $this->stats->getCurrentDiskUsage();
 
         return view('superadmin.dashboard', [
             'stats' => $stats,
@@ -98,6 +99,7 @@ class SuperAdminController extends Controller
             'heatmapCreated' => $heatmapCreated,
             'heatmapRead' => $heatmapRead,
             'avgFirstReadDelay' => $avgFirstReadDelay,
+            'currentDiskUsage' => $currentDiskUsage,
         ]);
     }
 

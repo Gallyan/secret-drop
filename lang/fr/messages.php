@@ -215,6 +215,7 @@ return [
     'stat_total_reads' => 'Total lectures',
     'stat_total_files' => 'Fichiers partagés',
     'stat_total_volume' => 'Volume total',
+    'stat_current_disk_usage' => 'Espace disque actuel',
     'stat_text' => 'Texte',
     'stat_file' => 'Fichier',
     'stat_reads' => 'Lectures',

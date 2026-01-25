@@ -215,6 +215,7 @@ return [
     'stat_total_reads' => 'Total reads',
     'stat_total_files' => 'Files shared',
     'stat_total_volume' => 'Total volume',
+    'stat_current_disk_usage' => 'Current disk usage',
     'stat_text' => 'Text',
     'stat_file' => 'File',
     'stat_reads' => 'Reads',

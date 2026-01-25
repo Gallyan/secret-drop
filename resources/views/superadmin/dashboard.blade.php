@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white">
                     {{ number_format(($allTime['secrets_created_text'] ?? 0) + ($allTime['secrets_created_file'] ?? 0)) }}
@@ -82,6 +82,23 @@
                     @endphp
                 </div>
                 <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_total_volume') }}</div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">
+                    @php
+                        $bytes = $currentDiskUsage;
+                        if ($bytes >= 1073741824) {
+                            echo number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
+                        } elseif ($bytes >= 1048576) {
+                            echo number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
+                        } elseif ($bytes >= 1024) {
+                            echo number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
+                        } else {
+                            echo $bytes . ' ' . __('messages.unit_bytes');
+                        }
+                    @endphp
+                </div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_current_disk_usage') }}</div>
             </div>
         </div>
 
