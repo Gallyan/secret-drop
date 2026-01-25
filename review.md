@@ -41,23 +41,17 @@ Cette revue est centrée sur sécurité, zero‑knowledge, robustesse, UX/a11y e
 
 ## Moyenne
 
-8) **Upload fichier charge tout en mémoire**  
-**Fichier** : `app/Services/SecretStorageService.php`  
-**Constat** : `UploadedFile::getContent()` charge tout en RAM.  
-**Risque** : mémoire élevée sur fichiers volumineux, vecteur DoS.  
-**Action** : stream vers disk (ex. `readStream()` + `put()` stream).
+8) ~~**Upload fichier charge tout en mémoire**~~
+**Fichier** : `app/Services/SecretStorageService.php`
+**Statut** : CORRIGÉ - Utilisation de `writeStream()` avec `fopen()` au lieu de `getContent()`.
 
-9) **Destruction incomplète des métadonnées fichier**  
-**Fichier** : `app/Models/Secret.php`  
-**Constat** : `destroyContent()` ne nettoie pas `file_path`, `filename`, `mime`, `size`.  
-**Risque** : conservation de métadonnées sensibles après destruction.  
-**Action** : nullifier ces champs lors de la destruction.
+9) ~~**Destruction incomplète des métadonnées fichier**~~
+**Fichier** : `app/Models/Secret.php`
+**Statut** : CORRIGÉ - `destroyContent()` nullifie maintenant `file_path`, `filename`, `mime`, `size` pour les fichiers.
 
-10) **Header X‑XSS‑Protection obsolète**  
-**Fichier** : `app/Http/Middleware/SecurityHeaders.php`  
-**Constat** : header legacy présent.  
-**Risque** : faux sentiment de sécurité.  
-**Action** : retirer.
+10) ~~**Header X‑XSS‑Protection obsolète**~~
+**Fichier** : `app/Http/Middleware/SecurityHeaders.php`
+**Statut** : CORRIGÉ au point 1 - header retiré.
 
 ## Faible / Backlog
 

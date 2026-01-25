@@ -114,9 +114,12 @@ class SecretWorkflowTest extends TestCase
         $readResponse = $this->postJson("/api/secrets/{$token}/read");
         $readResponse->assertStatus(200);
 
-        // Step 5: Verify file was deleted
+        // Step 5: Verify file metadata was cleared
         $secret = Secret::where('token', $token)->first();
-        $this->assertFalse($this->storage->exists($secret->file_path));
+        $this->assertNull($secret->file_path);
+        $this->assertNull($secret->filename);
+        $this->assertNull($secret->mime);
+        $this->assertNull($secret->size);
 
         // Step 6: Download should fail now
         $refetchResponse = $this->getJson("/api/secrets/{$token}");

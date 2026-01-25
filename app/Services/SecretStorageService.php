@@ -17,14 +17,19 @@ class SecretStorageService
     }
 
     /**
-     * Store an encrypted file.
+     * Store an encrypted file using streaming to avoid loading into memory.
      * The file content is already encrypted client-side, we only store the blob.
      */
     public function store(string $token, UploadedFile $file): string
     {
         $path = $this->buildPath($token);
 
-        $this->disk()->put($path, $file->getContent());
+        $stream = fopen($file->getRealPath(), 'rb');
+        $this->disk()->writeStream($path, $stream);
+
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
 
         return $path;
     }

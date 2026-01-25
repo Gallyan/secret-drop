@@ -120,6 +120,11 @@ class Secret extends Model
     {
         if ($this->type === 'text') {
             $this->ciphertext = null;
+        } else {
+            $this->file_path = null;
+            $this->filename = null;
+            $this->mime = null;
+            $this->size = null;
         }
 
         $this->save();
