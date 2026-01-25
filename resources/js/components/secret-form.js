@@ -160,6 +160,9 @@ export default function secretForm() {
         },
 
         formatFileSize(bytes) {
+            if (!bytes && bytes !== 0) {
+                return '';
+            }
             if (bytes < 1024) {
                 return bytes + ' ' + t('unit_bytes');
             }

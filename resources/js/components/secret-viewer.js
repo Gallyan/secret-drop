@@ -259,7 +259,7 @@ export default function secretViewer(token) {
         },
 
         formatFileSize(bytes) {
-            if (!bytes) {
+            if (!bytes && bytes !== 0) {
                 return '';
             }
             if (bytes < 1024) {
