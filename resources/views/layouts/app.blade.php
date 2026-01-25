@@ -68,8 +68,45 @@
     </script>
     @endif
 
+    @php
+        $jsTranslations = array_intersect_key(__('messages'), array_flip([
+            'btn_encrypting',
+            'btn_encrypting_upload',
+            'captcha_invalid',
+            'crypto_clipboard_failed',
+            'crypto_creation_error',
+            'crypto_decryption_error',
+            'crypto_decryption_failed',
+            'crypto_enter_secret',
+            'crypto_file_download_failed',
+            'crypto_fragment_invalid',
+            'crypto_not_supported',
+            'crypto_passphrase_incorrect',
+            'crypto_passphrase_required',
+            'crypto_select_file',
+            'decrypting_file',
+            'decrypting_message',
+            'encrypted_end_to_end_file',
+            'encrypted_end_to_end_message',
+            'error_connection',
+            'error_loading',
+            'file_too_large',
+            'qr_generation_failed',
+            'secret_expired',
+            'secret_file',
+            'secret_max_views',
+            'secret_message',
+            'secret_not_exist',
+            'secret_revoked',
+            'secret_unavailable_generic',
+            'unit_bytes',
+            'unit_kilobytes',
+            'unit_megabytes',
+        ]));
+    @endphp
     <script nonce="@nonce">
-        window.translations = @json(__('messages'));
+        {{-- Only expose translations needed by JS --}}
+        window.translations = @json($jsTranslations);
     </script>
     <script nonce="@nonce">
         (function() {

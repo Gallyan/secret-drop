@@ -173,6 +173,15 @@ export default function secretViewer(token) {
 
                 this.decrypted = true;
                 await this.confirmRead();
+
+                // Focus management for a11y
+                this.$nextTick(() => {
+                    const content = this.$el.querySelector('pre, [x-show="decrypted && type === \'file\'"]');
+                    if (content) {
+                        content.setAttribute('tabindex', '-1');
+                        content.focus();
+                    }
+                });
             } catch (e) {
                 console.error('Decryption error:', e);
 
@@ -183,6 +192,15 @@ export default function secretViewer(token) {
                 } else {
                     this.error = e.message || t('crypto_decryption_error');
                 }
+
+                // Focus management for a11y - focus back to input on error
+                this.$nextTick(() => {
+                    if (this.needsPassphrase) {
+                        this.$el.querySelector('#passphrase')?.focus();
+                    } else if (this.needsManualKey) {
+                        this.$el.querySelector('#manualKey')?.focus();
+                    }
+                });
             } finally {
                 this.isDecrypting = false;
             }

@@ -19,6 +19,9 @@
                     <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">{{ __('messages.loading_secret') }}</p>
                 </div>
 
+                {{-- Error announcer for screen readers --}}
+                <div aria-live="assertive" aria-atomic="true" class="sr-only" x-text="error || loadError?.message"></div>
+
                 {{-- Not found error --}}
                 <div x-show="loadError?.type === 'not_found'" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">

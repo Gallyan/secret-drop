@@ -55,13 +55,13 @@ Cette revue est centrée sur sécurité, zero‑knowledge, robustesse, UX/a11y e
 
 ## Faible / Backlog
 
-11) **A11y : gestion du focus et des erreurs**  
-**Fichiers** : `resources/views/secrets/show.blade.php`, `resources/js/components/secret-viewer.js`  
-**Action** : ajouter `aria-live` pour les erreurs, focus management après déchiffrement/erreur.
+11) ~~**A11y : gestion du focus et des erreurs**~~
+**Fichiers** : `resources/views/secrets/show.blade.php`, `resources/js/components/secret-viewer.js`
+**Statut** : CORRIGÉ - Ajout de `aria-live="polite"` pour les messages d'erreur, focus management après déchiffrement (focus sur le contenu) et après erreur (focus sur le champ de saisie).
 
-12) **Surface JS translations globale**  
-**Fichier** : `resources/views/layouts/app.blade.php`  
-**Action** : limiter à ce qui est nécessaire côté JS si besoin de minimiser surface.
+12) ~~**Surface JS translations globale**~~
+**Fichier** : `resources/views/layouts/app.blade.php`
+**Statut** : CORRIGÉ - Limitation des traductions exposées à `window.translations` aux seules clés utilisées par le JS (32 clés au lieu de l'ensemble des messages).
 
 13) **CI/CD**  
 **Action** : pipeline minimal `composer test`, `vendor/bin/pint --dirty`, `composer audit`, et build front si nécessaire.
