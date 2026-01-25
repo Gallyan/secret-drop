@@ -383,10 +383,9 @@ Livrer une implémentation propre, sobre, auditable, avec priorité à la sécur
 ### UX & Finitions
 
 - [x]   33. Ajouter les bonus UX : QR code du lien, bouton "clé séparée" (preview local ignoré).
-- [ ]   34. Ajouter une page de statut public minimal indiquant seulement "disponible / expiré / révoqué".
-- [x]   35. Ajouter l'internationalisation FR/EN de l'interface.
+- [x]   34. Ajouter l'internationalisation FR/EN de l'interface.
 
 ### Documentation & Déploiement
 
-- [x]   36. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
-- [ ]   37. Travailler le SEO / Référencement du site (titre, desc, schema.org, ...)
+- [x]   35. Préparer la documentation de déploiement (env, mail, storage, limites fichiers, sécurité).
+- [ ]   36. Travailler le SEO / Référencement du site (titre, desc, schema.org, ...)
