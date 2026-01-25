@@ -202,13 +202,18 @@ function initDashboard() {
     });
 
     // Heatmaps (hours as rows, days as columns)
+    // Days reordered to start with Monday (data uses JS convention: 0=Sunday)
     function renderHeatmap(containerId, heatmapData, color) {
         const container = document.getElementById(containerId);
         if (!container) {
             return;
         }
 
-        const days = translations.days || ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        // Original order: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+        // Display order: Mon, Tue, Wed, Thu, Fri, Sat, Sun (indices: 1,2,3,4,5,6,0)
+        const dayOrder = [1, 2, 3, 4, 5, 6, 0];
+        const allDays = translations.days || ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+        const days = dayOrder.map(i => allDays[i]);
 
         let maxValue = 0;
         for (let day = 0; day < 7; day++) {
@@ -231,20 +236,21 @@ function initDashboard() {
 
         let html = '<div class="overflow-x-auto"><table class="w-full border-collapse text-xs">';
 
-        // Header row with day names
+        // Header row with day names (Monday first)
         html += '<tr><td class="w-8"></td>';
-        for (let day = 0; day < 7; day++) {
-            html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${days[day]}</td>`;
+        for (let i = 0; i < 7; i++) {
+            html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${days[i]}</td>`;
         }
         html += '</tr>';
 
         // Rows for each hour
         for (let hour = 0; hour < 24; hour++) {
             html += `<tr><td class="text-right pr-2 text-gray-500 dark:text-slate-500 text-[10px]">${hour}h</td>`;
-            for (let day = 0; day < 7; day++) {
-                const val = heatmapData[day]?.[hour] || 0;
+            for (let i = 0; i < 7; i++) {
+                const dataIndex = dayOrder[i];
+                const val = heatmapData[dataIndex]?.[hour] || 0;
                 const intensityClass = getIntensityClass(val, maxValue, color);
-                const title = `${days[day]} ${hour}h: ${val}`;
+                const title = `${days[i]} ${hour}h: ${val}`;
 
                 html += `<td class="p-0.5">`;
                 html += `<div class="h-5 rounded-sm flex items-center justify-center text-[10px] ${intensityClass}" title="${title}">`;
