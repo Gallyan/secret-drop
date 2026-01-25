@@ -5,7 +5,20 @@ use App\Http\Controllers\SecretsController;
 use App\Http\Controllers\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [SecretsController::class, 'create'])->name('secrets.create');
+Route::get('/', [SecretsController::class, 'create'])->name('home');
+
+Route::get('/sitemap.xml', function () {
+    $content = '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n".
+        '  <url>'."\n".
+        '    <loc>'.config('app.url').'</loc>'."\n".
+        '    <changefreq>monthly</changefreq>'."\n".
+        '    <priority>1.0</priority>'."\n".
+        '  </url>'."\n".
+        '</urlset>';
+
+    return response($content, 200, ['Content-Type' => 'application/xml']);
+})->name('sitemap');
 Route::get('/s/{token}', [SecretsController::class, 'show'])->name('secrets.show');
 Route::get('/s/{token}/download', [SecretsController::class, 'download'])->name('secrets.download');
 

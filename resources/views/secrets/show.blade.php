@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('noindex', true)
+
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-2xl">
@@ -29,7 +31,7 @@
                     </h1>
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
-                        href="{{ route('secrets.create') }}"
+                        href="{{ route('home') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
                     >
                         {{ __('messages.btn_create_new') }}
@@ -48,7 +50,7 @@
                     </h1>
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
-                        href="{{ route('secrets.create') }}"
+                        href="{{ route('home') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
                     >
                         {{ __('messages.btn_create_new') }}
@@ -253,7 +255,7 @@
                     {{-- Create new --}}
                     <div class="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700/50 text-center transition-colors">
                         <a
-                            href="{{ route('secrets.create') }}"
+                            href="{{ route('home') }}"
                             class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
                         >
                             {{ __('messages.btn_create_new') }}

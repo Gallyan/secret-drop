@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('noindex', true)
+
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-md">

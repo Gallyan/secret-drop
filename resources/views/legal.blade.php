@@ -1,12 +1,15 @@
 @extends('layouts.app')
 
+@section('noindex', true)
+@section('title', __('messages.legal_title'))
+
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 transition-colors">
     <div class="max-w-3xl mx-auto">
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 lg:p-12 transition-colors">
             {{-- Header --}}
             <div class="flex items-center gap-4 mb-8">
-                <a href="{{ route('secrets.create') }}" class="p-2 -ml-2 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
+                <a href="{{ route('home') }}" class="p-2 -ml-2 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
