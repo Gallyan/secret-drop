@@ -117,12 +117,6 @@ export default function secretForm() {
         setMode(newMode) {
             this.mode = newMode;
             this.error = null;
-            // Reset mode-specific defaults
-            if (newMode === 'file') {
-                this.usageUnique = false;
-            } else {
-                this.usageUnique = true;
-            }
         },
 
         handleFileDrop(event) {
