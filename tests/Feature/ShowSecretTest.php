@@ -25,7 +25,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -52,7 +51,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -81,7 +79,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -113,7 +110,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'expired',
-            'usage_unique' => false,
             'expire_at' => now()->subHour(),
         ]);
 
@@ -136,7 +132,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'revoked',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
             'revoked_at' => now(),
         ]);
@@ -160,7 +155,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'maxviews',
-            'usage_unique' => false,
             'max_views' => 1,
             'read_count' => 1,
             'expire_at' => now()->addDay(),
@@ -185,7 +179,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'counting',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -208,7 +201,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'counting',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -231,7 +223,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'singleuse',
-            'usage_unique' => true,
             'max_views' => 1,
             'expire_at' => now()->addDay(),
         ]);
@@ -264,7 +255,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'expired',
-            'usage_unique' => false,
             'expire_at' => now()->subHour(),
         ]);
 
@@ -287,7 +277,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'topsecretdata',
-            'usage_unique' => true,
             'max_views' => 1,
             'expire_at' => now()->addDay(),
         ]);
@@ -312,7 +301,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'limitedviewsdata',
-            'usage_unique' => false,
             'max_views' => 2,
             'expire_at' => now()->addDay(),
         ]);
@@ -388,7 +376,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -450,7 +437,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
             'revoked_at' => now(),
         ]);
@@ -471,7 +457,6 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 

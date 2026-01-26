@@ -244,7 +244,6 @@ class AdminControllerTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
             'ciphertext' => 'encrypted',
-            'usage_unique' => false,
             'expire_at' => now()->addDays(7),
             'creator_email_hash' => MagicLink::hashEmail($email),
         ]);

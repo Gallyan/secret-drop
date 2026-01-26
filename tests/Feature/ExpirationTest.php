@@ -209,7 +209,6 @@ class ExpirationTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => $expiration,
-            'usage_unique' => false,
         ];
     }
 }

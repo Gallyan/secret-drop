@@ -18,7 +18,6 @@ return new class () extends Migration {
             $table->longText('ciphertext')->nullable();
             $table->string('file_path')->nullable();
 
-            $table->boolean('usage_unique')->default(true);
             $table->unsignedInteger('max_views')->nullable();
             $table->unsignedInteger('read_count')->default(0);
 

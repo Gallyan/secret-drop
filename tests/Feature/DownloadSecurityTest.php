@@ -112,7 +112,6 @@ class DownloadSecurityTest extends TestCase
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'not_a_file',
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 

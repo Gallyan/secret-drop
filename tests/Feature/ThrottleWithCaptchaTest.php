@@ -181,7 +181,6 @@ class ThrottleWithCaptchaTest extends TestCase
                 'version' => 1,
             ],
             'expiration' => '7d',
-            'usage_unique' => true,
         ];
     }
 }

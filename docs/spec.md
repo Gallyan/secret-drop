@@ -44,13 +44,12 @@ Le projet vise un modèle **zero-knowledge** : le serveur ne doit jamais recevoi
 ### 1) Création d’un secret (texte)
 
 - Form :
-    - champ “secret” (textarea)
+    - champ "secret" (textarea)
     - options :
-        - `usage_unique` (bool) : le secret devient illisible après première lecture réussie
         - `expire_at` (durée max) : ex. 1h, 1j, 7j, custom
-        - `max_views` optionnel (ex. 1, 3, illimité)
+        - `max_views` optionnel (ex. 1 pour usage unique, 3, illimité)
         - `passphrase` optionnelle (si utilisée, dérivation côté client)
-    - bouton : “Générer le lien”
+    - bouton : "Générer le lien"
 - Résultat :
     - lien partage : `https://host/s/<token>#<key_material>`
     - bouton “copier”
@@ -59,8 +58,8 @@ Le projet vise un modèle **zero-knowledge** : le serveur ne doit jamais recevoi
 ### 2) Création d’un secret (fichier)
 
 - Upload fichier (drag&drop + input)
-- Chiffrement côté client AVANT upload
-- Upload du ciphertext (blob) + métadonnées (nom original, mime, taille)
+- Chiffrement côté client AVANT upload (métadonnées fichier incluses dans le payload chiffré)
+- Upload du ciphertext (blob) uniquement, aucune métadonnée en clair
 - Télécharger côté destinataire après déchiffrement local (blob -> download)
 
 ### 3) Consultation / lecture
@@ -152,14 +151,12 @@ Table `secrets` :
 - `type` enum: `text|file`
 - `cipher_meta` json: `{alg, kdf, iv, salt, aad, version}`
 - `ciphertext` longtext (pour text) OU `file_path` (pour blob chiffré)
-- `filename` (nullable), `mime` (nullable), `size` (nullable)
-- `usage_unique` bool
-- `max_views` int nullable
+- `max_views` int nullable (1 = usage unique)
 - `read_count` int default 0
 - `first_read_at`, `last_read_at` (nullable)
 - `expire_at` datetime nullable
 - `revoked_at` datetime nullable
-- `creator_email` string nullable
+- `creator_email_hash` string nullable (hash SHA256)
 - `admin_token` string unique (non exposé publiquement)
 - `created_at`, `updated_at`
 
@@ -211,8 +208,8 @@ Sessions admin :
     - chiffre le payload
 3. JS envoie au serveur :
     - ciphertext (base64url) ou blob chiffré (multipart)
-    - meta: iv, salt, algoVersion, originalName/mime/size
-    - options: expire_at, usage_unique, max_views, emails
+    - meta: iv, salt, algoVersion (filename/mime/size chiffrés dans le payload)
+    - options: expire_at, max_views, emails
 4. Serveur répond :
     - `token` public
     - `admin_token` (non-public)
@@ -275,7 +272,7 @@ Sessions admin :
 ## Questions à trancher par défaut (choix recommandés)
 
 - Default expiration : **7 jours**
-- Default usage_unique : **true** pour “secret”, **false** pour “fichier” (à discuter)
+- Default max_views : **null** (illimité), option "usage unique" = max_views=1
 - Taille max fichier : **100MB** MVP
 - Mode clé : **fragment URL** par défaut + option split
 - Passphrase : optionnelle (désactivée par défaut)

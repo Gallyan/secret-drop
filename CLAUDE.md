@@ -28,7 +28,7 @@ See `docs/spec.md` for the full specification.
 
 ### Data Model
 
-- `secrets`: token, type (text|file), cipher_meta (JSON), ciphertext/file_path, usage_unique, max_views, read_count, expire_at, revoked_at, creator_email, admin_token
+- `secrets`: token, type (text|file), cipher_meta (JSON), ciphertext/file_path, max_views, read_count, expire_at, revoked_at, creator_email_hash, admin_token
 - `magic_links`: secret_id, email, token_hash, expire_at, used_at
 
 ### Security Constraints

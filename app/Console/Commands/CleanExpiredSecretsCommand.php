@@ -26,10 +26,6 @@ class CleanExpiredSecretsCommand extends Command
                     ->orWhere(function ($q) {
                         $q->whereNotNull('max_views')
                             ->whereColumn('read_count', '>=', 'max_views');
-                    })
-                    ->orWhere(function ($q) {
-                        $q->where('usage_unique', true)
-                            ->where('read_count', '>', 0);
                     });
             })
             ->get();
