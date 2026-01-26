@@ -44,8 +44,8 @@ return [
     // File upload
     'file_drop_click' => 'Zum Auswählen klicken',
     'file_drop_or_drag' => 'oder Datei hierher ziehen',
-    'file_max_size' => 'Maximal 100 MB',
-    'file_too_large' => 'Die Datei ist zu groß (max. 100 MB)',
+    'file_max_size' => 'Maximal 10 MB',
+    'file_too_large' => 'Die Datei ist zu groß (max. 10 MB)',
 
     // Buttons
     'btn_encrypt' => 'Verschlüsseln und Link erstellen',

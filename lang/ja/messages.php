@@ -44,8 +44,8 @@ return [
     // File upload
     'file_drop_click' => 'クリックして選択',
     'file_drop_or_drag' => 'またはドラッグ',
-    'file_max_size' => '最大100MB',
-    'file_too_large' => 'ファイルが大きすぎます（最大100MB）',
+    'file_max_size' => '最大10MB',
+    'file_too_large' => 'ファイルが大きすぎます（最大10MB）',
 
     // Buttons
     'btn_encrypt' => '暗号化してリンク作成',

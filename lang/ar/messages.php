@@ -44,8 +44,8 @@ return [
     // File upload
     'file_drop_click' => 'انقر للاختيار',
     'file_drop_or_drag' => 'أو اسحب ملفاً',
-    'file_max_size' => 'الحد الأقصى 100 ميجابايت',
-    'file_too_large' => 'الملف كبير جداً (الحد الأقصى 100 ميجابايت)',
+    'file_max_size' => 'الحد الأقصى 10 ميجابايت',
+    'file_too_large' => 'الملف كبير جداً (الحد الأقصى 10 ميجابايت)',
 
     // Buttons
     'btn_encrypt' => 'تشفير وإنشاء الرابط',

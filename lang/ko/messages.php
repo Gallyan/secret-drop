@@ -44,8 +44,8 @@ return [
     // File upload
     'file_drop_click' => '클릭하여 선택',
     'file_drop_or_drag' => '또는 파일 드래그',
-    'file_max_size' => '최대 100MB',
-    'file_too_large' => '파일이 너무 큽니다 (최대 100MB)',
+    'file_max_size' => '최대 10MB',
+    'file_too_large' => '파일이 너무 큽니다 (최대 10MB)',
 
     // Buttons
     'btn_encrypt' => '암호화하고 링크 생성',

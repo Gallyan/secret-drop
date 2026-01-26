@@ -36,11 +36,11 @@ class StoreSecretRequest extends FormRequest
         return [
             'type' => ['required', 'in:text,file'],
 
-            // Text secrets
-            'ciphertext' => ['required_if:type,text', 'string'],
+            // Text secrets (~1 MB plaintext = ~1.5 MB ciphertext in base64)
+            'ciphertext' => ['required_if:type,text', 'string', 'max:1500000'],
 
-            // File secrets (metadata is encrypted in the payload)
-            'encrypted_file' => ['required_if:type,file', 'file', 'max:102400'], // 100MB
+            // File secrets: 10 MB before encryption = ~14 MB after (metadata encrypted in payload)
+            'encrypted_file' => ['required_if:type,file', 'file', 'max:14336'], // ~14 MB
 
             // Common
             'cipher_meta' => ['required', 'array'],
@@ -51,7 +51,7 @@ class StoreSecretRequest extends FormRequest
             'cipher_meta.iv2' => ['nullable', 'string'],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
-            'expiration' => ['required', 'in:1h,1d,7d,30d,90d'],
+            'expiration' => ['required', 'in:1h,1d,7d,30d'],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],
@@ -68,7 +68,8 @@ class StoreSecretRequest extends FormRequest
             'type.in' => 'Le type doit être "text" ou "file".',
             'ciphertext.required_if' => 'Le texte chiffré est requis pour un secret texte.',
             'encrypted_file.required_if' => 'Le fichier chiffré est requis.',
-            'encrypted_file.max' => 'Le fichier ne doit pas dépasser 100 Mo.',
+            'ciphertext.max' => 'Le texte ne doit pas dépasser 1 Mo.',
+            'encrypted_file.max' => 'Le fichier ne doit pas dépasser 10 Mo.',
             'cipher_meta.required' => 'Les métadonnées de chiffrement sont requises.',
             'cipher_meta.alg.required' => 'L\'algorithme de chiffrement est requis.',
             'cipher_meta.iv.required' => 'Le vecteur d\'initialisation est requis.',

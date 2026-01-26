@@ -209,7 +209,6 @@
                                     <option value="1d">{{ __('messages.expiration_1d') }}</option>
                                     <option value="7d">{{ __('messages.expiration_7d') }}</option>
                                     <option value="30d">{{ __('messages.expiration_30d') }}</option>
-                                    <option value="90d">{{ __('messages.expiration_90d') }}</option>
                                 </select>
                             </div>
 

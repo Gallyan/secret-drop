@@ -134,7 +134,7 @@ export default function secretForm() {
         },
 
         selectFile(file) {
-            const maxSize = 100 * 1024 * 1024; // 100MB
+            const maxSize = 10 * 1024 * 1024; // 10MB
             if (file.size > maxSize) {
                 this.error = t('file_too_large');
                 return;

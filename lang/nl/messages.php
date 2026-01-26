@@ -44,8 +44,8 @@ return [
     // File upload
     'file_drop_click' => 'Klik om te kiezen',
     'file_drop_or_drag' => 'of sleep een bestand',
-    'file_max_size' => 'Maximaal 100 MB',
-    'file_too_large' => 'Bestand is te groot (max 100 MB)',
+    'file_max_size' => 'Maximaal 10 MB',
+    'file_too_large' => 'Bestand is te groot (max 10 MB)',
 
     // Buttons
     'btn_encrypt' => 'Versleutelen en link maken',
