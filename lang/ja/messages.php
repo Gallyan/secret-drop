@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => '閲覧回数を制限します。上限に達すると自動的に削除されます。',
     'advanced_options' => '詳細オプション',
     'max_security' => '最高セキュリティ',
-    'max_security_tooltip' => 'シークレットを最大限に保護します。',
+    'max_security_tooltip' => 'ワンクリックで全オプションを最高セキュリティに設定。',
     'passphrase' => 'パスフレーズ',
     'passphrase_hint' => '追加の保護。受信者は復号に必要です。サーバーには送信されません。',
     'passphrase_placeholder' => '追加の保護',

@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Limita quante volte il segreto può essere visualizzato. Raggiunto il limite, viene eliminato automaticamente.',
     'advanced_options' => 'Opzioni avanzate',
     'max_security' => 'Sicurezza max',
-    'max_security_tooltip' => 'Per proteggere al massimo i tuoi segreti.',
+    'max_security_tooltip' => 'Configura tutte le opzioni in un clic per il massimo livello di sicurezza.',
     'passphrase' => 'Frase segreta',
     'passphrase_hint' => 'Protezione aggiuntiva. Il destinatario deve conoscerla. Non viene mai inviata al server.',
     'passphrase_placeholder' => 'Protezione aggiuntiva',
