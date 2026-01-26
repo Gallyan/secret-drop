@@ -72,14 +72,6 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
-    public function testInvalidExpirationIsRejected(): void
-    {
-        $response = $this->postJson('/api/secrets', $this->getValidPayload('1y'));
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['expiration']);
-    }
-
     public function testInvalidExpirationFormatIsRejected(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('24h'));

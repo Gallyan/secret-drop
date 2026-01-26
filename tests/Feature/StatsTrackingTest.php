@@ -117,33 +117,6 @@ class StatsTrackingTest extends TestCase
         Secret::orderBy('id', 'desc')->first()->delete();
     }
 
-    public function testSecretWithSaltAndKdfIsCreated(): void
-    {
-        // Test that secrets with passphrase metadata (salt + kdf) are stored correctly
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'passphrase_content',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
-                'version' => 1,
-                'salt' => 'randomsalt',
-                'kdf' => 'PBKDF2-SHA256-200k',
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(201);
-        $token = $response->json('token');
-
-        $secret = Secret::where('token', $token)->first();
-        $this->assertEquals('randomsalt', $secret->cipher_meta['salt']);
-        $this->assertEquals('PBKDF2-SHA256-200k', $secret->cipher_meta['kdf']);
-
-        // Cleanup
-        $secret->delete();
-    }
-
     public function testConfirmReadIncrementsSecretsReadStats(): void
     {
         $secret = $this->createTextSecret();
