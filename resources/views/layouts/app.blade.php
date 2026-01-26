@@ -65,7 +65,11 @@
         "description": "{{ __('messages.app_description') }}",
         "url": "{{ config('app.url') }}",
         "applicationCategory": "SecurityApplication",
+        "applicationSubCategory": "File Sharing, Encryption",
         "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript, Web Crypto API",
+        "inLanguage": ["en", "fr", "de", "es", "it", "pt", "nl", "pl", "ja", "ko", "ar"],
+        "isAccessibleForFree": true,
         "offers": {
             "@@type": "Offer",
             "price": "0",
