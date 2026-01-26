@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Beperkt hoe vaak het geheim bekeken kan worden. Bij bereiken wordt het automatisch verwijderd.',
     'advanced_options' => 'Geavanceerde opties',
     'max_security' => 'Max. beveiliging',
-    'max_security_tooltip' => 'Configureert automatisch: eenmalige weergave, 1u vervaldatum en gesplitste modus (link + sleutel apart). U kunt deze opties daarna aanpassen.',
+    'max_security_tooltip' => 'Configureert opties voor maximale beveiliging.',
     'passphrase' => 'Wachtwoordzin',
     'passphrase_hint' => 'Extra bescherming. De ontvanger moet deze kennen. Wordt nooit naar de server gestuurd.',
     'passphrase_placeholder' => 'Extra bescherming',

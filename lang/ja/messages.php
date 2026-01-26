@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => '閲覧回数を制限します。上限に達すると自動的に削除されます。',
     'advanced_options' => '詳細オプション',
     'max_security' => '最高セキュリティ',
-    'max_security_tooltip' => '自動設定：1回限りの閲覧、1時間有効期限、分割モード（リンク＋キー別送）。これらのオプションは後で調整できます。',
+    'max_security_tooltip' => '最高のセキュリティのためにオプションを設定します。',
     'passphrase' => 'パスフレーズ',
     'passphrase_hint' => '追加の保護。受信者は復号に必要です。サーバーには送信されません。',
     'passphrase_placeholder' => '追加の保護',
