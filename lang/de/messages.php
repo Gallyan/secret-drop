@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Begrenzt, wie oft das Geheimnis angesehen werden kann. Nach Erreichen wird es automatisch gelöscht.',
     'advanced_options' => 'Erweiterte Optionen',
     'passphrase' => 'Geheimphrase',
-    'passphrase_hint' => 'Fügt eine Sicherheitsebene hinzu. Der Empfänger muss sie kennen. Sie wird nie an den Server gesendet.',
+    'passphrase_hint' => 'Zusätzlicher Schutz. Der Empfänger muss sie kennen. Sie wird nie an den Server gesendet.',
     'passphrase_placeholder' => 'Zusätzlicher Schutz',
     'your_email' => 'Ihre E-Mail',
     'email_placeholder' => 'ihre@email.de',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'Datei entschlüsselt',
     'note_destroyed_text' => 'Dieses Geheimnis wurde so konfiguriert, dass es nach dem Lesen zerstört wird. Es ist nicht mehr zugänglich.',
     'note_destroyed_file' => 'Diese Datei wurde so konfiguriert, dass sie nach dem Lesen zerstört wird. Sie ist auf dem Server nicht mehr zugänglich.',
+    'last_read_warning_title' => 'Dies ist die letzte verfügbare Lesung',
+    'last_read_warning_text' => 'Nach der Anzeige wird dieses Geheimnis dauerhaft gelöscht. Stellen Sie sicher, dass Sie bereit sind, es anzusehen.',
+    'last_read_warning_short' => 'Dies ist die letzte verfügbare Lesung. Das Geheimnis wird nach der Anzeige dauerhaft gelöscht.',
+    'btn_reveal_secret' => 'Geheimnis anzeigen',
 
     // Errors
     'error_not_found' => 'Geheimnis nicht gefunden',

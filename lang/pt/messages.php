@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Limita quantas vezes o segredo pode ser visualizado. Ao atingir, é automaticamente excluído.',
     'advanced_options' => 'Opções avançadas',
     'passphrase' => 'Frase secreta',
-    'passphrase_hint' => 'Adiciona uma camada de segurança. O destinatário deve conhecê-la. Nunca é enviada ao servidor.',
+    'passphrase_hint' => 'Proteção adicional. O destinatário deve conhecê-la. Nunca é enviada ao servidor.',
     'passphrase_placeholder' => 'Proteção adicional',
     'your_email' => 'Seu e-mail',
     'email_placeholder' => 'seu@email.com',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'Arquivo descriptografado',
     'note_destroyed_text' => 'Este segredo foi configurado para ser destruído após a leitura. Não está mais acessível.',
     'note_destroyed_file' => 'Este arquivo foi configurado para ser destruído após a leitura. Não está mais acessível no servidor.',
+    'last_read_warning_title' => 'Esta é a última leitura disponível',
+    'last_read_warning_text' => 'Uma vez exibido, este segredo será excluído permanentemente. Certifique-se de estar pronto para visualizá-lo.',
+    'last_read_warning_short' => 'Esta é a última leitura disponível. O segredo será excluído permanentemente após a visualização.',
+    'btn_reveal_secret' => 'Revelar o segredo',
 
     // Errors
     'error_not_found' => 'Segredo não encontrado',

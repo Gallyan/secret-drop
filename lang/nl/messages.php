@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Beperkt hoe vaak het geheim bekeken kan worden. Bij bereiken wordt het automatisch verwijderd.',
     'advanced_options' => 'Geavanceerde opties',
     'passphrase' => 'Wachtwoordzin',
-    'passphrase_hint' => 'Voegt een beveiligingslaag toe. De ontvanger moet deze kennen. Wordt nooit naar de server gestuurd.',
+    'passphrase_hint' => 'Extra bescherming. De ontvanger moet deze kennen. Wordt nooit naar de server gestuurd.',
     'passphrase_placeholder' => 'Extra bescherming',
     'your_email' => 'Uw e-mail',
     'email_placeholder' => 'uw@email.nl',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'Bestand ontsleuteld',
     'note_destroyed_text' => 'Dit geheim was ingesteld om na lezen te worden vernietigd. Het is niet meer toegankelijk.',
     'note_destroyed_file' => 'Dit bestand was ingesteld om na lezen te worden vernietigd. Het is niet meer toegankelijk op de server.',
+    'last_read_warning_title' => 'Dit is de laatste beschikbare lezing',
+    'last_read_warning_text' => 'Na weergave wordt dit geheim permanent verwijderd. Zorg ervoor dat u klaar bent om het te bekijken.',
+    'last_read_warning_short' => 'Dit is de laatste beschikbare lezing. Het geheim wordt permanent verwijderd na weergave.',
+    'btn_reveal_secret' => 'Geheim tonen',
 
     // Errors
     'error_not_found' => 'Geheim niet gevonden',

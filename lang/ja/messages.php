@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => '閲覧回数を制限します。上限に達すると自動的に削除されます。',
     'advanced_options' => '詳細オプション',
     'passphrase' => 'パスフレーズ',
-    'passphrase_hint' => 'セキュリティ層を追加します。受信者は復号に必要です。サーバーには送信されません。',
+    'passphrase_hint' => '追加の保護。受信者は復号に必要です。サーバーには送信されません。',
     'passphrase_placeholder' => '追加の保護',
     'your_email' => 'メールアドレス',
     'email_placeholder' => 'your@email.com',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'ファイル復号化完了',
     'note_destroyed_text' => 'このシークレットは読み取り後に削除されるよう設定されていました。もうアクセスできません。',
     'note_destroyed_file' => 'このファイルは読み取り後に削除されるよう設定されていました。サーバー上でアクセスできなくなりました。',
+    'last_read_warning_title' => 'これが最後の閲覧です',
+    'last_read_warning_text' => '表示後、このシークレットは完全に削除されます。閲覧する準備ができていることを確認してください。',
+    'last_read_warning_short' => 'これが最後の閲覧です。表示後、シークレットは完全に削除されます。',
+    'btn_reveal_secret' => 'シークレットを表示',
 
     // Errors
     'error_not_found' => 'シークレットが見つかりません',

@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Ogranicza ile razy sekret może być przeglądany. Po osiągnięciu limitu jest automatycznie usuwany.',
     'advanced_options' => 'Opcje zaawansowane',
     'passphrase' => 'Hasło',
-    'passphrase_hint' => 'Dodaje warstwę bezpieczeństwa. Odbiorca musi je znać. Nigdy nie jest wysyłane na serwer.',
+    'passphrase_hint' => 'Dodatkowa ochrona. Odbiorca musi je znać. Nigdy nie jest wysyłane na serwer.',
     'passphrase_placeholder' => 'Dodatkowa ochrona',
     'your_email' => 'Twój e-mail',
     'email_placeholder' => 'twoj@email.pl',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'Plik odszyfrowany',
     'note_destroyed_text' => 'Ten sekret został skonfigurowany do zniszczenia po odczytaniu. Nie jest już dostępny.',
     'note_destroyed_file' => 'Ten plik został skonfigurowany do zniszczenia po odczytaniu. Nie jest już dostępny na serwerze.',
+    'last_read_warning_title' => 'To jest ostatni dostępny odczyt',
+    'last_read_warning_text' => 'Po wyświetleniu ten sekret zostanie trwale usunięty. Upewnij się, że jesteś gotowy go zobaczyć.',
+    'last_read_warning_short' => 'To jest ostatni dostępny odczyt. Sekret zostanie trwale usunięty po wyświetleniu.',
+    'btn_reveal_secret' => 'Pokaż sekret',
 
     // Errors
     'error_not_found' => 'Sekret nie znaleziony',

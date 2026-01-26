@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'Limite le nombre de fois que le secret peut être consulté. Une fois atteint, le secret est automatiquement supprimé.',
     'advanced_options' => 'Options avancées',
     'passphrase' => 'Phrase secrète',
-    'passphrase_hint' => 'Ajoute une couche de sécurité. Le destinataire devra la connaître pour déchiffrer. Elle n\'est jamais transmise au serveur.',
+    'passphrase_hint' => 'Protection supplémentaire. Le destinataire devra la connaître pour déchiffrer. Elle n\'est jamais transmise au serveur.',
     'passphrase_placeholder' => 'Protection supplémentaire',
     'your_email' => 'Votre email',
     'email_placeholder' => 'votre@email.com',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => 'Fichier déchiffré',
     'note_destroyed_text' => 'Ce secret a été configuré pour être détruit après lecture. Il n\'est plus accessible.',
     'note_destroyed_file' => 'Ce fichier a été configuré pour être détruit après lecture. Il n\'est plus accessible sur le serveur.',
+    'last_read_warning_title' => 'C\'est la dernière lecture disponible',
+    'last_read_warning_text' => 'Une fois affiché, ce secret sera définitivement supprimé. Assurez-vous d\'être prêt à le consulter.',
+    'last_read_warning_short' => 'C\'est la dernière lecture disponible. Le secret sera définitivement supprimé après affichage.',
+    'btn_reveal_secret' => 'Voir le secret',
 
     // Errors
     'error_not_found' => 'Secret introuvable',

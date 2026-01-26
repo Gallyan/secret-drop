@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => '비밀을 볼 수 있는 횟수를 제한합니다. 한도 도달 시 자동으로 삭제됩니다.',
     'advanced_options' => '고급 옵션',
     'passphrase' => '암호문구',
-    'passphrase_hint' => '보안 계층을 추가합니다. 수신자가 복호화에 필요합니다. 서버로 전송되지 않습니다.',
+    'passphrase_hint' => '추가 보호. 수신자가 복호화에 필요합니다. 서버로 전송되지 않습니다.',
     'passphrase_placeholder' => '추가 보호',
     'your_email' => '이메일',
     'email_placeholder' => 'your@email.com',
@@ -87,6 +87,10 @@ return [
     'file_decrypted' => '파일 복호화 완료',
     'note_destroyed_text' => '이 비밀은 읽은 후 삭제되도록 설정되었습니다. 더 이상 접근할 수 없습니다.',
     'note_destroyed_file' => '이 파일은 읽은 후 삭제되도록 설정되었습니다. 서버에서 더 이상 접근할 수 없습니다.',
+    'last_read_warning_title' => '마지막 열람 기회입니다',
+    'last_read_warning_text' => '표시되면 이 비밀은 영구적으로 삭제됩니다. 볼 준비가 되었는지 확인하세요.',
+    'last_read_warning_short' => '마지막 열람 기회입니다. 표시 후 비밀은 영구적으로 삭제됩니다.',
+    'btn_reveal_secret' => '비밀 보기',
 
     // Errors
     'error_not_found' => '비밀을 찾을 수 없음',
