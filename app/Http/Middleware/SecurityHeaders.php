@@ -41,8 +41,8 @@ class SecurityHeaders
             : "script-src 'self' 'nonce-{$nonce}'";
 
         $styleSrc = $isLocal
-            ? "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline'"
-            : "style-src 'self' 'nonce-{$nonce}'";
+            ? "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline' https://fonts.bunny.net"
+            : "style-src 'self' 'nonce-{$nonce}' https://fonts.bunny.net";
 
         $connectSrc = $isLocal
             ? "connect-src 'self' ws://localhost:* http://localhost:*"
@@ -53,7 +53,7 @@ class SecurityHeaders
             $scriptSrc,
             $styleSrc,
             "img-src 'self' data: https:",
-            "font-src 'self'",
+            "font-src 'self' https://fonts.bunny.net",
             $connectSrc,
             "frame-ancestors 'self'",
             "form-action 'self'",
