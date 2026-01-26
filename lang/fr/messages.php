@@ -152,7 +152,7 @@ return [
     'how_step1_desc' => 'Vous entrez votre message ou sélectionnez un fichier dans votre navigateur.',
     'how_step2_title' => 'Chiffrement dans votre navigateur',
     'how_step2_desc' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec AES-256-GCM. Le serveur ne reçoit que les données chiffrées.',
-    'how_step3_title' => 'Le serveur stocke le chiffré',
+    'how_step3_title' => 'Le serveur stocke le contenu chiffré',
     'how_step3_desc' => 'Le serveur enregistre uniquement les données chiffrées. Il ne peut pas les déchiffrer car il n\'a jamais accès à la clé.',
     'how_step4_title' => 'La clé reste dans l\'URL',
     'how_step4_desc' => 'La clé de déchiffrement est placée dans le fragment de l\'URL (après #). Cette partie n\'est jamais envoyée au serveur par le navigateur.',
