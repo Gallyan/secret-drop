@@ -21,6 +21,12 @@ Route::get('/s/{token}/download', [SecretsController::class, 'download'])
 
 Route::view('/legal', 'legal')->name('legal');
 
+Route::get('/contact', function () {
+    $email = config('legal.contact_email', config('mail.from.address'));
+
+    return redirect()->away("mailto:{$email}");
+})->name('contact.email');
+
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
     ->middleware('throttle.captcha:3,10') // 3 per 10 minutes

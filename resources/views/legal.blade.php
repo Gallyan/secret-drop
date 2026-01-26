@@ -126,7 +126,7 @@
                         [$emailUser, $emailDomain] = explode('@', $email);
                     @endphp
                     <p class="text-gray-600 dark:text-slate-400">
-                        {{ __('messages.legal_contact_prefix') }} <a href="mailto:{{ $email }}" class="protected-email text-violet-600 dark:text-violet-400 hover:underline" dir="ltr" data-user="{{ $emailUser }}" data-domain="{{ $emailDomain }}">[e-mail]</a>.
+                        {{ __('messages.legal_contact_prefix') }} <a href="{{ route('contact.email') }}" class="protected-email text-violet-600 dark:text-violet-400 hover:underline" dir="ltr" data-user="{{ $emailUser }}" data-domain="{{ $emailDomain }}">[e-mail]</a>.
                     </p>
                 </section>
             </div>
