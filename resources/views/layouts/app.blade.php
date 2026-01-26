@@ -115,6 +115,8 @@
             'unit_bytes',
             'unit_kilobytes',
             'unit_megabytes',
+            'a11y_show_passphrase',
+            'a11y_hide_passphrase',
         ]));
     @endphp
     <script nonce="@nonce">

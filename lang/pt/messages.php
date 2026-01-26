@@ -265,6 +265,8 @@ return [
     'unit_gigabytes' => 'GB',
 
     // Accessibility
+    'a11y_show_passphrase' => 'Mostrar frase secreta',
+    'a11y_hide_passphrase' => 'Ocultar frase secreta',
     'a11y_back' => 'Voltar',
     'a11y_period_selector' => 'Selecionar período',
     'a11y_extend_days' => 'Número de dias para estender',

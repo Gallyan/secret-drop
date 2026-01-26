@@ -19,7 +19,7 @@ return [
     'max_reads' => 'Letture massime',
     'max_reads_hint' => 'Limita quante volte il segreto può essere visualizzato. Raggiunto il limite, viene eliminato automaticamente.',
     'advanced_options' => 'Opzioni avanzate',
-    'passphrase' => 'Passphrase',
+    'passphrase' => 'Frase segreta',
     'passphrase_hint' => 'Aggiunge un livello di sicurezza. Il destinatario deve conoscerla. Non viene mai inviata al server.',
     'passphrase_placeholder' => 'Protezione aggiuntiva',
     'your_email' => 'La tua email',
@@ -264,6 +264,8 @@ return [
     'unit_gigabytes' => 'GB',
 
     // Accessibility
+    'a11y_show_passphrase' => 'Mostra frase segreta',
+    'a11y_hide_passphrase' => 'Nascondi frase segreta',
     'a11y_back' => 'Indietro',
     'a11y_period_selector' => 'Seleziona periodo',
     'a11y_extend_days' => 'Numero di giorni da estendere',

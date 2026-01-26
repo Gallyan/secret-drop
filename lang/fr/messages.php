@@ -19,7 +19,7 @@ return [
     'max_reads' => 'Lectures max',
     'max_reads_hint' => 'Limite le nombre de fois que le secret peut être consulté. Une fois atteint, le secret est automatiquement supprimé.',
     'advanced_options' => 'Options avancées',
-    'passphrase' => 'Passphrase',
+    'passphrase' => 'Phrase secrète',
     'passphrase_hint' => 'Ajoute une couche de sécurité. Le destinataire devra la connaître pour déchiffrer. Elle n\'est jamais transmise au serveur.',
     'passphrase_placeholder' => 'Protection supplémentaire',
     'your_email' => 'Votre email',
@@ -264,6 +264,8 @@ return [
     'unit_gigabytes' => 'Go',
 
     // Accessibility
+    'a11y_show_passphrase' => 'Afficher la phrase secrète',
+    'a11y_hide_passphrase' => 'Masquer la phrase secrète',
     'a11y_back' => 'Retour',
     'a11y_period_selector' => 'Sélectionner la période',
     'a11y_extend_days' => 'Nombre de jours de prolongation',

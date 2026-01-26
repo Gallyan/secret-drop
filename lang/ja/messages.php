@@ -265,6 +265,8 @@ return [
     'unit_gigabytes' => 'GB',
 
     // Accessibility
+    'a11y_show_passphrase' => 'パスフレーズを表示',
+    'a11y_hide_passphrase' => 'パスフレーズを非表示',
     'a11y_back' => '戻る',
     'a11y_period_selector' => '期間を選択',
     'a11y_extend_days' => '延長する日数',

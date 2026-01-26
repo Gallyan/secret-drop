@@ -339,7 +339,7 @@
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
-                                            :aria-label="showPassphrase ? 'Masquer la passphrase' : 'Afficher la passphrase'"
+                                            :aria-label="showPassphrase ? window.translations.a11y_hide_passphrase : window.translations.a11y_show_passphrase"
                                             class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
                                         >
                                             <svg x-show="!showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

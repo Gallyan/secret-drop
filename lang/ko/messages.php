@@ -265,6 +265,8 @@ return [
     'unit_gigabytes' => 'GB',
 
     // Accessibility
+    'a11y_show_passphrase' => '암호문구 표시',
+    'a11y_hide_passphrase' => '암호문구 숨기기',
     'a11y_back' => '뒤로',
     'a11y_period_selector' => '기간 선택',
     'a11y_extend_days' => '연장할 일수',
