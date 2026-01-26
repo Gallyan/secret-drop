@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => 'Données stockées :',
     'legal_data_item_ciphertext' => 'Données chiffrées (ciphertext, IV, salt)',
     'legal_data_item_metadata' => 'Métadonnées (date de création, expiration, nombre de lectures)',
+    'legal_data_item_file_meta' => 'Métadonnées fichier (nom original, type, taille)',
     'legal_data_item_email' => 'Hash de l\'email (si fourni, pour l\'accès administrateur)',
     'legal_data_not_stored' => 'Données NON stockées :',
     'legal_data_not_item_plaintext' => 'Contenu en clair des secrets',

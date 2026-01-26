@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => '保存されるデータ：',
     'legal_data_item_ciphertext' => '暗号化データ（暗号文、IV、ソルト）',
     'legal_data_item_metadata' => 'メタデータ（作成日、有効期限、閲覧数）',
+    'legal_data_item_file_meta' => 'ファイルメタデータ（元のファイル名、タイプ、サイズ）',
     'legal_data_item_email' => 'メールハッシュ（管理者アクセス用に提供された場合）',
     'legal_data_not_stored' => '保存されないデータ：',
     'legal_data_not_item_plaintext' => 'シークレットの平文',

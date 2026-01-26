@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => 'Dati memorizzati:',
     'legal_data_item_ciphertext' => 'Dati crittografati (testo cifrato, IV, salt)',
     'legal_data_item_metadata' => 'Metadati (data di creazione, scadenza, contatore letture)',
+    'legal_data_item_file_meta' => 'Metadati file (nome originale, tipo, dimensione)',
     'legal_data_item_email' => 'Hash dell\'email (se fornito, per accesso amministrativo)',
     'legal_data_not_stored' => 'Dati NON memorizzati:',
     'legal_data_not_item_plaintext' => 'Contenuto in chiaro dei segreti',

@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => '저장되는 데이터:',
     'legal_data_item_ciphertext' => '암호화된 데이터 (암호문, IV, 솔트)',
     'legal_data_item_metadata' => '메타데이터 (생성일, 만료일, 조회 수)',
+    'legal_data_item_file_meta' => '파일 메타데이터 (원본 이름, 유형, 크기)',
     'legal_data_item_email' => '이메일 해시 (관리자 접근을 위해 제공된 경우)',
     'legal_data_not_stored' => '저장되지 않는 데이터:',
     'legal_data_not_item_plaintext' => '비밀의 평문 내용',

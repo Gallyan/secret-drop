@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => 'البيانات المخزنة:',
     'legal_data_item_ciphertext' => 'البيانات المشفرة (النص المشفر، IV، الملح)',
     'legal_data_item_metadata' => 'البيانات الوصفية (تاريخ الإنشاء، انتهاء الصلاحية، عدد القراءات)',
+    'legal_data_item_file_meta' => 'بيانات الملف الوصفية (الاسم الأصلي، النوع، الحجم)',
     'legal_data_item_email' => 'تجزئة البريد الإلكتروني (إذا تم تقديمه، للوصول الإداري)',
     'legal_data_not_stored' => 'البيانات غير المخزنة:',
     'legal_data_not_item_plaintext' => 'المحتوى النصي للأسرار',

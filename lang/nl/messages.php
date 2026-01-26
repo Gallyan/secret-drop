@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => 'Opgeslagen gegevens:',
     'legal_data_item_ciphertext' => 'Versleutelde gegevens (ciphertext, IV, salt)',
     'legal_data_item_metadata' => 'Metadata (aanmaakdatum, vervaldatum, leesteller)',
+    'legal_data_item_file_meta' => 'Bestandsmetadata (originele naam, type, grootte)',
     'legal_data_item_email' => 'E-mail hash (indien opgegeven, voor beheerderstoegang)',
     'legal_data_not_stored' => 'NIET opgeslagen gegevens:',
     'legal_data_not_item_plaintext' => 'Onversleutelde inhoud van geheimen',

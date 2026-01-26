@@ -143,6 +143,7 @@ return [
     'legal_data_stored' => 'Gespeicherte Daten:',
     'legal_data_item_ciphertext' => 'Verschlüsselte Daten (Chiffretext, IV, Salt)',
     'legal_data_item_metadata' => 'Metadaten (Erstellungsdatum, Ablauf, Lesezähler)',
+    'legal_data_item_file_meta' => 'Datei-Metadaten (Originalname, Typ, Größe)',
     'legal_data_item_email' => 'E-Mail-Hash (falls angegeben, für Admin-Zugriff)',
     'legal_data_not_stored' => 'NICHT gespeicherte Daten:',
     'legal_data_not_item_plaintext' => 'Klartext-Inhalt der Geheimnisse',
