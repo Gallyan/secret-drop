@@ -121,8 +121,12 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         {{ __('messages.legal_contact_title') }}
                     </h2>
+                    @php
+                        $email = config('legal.contact_email', config('mail.from.address'));
+                        [$emailUser, $emailDomain] = explode('@', $email);
+                    @endphp
                     <p class="text-gray-600 dark:text-slate-400">
-                        {{ __('messages.legal_contact_prefix') }} <a href="mailto:{{ config('legal.contact_email', config('mail.from.address')) }}" class="text-violet-600 dark:text-violet-400 hover:underline" dir="ltr">{{ config('legal.contact_email', config('mail.from.address')) }}</a>.
+                        {{ __('messages.legal_contact_prefix') }} <a href="mailto:{{ $email }}" class="protected-email text-violet-600 dark:text-violet-400 hover:underline" dir="ltr" data-user="{{ $emailUser }}" data-domain="{{ $emailDomain }}">[e-mail]</a>.
                     </p>
                 </section>
             </div>

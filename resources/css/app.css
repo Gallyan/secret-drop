@@ -16,6 +16,16 @@
     display: none !important;
 }
 
+/* Email obfuscation - hides real text, displays via CSS */
+.protected-email {
+    font-size: 0;
+}
+
+.protected-email::before {
+    font-size: 1rem;
+    content: attr(data-user) "@" attr(data-domain);
+}
+
 /* Heatmap intensity classes */
 .heatmap-empty {
     background-color: rgb(241 245 249);
