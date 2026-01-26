@@ -16,6 +16,7 @@ return [
     'your_file' => 'Il tuo file',
     'expires_in' => 'Scade tra',
     'max_reads' => 'Letture massime',
+    'max_reads_hint' => 'Limita quante volte il segreto può essere visualizzato. Raggiunto il limite, viene eliminato automaticamente.',
     'advanced_options' => 'Opzioni avanzate',
     'passphrase' => 'Passphrase',
     'passphrase_placeholder' => 'Protezione aggiuntiva',

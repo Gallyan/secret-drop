@@ -16,6 +16,7 @@ return [
     'your_file' => 'Uw bestand',
     'expires_in' => 'Verloopt over',
     'max_reads' => 'Max. leesbeurten',
+    'max_reads_hint' => 'Beperkt hoe vaak het geheim bekeken kan worden. Bij bereiken wordt het automatisch verwijderd.',
     'destroy_after_read' => 'Vernietigen na lezen',
     'advanced_options' => 'Geavanceerde opties',
     'passphrase' => 'Wachtwoordzin',

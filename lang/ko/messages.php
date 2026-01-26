@@ -16,6 +16,7 @@ return [
     'your_file' => '파일',
     'expires_in' => '만료 기간',
     'max_reads' => '최대 조회 수',
+    'max_reads_hint' => '비밀을 볼 수 있는 횟수를 제한합니다. 한도 도달 시 자동으로 삭제됩니다.',
     'destroy_after_read' => '읽은 후 삭제',
     'advanced_options' => '고급 옵션',
     'passphrase' => '암호문구',

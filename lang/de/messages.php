@@ -16,6 +16,7 @@ return [
     'your_file' => 'Ihre Datei',
     'expires_in' => 'Läuft ab in',
     'max_reads' => 'Maximale Lesevorgänge',
+    'max_reads_hint' => 'Begrenzt, wie oft das Geheimnis angesehen werden kann. Nach Erreichen wird es automatisch gelöscht.',
     'advanced_options' => 'Erweiterte Optionen',
     'passphrase' => 'Passphrase',
     'passphrase_placeholder' => 'Zusätzlicher Schutz',

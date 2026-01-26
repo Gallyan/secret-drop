@@ -16,6 +16,7 @@ return [
     'your_file' => 'Seu arquivo',
     'expires_in' => 'Expira em',
     'max_reads' => 'Máximo de leituras',
+    'max_reads_hint' => 'Limita quantas vezes o segredo pode ser visualizado. Ao atingir, é automaticamente excluído.',
     'destroy_after_read' => 'Destruir após leitura',
     'advanced_options' => 'Opções avançadas',
     'passphrase' => 'Frase secreta',

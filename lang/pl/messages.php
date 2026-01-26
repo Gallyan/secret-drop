@@ -16,6 +16,7 @@ return [
     'your_file' => 'Twój plik',
     'expires_in' => 'Wygasa za',
     'max_reads' => 'Maks. odczytów',
+    'max_reads_hint' => 'Ogranicza ile razy sekret może być przeglądany. Po osiągnięciu limitu jest automatycznie usuwany.',
     'destroy_after_read' => 'Zniszcz po odczytaniu',
     'advanced_options' => 'Opcje zaawansowane',
     'passphrase' => 'Hasło',

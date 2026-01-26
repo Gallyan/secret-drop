@@ -16,6 +16,7 @@ return [
     'your_file' => 'ファイル',
     'expires_in' => '有効期限',
     'max_reads' => '最大閲覧数',
+    'max_reads_hint' => '閲覧回数を制限します。上限に達すると自動的に削除されます。',
     'destroy_after_read' => '読み取り後に削除',
     'advanced_options' => '詳細オプション',
     'passphrase' => 'パスフレーズ',

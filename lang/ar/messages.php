@@ -16,6 +16,7 @@ return [
     'your_file' => 'ملفك',
     'expires_in' => 'ينتهي في',
     'max_reads' => 'الحد الأقصى للقراءات',
+    'max_reads_hint' => 'يحدد عدد مرات عرض السر. عند الوصول للحد يُحذف تلقائياً.',
     'advanced_options' => 'خيارات متقدمة',
     'passphrase' => 'عبارة المرور',
     'passphrase_placeholder' => 'حماية إضافية',
