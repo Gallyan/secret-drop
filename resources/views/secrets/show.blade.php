@@ -165,7 +165,7 @@
                             <button
                                 type="submit"
                                 :disabled="!manualKey.trim()"
-                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                             >
                                 {{ __('messages.btn_unlock') }}
                             </button>
@@ -201,7 +201,7 @@
                             <button
                                 type="submit"
                                 :disabled="isDecrypting || !passphrase.trim()"
-                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                             >
                                 <span x-show="!isDecrypting">{{ __('messages.btn_decrypt') }}</span>
                                 <span x-show="isDecrypting" role="status" class="inline-flex items-center justify-center gap-2">
