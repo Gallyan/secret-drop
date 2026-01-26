@@ -245,10 +245,10 @@
                                             x-transition:leave-end="opacity-0 translate-y-1"
                                             id="maxViewsHint"
                                             role="tooltip"
-                                            class="absolute z-10 bottom-full start-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+                                            class="absolute z-10 bottom-full end-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
                                         >
                                             {{ __('messages.max_reads_hint') }}
-                                            <div class="absolute top-full start-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+                                            <div class="absolute top-full end-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
                                         </div>
                                     </div>
                                 </div>
