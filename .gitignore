@@ -22,12 +22,4 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-
-# Dusk
-tests/Browser/screenshots/*
-\!tests/Browser/screenshots/.gitkeep
-tests/Browser/console/*
-\!tests/Browser/console/.gitkeep
-tests/Browser/source/*
-\!tests/Browser/source/.gitkeep
 review.md
