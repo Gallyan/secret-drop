@@ -64,7 +64,6 @@ class DemoSeeder extends Seeder
             StatsService::SECRETS_CREATED_TEXT => [5, 15],
             StatsService::SECRETS_CREATED_FILE => [1, 5],
             StatsService::SECRETS_WITH_PASSPHRASE => [0, 3],
-            StatsService::SECRETS_SINGLE_USE => [2, 8],
             StatsService::SECRETS_WITH_MAX_VIEWS => [0, 4],
             StatsService::SECRETS_SPLIT_MODE => [0, 2],
             StatsService::TOTAL_FILE_SIZE_BYTES => [100000, 5000000],
