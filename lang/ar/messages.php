@@ -134,7 +134,7 @@ return [
     // Legal page
     'legal_title' => 'الإشعارات القانونية',
     'legal_editor_title' => 'ناشر الموقع',
-    'legal_editor_text' => 'هذا الموقع منشور بواسطة :name.',
+    'legal_editor_text' => 'هذا الموقع منشور بواسطة :name',
     'legal_hosting_title' => 'الاستضافة',
     'legal_hosting_text' => 'الاستضافة مقدمة من:',
     'legal_hosting_phone' => 'الهاتف:',
