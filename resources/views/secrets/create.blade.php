@@ -190,6 +190,7 @@
                                     x-model="maxViews"
                                     min="1"
                                     max="100"
+                                    autocomplete="off"
                                     placeholder="{{ __('messages.max_reads_placeholder') }}"
                                     class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
