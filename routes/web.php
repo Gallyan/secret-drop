@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SecretsController;
 use App\Http\Controllers\SuperAdminController;
 use Illuminate\Support\Facades\Route;
@@ -21,11 +22,7 @@ Route::get('/s/{token}/download', [SecretsController::class, 'download'])
 
 Route::view('/legal', 'legal')->name('legal');
 
-Route::get('/contact', function () {
-    $email = config('legal.contact_email', config('mail.from.address'));
-
-    return redirect()->away("mailto:{$email}");
-})->name('contact.email');
+Route::get('/contact', [ContactController::class, 'email'])->name('contact.email');
 
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
