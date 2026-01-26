@@ -24,6 +24,8 @@ Route::get('/s/{token}/download', [SecretsController::class, 'download'])
 
 // Static pages
 Route::view('/legal', 'legal')->name('legal');
+Route::view('/how-it-works', 'how-it-works')->name('how-it-works');
+Route::view('/use-cases', 'use-cases')->name('use-cases');
 Route::get('/contact', [ContactController::class, 'email'])->name('contact.email');
 
 // Admin (user secrets management)

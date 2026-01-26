@@ -150,8 +150,16 @@
     </main>
 
     <footer class="fixed bottom-4 inset-x-0 z-10 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors">
-        <div class="flex items-center justify-center gap-2">
+        <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
             <span>&copy; {{ date('Y') }} {{ config('app.name') }}</span>
+            <span>·</span>
+            <a href="{{ route('how-it-works') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+                {{ __('messages.footer_how_it_works') }}
+            </a>
+            <span>·</span>
+            <a href="{{ route('use-cases') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+                {{ __('messages.footer_use_cases') }}
+            </a>
             <span>·</span>
             <a href="{{ route('admin.index') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
                 {{ __('messages.footer_manage') }}
