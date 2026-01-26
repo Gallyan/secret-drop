@@ -46,11 +46,15 @@
     <meta property="og:description" content="@yield('description', __('messages.app_description'))">
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:image" content="{{ config('app.url') }}/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
     <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
+    <meta name="twitter:image" content="{{ config('app.url') }}/og-image.png">
     @endunless
 
     {{-- Schema.org JSON-LD (only on homepage) --}}
