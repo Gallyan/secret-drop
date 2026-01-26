@@ -77,11 +77,11 @@ class DemoSeeder extends Seeder
         ];
 
         $days = 90;
-        $totalFirstReadDelay = 0;
-        $firstReadCount = 0;
 
         for ($i = $days; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
+            $dailyFirstReadCount = 0;
+            $dailyFirstReadDelay = 0;
 
             foreach ($metrics as $metric => $range) {
                 $count = fake()->numberBetween($range[0], $range[1]);
@@ -96,28 +96,28 @@ class DemoSeeder extends Seeder
                     ]);
 
                     if ($metric === StatsService::SECRETS_READ) {
-                        $firstReadCount += $count;
-                        $totalFirstReadDelay += $count * fake()->numberBetween(60, 86400);
+                        $dailyFirstReadCount += $count;
+                        $dailyFirstReadDelay += $count * fake()->numberBetween(60, 86400);
                     }
                 }
             }
-        }
 
-        if ($firstReadCount > 0) {
-            DB::table('stats_daily')->insert([
-                'date' => now()->toDateString(),
-                'metric' => StatsService::FIRST_READ_DELAY_TOTAL,
-                'count' => $totalFirstReadDelay,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            DB::table('stats_daily')->insert([
-                'date' => now()->toDateString(),
-                'metric' => StatsService::FIRST_READ_DELAY_COUNT,
-                'count' => $firstReadCount,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            if ($dailyFirstReadCount > 0) {
+                DB::table('stats_daily')->insert([
+                    'date' => $date,
+                    'metric' => StatsService::FIRST_READ_DELAY_TOTAL,
+                    'count' => $dailyFirstReadDelay,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                DB::table('stats_daily')->insert([
+                    'date' => $date,
+                    'metric' => StatsService::FIRST_READ_DELAY_COUNT,
+                    'count' => $dailyFirstReadCount,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
 
         $this->seedHeatmap();
