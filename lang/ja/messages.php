@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'QRコードの生成に失敗しました。',
 
     // View secret
+    'view_secret_title' => 'シークレットを表示',
     'secret_message' => 'シークレットメッセージ',
     'secret_file' => 'シークレットファイル',
     'encrypted_end_to_end_message' => 'このメッセージはエンドツーエンドで暗号化されています',

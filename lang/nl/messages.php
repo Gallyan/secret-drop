@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'QR-code genereren mislukt.',
 
     // View secret
+    'view_secret_title' => 'Geheim bekijken',
     'secret_message' => 'Geheim bericht',
     'secret_file' => 'Geheim bestand',
     'encrypted_end_to_end_message' => 'Dit bericht is end-to-end versleuteld',

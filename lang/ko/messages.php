@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'QR 코드 생성에 실패했습니다.',
 
     // View secret
+    'view_secret_title' => '비밀 보기',
     'secret_message' => '비밀 메시지',
     'secret_file' => '비밀 파일',
     'encrypted_end_to_end_message' => '이 메시지는 종단간 암호화되었습니다',

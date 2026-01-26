@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'Error al generar el código QR.',
 
     // View secret
+    'view_secret_title' => 'Ver secreto',
     'secret_message' => 'Mensaje secreto',
     'secret_file' => 'Archivo secreto',
     'encrypted_end_to_end_message' => 'Este mensaje fue cifrado de extremo a extremo',

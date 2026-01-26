@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'فشل في إنشاء رمز QR.',
 
     // View secret
+    'view_secret_title' => 'عرض السر',
     'secret_message' => 'رسالة سرية',
     'secret_file' => 'ملف سري',
     'encrypted_end_to_end_message' => 'تم تشفير هذه الرسالة من طرف إلى طرف',

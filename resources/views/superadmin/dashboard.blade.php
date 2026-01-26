@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('noindex', true)
+@section('title', __('messages.superadmin_dashboard_title'))
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 pb-16 md:p-8 md:pb-16 transition-colors">

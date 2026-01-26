@@ -75,6 +75,7 @@ return [
     'qr_generation_failed' => 'Nie udało się wygenerować kodu QR.',
 
     // View secret
+    'view_secret_title' => 'Zobacz sekret',
     'secret_message' => 'Tajna wiadomość',
     'secret_file' => 'Tajny plik',
     'encrypted_end_to_end_message' => 'Ta wiadomość została zaszyfrowana end-to-end',
