@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => '비밀을 볼 수 있는 횟수를 제한합니다. 한도 도달 시 자동으로 삭제됩니다.',
     'advanced_options' => '고급 옵션',
     'max_security' => '최대 보안',
-    'max_security_tooltip' => '최대 보안을 위해 옵션을 구성합니다.',
+    'max_security_tooltip' => '비밀을 최대한 안전하게 보호합니다.',
     'passphrase' => '암호문구',
     'passphrase_hint' => '추가 보호. 수신자가 복호화에 필요합니다. 서버로 전송되지 않습니다.',
     'passphrase_placeholder' => '추가 보호',

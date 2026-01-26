@@ -20,7 +20,7 @@ return [
     'max_reads_hint' => 'يحدد عدد مرات عرض السر. عند الوصول للحد يُحذف تلقائياً.',
     'advanced_options' => 'خيارات متقدمة',
     'max_security' => 'أقصى أمان',
-    'max_security_tooltip' => 'يُهيئ الخيارات لأقصى درجات الأمان.',
+    'max_security_tooltip' => 'لتأمين أسرارك بأقصى درجة.',
     'passphrase' => 'عبارة المرور',
     'passphrase_hint' => 'حماية إضافية. المستلم يحتاجها لفك التشفير. لا تُرسل أبداً للخادم.',
     'passphrase_placeholder' => 'حماية إضافية',
