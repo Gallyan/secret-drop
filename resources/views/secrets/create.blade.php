@@ -56,7 +56,7 @@
                 {{-- Right: Form --}}
                 <div class="p-6 md:p-8 lg:p-12">
                     {{-- Form --}}
-                    <form x-show="!shareUrl" @submit.prevent="handleSubmit" class="space-y-5" autocomplete="off">
+                    <form x-show="!shareUrl" @submit.prevent="handleSubmit" @keydown.ctrl.enter.prevent="handleSubmit()" @keydown.meta.enter.prevent="handleSubmit()" class="space-y-5" autocomplete="off">
                         {{-- Mode tabs --}}
                         <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button
