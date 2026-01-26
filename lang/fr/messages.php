@@ -6,7 +6,7 @@ return [
     'app_description' => 'Partagez des informations sensibles en toute sécurité avec un chiffrement de bout en bout.',
 
     // Features
-    'feature_encryption' => 'Chiffrement AES-256-GCM dans votre navigateur',
+    'feature_encryption' => 'Chiffrement de niveau militaire dans votre navigateur',
     'feature_zero_knowledge' => 'Le serveur ne voit jamais vos données en clair',
     'feature_auto_destroy' => 'Auto-destruction après lecture',
     'feature_expiration' => 'Expiration automatique configurable',
@@ -64,7 +64,7 @@ return [
     'secret_created' => 'Secret créé',
     'share_link_instruction' => 'Partagez ce lien avec votre destinataire',
     'warning_link_contains_key' => 'Ce lien contient la clé de déchiffrement. Ne le partagez qu\'avec le destinataire.',
-    'warning_passphrase_required' => 'Le destinataire devra entrer la passphrase pour déchiffrer le secret.',
+    'warning_passphrase_required' => 'Le destinataire devra entrer la phrase secrète pour déchiffrer le secret.',
     'success_admin_hint' => 'Vous pourrez gérer ce secret (révoquer, prolonger) via le lien « :link » en bas de page.',
 
     // QR Code
@@ -80,8 +80,8 @@ return [
     'secret_file' => 'Fichier secret',
     'encrypted_end_to_end_message' => 'Ce message a été chiffré de bout en bout',
     'encrypted_end_to_end_file' => 'Ce fichier a été chiffré de bout en bout',
-    'passphrase_protected' => 'Ce secret est protégé par une passphrase.',
-    'passphrase_input_placeholder' => 'Entrez la passphrase',
+    'passphrase_protected' => 'Ce secret est protégé par une phrase secrète.',
+    'passphrase_input_placeholder' => 'Entrez la phrase secrète',
     'decrypting_message' => 'Déchiffrement en cours...',
     'decrypting_file' => 'Téléchargement et déchiffrement...',
     'file_decrypted' => 'Fichier déchiffré',
@@ -108,8 +108,8 @@ return [
     'crypto_not_supported' => 'Votre navigateur ne supporte pas le chiffrement sécurisé',
     'crypto_key_missing' => 'Clé de déchiffrement manquante dans l\'URL',
     'crypto_fragment_invalid' => 'Format de fragment invalide',
-    'crypto_passphrase_required' => 'La passphrase est requise',
-    'crypto_passphrase_incorrect' => 'Passphrase incorrecte ou données corrompues',
+    'crypto_passphrase_required' => 'La phrase secrète est requise',
+    'crypto_passphrase_incorrect' => 'Phrase secrète incorrecte ou données altérées',
     'crypto_decryption_failed' => 'Échec du déchiffrement. La clé est peut-être incorrecte.',
     'crypto_decryption_error' => 'Une erreur est survenue lors du déchiffrement',
     'crypto_file_download_failed' => 'Impossible de télécharger le fichier chiffré',
@@ -148,13 +148,13 @@ return [
     'legal_data_title' => 'Protection des données',
     'legal_data_text' => 'Secret Drop est conçu selon le principe de "zero-knowledge". Les secrets sont chiffrés dans votre navigateur avant d\'être envoyés au serveur. Le serveur ne stocke que des données chiffrées et ne peut pas accéder au contenu en clair de vos secrets.',
     'legal_data_stored' => 'Données stockées :',
-    'legal_data_item_ciphertext' => 'Données chiffrées (ciphertext, IV, salt)',
+    'legal_data_item_ciphertext' => 'Données chiffrées (contenu et paramètres de chiffrement)',
     'legal_data_item_metadata' => 'Métadonnées (date de création, expiration, nombre de lectures)',
     'legal_data_item_file_meta' => 'Métadonnées fichier (nom original, type, taille)',
-    'legal_data_item_email' => 'Hash de l\'email (si fourni, pour l\'accès administrateur)',
+    'legal_data_item_email' => 'Empreinte de l\'email (si fourni, pour l\'accès administrateur)',
     'legal_data_not_stored' => 'Données NON stockées :',
     'legal_data_not_item_plaintext' => 'Contenu en clair des secrets',
-    'legal_data_not_item_key' => 'Clés de chiffrement (transmises uniquement via le fragment d\'URL)',
+    'legal_data_not_item_key' => 'Clés de chiffrement (transmises uniquement via la partie privée du lien)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Ce site utilise uniquement des cookies techniques essentiels au fonctionnement (session, préférence de thème). Aucun cookie de tracking ou publicitaire n\'est utilisé.',
     'legal_cookies_cnil' => 'Conformément aux recommandations de la CNIL, ces cookies strictement nécessaires sont exemptés du recueil de consentement.',
@@ -229,7 +229,7 @@ return [
     'stat_text' => 'Texte',
     'stat_file' => 'Fichier',
     'stat_reads' => 'Lectures',
-    'stat_passphrase' => 'Avec passphrase',
+    'stat_passphrase' => 'Avec phrase secrète',
     'stat_max_views' => 'Limite de lectures',
     'stat_read' => 'Lus',
     'stat_expired_unread' => 'Expirés non lus',
@@ -287,7 +287,7 @@ return [
     'btn_unlock' => 'Déverrouiller',
 
     // Stats
-    'stat_split_mode' => 'Mode split',
+    'stat_split_mode' => 'Mode séparé',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Trop de requêtes. Veuillez résoudre le calcul ci-dessous pour continuer.',

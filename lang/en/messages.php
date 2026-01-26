@@ -6,7 +6,7 @@ return [
     'app_description' => 'Securely share sensitive information with end-to-end encryption.',
 
     // Features
-    'feature_encryption' => 'AES-256-GCM encryption in your browser',
+    'feature_encryption' => 'Military-grade encryption in your browser',
     'feature_zero_knowledge' => 'Server never sees your plaintext data',
     'feature_auto_destroy' => 'Auto-destroy after reading',
     'feature_expiration' => 'Configurable automatic expiration',
@@ -148,13 +148,13 @@ return [
     'legal_data_title' => 'Data Protection',
     'legal_data_text' => 'Secret Drop is designed with a "zero-knowledge" principle. Secrets are encrypted in your browser before being sent to the server. The server only stores encrypted data and cannot access the plaintext content of your secrets.',
     'legal_data_stored' => 'Data stored:',
-    'legal_data_item_ciphertext' => 'Encrypted data (ciphertext, IV, salt)',
+    'legal_data_item_ciphertext' => 'Encrypted data (content and encryption parameters)',
     'legal_data_item_metadata' => 'Metadata (creation date, expiration, read count)',
     'legal_data_item_file_meta' => 'File metadata (original name, type, size)',
-    'legal_data_item_email' => 'Email hash (if provided, for admin access)',
+    'legal_data_item_email' => 'Email fingerprint (if provided, for admin access)',
     'legal_data_not_stored' => 'Data NOT stored:',
     'legal_data_not_item_plaintext' => 'Plaintext content of secrets',
-    'legal_data_not_item_key' => 'Encryption keys (transmitted only via URL fragment)',
+    'legal_data_not_item_key' => 'Encryption keys (transmitted only via the private part of the link)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'This website only uses essential technical cookies (session, theme preference). No tracking or advertising cookies are used.',
     'legal_cookies_cnil' => 'In accordance with CNIL recommendations, these strictly necessary cookies are exempt from consent requirements.',
@@ -287,7 +287,7 @@ return [
     'btn_unlock' => 'Unlock',
 
     // Stats
-    'stat_split_mode' => 'Split mode',
+    'stat_split_mode' => 'Separate mode',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Too many requests. Please solve the calculation below to continue.',
