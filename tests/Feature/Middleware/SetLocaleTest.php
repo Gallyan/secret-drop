@@ -85,7 +85,7 @@ class SetLocaleTest extends TestCase
     public function testRespectsQualityValues(): void
     {
         $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'de;q=0.9,en;q=0.8,fr;q=0.7');
+        $request->headers->set('Accept-Language', 'zh;q=0.9,en;q=0.8,fr;q=0.7');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
@@ -96,7 +96,7 @@ class SetLocaleTest extends TestCase
     public function testFallsBackToFrenchForUnsupportedLanguage(): void
     {
         $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'de,es,it');
+        $request->headers->set('Accept-Language', 'zh,ru,th');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
@@ -133,8 +133,8 @@ class SetLocaleTest extends TestCase
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('en', app()->getLocale());
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
+        $this->assertEquals('de', app()->getLocale());
+        $this->assertEquals('de', $response->headers->get('Content-Language'));
     }
 
     public function testSetsContentLanguageHeader(): void
@@ -146,5 +146,35 @@ class SetLocaleTest extends TestCase
 
         $this->assertTrue($response->headers->has('Content-Language'));
         $this->assertEquals('en', $response->headers->get('Content-Language'));
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('supportedLocalesProvider')]
+    public function testDetectsAllSupportedLocales(string $locale): void
+    {
+        $request = Request::create('/test', 'GET');
+        $request->headers->set('Accept-Language', $locale);
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals($locale, app()->getLocale());
+        $this->assertEquals($locale, $response->headers->get('Content-Language'));
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function supportedLocalesProvider(): array
+    {
+        return [
+            'german' => ['de'],
+            'spanish' => ['es'],
+            'italian' => ['it'],
+            'portuguese' => ['pt'],
+            'dutch' => ['nl'],
+            'polish' => ['pl'],
+            'japanese' => ['ja'],
+            'korean' => ['ko'],
+            'arabic' => ['ar'],
+        ];
     }
 }
