@@ -110,11 +110,43 @@
                         </div>
                     </div>
 
+                    {{-- Confirmation step for last read --}}
+                    <div x-show="awaitingConfirmation && !decrypted" x-cloak class="space-y-6">
+                        <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                            <div class="flex gap-3">
+                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-amber-800 dark:text-amber-300">
+                                        {{ __('messages.last_read_warning_title') }}
+                                    </p>
+                                    <p class="mt-1 text-sm text-amber-700 dark:text-amber-400">
+                                        {{ __('messages.last_read_warning_text') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            @click="confirmAndDecrypt()"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
+                        >
+                            {{ __('messages.btn_reveal_secret') }}
+                        </button>
+                    </div>
+
                     {{-- Manual key input (split mode) --}}
-                    <div x-show="needsManualKey && !decrypted && !error" x-cloak class="space-y-4">
+                    <div x-show="needsManualKey && !decrypted && !error && !awaitingConfirmation" x-cloak class="space-y-4">
                         <p class="text-sm text-gray-700 dark:text-slate-300 text-center transition-colors">
                             {{ __('messages.enter_key_manually') }}
                         </p>
+                        {{-- Last read warning in manual key form --}}
+                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                                <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
+                            </p>
+                        </div>
                         <form @submit.prevent="submitManualKey()" class="space-y-4">
                             <div>
                                 <label for="manualKey" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
@@ -142,10 +174,16 @@
                     </div>
 
                     {{-- Passphrase input --}}
-                    <div x-show="needsPassphrase && !needsManualKey && !decrypted && !error" x-cloak class="space-y-4">
+                    <div x-show="needsPassphrase && !needsManualKey && !decrypted && !error && !awaitingConfirmation" x-cloak class="space-y-4">
                         <p class="text-sm text-gray-700 dark:text-slate-300 text-center transition-colors">
                             {{ __('messages.passphrase_protected') }}
                         </p>
+                        {{-- Last read warning in passphrase form --}}
+                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                                <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
+                            </p>
+                        </div>
                         <form @submit.prevent="decrypt()" class="space-y-4">
                             <div>
                                 <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">

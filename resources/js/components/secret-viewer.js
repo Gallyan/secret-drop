@@ -33,13 +33,23 @@ export default function secretViewer(token) {
         manualKey: '',
         keyMaterial: null,
         version: 1,
+        awaitingConfirmation: false,
 
         async init() {
             await this.loadSecret();
 
             if (!this.loadError && !this.needsPassphrase && !this.needsManualKey && !this.error) {
-                this.decrypt();
+                if (this.willBeDestroyed) {
+                    this.awaitingConfirmation = true;
+                } else {
+                    this.decrypt();
+                }
             }
+        },
+
+        confirmAndDecrypt() {
+            this.awaitingConfirmation = false;
+            this.decrypt();
         },
 
         async loadSecret() {
@@ -141,7 +151,11 @@ export default function secretViewer(token) {
             this.applyKeyFragment(this.manualKey.trim());
 
             if (!this.error && !this.needsPassphrase) {
-                this.decrypt();
+                if (this.willBeDestroyed) {
+                    this.awaitingConfirmation = true;
+                } else {
+                    this.decrypt();
+                }
             }
         },
 
