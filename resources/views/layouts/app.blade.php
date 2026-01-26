@@ -135,23 +135,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
-    {{-- Sticky header for mobile navigation --}}
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-slate-700/50 transition-colors md:hidden">
-        <div class="flex items-center justify-between px-4 py-3">
-            <a href="{{ route('home') }}" class="flex items-center gap-2 text-gray-900 dark:text-white">
-                <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 shadow-md shadow-violet-500/25" aria-hidden="true">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                </div>
-                <span class="font-semibold text-sm">{{ config('app.name') }}</span>
-            </a>
-            <x-theme-toggle />
-        </div>
-    </header>
-
-    {{-- Desktop theme toggle (hidden on mobile since it's in the header) --}}
-    <div class="fixed top-4 end-4 z-50 hidden md:block">
+    <div class="fixed top-4 end-4 z-50">
         <x-theme-toggle />
     </div>
 
