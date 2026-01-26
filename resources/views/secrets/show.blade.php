@@ -36,7 +36,7 @@
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
                         href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
+                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_create_new') }}
                     </a>
@@ -55,7 +55,7 @@
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
                     <a
                         href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
+                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_create_new') }}
                     </a>
@@ -75,7 +75,7 @@
                     <button
                         type="button"
                         @click="window.location.reload()"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
+                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_retry') }}
                     </button>
@@ -129,7 +129,7 @@
                         <button
                             type="button"
                             @click="confirmAndDecrypt()"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                         >
                             {{ __('messages.btn_reveal_secret') }}
                         </button>
@@ -237,7 +237,7 @@
                                 type="button"
                                 @click="copyToClipboard()"
                                 :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                class="absolute top-3 end-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition"
+                                class="absolute top-3 end-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition cursor-pointer"
                             >
                                 <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                 <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -279,7 +279,7 @@
                             x-show="needsPassphrase || needsManualKey"
                             type="button"
                             @click="error = null; if (needsManualKey) { manualKey = ''; }"
-                            class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
+                            class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition cursor-pointer"
                         >
                             {{ __('messages.btn_retry') }}
                         </button>

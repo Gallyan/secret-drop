@@ -12,7 +12,7 @@
     <button
         @click="toggle()"
         type="button"
-        class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-slate-700/50 hover:border-violet-500/50 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all shadow-sm"
+        class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-slate-700/50 hover:border-violet-500/50 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all shadow-sm cursor-pointer"
         :aria-label="dark ? 'Activer le mode clair' : 'Activer le mode sombre'"
     >
         <template x-if="dark">

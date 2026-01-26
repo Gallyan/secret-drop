@@ -88,7 +88,7 @@
                             <button
                                 @click="closeRevokeModal()"
                                 type="button"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg transition"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-slate-300 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-lg transition cursor-pointer"
                             >
                                 {{ __('messages.btn_cancel') }}
                             </button>
@@ -97,7 +97,7 @@
                                 x-ref="confirmRevokeBtn"
                                 x-init="$watch('showRevokeModal', value => value && $nextTick(() => $refs.confirmRevokeBtn.focus()))"
                                 type="button"
-                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
+                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 cursor-pointer"
                             >
                                 {{ __('messages.admin_revoke') }}
                             </button>
@@ -210,7 +210,7 @@
                                             <button
                                                 @click="extend('{{ $secret->id }}', $el)"
                                                 :disabled="extending"
-                                                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition"
+                                                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
                                             >
                                                 <span x-show="!extending">{{ __('messages.admin_extend') }}</span>
                                                 <span x-show="extending" class="flex items-center gap-1">
@@ -227,7 +227,7 @@
                                             <button
                                                 @click="openRevokeModal('{{ $secret->id }}', $el)"
                                                 :disabled="revoking"
-                                                class="px-4 py-2 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-lg disabled:opacity-50 transition"
+                                                class="px-4 py-2 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
                                             >
                                                 <span x-show="!revoking">{{ __('messages.admin_revoke') }}</span>
                                                 <span x-show="revoking" class="flex items-center gap-1">
