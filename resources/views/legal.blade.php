@@ -122,7 +122,7 @@
                         {{ __('messages.legal_contact_title') }}
                     </h2>
                     <p class="text-gray-600 dark:text-slate-400">
-                        {{ __('messages.legal_contact_text', ['email' => '']) }}<a href="mailto:{{ config('legal.contact_email', config('mail.from.address')) }}" class="text-violet-600 dark:text-violet-400 hover:underline" dir="ltr">{{ config('legal.contact_email', config('mail.from.address')) }}</a>
+                        {{ __('messages.legal_contact_prefix') }} <a href="mailto:{{ config('legal.contact_email', config('mail.from.address')) }}" class="text-violet-600 dark:text-violet-400 hover:underline" dir="ltr">{{ config('legal.contact_email', config('mail.from.address')) }}</a>.
                     </p>
                 </section>
             </div>
