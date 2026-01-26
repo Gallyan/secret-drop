@@ -16,6 +16,23 @@
     display: none !important;
 }
 
+/* Override browser autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(249 250 251) inset !important;
+    -webkit-text-fill-color: rgb(17 24 39) !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(15 23 42 / 0.5) inset !important;
+    -webkit-text-fill-color: rgb(255 255 255) !important;
+}
+
 /* Heatmap intensity classes */
 .heatmap-empty {
     background-color: rgb(241 245 249);

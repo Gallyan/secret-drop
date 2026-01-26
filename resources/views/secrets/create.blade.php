@@ -96,7 +96,7 @@
                                 id="secret"
                                 x-model="secret"
                                 placeholder="{{ __('messages.secret_placeholder') }}"
-                                class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
+                                class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                             ></textarea>
                         </div>
 
@@ -169,7 +169,7 @@
                                 <select
                                     id="expiration"
                                     x-model="expiration"
-                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                                     <option value="1h">{{ __('messages.expiration_1h') }}</option>
                                     <option value="1d">{{ __('messages.expiration_1d') }}</option>
@@ -190,8 +190,9 @@
                                     x-model="maxViews"
                                     min="1"
                                     max="100"
+                                    autocomplete="off"
                                     placeholder="{{ __('messages.max_reads_placeholder') }}"
-                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                         </div>
@@ -231,7 +232,7 @@
                                             x-model="passphrase"
                                             autocomplete="off"
                                             placeholder="{{ __('messages.passphrase_placeholder') }}"
-                                            class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                            class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
                                         <button
                                             type="button"
@@ -304,7 +305,7 @@
                                         x-model="creatorEmail"
                                         autocomplete="off"
                                         placeholder="{{ __('messages.email_placeholder') }}"
-                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     >
                                     <p class="mt-1.5 text-xs text-gray-500 dark:text-slate-500">
                                         {{ __('messages.email_hint') }}
@@ -352,7 +353,7 @@
                                     type="number"
                                     x-model="captchaAnswer"
                                     placeholder="{{ __('messages.captcha_placeholder') }}"
-                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     @keydown.enter.prevent="submitWithCaptcha()"
                                 >
                             </div>
