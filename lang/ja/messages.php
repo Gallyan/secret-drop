@@ -57,7 +57,6 @@ return [
     'btn_decrypting' => '復号化中...',
     'btn_retry' => '再試行',
     'btn_cancel' => 'キャンセル',
-    'btn_download_again' => '再ダウンロード',
     'btn_create_new' => '新しいシークレットを作成',
 
     // Success

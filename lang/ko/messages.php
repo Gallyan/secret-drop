@@ -57,7 +57,6 @@ return [
     'btn_decrypting' => '복호화 중...',
     'btn_retry' => '다시 시도',
     'btn_cancel' => '취소',
-    'btn_download_again' => '다시 다운로드',
     'btn_create_new' => '새 비밀 만들기',
 
     // Success

@@ -57,7 +57,6 @@ return [
     'btn_decrypting' => 'Odszyfrowywanie...',
     'btn_retry' => 'Spróbuj ponownie',
     'btn_cancel' => 'Anuluj',
-    'btn_download_again' => 'Pobierz ponownie',
     'btn_create_new' => 'Utwórz nowy sekret',
 
     // Success

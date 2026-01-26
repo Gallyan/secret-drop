@@ -259,14 +259,7 @@
                                 </svg>
                             </div>
                             <p class="text-gray-900 dark:text-white font-medium mb-1">{{ __('messages.file_decrypted') }}</p>
-                            <p class="text-sm text-gray-500 dark:text-slate-400 mb-4" x-text="filename"></p>
-                            <button
-                                type="button"
-                                @click="downloadAgain()"
-                                class="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-medium rounded-lg shadow transition-all"
-                            >
-                                {{ __('messages.btn_download_again') }}
-                            </button>
+                            <p class="text-sm text-gray-500 dark:text-slate-400" x-text="filename"></p>
                         </div>
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">

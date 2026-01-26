@@ -267,13 +267,6 @@ export default function secretViewer(token) {
             URL.revokeObjectURL(url);
         },
 
-        downloadAgain() {
-            if (this.type === 'file' && this.decrypted) {
-                this.decrypted = false;
-                this.decrypt();
-            }
-        },
-
         formatFileSize(bytes) {
             if (!bytes && bytes !== 0) {
                 return '';

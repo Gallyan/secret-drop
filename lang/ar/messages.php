@@ -57,7 +57,6 @@ return [
     'btn_decrypting' => 'جارٍ فك التشفير...',
     'btn_retry' => 'إعادة المحاولة',
     'btn_cancel' => 'إلغاء',
-    'btn_download_again' => 'تحميل مرة أخرى',
     'btn_create_new' => 'إنشاء سر جديد',
 
     // Success
