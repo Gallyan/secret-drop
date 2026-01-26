@@ -163,9 +163,43 @@
                         <div class="grid grid-cols-2 gap-4">
                             {{-- Expiration --}}
                             <div>
-                                <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                    {{ __('messages.expires_in') }}
-                                </label>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors">
+                                        {{ __('messages.expires_in') }}
+                                    </label>
+                                    <div class="relative" x-data="{ showHint: false }">
+                                        <button
+                                            type="button"
+                                            @mouseenter="showHint = true"
+                                            @mouseleave="showHint = false"
+                                            @focus="showHint = true"
+                                            @blur="showHint = false"
+                                            aria-describedby="expirationHint"
+                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                        >
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="sr-only">{{ __('messages.expires_in_hint') }}</span>
+                                        </button>
+                                        <div
+                                            x-show="showHint"
+                                            x-cloak
+                                            x-transition:enter="transition ease-out duration-150"
+                                            x-transition:enter-start="opacity-0 translate-y-1"
+                                            x-transition:enter-end="opacity-100 translate-y-0"
+                                            x-transition:leave="transition ease-in duration-100"
+                                            x-transition:leave-start="opacity-100 translate-y-0"
+                                            x-transition:leave-end="opacity-0 translate-y-1"
+                                            id="expirationHint"
+                                            role="tooltip"
+                                            class="absolute z-10 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+                                        >
+                                            {{ __('messages.expires_in_hint') }}
+                                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <select
                                     id="expiration"
                                     x-model="expiration"
@@ -256,9 +290,43 @@
                             <div id="advancedOptions" x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
                                 {{-- Passphrase --}}
                                 <div>
-                                    <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
-                                        {{ __('messages.passphrase') }}
-                                    </label>
+                                    <div class="flex items-center gap-1.5 mb-2">
+                                        <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors">
+                                            {{ __('messages.passphrase') }}
+                                        </label>
+                                        <div class="relative" x-data="{ showHint: false }">
+                                            <button
+                                                type="button"
+                                                @mouseenter="showHint = true"
+                                                @mouseleave="showHint = false"
+                                                @focus="showHint = true"
+                                                @blur="showHint = false"
+                                                aria-describedby="passphraseHint"
+                                                class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                            >
+                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="sr-only">{{ __('messages.passphrase_hint') }}</span>
+                                            </button>
+                                            <div
+                                                x-show="showHint"
+                                                x-cloak
+                                                x-transition:enter="transition ease-out duration-150"
+                                                x-transition:enter-start="opacity-0 translate-y-1"
+                                                x-transition:enter-end="opacity-100 translate-y-0"
+                                                x-transition:leave="transition ease-in duration-100"
+                                                x-transition:leave-start="opacity-100 translate-y-0"
+                                                x-transition:leave-end="opacity-0 translate-y-1"
+                                                id="passphraseHint"
+                                                role="tooltip"
+                                                class="absolute z-10 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+                                            >
+                                                {{ __('messages.passphrase_hint') }}
+                                                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="relative">
                                         <input
                                             id="passphrase"
@@ -347,21 +415,55 @@
                                 </div>
 
                                 {{-- Split mode --}}
-                                <label for="splitMode" class="flex items-start gap-3 cursor-pointer group">
+                                <div class="flex items-start gap-3" x-data="{ showHint: false }">
+                                    <label for="splitMode" class="flex items-start gap-3 cursor-pointer group flex-1">
+                                        <div class="relative mt-0.5">
+                                            <input type="checkbox" id="splitMode" x-model="splitMode" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
+                                            <div class="absolute start-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:ltr:translate-x-5 peer-checked:rtl:-translate-x-5"></div>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
+                                                {{ __('messages.split_mode') }}
+                                            </span>
+                                            <p class="mt-0.5 text-xs text-gray-500 dark:text-slate-500">
+                                                {{ __('messages.split_mode_hint') }}
+                                            </p>
+                                        </div>
+                                    </label>
                                     <div class="relative mt-0.5">
-                                        <input type="checkbox" id="splitMode" x-model="splitMode" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-gray-300 dark:bg-slate-700 rounded-full peer-checked:bg-violet-600 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-500 peer-focus-visible:ring-offset-2 transition"></div>
-                                        <div class="absolute start-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition peer-checked:ltr:translate-x-5 peer-checked:rtl:-translate-x-5"></div>
+                                        <button
+                                            type="button"
+                                            @mouseenter="showHint = true"
+                                            @mouseleave="showHint = false"
+                                            @focus="showHint = true"
+                                            @blur="showHint = false"
+                                            aria-describedby="splitModeHint"
+                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                        >
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="sr-only">{{ __('messages.split_mode_tooltip') }}</span>
+                                        </button>
+                                        <div
+                                            x-show="showHint"
+                                            x-cloak
+                                            x-transition:enter="transition ease-out duration-150"
+                                            x-transition:enter-start="opacity-0 translate-y-1"
+                                            x-transition:enter-end="opacity-100 translate-y-0"
+                                            x-transition:leave="transition ease-in duration-100"
+                                            x-transition:leave-start="opacity-100 translate-y-0"
+                                            x-transition:leave-end="opacity-0 translate-y-1"
+                                            id="splitModeHint"
+                                            role="tooltip"
+                                            class="absolute z-10 bottom-full end-0 mb-2 w-64 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+                                        >
+                                            {{ __('messages.split_mode_tooltip') }}
+                                            <div class="absolute top-full end-2 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
-                                            {{ __('messages.split_mode') }}
-                                        </span>
-                                        <p class="mt-0.5 text-xs text-gray-500 dark:text-slate-500">
-                                            {{ __('messages.split_mode_hint') }}
-                                        </p>
-                                    </div>
-                                </label>
+                                </div>
                             </div>
                         </div>
 
