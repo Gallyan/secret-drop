@@ -132,18 +132,23 @@ class DemoSeeder extends Seeder
             StatsService::HEATMAP_SECRETS_READ,
         ];
 
-        foreach ($heatmapMetrics as $metric) {
-            for ($day = 0; $day < 7; $day++) {
+        // Generate heatmap data for each day over 90 days
+        for ($daysAgo = 89; $daysAgo >= 0; $daysAgo--) {
+            $date = now()->subDays($daysAgo);
+            $dayOfWeek = (int) $date->dayOfWeek;
+
+            foreach ($heatmapMetrics as $metric) {
                 for ($hour = 0; $hour < 24; $hour++) {
-                    $baseCount = $this->getHeatmapBaseCount($day, $hour);
+                    $baseCount = $this->getHeatmapBaseCount($dayOfWeek, $hour);
                     $count = fake()->numberBetween(
-                        max(0, $baseCount - 5),
-                        $baseCount + 10
+                        max(0, (int) ($baseCount * 0.3)),
+                        (int) ($baseCount * 1.5)
                     );
 
                     if ($count > 0) {
                         DB::table('stats_heatmap')->insert([
-                            'day_of_week' => $day,
+                            'date' => $date->toDateString(),
+                            'day_of_week' => $dayOfWeek,
                             'hour' => $hour,
                             'metric' => $metric,
                             'count' => $count,

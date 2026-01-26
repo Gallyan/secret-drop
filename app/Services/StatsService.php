@@ -124,11 +124,13 @@ class StatsService
     public function incrementHeatmap(string $metric): void
     {
         $now = now();
+        $date = $now->toDateString();
         $dayOfWeek = (int) $now->dayOfWeek;
         $hour = (int) $now->hour;
 
         DB::table('stats_heatmap')->upsert(
             [
+                'date' => $date,
                 'day_of_week' => $dayOfWeek,
                 'hour' => $hour,
                 'metric' => $metric,
@@ -136,7 +138,7 @@ class StatsService
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-            ['day_of_week', 'hour', 'metric'],
+            ['date', 'day_of_week', 'hour', 'metric'],
             ['count' => DB::raw('count + 1'), 'updated_at' => $now]
         );
     }
@@ -144,11 +146,18 @@ class StatsService
     /**
      * @return array<int, array<int, int>>
      */
-    public function getHeatmap(string $metric): array
+    public function getHeatmap(string $metric, ?string $startDate = null): array
     {
-        $data = DB::table('stats_heatmap')
+        $query = DB::table('stats_heatmap')
+            ->select('day_of_week', 'hour', DB::raw('SUM(count) as total'))
             ->where('metric', $metric)
-            ->get()
+            ->groupBy('day_of_week', 'hour');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $data = $query->get()
             ->keyBy(fn ($row) => "{$row->day_of_week}-{$row->hour}");
 
         $heatmap = [];
@@ -156,7 +165,7 @@ class StatsService
             $heatmap[$day] = [];
             for ($hour = 0; $hour < 24; $hour++) {
                 $key = "{$day}-{$hour}";
-                $heatmap[$day][$hour] = isset($data[$key]) ? (int) $data[$key]->count : 0;
+                $heatmap[$day][$hour] = isset($data[$key]) ? (int) $data[$key]->total : 0;
             }
         }
 
