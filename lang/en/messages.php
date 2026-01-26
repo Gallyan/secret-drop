@@ -19,6 +19,8 @@ return [
     'max_reads' => 'Max reads',
     'max_reads_hint' => 'Limits how many times the secret can be viewed. Once reached, the secret is automatically deleted.',
     'advanced_options' => 'Advanced options',
+    'max_security' => 'Max security',
+    'max_security_tooltip' => 'Automatically configures: single view, 1h expiration, and split mode (link + key separate). You can adjust these options afterwards.',
     'passphrase' => 'Passphrase',
     'passphrase_hint' => 'Extra protection. The recipient must know it to decrypt. It\'s never sent to the server.',
     'passphrase_placeholder' => 'Additional protection',

@@ -455,6 +455,39 @@ export default function secretForm() {
             this.showQrCode = false;
             this.qrCodeDataUrl = null;
             this.clearCaptcha();
+        },
+
+        async applyMaxSecurity() {
+            const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            // Step 1: Set max views to 1
+            this.maxViews = 1;
+            await delay(150);
+
+            // Step 2: Set expiration to 1h
+            this.expiration = '1h';
+            await delay(150);
+
+            // Step 3: Open advanced options
+            this.showAdvanced = true;
+            await delay(200);
+
+            // Step 4: Enable split mode
+            this.splitMode = true;
+            await delay(100);
+
+            // Step 5: Focus on the appropriate field
+            this.$nextTick(() => {
+                const hasContent = this.mode === 'text'
+                    ? this.secret.trim().length > 0
+                    : this.file !== null;
+
+                if (hasContent) {
+                    document.getElementById('passphrase')?.focus();
+                } else {
+                    document.getElementById('secret')?.focus();
+                }
+            });
         }
     };
 }

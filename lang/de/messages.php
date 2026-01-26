@@ -19,6 +19,8 @@ return [
     'max_reads' => 'Maximale Lesevorgänge',
     'max_reads_hint' => 'Begrenzt, wie oft das Geheimnis angesehen werden kann. Nach Erreichen wird es automatisch gelöscht.',
     'advanced_options' => 'Erweiterte Optionen',
+    'max_security' => 'Max. Sicherheit',
+    'max_security_tooltip' => 'Konfiguriert automatisch: einmalige Ansicht, 1h Ablauf und Split-Modus (Link + Schlüssel getrennt). Sie können diese Optionen danach anpassen.',
     'passphrase' => 'Geheimphrase',
     'passphrase_hint' => 'Zusätzlicher Schutz. Der Empfänger muss sie kennen. Sie wird nie an den Server gesendet.',
     'passphrase_placeholder' => 'Zusätzlicher Schutz',

@@ -19,6 +19,8 @@ return [
     'max_reads' => 'Máximo de leituras',
     'max_reads_hint' => 'Limita quantas vezes o segredo pode ser visualizado. Ao atingir, é automaticamente excluído.',
     'advanced_options' => 'Opções avançadas',
+    'max_security' => 'Segurança máx.',
+    'max_security_tooltip' => 'Configura automaticamente: leitura única, expiração 1h e modo dividido (link + chave separados). Você pode ajustar estas opções depois.',
     'passphrase' => 'Frase secreta',
     'passphrase_hint' => 'Proteção adicional. O destinatário deve conhecê-la. Nunca é enviada ao servidor.',
     'passphrase_placeholder' => 'Proteção adicional',

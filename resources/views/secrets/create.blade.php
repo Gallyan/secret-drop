@@ -65,7 +65,7 @@
                                 :aria-selected="mode === 'text'"
                                 @click="setMode('text')"
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
-                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
                             >
                                 <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -78,7 +78,7 @@
                                 :aria-selected="mode === 'file'"
                                 @click="setMode('file')"
                                 :class="mode === 'file' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
-                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
                             >
                                 <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -150,7 +150,7 @@
                                     type="button"
                                     @click="file = null"
                                     aria-label="Supprimer le fichier"
-                                    class="p-2 text-gray-400 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition"
+                                    class="p-2 text-gray-400 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition cursor-pointer"
                                 >
                                     <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -265,13 +265,13 @@
                         </div>
 
                         {{-- Collapsible options --}}
-                        <div>
+                        <div class="flex items-center justify-between">
                             <button
                                 type="button"
                                 @click="showAdvanced = !showAdvanced"
                                 :aria-expanded="showAdvanced"
                                 aria-controls="advancedOptions"
-                                class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
+                                class="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
                             >
                                 <svg
                                     class="w-4 h-4 transition-transform rtl:-scale-x-100"
@@ -285,6 +285,41 @@
                                 </svg>
                                 {{ __('messages.advanced_options') }}
                             </button>
+
+                            {{-- Max security button with tooltip --}}
+                            <div class="relative" x-data="{ showHint: false }">
+                                <button
+                                    type="button"
+                                    @click="applyMaxSecurity()"
+                                    @mouseenter="showHint = true"
+                                    @mouseleave="showHint = false"
+                                    @focus="showHint = true"
+                                    @blur="showHint = false"
+                                    aria-describedby="maxSecurityHint"
+                                    class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition cursor-pointer"
+                                >
+                                    <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                    {{ __('messages.max_security') }}
+                                </button>
+                                <div
+                                    id="maxSecurityHint"
+                                    role="tooltip"
+                                    x-show="showHint"
+                                    x-cloak
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 translate-y-1"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100 translate-y-0"
+                                    x-transition:leave-end="opacity-0 translate-y-1"
+                                    class="absolute end-0 top-full mt-2 w-64 p-3 text-xs text-gray-600 dark:text-slate-300 bg-white dark:bg-slate-700 rounded-lg shadow-lg border border-gray-100 dark:border-slate-600 z-20"
+                                >
+                                    {{ __('messages.max_security_tooltip') }}
+                                </div>
+                            </div>
+                        </div>
 
                             <div id="advancedOptions" x-show="showAdvanced" x-collapse class="mt-4 space-y-4">
                                 {{-- Passphrase --}}
@@ -301,7 +336,7 @@
                                                 @focus="showHint = true"
                                                 @blur="showHint = false"
                                                 aria-describedby="passphraseHint"
-                                                class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                                class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                             >
                                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -339,7 +374,7 @@
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
                                             :aria-label="showPassphrase ? window.translations.a11y_hide_passphrase : window.translations.a11y_show_passphrase"
-                                            class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition"
+                                            class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition cursor-pointer"
                                         >
                                             <svg x-show="!showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -438,7 +473,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="splitModeHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -464,7 +499,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
                         {{-- Error message --}}
                         <div x-show="error && !captchaRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
