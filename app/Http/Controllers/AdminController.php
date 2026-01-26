@@ -55,7 +55,9 @@ class AdminController extends Controller
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
-        Mail::to($request->validated('email'))->send(new MagicLinkMail($verifyUrl));
+        Mail::to($request->validated('email'))
+            ->locale(app()->getLocale())
+            ->send(new MagicLinkMail($verifyUrl));
 
         $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
 

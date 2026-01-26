@@ -46,7 +46,9 @@ class SuperAdminController extends Controller
             ]);
 
             $url = route('superadmin.verify', ['token' => $tokenData['token']]);
-            Mail::to($email)->send(new SuperAdminMagicLinkMail($url));
+            Mail::to($email)
+                ->locale(app()->getLocale())
+                ->send(new SuperAdminMagicLinkMail($url));
 
             $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
         }
