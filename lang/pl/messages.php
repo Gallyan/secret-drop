@@ -152,6 +152,7 @@ return [
     'legal_cookies_cnil' => 'Zgodnie z zaleceniami CNIL, te ściśle niezbędne pliki cookie są zwolnione z wymogów zgody.',
     'legal_contact_title' => 'Kontakt',
     'legal_contact_text' => 'W przypadku pytań dotyczących tej strony, skontaktuj się z nami pod adresem :email.',
+    'legal_contact_prefix' => 'W przypadku pytań dotyczących tej strony, skontaktuj się z nami pod adresem',
 
     // Admin
     'admin_title' => 'Zarządzaj swoimi sekretami',

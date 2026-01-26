@@ -152,6 +152,7 @@ return [
     'legal_cookies_cnil' => 'In overeenstemming met CNIL-aanbevelingen zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',
     'legal_contact_title' => 'Contact',
     'legal_contact_text' => 'Voor vragen over deze website kunt u contact opnemen via :email.',
+    'legal_contact_prefix' => 'Voor vragen over deze website kunt u contact opnemen via',
 
     // Admin
     'admin_title' => 'Uw geheimen beheren',

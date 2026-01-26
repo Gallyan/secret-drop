@@ -152,6 +152,7 @@ return [
     'legal_cookies_cnil' => 'Conformément aux recommandations de la CNIL, ces cookies strictement nécessaires sont exemptés du recueil de consentement.',
     'legal_contact_title' => 'Contact',
     'legal_contact_text' => 'Pour toute question concernant ce site, vous pouvez nous contacter à :email.',
+    'legal_contact_prefix' => 'Pour toute question concernant ce site, vous pouvez nous contacter à',
 
     // Admin
     'admin_title' => 'Gérer vos secrets',

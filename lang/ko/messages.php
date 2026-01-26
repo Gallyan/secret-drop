@@ -152,6 +152,7 @@ return [
     'legal_cookies_cnil' => 'CNIL 권고에 따라 이러한 필수 쿠키는 동의 요건에서 면제됩니다.',
     'legal_contact_title' => '연락처',
     'legal_contact_text' => '이 웹사이트에 대한 질문은 :email로 연락하세요.',
+    'legal_contact_prefix' => '이 웹사이트에 대한 질문은 다음 주소로 연락하세요:',
 
     // Admin
     'admin_title' => '비밀 관리',

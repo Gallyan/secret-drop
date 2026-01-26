@@ -38,7 +38,7 @@
                     <p class="text-gray-600 dark:text-slate-400 mb-2">
                         {{ __('messages.legal_hosting_text') }}
                     </p>
-                    <div class="text-gray-600 dark:text-slate-400 space-y-1">
+                    <div class="text-gray-600 dark:text-slate-400 space-y-1" dir="ltr">
                         <p>{{ config('legal.hosting.name') }}</p>
                         <p>{{ config('legal.hosting.address') }}</p>
                         <p>{{ __('messages.legal_hosting_phone') }} {{ config('legal.hosting.phone') }}</p>
@@ -122,7 +122,7 @@
                         {{ __('messages.legal_contact_title') }}
                     </h2>
                     <p class="text-gray-600 dark:text-slate-400">
-                        {{ __('messages.legal_contact_text', ['email' => config('legal.contact_email', config('mail.from.address'))]) }}
+                        {{ __('messages.legal_contact_prefix') }} <a href="mailto:{{ config('legal.contact_email', config('mail.from.address')) }}" class="text-violet-600 dark:text-violet-400 hover:underline" dir="ltr">{{ config('legal.contact_email', config('mail.from.address')) }}</a>
                     </p>
                 </section>
             </div>

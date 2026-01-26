@@ -152,6 +152,7 @@ return [
     'legal_cookies_cnil' => 'CNIL勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',
     'legal_contact_title' => 'お問い合わせ',
     'legal_contact_text' => 'このサイトに関するご質問は :email までお問い合わせください。',
+    'legal_contact_prefix' => 'このサイトに関するご質問はこちらまでお問い合わせください：',
 
     // Admin
     'admin_title' => 'シークレットを管理',
