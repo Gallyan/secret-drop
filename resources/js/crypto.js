@@ -12,6 +12,7 @@ const AES_KEY_LENGTH = 256;
 const IV_LENGTH = 12; // 96 bits for AES-GCM
 const SALT_LENGTH = 16; // 128 bits for PBKDF2
 const PBKDF2_ITERATIONS = 600000;
+const META_HEADER_LENGTH_BYTES = 4; // Uint32 for metadata length
 
 /**
  * Encode bytes to Base64URL (URL-safe, no padding)
@@ -272,16 +273,87 @@ export function parseKeyFragment(fragment) {
 }
 
 /**
+ * Pack file content with encrypted metadata header.
+ * Format: [4 bytes: metadata length as Uint32BE][metadata JSON][file content]
+ *
+ * @param {Uint8Array} fileBytes - The file content
+ * @param {string} filename - Original filename
+ * @param {string} mime - MIME type
+ * @param {number} size - Original file size
+ * @returns {Uint8Array} - Packed data ready for encryption
+ */
+function packFileWithMeta(fileBytes, filename, mime, size) {
+    const encoder = new TextEncoder();
+    const metaJson = JSON.stringify({ filename, mime, size });
+    const metaBytes = encoder.encode(metaJson);
+
+    // Create header with metadata length (4 bytes, big-endian)
+    const headerLength = META_HEADER_LENGTH_BYTES + metaBytes.length;
+    const packedData = new Uint8Array(headerLength + fileBytes.length);
+
+    // Write metadata length as Uint32BE
+    const view = new DataView(packedData.buffer);
+    view.setUint32(0, metaBytes.length, false); // false = big-endian
+
+    // Write metadata JSON
+    packedData.set(metaBytes, META_HEADER_LENGTH_BYTES);
+
+    // Write file content
+    packedData.set(fileBytes, headerLength);
+
+    return packedData;
+}
+
+/**
+ * Unpack decrypted file data to extract metadata and content.
+ *
+ * @param {Uint8Array} decryptedBytes - Decrypted data with metadata header
+ * @returns {{data: ArrayBuffer, filename: string, mime: string, size: number}}
+ */
+function unpackFileWithMeta(decryptedBytes) {
+    const view = new DataView(decryptedBytes.buffer, decryptedBytes.byteOffset, decryptedBytes.byteLength);
+
+    // Read metadata length (4 bytes, big-endian)
+    const metaLength = view.getUint32(0, false);
+
+    // Extract and parse metadata JSON
+    const metaStart = META_HEADER_LENGTH_BYTES;
+    const metaEnd = metaStart + metaLength;
+    const metaBytes = decryptedBytes.slice(metaStart, metaEnd);
+    const decoder = new TextDecoder();
+    const meta = JSON.parse(decoder.decode(metaBytes));
+
+    // Extract file content
+    const fileContent = decryptedBytes.slice(metaEnd);
+
+    return {
+        data: fileContent.buffer.slice(
+            fileContent.byteOffset,
+            fileContent.byteOffset + fileContent.byteLength
+        ),
+        filename: meta.filename,
+        mime: meta.mime,
+        size: meta.size
+    };
+}
+
+/**
  * Encrypt a file using AES-256-GCM
  * If passphrase is provided, applies double encryption (same as encryptSecret)
  *
+ * File metadata (filename, mime, size) is encrypted within the payload,
+ * never transmitted in plaintext to the server.
+ *
  * @param {File} file - The file to encrypt
  * @param {string|null} passphrase - Optional passphrase for additional protection
- * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number, filename: string, mime: string, size: number}>}
+ * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number}>}
  */
 export async function encryptFile(file, passphrase = null) {
     const arrayBuffer = await file.arrayBuffer();
     const fileBytes = new Uint8Array(arrayBuffer);
+
+    // Pack file with metadata header (filename, mime, size are encrypted)
+    const packedData = packFileWithMeta(fileBytes, file.name, file.type || 'application/octet-stream', file.size);
 
     // Always generate a random key (256 bits)
     const randomKey = await generateKey();
@@ -293,7 +365,7 @@ export async function encryptFile(file, passphrase = null) {
     let ciphertextBytes = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
         randomKey,
-        fileBytes
+        packedData
     );
 
     let salt = null;
@@ -319,15 +391,15 @@ export async function encryptFile(file, passphrase = null) {
         iv2: iv2 ? bytesToBase64Url(iv2) : null,
         keyMaterial,
         version: CRYPTO_VERSION,
-        filename: file.name,
-        mime: file.type || 'application/octet-stream',
-        size: file.size
     };
 }
 
 /**
  * Decrypt file data using AES-256-GCM
  * If passphrase was used, performs double decryption (same as decryptSecret)
+ *
+ * The decrypted payload contains a metadata header with filename, mime, and size
+ * that were encrypted with the file content.
  *
  * @param {ArrayBuffer} encryptedData - The encrypted file data
  * @param {string} iv - Base64URL encoded IV (for random key layer)
@@ -336,7 +408,7 @@ export async function encryptFile(file, passphrase = null) {
  * @param {string|null} iv2 - Base64URL encoded IV for passphrase layer
  * @param {string|null} passphrase - Passphrase (if used during encryption)
  * @param {number} version - Crypto version
- * @returns {Promise<ArrayBuffer>}
+ * @returns {Promise<{data: ArrayBuffer, filename: string, mime: string, size: number}>}
  */
 export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, iv2 = null, passphrase = null, version = CRYPTO_VERSION) {
     if (version !== CRYPTO_VERSION) {
@@ -367,11 +439,13 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
 
-    return crypto.subtle.decrypt(
+    const decryptedBytes = new Uint8Array(await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
         randomKey,
         dataBytes
-    );
+    ));
+
+    return unpackFileWithMeta(decryptedBytes);
 }
 
 /**

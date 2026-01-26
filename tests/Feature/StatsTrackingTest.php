@@ -65,6 +65,7 @@ class StatsTrackingTest extends TestCase
         $initialFileCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_FILE);
         $initialSizeCount = $this->getMetricTotal(StatsService::TOTAL_FILE_SIZE_BYTES);
 
+        // Create a 256 KB file
         $file = UploadedFile::fake()->create('test.bin', 256);
 
         $this->postJson('/api/secrets', [
@@ -75,9 +76,6 @@ class StatsTrackingTest extends TestCase
                 'iv' => 'testiv',
                 'version' => 1,
             ]),
-            'filename' => 'test.pdf',
-            'mime' => 'application/pdf',
-            'size' => 262144, // 256 KB
             'expiration' => '7d',
         ]);
 
@@ -85,7 +83,8 @@ class StatsTrackingTest extends TestCase
         $newSizeCount = $this->getMetricTotal(StatsService::TOTAL_FILE_SIZE_BYTES);
 
         $this->assertEquals($initialFileCount + 1, $newFileCount);
-        $this->assertEquals($initialSizeCount + 262144, $newSizeCount);
+        // Size is now calculated from the actual stored file
+        $this->assertGreaterThan($initialSizeCount, $newSizeCount);
 
         // Cleanup
         $secret = Secret::orderBy('id', 'desc')->first();

@@ -39,11 +39,8 @@ class StoreSecretRequest extends FormRequest
             // Text secrets
             'ciphertext' => ['required_if:type,text', 'string'],
 
-            // File secrets
+            // File secrets (metadata is encrypted in the payload)
             'encrypted_file' => ['required_if:type,file', 'file', 'max:102400'], // 100MB
-            'filename' => ['required_if:type,file', 'string', 'max:255'],
-            'mime' => ['required_if:type,file', 'string', 'max:255'],
-            'size' => ['required_if:type,file', 'integer', 'min:1', 'max:104857600'], // 100MB
 
             // Common
             'cipher_meta' => ['required', 'array'],
@@ -72,7 +69,6 @@ class StoreSecretRequest extends FormRequest
             'ciphertext.required_if' => 'Le texte chiffré est requis pour un secret texte.',
             'encrypted_file.required_if' => 'Le fichier chiffré est requis.',
             'encrypted_file.max' => 'Le fichier ne doit pas dépasser 100 Mo.',
-            'filename.required_if' => 'Le nom du fichier est requis.',
             'cipher_meta.required' => 'Les métadonnées de chiffrement sont requises.',
             'cipher_meta.alg.required' => 'L\'algorithme de chiffrement est requis.',
             'cipher_meta.iv.required' => 'Le vecteur d\'initialisation est requis.',

@@ -85,11 +85,8 @@ export default function secretViewer(token) {
 
                 if (data.type === 'text') {
                     this.ciphertext = data.ciphertext;
-                } else {
-                    this.filename = data.filename;
-                    this.mime = data.mime;
-                    this.size = data.size;
                 }
+                // For files, metadata (filename, mime, size) is encrypted in the payload
 
                 this.parseFragment();
             } catch (e) {
@@ -242,7 +239,7 @@ export default function secretViewer(token) {
             const encryptedData = await response.arrayBuffer();
             const iv2 = this.cipherMeta.iv2 || null;
 
-            const decryptedData = await window.SecretCrypto.decryptFile(
+            const result = await window.SecretCrypto.decryptFile(
                 encryptedData,
                 this.cipherMeta.iv,
                 this.keyMaterial,
@@ -252,12 +249,17 @@ export default function secretViewer(token) {
                 this.version
             );
 
-            const blob = new Blob([decryptedData], { type: this.mime });
+            // Update component state with decrypted metadata
+            this.filename = result.filename;
+            this.mime = result.mime;
+            this.size = result.size;
+
+            const blob = new Blob([result.data], { type: result.mime });
             const url = URL.createObjectURL(blob);
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = this.filename;
+            a.download = result.filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);

@@ -86,9 +86,6 @@ class SecretWorkflowTest extends TestCase
                 'iv' => 'randomiv12345',
                 'version' => 1,
             ]),
-            'filename' => 'secret_document.pdf',
-            'mime' => 'application/pdf',
-            'size' => 512,
             'expiration' => '1d',
             'max_views' => 1,
         ]);
@@ -96,15 +93,14 @@ class SecretWorkflowTest extends TestCase
         $createResponse->assertStatus(201);
         $token = $createResponse->json('token');
 
-        // Step 2: Fetch metadata
+        // Step 2: Fetch metadata (filename/mime/size are encrypted in file payload)
         $fetchResponse = $this->getJson("/api/secrets/{$token}");
         $fetchResponse->assertStatus(200);
         $fetchResponse->assertJson([
             'type' => 'file',
-            'filename' => 'secret_document.pdf',
-            'mime' => 'application/pdf',
             'will_be_destroyed' => true,
         ]);
+        $fetchResponse->assertJsonMissing(['encrypted_size']);
 
         // Step 3: Download file
         $downloadResponse = $this->get("/s/{$token}/download");
@@ -114,12 +110,9 @@ class SecretWorkflowTest extends TestCase
         $readResponse = $this->postJson("/api/secrets/{$token}/read");
         $readResponse->assertStatus(200);
 
-        // Step 5: Verify file metadata was cleared
+        // Step 5: Verify file was cleared
         $secret = Secret::where('token', $token)->first();
         $this->assertNull($secret->file_path);
-        $this->assertNull($secret->filename);
-        $this->assertNull($secret->mime);
-        $this->assertNull($secret->size);
 
         // Step 6: Download should fail now
         $refetchResponse = $this->getJson("/api/secrets/{$token}");

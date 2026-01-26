@@ -135,10 +135,6 @@ class DownloadSecurityTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
-            'filename' => 'expired.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
-            'usage_unique' => false,
             'expire_at' => now()->subHour(),
         ]);
 
@@ -161,10 +157,6 @@ class DownloadSecurityTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
-            'filename' => 'revoked.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
             'revoked_at' => now(),
         ]);
@@ -184,10 +176,6 @@ class DownloadSecurityTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'nonexistent_path',
-            'filename' => 'missing.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -198,7 +186,7 @@ class DownloadSecurityTest extends TestCase
         $secret->delete();
     }
 
-    private function createFileSecret(string $filename = 'test.pdf'): Secret
+    private function createFileSecret(): Secret
     {
         $token = $this->tokenService->generatePublicToken();
         $file = UploadedFile::fake()->create('test.bin', 256);
@@ -210,10 +198,6 @@ class DownloadSecurityTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
-            'filename' => $filename,
-            'mime' => 'application/pdf',
-            'size' => 256,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
     }

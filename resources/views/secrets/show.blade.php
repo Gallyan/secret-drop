@@ -104,9 +104,7 @@
                             <span x-text="type === 'text' ? window.translations.encrypted_end_to_end_message : window.translations.encrypted_end_to_end_file"></span>
                         </p>
                         <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-500 dark:text-slate-500">
-                            <span class="font-medium text-gray-700 dark:text-slate-300" x-text="filename"></span>
-                            <span class="mx-1">·</span>
-                            <span x-text="formatFileSize(size)"></span>
+                            <span class="text-gray-600 dark:text-slate-400">{{ __('messages.file_encrypted_info') }}</span>
                         </div>
                     </div>
 

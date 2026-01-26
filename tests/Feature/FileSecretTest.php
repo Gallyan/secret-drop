@@ -33,9 +33,6 @@ class FileSecretTest extends TestCase
                 'iv' => 'testiv123456',
                 'version' => 1,
             ]),
-            'filename' => 'document.pdf',
-            'mime' => 'application/pdf',
-            'size' => 1024,
             'expiration' => '7d',
         ]);
 
@@ -47,9 +44,7 @@ class FileSecretTest extends TestCase
 
         $this->assertNotNull($secret);
         $this->assertEquals('file', $secret->type);
-        $this->assertEquals('document.pdf', $secret->filename);
-        $this->assertEquals('application/pdf', $secret->mime);
-        $this->assertEquals(1024, $secret->size);
+        // filename/mime/size are encrypted in the file payload, not stored in DB
         $this->assertNotNull($secret->file_path);
         $this->assertTrue($this->storage->exists($secret->file_path));
 
@@ -67,35 +62,11 @@ class FileSecretTest extends TestCase
                 'iv' => 'testiv123456',
                 'version' => 1,
             ]),
-            'filename' => 'document.pdf',
-            'mime' => 'application/pdf',
-            'size' => 1024,
             'expiration' => '7d',
         ]);
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['encrypted_file']);
-    }
-
-    public function testFileSecretRequiresFilename(): void
-    {
-        $file = UploadedFile::fake()->create('encrypted', 1024, 'application/octet-stream');
-
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
-                'version' => 1,
-            ]),
-            'mime' => 'application/pdf',
-            'size' => 1024,
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['filename']);
     }
 
     public function testFileSecretRejectsFileTooLarge(): void
@@ -111,9 +82,6 @@ class FileSecretTest extends TestCase
                 'iv' => 'testiv123456',
                 'version' => 1,
             ]),
-            'filename' => 'large.zip',
-            'mime' => 'application/zip',
-            'size' => 101 * 1024 * 1024,
             'expiration' => '7d',
         ]);
 
@@ -134,9 +102,6 @@ class FileSecretTest extends TestCase
                 'iv' => 'testiv123456',
                 'version' => 1,
             ]),
-            'filename' => 'secret.dat',
-            'mime' => 'application/octet-stream',
-            'size' => 512,
             'expiration' => '7d',
         ]);
 
@@ -193,9 +158,6 @@ class FileSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
-            'filename' => 'expired.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
             'expire_at' => now()->subHour(),
         ]);
 
@@ -216,9 +178,6 @@ class FileSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'nonexistent_file_path',
-            'filename' => 'missing.pdf',
-            'mime' => 'application/pdf',
-            'size' => 1024,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -241,9 +200,6 @@ class FileSecretTest extends TestCase
                 'iv' => 'testiv123456',
                 'version' => 1,
             ]),
-            'filename' => 'doc.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
             'expiration' => '7d',
         ]);
 

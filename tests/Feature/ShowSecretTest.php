@@ -336,10 +336,6 @@ class ShowSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'secrets/test',
-            'filename' => 'document.pdf',
-            'mime' => 'application/pdf',
-            'size' => 12345,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 
@@ -348,12 +344,10 @@ class ShowSecretTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'type' => 'file',
-            'filename' => 'document.pdf',
-            'mime' => 'application/pdf',
-            'size' => 12345,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
         ]);
-        $response->assertJsonMissing(['ciphertext']);
+        // filename/mime/size are encrypted in file payload, not returned by API
+        $response->assertJsonMissing(['ciphertext', 'filename', 'mime', 'size', 'encrypted_size']);
 
         $secret->delete();
     }
@@ -373,10 +367,6 @@ class ShowSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $filePath,
-            'filename' => 'secret.pdf',
-            'mime' => 'application/pdf',
-            'size' => 1234,
-            'usage_unique' => true,
             'max_views' => 1,
             'expire_at' => now()->addDay(),
         ]);
@@ -429,10 +419,6 @@ class ShowSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $filePath,
-            'filename' => 'secret.pdf',
-            'mime' => 'application/pdf',
-            'size' => 1234,
-            'usage_unique' => false,
             'expire_at' => now()->addDay(),
         ]);
 

@@ -45,21 +45,20 @@ class SecretsController extends Controller
             'creator_email_hash' => $creatorEmail ? hash('sha256', strtolower(trim($creatorEmail))) : null,
         ];
 
+        $fileSize = null;
         if ($validated['type'] === 'text') {
             $secretData['ciphertext'] = $validated['ciphertext'];
         } else {
             $file = $request->file('encrypted_file');
+            $fileSize = $file->getSize();
             $filePath = $this->storage->store($token, $file);
 
             $secretData['file_path'] = $filePath;
-            $secretData['filename'] = $validated['filename'];
-            $secretData['mime'] = $validated['mime'];
-            $secretData['size'] = (int) $validated['size'];
         }
 
         $secret = Secret::create($secretData);
 
-        $this->trackCreationStats($secret, $validated);
+        $this->trackCreationStats($secret, $validated, $fileSize);
 
         return response()->json([
             'token' => $secret->token,
@@ -70,13 +69,15 @@ class SecretsController extends Controller
     /**
      * @param  array<string, mixed>  $validated
      */
-    private function trackCreationStats(Secret $secret, array $validated): void
+    private function trackCreationStats(Secret $secret, array $validated, ?int $fileSize = null): void
     {
         if ($secret->type === 'text') {
             $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
         } else {
             $this->stats->increment(StatsService::SECRETS_CREATED_FILE);
-            $this->stats->increment(StatsService::TOTAL_FILE_SIZE_BYTES, $secret->size ?? 0);
+            if ($fileSize !== null && $fileSize > 0) {
+                $this->stats->increment(StatsService::TOTAL_FILE_SIZE_BYTES, $fileSize);
+            }
         }
 
         if (! empty($validated['cipher_meta']['has_passphrase'])) {
@@ -125,11 +126,8 @@ class SecretsController extends Controller
 
         if ($secret->type === 'text') {
             $data['ciphertext'] = $secret->ciphertext;
-        } else {
-            $data['filename'] = $secret->filename;
-            $data['mime'] = $secret->mime;
-            $data['size'] = $secret->size;
         }
+        // For files, metadata (filename, mime, size) is encrypted in the payload
 
         return response()->json($data);
     }

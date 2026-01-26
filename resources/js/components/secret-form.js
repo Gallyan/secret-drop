@@ -279,13 +279,11 @@ export default function secretForm() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
             // Create FormData for multipart upload
+            // Note: filename, mime, size are NOT sent - they're encrypted in the file payload
             const formData = new FormData();
             formData.append('type', 'file');
             formData.append('encrypted_file', encrypted.encryptedBlob, 'encrypted');
             formData.append('cipher_meta', JSON.stringify(cipherMeta));
-            formData.append('filename', encrypted.filename);
-            formData.append('mime', encrypted.mime);
-            formData.append('size', encrypted.size.toString());
             formData.append('expiration', this.expiration);
             if (this.maxViews) {
                 formData.append('max_views', this.maxViews.toString());

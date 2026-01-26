@@ -123,9 +123,6 @@ class CleanExpiredSecretsCommandTest extends TestCase
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
-            'filename' => 'expired.pdf',
-            'mime' => 'application/pdf',
-            'size' => 256,
             'usage_unique' => false,
             'expire_at' => now()->subHour(),
         ]);

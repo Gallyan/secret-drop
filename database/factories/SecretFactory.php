@@ -38,9 +38,6 @@ class SecretFactory extends Factory
             'type' => 'text',
             'ciphertext' => base64_encode(random_bytes(64)),
             'file_path' => null,
-            'filename' => null,
-            'mime' => null,
-            'size' => null,
         ]);
     }
 
@@ -50,9 +47,6 @@ class SecretFactory extends Factory
             'type' => 'file',
             'ciphertext' => null,
             'file_path' => 'secrets/'.Str::random(40).'.enc',
-            'filename' => fake()->word().'.pdf',
-            'mime' => 'application/pdf',
-            'size' => fake()->numberBetween(1024, 1024 * 1024),
         ]);
     }
 

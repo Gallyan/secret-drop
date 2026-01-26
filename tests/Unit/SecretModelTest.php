@@ -314,18 +314,12 @@ class SecretModelTest extends TestCase
             'type' => 'file',
             'ciphertext' => null,
             'file_path' => 'some/path',
-            'filename' => 'test.pdf',
-            'mime' => 'application/pdf',
-            'size' => 12345,
         ]);
 
         $secret->destroyContent();
         $secret->refresh();
 
         $this->assertNull($secret->file_path);
-        $this->assertNull($secret->filename);
-        $this->assertNull($secret->mime);
-        $this->assertNull($secret->size);
 
         $secret->delete();
     }

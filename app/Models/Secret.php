@@ -15,9 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<string, mixed> $cipher_meta
  * @property string|null $ciphertext
  * @property string|null $file_path
- * @property string|null $filename
- * @property string|null $mime
- * @property int|null $size
  * @property int|null $max_views
  * @property int $read_count
  * @property Carbon|null $first_read_at
@@ -41,9 +38,6 @@ class Secret extends Model
         'cipher_meta',
         'ciphertext',
         'file_path',
-        'filename',
-        'mime',
-        'size',
         'max_views',
         'read_count',
         'expire_at',
@@ -112,9 +106,6 @@ class Secret extends Model
             $this->ciphertext = null;
         } else {
             $this->file_path = null;
-            $this->filename = null;
-            $this->mime = null;
-            $this->size = null;
         }
 
         $this->save();
