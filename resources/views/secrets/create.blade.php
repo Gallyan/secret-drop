@@ -175,7 +175,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="expirationHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -226,7 +226,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="maxViewsHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition"
+                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -534,7 +534,7 @@
                             x-show="!captchaRequired"
                             type="submit"
                             :disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
@@ -553,7 +553,7 @@
                             type="button"
                             @click="submitWithCaptcha()"
                             :disabled="isSubmitting || !captchaAnswer.trim()"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
@@ -593,7 +593,7 @@
                                     type="button"
                                     @click="copyToClipboard()"
                                     :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                    class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                    class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
                                 >
                                     <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                     <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -629,7 +629,7 @@
                                         type="button"
                                         @click="copyToClipboard()"
                                         :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
                                     >
                                         <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -654,7 +654,7 @@
                                         type="button"
                                         @click="copyKeyToClipboard()"
                                         :aria-label="keyCopied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
                                     >
                                         <span x-show="!keyCopied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="keyCopied">{{ __('messages.btn_copied') }}</span>
@@ -679,7 +679,7 @@
                                 @click="toggleQrCode()"
                                 :aria-expanded="showQrCode"
                                 aria-controls="qr-code-panel"
-                                class="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition"
+                                class="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition cursor-pointer"
                             >
                                 <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h2M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
@@ -695,7 +695,7 @@
                                     <button
                                         type="button"
                                         @click="downloadQrCode()"
-                                        class="flex items-center gap-2 px-4 py-2 text-sm text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition"
+                                        class="flex items-center gap-2 px-4 py-2 text-sm text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition cursor-pointer"
                                     >
                                         <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -716,7 +716,7 @@
                         <button
                             type="button"
                             @click="reset()"
-                            class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition"
+                            class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition cursor-pointer"
                         >
                             {{ __('messages.btn_create_new') }}
                         </button>
