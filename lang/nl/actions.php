@@ -60,7 +60,7 @@ return [
         'choose'    => 'Kies :name',
         'create'    => 'Creëer :name',
         'delete'    => 'Verwijder :name',
-        'duplicate' => 'Dupliceer: naam',
+        'duplicate' => 'Dupliceer :name',
         'edit'      => 'Bewerk :name',
         'export'    => 'Exporteer :name',
         'hide'      => 'Verberg :name',
