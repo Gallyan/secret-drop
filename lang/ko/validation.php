@@ -126,7 +126,7 @@ return [
     'prohibited_if'          => ':attribute (은)는 :other 이(가) :value 인 경우 금지되어 있습니다.',
     'prohibited_if_accepted' => ':attribute 필드는 :other이 허용되면 금지됩니다.',
     'prohibited_if_declined' => ':other이 감소 할 때 :attribute 필드는 금지됩니다.',
-    'prohibited_unless'      => ':attribute (은)는 :other 이(가) :value 이(가) 아닌 경우 금지되어 있습니다.',
+    'prohibited_unless'      => ':attribute (은)는 :other 이(가) :values 이(가) 아닌 경우 금지되어 있습니다.',
     'prohibits'              => ':attribute (은)는 :other 을(를) 금지합니다.',
     'regex'                  => ':attribute 형식이 올바르지 않습니다.',
     'required'               => ':attribute 필드는 필수입니다.',
