@@ -8,7 +8,7 @@ return [
     // Features
     'feature_encryption' => 'Szyfrowanie klasy wojskowej w przeglądarce',
     'feature_zero_knowledge' => 'Serwer nigdy nie widzi Twoich danych jawnych',
-    'feature_auto_destroy' => 'Automatyczne zniszczenie po odczytaniu',
+    'feature_auto_destroy' => 'Autodestrukcja po odczytaniu',
     'feature_expiration' => 'Konfigurowalny termin wygaśnięcia',
 
     // Form labels
@@ -90,14 +90,14 @@ return [
     'file_encrypted_info' => 'Zaszyfrowany plik',
     'note_destroyed_text' => 'Ten sekret został skonfigurowany do zniszczenia po odczytaniu. Nie jest już dostępny.',
     'note_destroyed_file' => 'Ten plik został skonfigurowany do zniszczenia po odczytaniu. Nie jest już dostępny na serwerze.',
-    'last_read_warning_title' => 'To jest ostatni dostępny odczyt',
+    'last_read_warning_title' => 'To ostatnie dostępne wyświetlenie',
     'last_read_warning_text' => 'Po wyświetleniu ten sekret zostanie trwale usunięty. Upewnij się, że jesteś gotowy go zobaczyć.',
-    'last_read_warning_short' => 'To jest ostatni dostępny odczyt. Sekret zostanie trwale usunięty po wyświetleniu.',
+    'last_read_warning_short' => 'To ostatnie dostępne wyświetlenie. Sekret zostanie trwale usunięty po wyświetleniu.',
     'btn_reveal_secret' => 'Pokaż sekret',
 
     // Errors
-    'error_not_found' => 'Sekret nie znaleziony',
-    'error_unavailable' => 'Sekret niedostępny',
+    'error_not_found' => 'Nie znaleziono sekretu',
+    'error_unavailable' => 'Sekret jest niedostępny',
     'error_generic' => 'Błąd',
     'secret_not_exist' => 'Ten sekret nie istnieje lub został usunięty.',
     'secret_expired' => 'Ten sekret wygasł i nie jest już dostępny.',
@@ -109,7 +109,7 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'Twoja przeglądarka nie obsługuje bezpiecznego szyfrowania',
-    'crypto_key_missing' => 'Brak klucza deszyfrującego w URL',
+    'crypto_key_missing' => 'Brak klucza deszyfrującego w adresie URL',
     'crypto_fragment_invalid' => 'Nieprawidłowy format fragmentu',
     'crypto_passphrase_required' => 'Hasło jest wymagane',
     'crypto_passphrase_incorrect' => 'Nieprawidłowe hasło lub zmienione dane',
@@ -152,7 +152,7 @@ return [
     'how_step1_desc' => 'Wpisujesz wiadomość lub wybierasz plik w przeglądarce.',
     'how_step2_title' => 'Szyfrowanie w przeglądarce',
     'how_step2_desc' => 'Twoja przeglądarka generuje losowy klucz i szyfruje treść lokalnie za pomocą AES-256-GCM. Serwer otrzymuje tylko zaszyfrowane dane.',
-    'how_step3_title' => 'Serwer przechowuje szyfrogram',
+    'how_step3_title' => 'Serwer przechowuje zaszyfrowane dane',
     'how_step3_desc' => 'Serwer przechowuje tylko zaszyfrowane dane. Nie może ich odszyfrować, ponieważ nigdy nie ma dostępu do klucza.',
     'how_step4_title' => 'Klucz pozostaje w URL',
     'how_step4_desc' => 'Klucz deszyfrujący jest umieszczony we fragmencie URL (po #). Ta część nigdy nie jest wysyłana do serwera przez przeglądarkę.',
@@ -165,7 +165,7 @@ return [
     'how_feature2_desc' => 'AES-256-GCM jest używany przez rządy i wojsko. To najbezpieczniejszy dostępny standard.',
     'how_feature3_title' => 'Bez konta',
     'how_feature3_desc' => 'Bez rejestracji, bez śledzenia. Twoje sekrety są anonimowe i nie można ich powiązać z Tobą.',
-    'how_feature4_title' => 'Auto-destrukcja',
+    'how_feature4_title' => 'Autodestrukcja',
     'how_feature4_desc' => 'Sekrety automatycznie wygasają i mogą być ograniczone do jednego odczytu. Dane są trwale usuwane.',
     'how_cta' => 'Utwórz bezpieczny sekret',
     'how_see_use_cases' => 'Odkryj przypadki użycia',

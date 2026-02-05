@@ -8,7 +8,7 @@ return [
     // Features
     'feature_encryption' => 'Criptografia de nível militar no seu navegador',
     'feature_zero_knowledge' => 'O servidor nunca vê seus dados em texto claro',
-    'feature_auto_destroy' => 'Auto-destruição após leitura',
+    'feature_auto_destroy' => 'Autodestruição após leitura',
     'feature_expiration' => 'Expiração automática configurável',
 
     // Form labels
@@ -152,7 +152,7 @@ return [
     'how_step1_desc' => 'Você digita sua mensagem ou seleciona um arquivo no seu navegador.',
     'how_step2_title' => 'Criptografia no seu navegador',
     'how_step2_desc' => 'Seu navegador gera uma chave aleatória e criptografa o conteúdo localmente com AES-256-GCM. O servidor recebe apenas dados criptografados.',
-    'how_step3_title' => 'Servidor armazena o cifrado',
+    'how_step3_title' => 'Servidor armazena dados criptografados',
     'how_step3_desc' => 'O servidor armazena apenas dados criptografados. Não pode descriptografá-los porque nunca tem acesso à chave.',
     'how_step4_title' => 'A chave fica na URL',
     'how_step4_desc' => 'A chave de descriptografia é colocada no fragmento da URL (após #). Esta parte nunca é enviada ao servidor pelo navegador.',

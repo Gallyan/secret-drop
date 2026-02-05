@@ -7,8 +7,8 @@ return [
 
     // Features
     'feature_encryption' => 'Military-grade encryption in your browser',
-    'feature_zero_knowledge' => 'Server never sees your plaintext data',
-    'feature_auto_destroy' => 'Auto-destroy after reading',
+    'feature_zero_knowledge' => 'The server never sees your plaintext data',
+    'feature_auto_destroy' => 'Self-destruct after reading',
     'feature_expiration' => 'Configurable automatic expiration',
 
     // Form labels
@@ -90,9 +90,9 @@ return [
     'file_encrypted_info' => 'Encrypted file',
     'note_destroyed_text' => 'This secret was configured to be destroyed after reading. It is no longer accessible.',
     'note_destroyed_file' => 'This file was configured to be destroyed after reading. It is no longer accessible on the server.',
-    'last_read_warning_title' => 'This is the last available read',
+    'last_read_warning_title' => 'This is the last available view',
     'last_read_warning_text' => 'Once displayed, this secret will be permanently deleted. Make sure you are ready to view it.',
-    'last_read_warning_short' => 'This is the last available read. The secret will be permanently deleted after viewing.',
+    'last_read_warning_short' => 'This is the last available view. The secret will be permanently deleted after viewing.',
     'btn_reveal_secret' => 'Reveal the secret',
 
     // Errors

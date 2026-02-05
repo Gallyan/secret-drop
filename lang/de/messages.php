@@ -90,9 +90,9 @@ return [
     'file_encrypted_info' => 'Verschlüsselte Datei',
     'note_destroyed_text' => 'Dieses Geheimnis wurde so konfiguriert, dass es nach dem Lesen zerstört wird. Es ist nicht mehr zugänglich.',
     'note_destroyed_file' => 'Diese Datei wurde so konfiguriert, dass sie nach dem Lesen zerstört wird. Sie ist auf dem Server nicht mehr zugänglich.',
-    'last_read_warning_title' => 'Dies ist die letzte verfügbare Lesung',
+    'last_read_warning_title' => 'Dies ist die letzte verfügbare Ansicht',
     'last_read_warning_text' => 'Nach der Anzeige wird dieses Geheimnis dauerhaft gelöscht. Stellen Sie sicher, dass Sie bereit sind, es anzusehen.',
-    'last_read_warning_short' => 'Dies ist die letzte verfügbare Lesung. Das Geheimnis wird nach der Anzeige dauerhaft gelöscht.',
+    'last_read_warning_short' => 'Dies ist die letzte verfügbare Ansicht. Das Geheimnis wird nach der Anzeige dauerhaft gelöscht.',
     'btn_reveal_secret' => 'Geheimnis anzeigen',
 
     // Errors
@@ -152,7 +152,7 @@ return [
     'how_step1_desc' => 'Sie geben Ihre Nachricht ein oder wählen eine Datei in Ihrem Browser aus.',
     'how_step2_title' => 'Verschlüsselung in Ihrem Browser',
     'how_step2_desc' => 'Ihr Browser generiert einen zufälligen Schlüssel und verschlüsselt den Inhalt lokal mit AES-256-GCM. Der Server erhält nur verschlüsselte Daten.',
-    'how_step3_title' => 'Server speichert Chiffretext',
+    'how_step3_title' => 'Server speichert verschlüsselte Daten',
     'how_step3_desc' => 'Der Server speichert nur verschlüsselte Daten. Er kann sie nicht entschlüsseln, da er niemals Zugriff auf den Schlüssel hat.',
     'how_step4_title' => 'Schlüssel bleibt in der URL',
     'how_step4_desc' => 'Der Entschlüsselungsschlüssel wird im URL-Fragment (nach #) platziert. Dieser Teil wird vom Browser niemals an den Server gesendet.',
@@ -172,9 +172,9 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',
-    'use_cases_meta_description' => 'Entdecken Sie, wie Sie Secret Drop nutzen können: Passwort-Sharing, vertrauliche Dokumente, API-Schlüssel und mehr.',
+    'use_cases_meta_description' => 'Entdecken Sie, wie Sie Secret Drop nutzen können: Passwortweitergabe, vertrauliche Dokumente, API-Schlüssel und mehr.',
     'use_cases_intro' => 'Secret Drop ist das ideale Tool zum sicheren Teilen sensibler Informationen. Hier sind einige konkrete Beispiele.',
-    'usecase1_title' => 'Passwort-Sharing',
+    'usecase1_title' => 'Passwortweitergabe',
     'usecase1_desc' => 'Teilen Sie Zugangsdaten sicher mit Kollegen, Kunden oder Auftragnehmern, ohne unsichere Kanäle wie E-Mail oder Messenger zu verwenden.',
     'usecase1_example' => 'Beispiel: Zugangsdaten an ein neues Teammitglied senden, WLAN-Passwort mit einem Gast teilen.',
     'usecase2_title' => 'Vertrauliche Dokumente',

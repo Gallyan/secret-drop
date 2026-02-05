@@ -22,7 +22,7 @@ return [
     'max_security' => '最高セキュリティ',
     'max_security_tooltip' => 'ワンクリックで全オプションを最高セキュリティに設定。',
     'passphrase' => 'パスフレーズ',
-    'passphrase_hint' => '追加の保護。受信者は復号に必要です。サーバーには送信されません。',
+    'passphrase_hint' => '追加の保護。受信者は復号のために知っている必要があります。サーバーには送信されません。',
     'passphrase_placeholder' => '追加の保護',
     'your_email' => 'メールアドレス',
     'email_placeholder' => 'your@email.com',
@@ -33,7 +33,7 @@ return [
     'tab_file' => 'ファイル',
 
     // Form placeholders
-    'secret_placeholder' => '機密メッセージを入力...',
+    'secret_placeholder' => '機密メッセージを入力してください...',
     'max_reads_placeholder' => '無制限',
 
     // Expiration options
@@ -45,7 +45,7 @@ return [
 
     // File upload
     'file_drop_click' => 'クリックして選択',
-    'file_drop_or_drag' => 'またはドラッグ',
+    'file_drop_or_drag' => 'またはドラッグ＆ドロップ',
     'file_max_size' => '最大10MB',
     'file_too_large' => 'ファイルが大きすぎます（最大10MB）',
 

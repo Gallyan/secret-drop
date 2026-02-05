@@ -7,7 +7,7 @@ return [
 
     // Features
     'feature_encryption' => 'Militaire encryptie in uw browser',
-    'feature_zero_knowledge' => 'Server ziet nooit uw onversleutelde gegevens',
+    'feature_zero_knowledge' => 'De server ziet nooit uw onversleutelde gegevens',
     'feature_auto_destroy' => 'Automatisch vernietigen na lezen',
     'feature_expiration' => 'Configureerbare automatische vervaldatum',
 
@@ -90,9 +90,9 @@ return [
     'file_encrypted_info' => 'Versleuteld bestand',
     'note_destroyed_text' => 'Dit geheim was ingesteld om na lezen te worden vernietigd. Het is niet meer toegankelijk.',
     'note_destroyed_file' => 'Dit bestand was ingesteld om na lezen te worden vernietigd. Het is niet meer toegankelijk op de server.',
-    'last_read_warning_title' => 'Dit is de laatste beschikbare lezing',
+    'last_read_warning_title' => 'Dit is de laatste beschikbare keer',
     'last_read_warning_text' => 'Na weergave wordt dit geheim permanent verwijderd. Zorg ervoor dat u klaar bent om het te bekijken.',
-    'last_read_warning_short' => 'Dit is de laatste beschikbare lezing. Het geheim wordt permanent verwijderd na weergave.',
+    'last_read_warning_short' => 'Dit is de laatste beschikbare keer. Het geheim wordt permanent verwijderd na weergave.',
     'btn_reveal_secret' => 'Geheim tonen',
 
     // Errors
@@ -141,7 +141,7 @@ return [
     'footer_manage' => 'Mijn geheimen beheren',
     'footer_legal' => 'Juridische informatie',
     'footer_how_it_works' => 'Hoe het werkt',
-    'footer_use_cases' => 'Gebruikscases',
+    'footer_use_cases' => 'Toepassingen',
 
     // How it works page
     'how_it_works_title' => 'Hoe het werkt',
@@ -152,7 +152,7 @@ return [
     'how_step1_desc' => 'U voert uw bericht in of selecteert een bestand in uw browser.',
     'how_step2_title' => 'Encryptie in uw browser',
     'how_step2_desc' => 'Uw browser genereert een willekeurige sleutel en versleutelt de inhoud lokaal met AES-256-GCM. De server ontvangt alleen versleutelde gegevens.',
-    'how_step3_title' => 'Server slaat cijfertekst op',
+    'how_step3_title' => 'Server slaat versleutelde gegevens op',
     'how_step3_desc' => 'De server slaat alleen versleutelde gegevens op. Het kan deze niet ontsleutelen omdat het nooit toegang heeft tot de sleutel.',
     'how_step4_title' => 'Sleutel blijft in de URL',
     'how_step4_desc' => 'De ontsleutelingssleutel wordt in het URL-fragment geplaatst (na #). Dit deel wordt nooit door de browser naar de server verzonden.',
@@ -168,10 +168,10 @@ return [
     'how_feature4_title' => 'Auto-destructie',
     'how_feature4_desc' => 'Geheimen verlopen automatisch en kunnen worden beperkt tot één lezing. Gegevens worden permanent verwijderd.',
     'how_cta' => 'Een veilig geheim maken',
-    'how_see_use_cases' => 'Gebruikscases ontdekken',
+    'how_see_use_cases' => 'Toepassingen ontdekken',
 
     // Use cases page
-    'use_cases_title' => 'Gebruikscases',
+    'use_cases_title' => 'Toepassingen',
     'use_cases_meta_description' => 'Ontdek hoe u Secret Drop kunt gebruiken: wachtwoorden delen, vertrouwelijke documenten, API-sleutels en meer.',
     'use_cases_intro' => 'Secret Drop is de ideale tool om gevoelige informatie veilig te delen. Hier zijn enkele concrete voorbeelden.',
     'usecase1_title' => 'Wachtwoorden delen',
