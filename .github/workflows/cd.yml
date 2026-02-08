@@ -67,6 +67,9 @@ jobs:
             # Activer le mode maintenance
             php artisan down --refresh=15 --retry=60
 
+            # Réinitialiser les fichiers modifiés par les scripts post-install
+            git checkout -- .
+
             # Récupérer les dernières modifications
             git pull --ff-only origin main
 
