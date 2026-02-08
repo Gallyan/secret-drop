@@ -10,6 +10,7 @@
 #   - SSH_HOST : adresse IP ou domaine du serveur
 #   - SSH_USER : utilisateur SSH (ex: deploy)
 #   - SSH_KEY : clé privée SSH ed25519
+#   - SSH_PORT : port SSH (si différent de 22)
 #   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
 
 name: CD
@@ -46,6 +47,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "public/build/"
@@ -56,6 +58,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
