@@ -37,8 +37,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Build assets
         run: npm ci && npm run build
@@ -78,6 +78,9 @@ jobs:
 
             # Migrations base de données
             php artisan migrate --force
+
+            # Supprimer les caches créés par www-data (non écrasables par deploy)
+            rm -f bootstrap/cache/config.php bootstrap/cache/routes-v7.php bootstrap/cache/events.php
 
             # Reconstruire les caches
             php artisan config:cache
