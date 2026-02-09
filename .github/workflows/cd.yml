@@ -62,6 +62,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            umask 002
             cd ${{ secrets.SSH_PATH }}
 
             # Activer le mode maintenance
@@ -73,8 +74,7 @@ jobs:
             # Récupérer les dernières modifications
             git pull --ff-only origin main
 
-            # Supprimer tous les caches créés par www-data (non écrasables par deploy)
-            # Doit se faire AVANT composer install car package:discover a besoin d'écrire packages.php/services.php
+            # Supprimer les caches (propriété www-data:www-data, deploy y accède via le groupe)
             rm -f bootstrap/cache/*.php
 
             # Installer les dépendances PHP (production)
