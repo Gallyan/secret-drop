@@ -74,7 +74,8 @@ jobs:
             # Récupérer les dernières modifications
             git pull --ff-only origin main
 
-            # Supprimer les caches (propriété www-data:www-data, deploy y accède via le groupe)
+            # Supprimer les caches (deploy est dans le groupe www-data, SGID + umask 002
+            # garantissent que les fichiers créés par www-data restent group-writable)
             rm -f bootstrap/cache/*.php
 
             # Installer les dépendances PHP (production)
