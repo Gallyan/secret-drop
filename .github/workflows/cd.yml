@@ -73,20 +73,18 @@ jobs:
             # Récupérer les dernières modifications
             git pull --ff-only origin main
 
+            # Supprimer tous les caches créés par www-data (non écrasables par deploy)
+            # Doit se faire AVANT composer install car package:discover a besoin d'écrire packages.php/services.php
+            rm -f bootstrap/cache/*.php
+
             # Installer les dépendances PHP (production)
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
             # Migrations base de données
             php artisan migrate --force
 
-            # Supprimer les caches créés par www-data (non écrasables par deploy)
-            rm -f bootstrap/cache/config.php bootstrap/cache/routes-v7.php bootstrap/cache/events.php
-
-            # Reconstruire les caches
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan event:cache
+            # Reconstruire les caches (optimize = config + route + view + event)
+            php artisan optimize
 
             # Redémarrer le queue worker
             php artisan queue:restart
