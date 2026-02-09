@@ -6,6 +6,11 @@
 # Les assets sont buildés dans GitHub Actions puis transférés sur le serveur.
 # Node.js/npm ne sont pas nécessaires en production.
 #
+# Prérequis serveur :
+#   - deploy dans le groupe www-data (sudo usermod -aG www-data deploy)
+#   - Projet : chown www-data:www-data, chmod 775/664, SGID sur les répertoires
+#   - PHP-FPM : UMask=0002 via systemd override
+#
 # Secrets GitHub requis (Settings > Secrets and variables > Actions) :
 #   - SSH_HOST : adresse IP ou domaine du serveur
 #   - SSH_USER : utilisateur SSH (ex: deploy)
@@ -75,34 +80,16 @@ jobs:
             umask 002
             cd ${{ secrets.SSH_PATH }}
 
-            # Vérifier que .env existe et contient APP_KEY
-            test -f .env || { echo "ERREUR: .env manquant"; exit 1; }
-            grep -q '^APP_KEY=base64:' .env || { echo "ERREUR: APP_KEY absent de .env"; exit 1; }
-
-            # Activer le mode maintenance
             php artisan down --refresh=15 --retry=60
 
-            # Réinitialiser les fichiers modifiés par les scripts post-install
             git checkout -- .
-
-            # Récupérer les dernières modifications
             git pull --ff-only origin main
 
-            # Supprimer les caches (deploy est dans le groupe www-data, SGID + umask 002
-            # garantissent que les fichiers créés par www-data restent group-writable)
             rm -f bootstrap/cache/*.php
-
-            # Installer les dépendances PHP (production)
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-            # Migrations base de données
             php artisan migrate --force
-
-            # Reconstruire les caches (optimize = config + route + view + event)
             php artisan optimize
-
-            # Redémarrer le queue worker
             php artisan queue:restart
 
-            # Désactiver le mode maintenance
             php artisan up
