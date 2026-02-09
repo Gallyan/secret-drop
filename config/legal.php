@@ -2,11 +2,11 @@
 
 return [
     'editor_name' => env('LEGAL_EDITOR_NAME', 'Secret Drop'),
-    'contact_email' => env('LEGAL_CONTACT_EMAIL', 'secret@orsal.fr'),
+    'contact_email' => env('LEGAL_CONTACT_EMAIL', 'contact@example.com'),
 
     'hosting' => [
-        'name' => env('LEGAL_HOSTING_NAME', 'OVHcloud'),
-        'address' => env('LEGAL_HOSTING_ADDRESS', '2 rue Kellermann, 59100 Roubaix, France'),
-        'phone' => env('LEGAL_HOSTING_PHONE', '+33 9 72 10 10 07'),
+        'name' => env('LEGAL_HOSTING_NAME', 'Your Hosting Provider'),
+        'address' => env('LEGAL_HOSTING_ADDRESS', '123 Hosting Street, City, Country'),
+        'phone' => env('LEGAL_HOSTING_PHONE', '+00 0 00 00 00 00'),
     ],
 ];
