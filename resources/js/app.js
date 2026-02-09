@@ -1,18 +1,20 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+import Alpine from '@alpinejs/csp';
 import collapse from '@alpinejs/collapse';
 import focus from '@alpinejs/focus';
 
 import * as SecretCrypto from './crypto';
 import secretForm from './components/secret-form.js';
 import secretViewer from './components/secret-viewer.js';
+import themeToggle from './components/theme-toggle.js';
 import adminSecrets from './admin-secrets.js';
 
 Alpine.plugin(collapse);
 Alpine.plugin(focus);
 Alpine.data('secretForm', secretForm);
 Alpine.data('secretViewer', secretViewer);
+Alpine.data('themeToggle', themeToggle);
 Alpine.data('adminSecrets', adminSecrets);
 
 window.Alpine = Alpine;

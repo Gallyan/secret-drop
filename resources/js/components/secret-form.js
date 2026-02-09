@@ -4,8 +4,7 @@ function t(key) {
     return window.translations?.[key] || key;
 }
 
-export default function secretForm() {
-    return {
+export default () => ({
         // Mode: 'text' or 'file'
         mode: 'text',
 
@@ -488,6 +487,13 @@ export default function secretForm() {
                     document.getElementById('secret')?.focus();
                 }
             });
+        },
+
+        encryptingButtonText() {
+            return this.mode === 'file' ? t('btn_encrypting_upload') : t('btn_encrypting');
+        },
+
+        passphraseAriaLabel() {
+            return this.showPassphrase ? t('a11y_hide_passphrase') : t('a11y_show_passphrase');
         }
-    };
-}
+});

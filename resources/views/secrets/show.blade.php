@@ -7,7 +7,7 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-2xl">
         <div
-            x-data="secretViewer(@js($token))"
+            x-data="secretViewer" data-token="{{ $token }}"
             class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
         >
             <div class="p-8 lg:p-12">
@@ -21,10 +21,10 @@
                 </div>
 
                 {{-- Error announcer for screen readers --}}
-                <div aria-live="assertive" aria-atomic="true" class="sr-only" x-text="error || loadError?.message"></div>
+                <div aria-live="assertive" aria-atomic="true" class="sr-only" x-text="errorMessage()"></div>
 
                 {{-- Not found error --}}
-                <div x-show="loadError?.type === 'not_found'" x-cloak class="text-center" role="alert">
+                <div x-show="isLoadErrorType('not_found')" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -33,7 +33,7 @@
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
                         {{ __('messages.error_not_found') }}
                     </h1>
-                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
+                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <a
                         href="{{ route('home') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
@@ -43,7 +43,7 @@
                 </div>
 
                 {{-- Unavailable error --}}
-                <div x-show="loadError?.type === 'unavailable'" x-cloak class="text-center" role="alert">
+                <div x-show="isLoadErrorType('unavailable')" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -52,7 +52,7 @@
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
                         {{ __('messages.error_unavailable') }}
                     </h1>
-                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
+                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <a
                         href="{{ route('home') }}"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
@@ -62,7 +62,7 @@
                 </div>
 
                 {{-- Generic error --}}
-                <div x-show="loadError?.type === 'error'" x-cloak class="text-center" role="alert">
+                <div x-show="isLoadErrorType('error')" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -71,10 +71,10 @@
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
                         {{ __('messages.error_generic') }}
                     </h1>
-                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadError?.message"></p>
+                    <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <button
                         type="button"
-                        @click="window.location.reload()"
+                        @click="reload()"
                         class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_retry') }}
@@ -99,10 +99,10 @@
                             </template>
                         </div>
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
-                            <span x-text="type === 'text' ? window.translations.secret_message : window.translations.secret_file"></span>
+                            <span x-text="secretTypeTitle()"></span>
                         </h1>
                         <p class="mt-2 text-gray-600 dark:text-slate-400 transition-colors" x-show="!decrypted && !error">
-                            <span x-text="type === 'text' ? window.translations.encrypted_end_to_end_message : window.translations.encrypted_end_to_end_file"></span>
+                            <span x-text="encryptedDescription()"></span>
                         </p>
                         <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-500 dark:text-slate-500">
                             <span class="text-gray-600 dark:text-slate-400">{{ __('messages.file_encrypted_info') }}</span>
@@ -222,7 +222,7 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                         <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">
-                            <span x-text="type === 'text' ? window.translations.decrypting_message : window.translations.decrypting_file"></span>
+                            <span x-text="decryptingText()"></span>
                         </p>
                     </div>
 
@@ -278,7 +278,7 @@
                         <button
                             x-show="needsPassphrase || needsManualKey"
                             type="button"
-                            @click="error = null; if (needsManualKey) { manualKey = ''; }"
+                            @click="clearRetryError()"
                             class="w-full py-2.5 text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500 rounded-xl transition cursor-pointer"
                         >
                             {{ __('messages.btn_retry') }}

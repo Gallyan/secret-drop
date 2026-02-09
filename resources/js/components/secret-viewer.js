@@ -2,9 +2,8 @@ function t(key) {
     return window.translations?.[key] || key;
 }
 
-export default function secretViewer(token) {
-    return {
-        token,
+export default () => ({
+        token: null,
         isLoading: true,
         loadError: null,
 
@@ -36,6 +35,7 @@ export default function secretViewer(token) {
         awaitingConfirmation: false,
 
         async init() {
+            this.token = this.$el.dataset.token;
             await this.loadSecret();
 
             if (!this.loadError && !this.needsPassphrase && !this.needsManualKey && !this.error) {
@@ -302,6 +302,40 @@ export default function secretViewer(token) {
             } catch (e) {
                 console.error('Failed to confirm read:', e);
             }
+        },
+
+        secretTypeTitle() {
+            return this.type === 'text' ? t('secret_message') : t('secret_file');
+        },
+
+        encryptedDescription() {
+            return this.type === 'text' ? t('encrypted_end_to_end_message') : t('encrypted_end_to_end_file');
+        },
+
+        decryptingText() {
+            return this.type === 'text' ? t('decrypting_message') : t('decrypting_file');
+        },
+
+        reload() {
+            window.location.reload();
+        },
+
+        errorMessage() {
+            return this.error || (this.loadError ? this.loadError.message : '');
+        },
+
+        isLoadErrorType(type) {
+            return this.loadError && this.loadError.type === type;
+        },
+
+        loadErrorMessage() {
+            return this.loadError ? this.loadError.message : '';
+        },
+
+        clearRetryError() {
+            this.error = null;
+            if (this.needsManualKey) {
+                this.manualKey = '';
+            }
         }
-    };
-}
+});

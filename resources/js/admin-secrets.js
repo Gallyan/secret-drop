@@ -1,9 +1,18 @@
-export default function adminSecrets() {
-    return {
+export default () => ({
         extendDays: '7',
         showRevokeModal: false,
         pendingRevokeId: null,
         pendingRevokeEl: null,
+
+        init() {
+            this.$watch('showRevokeModal', (value) => {
+                if (value) {
+                    this.$nextTick(() => {
+                        this.$refs.confirmRevokeBtn.focus();
+                    });
+                }
+            });
+        },
 
         openRevokeModal(secretId, buttonEl) {
             this.pendingRevokeId = secretId;
@@ -80,5 +89,4 @@ export default function adminSecrets() {
                 data.revoking = false;
             }
         },
-    };
-}
+});
