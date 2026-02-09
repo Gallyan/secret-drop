@@ -207,7 +207,8 @@
                                                 <option value="30">+30 {{ __('messages.admin_days') }}</option>
                                             </select>
                                             <button
-                                                @click="extend('{{ $secret->id }}', $el)"
+                                                data-secret-id="{{ $secret->id }}"
+                                                @click="extend($el)"
                                                 :disabled="extending"
                                                 class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
                                             >
@@ -224,7 +225,8 @@
                                         {{-- Revoke --}}
                                         @if($secret->isAccessible())
                                             <button
-                                                @click="openRevokeModal('{{ $secret->id }}', $el)"
+                                                data-secret-id="{{ $secret->id }}"
+                                                @click="openRevokeModal($el)"
                                                 :disabled="revoking"
                                                 class="px-4 py-2 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
                                             >

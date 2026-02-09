@@ -14,8 +14,8 @@ export default () => ({
             });
         },
 
-        openRevokeModal(secretId, buttonEl) {
-            this.pendingRevokeId = secretId;
+        openRevokeModal(buttonEl) {
+            this.pendingRevokeId = buttonEl.dataset.secretId;
             this.pendingRevokeEl = buttonEl;
             this.showRevokeModal = true;
         },
@@ -33,7 +33,8 @@ export default () => ({
             }
         },
 
-        async extend(secretId, buttonEl) {
+        async extend(buttonEl) {
+            const secretId = buttonEl.dataset.secretId;
             const card = buttonEl.closest('[x-data]');
             const data = Alpine.$data(card);
             data.extending = true;

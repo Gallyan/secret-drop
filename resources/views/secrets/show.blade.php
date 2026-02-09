@@ -24,7 +24,7 @@
                 <div aria-live="assertive" aria-atomic="true" class="sr-only" x-text="errorMessage()"></div>
 
                 {{-- Not found error --}}
-                <div x-show="isLoadErrorType('not_found')" x-cloak class="text-center" role="alert">
+                <div x-show="isNotFound()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -43,7 +43,7 @@
                 </div>
 
                 {{-- Unavailable error --}}
-                <div x-show="isLoadErrorType('unavailable')" x-cloak class="text-center" role="alert">
+                <div x-show="isUnavailable()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -62,7 +62,7 @@
                 </div>
 
                 {{-- Generic error --}}
-                <div x-show="isLoadErrorType('error')" x-cloak class="text-center" role="alert">
+                <div x-show="isGenericError()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
                         <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

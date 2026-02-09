@@ -117,6 +117,22 @@ export default () => ({
             this.error = null;
         },
 
+        setModeText() {
+            this.setMode('text');
+        },
+
+        setModeFile() {
+            this.setMode('file');
+        },
+
+        fileName() {
+            return this.file ? this.file.name : '';
+        },
+
+        fileSizeFormatted() {
+            return this.file ? this.formatFileSize(this.file.size) : '';
+        },
+
         handleFileDrop(event) {
             this.isDragging = false;
             const files = event.dataTransfer?.files;

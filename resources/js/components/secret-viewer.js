@@ -324,8 +324,16 @@ export default () => ({
             return this.error || (this.loadError ? this.loadError.message : '');
         },
 
-        isLoadErrorType(type) {
-            return this.loadError && this.loadError.type === type;
+        isNotFound() {
+            return this.loadError && this.loadError.type === 'not_found';
+        },
+
+        isUnavailable() {
+            return this.loadError && this.loadError.type === 'unavailable';
+        },
+
+        isGenericError() {
+            return this.loadError && this.loadError.type === 'error';
         },
 
         loadErrorMessage() {

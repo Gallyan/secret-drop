@@ -63,7 +63,7 @@
                                 type="button"
                                 role="tab"
                                 :aria-selected="mode === 'text'"
-                                @click="setMode('text')"
+                                @click="setModeText()"
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
                             >
@@ -76,7 +76,7 @@
                                 type="button"
                                 role="tab"
                                 :aria-selected="mode === 'file'"
-                                @click="setMode('file')"
+                                @click="setModeFile()"
                                 :class="mode === 'file' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
                             >
@@ -143,8 +143,8 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="file?.name"></p>
-                                    <p class="text-xs text-gray-500 dark:text-slate-400" x-text="formatFileSize(file?.size)"></p>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="fileName()"></p>
+                                    <p class="text-xs text-gray-500 dark:text-slate-400" x-text="fileSizeFormatted()"></p>
                                 </div>
                                 <button
                                     type="button"
