@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Informacje Prawne',
     'legal_editor_title' => 'Wydawca strony',
     'legal_editor_text' => 'Ta strona jest wydawana przez :name.',
+    'legal_editor_phone' => 'Telefon:',
+    'legal_editor_email' => 'E-mail:',
     'legal_hosting_title' => 'Hosting',
     'legal_hosting_text' => 'Ta strona jest hostowana przez:',
     'legal_hosting_phone' => 'Telefon:',

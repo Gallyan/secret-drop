@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Aviso Legal',
     'legal_editor_title' => 'Editor do Site',
     'legal_editor_text' => 'Este site é publicado por :name.',
+    'legal_editor_phone' => 'Telefone:',
+    'legal_editor_email' => 'Email:',
     'legal_hosting_title' => 'Hospedagem',
     'legal_hosting_text' => 'Este site é hospedado por:',
     'legal_hosting_phone' => 'Telefone:',

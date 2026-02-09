@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Legal Notice',
     'legal_editor_title' => 'Website Publisher',
     'legal_editor_text' => 'This website is published by :name.',
+    'legal_editor_phone' => 'Phone:',
+    'legal_editor_email' => 'Email:',
     'legal_hosting_title' => 'Hosting',
     'legal_hosting_text' => 'This website is hosted by:',
     'legal_hosting_phone' => 'Phone:',

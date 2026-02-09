@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Juridische Informatie',
     'legal_editor_title' => 'Website-uitgever',
     'legal_editor_text' => 'Deze website wordt uitgegeven door :name.',
+    'legal_editor_phone' => 'Telefoon:',
+    'legal_editor_email' => 'E-mail:',
     'legal_hosting_title' => 'Hosting',
     'legal_hosting_text' => 'Deze website wordt gehost door:',
     'legal_hosting_phone' => 'Telefoon:',

@@ -25,9 +25,16 @@
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         {{ __('messages.legal_editor_title') }}
                     </h2>
-                    <p class="text-gray-600 dark:text-slate-400">
-                        {{ __('messages.legal_editor_text', ['name' => config('legal.editor_name', 'Secret Drop')]) }}
-                    </p>
+                    <div class="text-gray-600 dark:text-slate-400 space-y-1">
+                        <p>{{ config('legal.editor_name') }}</p>
+                        @if(config('legal.editor_address'))
+                            <p>{{ config('legal.editor_address') }}</p>
+                        @endif
+                        @if(config('legal.editor_phone'))
+                            <p>{{ __('messages.legal_editor_phone') }} {{ config('legal.editor_phone') }}</p>
+                        @endif
+                        <p>{{ __('messages.legal_editor_email') }} {{ config('legal.contact_email', config('mail.from.address')) }}</p>
+                    </div>
                 </section>
 
                 {{-- Hosting --}}

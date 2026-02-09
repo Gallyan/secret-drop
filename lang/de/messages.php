@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Impressum',
     'legal_editor_title' => 'Website-Herausgeber',
     'legal_editor_text' => 'Diese Website wird herausgegeben von :name.',
+    'legal_editor_phone' => 'Telefon:',
+    'legal_editor_email' => 'E-Mail:',
     'legal_hosting_title' => 'Hosting',
     'legal_hosting_text' => 'Diese Website wird gehostet von:',
     'legal_hosting_phone' => 'Telefon:',

@@ -2,6 +2,8 @@
 
 return [
     'editor_name' => env('LEGAL_EDITOR_NAME', 'Secret Drop'),
+    'editor_address' => env('LEGAL_EDITOR_ADDRESS'),
+    'editor_phone' => env('LEGAL_EDITOR_PHONE'),
     'contact_email' => env('LEGAL_CONTACT_EMAIL', 'contact@example.com'),
 
     'hosting' => [

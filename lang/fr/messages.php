@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Mentions légales',
     'legal_editor_title' => 'Éditeur du site',
     'legal_editor_text' => 'Ce site est édité par :name.',
+    'legal_editor_phone' => 'Tél. :',
+    'legal_editor_email' => 'Email :',
     'legal_hosting_title' => 'Hébergement',
     'legal_hosting_text' => 'L\'hébergement est assuré par :',
     'legal_hosting_phone' => 'Tél. :',

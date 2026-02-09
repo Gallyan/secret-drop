@@ -203,6 +203,8 @@ return [
     'legal_title' => '法的情報',
     'legal_editor_title' => 'サイト運営者',
     'legal_editor_text' => 'このサイトは :name によって運営されています。',
+    'legal_editor_phone' => '電話：',
+    'legal_editor_email' => 'メール：',
     'legal_hosting_title' => 'ホスティング',
     'legal_hosting_text' => 'このサイトのホスティング：',
     'legal_hosting_phone' => '電話：',

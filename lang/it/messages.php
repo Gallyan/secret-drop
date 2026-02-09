@@ -203,6 +203,8 @@ return [
     'legal_title' => 'Note Legali',
     'legal_editor_title' => 'Editore del sito web',
     'legal_editor_text' => 'Questo sito web è pubblicato da :name.',
+    'legal_editor_phone' => 'Telefono:',
+    'legal_editor_email' => 'Email:',
     'legal_hosting_title' => 'Hosting',
     'legal_hosting_text' => 'Questo sito web è ospitato da:',
     'legal_hosting_phone' => 'Telefono:',

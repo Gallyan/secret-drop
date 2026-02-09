@@ -203,6 +203,8 @@ return [
     'legal_title' => '법적 고지',
     'legal_editor_title' => '웹사이트 발행인',
     'legal_editor_text' => '이 웹사이트는 :name에 의해 발행됩니다.',
+    'legal_editor_phone' => '전화:',
+    'legal_editor_email' => '이메일:',
     'legal_hosting_title' => '호스팅',
     'legal_hosting_text' => '이 웹사이트 호스팅 제공자:',
     'legal_hosting_phone' => '전화:',

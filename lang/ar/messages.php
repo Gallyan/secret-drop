@@ -203,6 +203,8 @@ return [
     'legal_title' => 'الإشعارات القانونية',
     'legal_editor_title' => 'ناشر الموقع',
     'legal_editor_text' => 'هذا الموقع منشور بواسطة :name.',
+    'legal_editor_phone' => 'الهاتف:',
+    'legal_editor_email' => 'البريد الإلكتروني:',
     'legal_hosting_title' => 'الاستضافة',
     'legal_hosting_text' => 'الاستضافة مقدمة من:',
     'legal_hosting_phone' => 'الهاتف:',
