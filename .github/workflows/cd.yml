@@ -80,7 +80,7 @@ jobs:
             umask 002
             cd ${{ secrets.SSH_PATH }}
 
-            php artisan down --refresh=15 --retry=60
+            php artisan down --refresh=15 --retry=60 || true
 
             git checkout -- .
             git pull --ff-only origin main
