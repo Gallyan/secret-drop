@@ -43,6 +43,15 @@ jobs:
       - name: Build assets
         run: npm ci && npm run build
 
+      - name: Clean old build assets
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: rm -rf ${{ secrets.SSH_PATH }}/public/build/
+
       - name: Transfer built assets to server
         uses: appleboy/scp-action@v0.1.7
         with:
