@@ -71,8 +71,13 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
             umask 002
             cd ${{ secrets.SSH_PATH }}
+
+            # Vérifier que .env existe et contient APP_KEY
+            test -f .env || { echo "ERREUR: .env manquant"; exit 1; }
+            grep -q '^APP_KEY=base64:' .env || { echo "ERREUR: APP_KEY absent de .env"; exit 1; }
 
             # Activer le mode maintenance
             php artisan down --refresh=15 --retry=60
