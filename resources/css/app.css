@@ -76,6 +76,11 @@
     display: none !important;
 }
 
+/* Space for fixed footer on all pages */
+main > * {
+    padding-bottom: 5rem;
+}
+
 /* Email obfuscation - hides real text, displays via CSS */
 .protected-email {
     font-size: 0;
