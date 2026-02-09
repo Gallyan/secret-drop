@@ -32,5 +32,4 @@ Secret Drop allows users to securely share secrets (text or files) with end-to-e
 
 ## Contact
 
-Email: secret@orsal.fr
-Website: https://secret.orsal.fr
+See the legal notice page at /legal for contact information.
