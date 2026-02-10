@@ -75,7 +75,7 @@
                     >
                         <div class="flex items-center gap-4 mb-4">
                             <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 shrink-0">
-                                <svg class="w-6 h-6 text-red-600 dark:text-red-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-red-600 dark:text-red-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
@@ -115,7 +115,7 @@
                                 {{-- Type icon --}}
                                 <div class="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 {{ $secret->type === 'text' ? 'bg-blue-100 dark:bg-blue-500/10' : 'bg-purple-100 dark:bg-purple-500/10' }}">
                                     @if($secret->type === 'text')
-                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                     @else
@@ -132,11 +132,11 @@
                                         </span>
                                         {{-- Status badge --}}
                                         @if($secret->isRevoked())
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400">
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-300">
                                                 {{ __('messages.admin_status_revoked') }}
                                             </span>
                                         @elseif($secret->isExpired())
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400">
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
                                                 {{ __('messages.admin_status_expired') }}
                                             </span>
                                         @elseif($secret->hasReachedMaxViews())
@@ -144,7 +144,7 @@
                                                 {{ __('messages.admin_status_consumed') }}
                                             </span>
                                         @else
-                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400">
+                                            <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                                                 {{ __('messages.admin_status_active') }}
                                             </span>
                                         @endif
@@ -228,7 +228,7 @@
                                                 data-secret-id="{{ $secret->id }}"
                                                 @click="openRevokeModal($el)"
                                                 :disabled="revoking"
-                                                class="px-4 py-2 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
+                                                class="px-4 py-2 text-red-600 dark:text-red-300 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-lg disabled:opacity-50 transition cursor-pointer"
                                             >
                                                 <span x-show="!revoking">{{ __('messages.admin_revoke') }}</span>
                                                 <span x-show="revoking" class="flex items-center gap-1">

@@ -9,7 +9,7 @@
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 lg:p-12 transition-colors">
             {{-- Header --}}
             <div class="flex items-center gap-4 mb-8">
-                <a href="{{ route('home') }}" class="p-2 -ms-2 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
+                <a href="{{ route('home') }}" class="p-2 -ms-2 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
                     <svg class="w-5 h-5 rtl:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -63,7 +63,7 @@
 
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-400 mb-2">
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300 mb-2">
                                 {{ __('messages.legal_data_stored') }}
                             </h3>
                             <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">

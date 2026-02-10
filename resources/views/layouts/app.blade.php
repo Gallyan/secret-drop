@@ -149,23 +149,23 @@
         @yield('content')
     </main>
 
-    <footer class="fixed bottom-0 inset-x-0 z-30 py-3 text-center text-sm text-gray-400 dark:text-slate-600 transition-colors backdrop-blur-sm bg-white/30 dark:bg-slate-900/30">
+    <footer class="fixed bottom-0 inset-x-0 z-30 py-3 text-center text-sm text-gray-500 dark:text-slate-400 transition-colors backdrop-blur-sm bg-white/30 dark:bg-slate-900/30">
         <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
-            <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">{{ config('app.name') }}</a></span>
+            <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">{{ config('app.name') }}</a></span>
             <span>·</span>
-            <a href="{{ route('how-it-works') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+            <a href="{{ route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_how_it_works') }}
             </a>
             <span>·</span>
-            <a href="{{ route('use-cases') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+            <a href="{{ route('use-cases') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_use_cases') }}
             </a>
             <span>·</span>
-            <a href="{{ route('admin.index') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+            <a href="{{ route('admin.index') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_manage') }}
             </a>
             <span>·</span>
-            <a href="{{ route('legal') }}" class="hover:text-gray-600 dark:hover:text-slate-400 transition-colors">
+            <a href="{{ route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_legal') }}
             </a>
         </div>

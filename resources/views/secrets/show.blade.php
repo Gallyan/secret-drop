@@ -26,7 +26,7 @@
                 {{-- Not found error --}}
                 <div x-show="isNotFound()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-7 h-7 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
@@ -45,7 +45,7 @@
                 {{-- Unavailable error --}}
                 <div x-show="isUnavailable()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-7 h-7 text-amber-500 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
@@ -64,7 +64,7 @@
                 {{-- Generic error --}}
                 <div x-show="isGenericError()" x-cloak class="text-center" role="alert">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-7 h-7 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
@@ -104,7 +104,7 @@
                         <p class="mt-2 text-gray-600 dark:text-slate-400 transition-colors" x-show="!decrypted && !error">
                             <span x-text="encryptedDescription()"></span>
                         </p>
-                        <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-500 dark:text-slate-500">
+                        <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-600 dark:text-slate-400">
                             <span class="text-gray-600 dark:text-slate-400">{{ __('messages.file_encrypted_info') }}</span>
                         </div>
                     </div>
@@ -113,14 +113,14 @@
                     <div x-show="awaitingConfirmation && !decrypted" x-cloak class="space-y-6">
                         <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <div class="flex gap-3">
-                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                                 <div>
                                     <p class="font-medium text-amber-800 dark:text-amber-300">
                                         {{ __('messages.last_read_warning_title') }}
                                     </p>
-                                    <p class="mt-1 text-sm text-amber-700 dark:text-amber-400">
+                                    <p class="mt-1 text-sm text-amber-700 dark:text-amber-300">
                                         {{ __('messages.last_read_warning_text') }}
                                     </p>
                                 </div>
@@ -142,7 +142,7 @@
                         </p>
                         {{-- Last read warning in manual key form --}}
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                            <p class="text-xs text-amber-700 dark:text-amber-300">
                                 <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
                             </p>
                         </div>
@@ -159,7 +159,7 @@
                                     autofocus
                                     autocomplete="off"
                                     placeholder="{{ __('messages.key_placeholder') }}"
-                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                             <button
@@ -179,7 +179,7 @@
                         </p>
                         {{-- Last read warning in passphrase form --}}
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                            <p class="text-xs text-amber-700 dark:text-amber-300">
                                 <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
                             </p>
                         </div>
@@ -195,7 +195,7 @@
                                     required
                                     autofocus
                                     placeholder="{{ __('messages.passphrase_input_placeholder') }}"
-                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                             <button
@@ -245,7 +245,7 @@
                         </div>
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                            <p class="text-xs text-amber-700 dark:text-amber-300">
                                 <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_text') }}
                             </p>
                         </div>
@@ -255,7 +255,7 @@
                     <div x-show="decrypted && type === 'file'" x-cloak class="space-y-6">
                         <div class="p-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-center transition-colors">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4" aria-hidden="true">
-                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
@@ -264,7 +264,7 @@
                         </div>
 
                         <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-400">
+                            <p class="text-xs text-amber-700 dark:text-amber-300">
                                 <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_file') }}
                             </p>
                         </div>
@@ -273,7 +273,7 @@
                     {{-- Decryption error --}}
                     <div x-show="error" x-cloak class="space-y-4">
                         <div role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
-                            <p class="text-sm text-red-600 dark:text-red-400" x-text="error"></p>
+                            <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
                         <button
                             x-show="needsPassphrase || needsManualKey"

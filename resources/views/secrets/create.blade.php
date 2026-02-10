@@ -27,25 +27,25 @@
 
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             {{ __('messages.feature_encryption') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             {{ __('messages.feature_zero_knowledge') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             {{ __('messages.feature_auto_destroy') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
                             {{ __('messages.feature_expiration') }}
@@ -96,7 +96,7 @@
                                 id="secret"
                                 x-model="secret"
                                 placeholder="{{ __('messages.secret_placeholder') }}"
-                                class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
+                                class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                             ></textarea>
                         </div>
 
@@ -121,13 +121,13 @@
                                     @change="handleFileSelect($event)"
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 >
-                                <svg class="w-8 h-8 mb-2 text-gray-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-8 h-8 mb-2 text-gray-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                                 <p class="text-sm text-gray-600 dark:text-slate-400">
                                     <span class="font-medium text-violet-600 dark:text-violet-400">{{ __('messages.file_drop_click') }}</span> {{ __('messages.file_drop_or_drag') }}
                                 </p>
-                                <p class="mt-1 text-xs text-gray-500 dark:text-slate-500">
+                                <p class="mt-1 text-xs text-gray-600 dark:text-slate-400">
                                     {{ __('messages.file_max_size') }}
                                 </p>
                             </div>
@@ -175,7 +175,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="expirationHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
+                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -226,7 +226,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="maxViewsHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
+                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -259,7 +259,7 @@
                                     max="100"
                                     autocomplete="off"
                                     placeholder="{{ __('messages.max_reads_placeholder') }}"
-                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                         </div>
@@ -296,7 +296,7 @@
                                     @focus="showHint = true"
                                     @blur="showHint = false"
                                     aria-describedby="maxSecurityHint"
-                                    class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition cursor-pointer"
+                                    class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-300 hover:text-amber-700 dark:hover:text-amber-300 transition cursor-pointer"
                                 >
                                     <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -336,7 +336,7 @@
                                                 @focus="showHint = true"
                                                 @blur="showHint = false"
                                                 aria-describedby="passphraseHint"
-                                                class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
+                                                class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                             >
                                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -368,13 +368,13 @@
                                             x-model="passphrase"
                                             autocomplete="off"
                                             placeholder="{{ __('messages.passphrase_placeholder') }}"
-                                            class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                            class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
                                             :aria-label="passphraseAriaLabel()"
-                                            class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-400 hover:text-gray-700 dark:hover:text-white transition cursor-pointer"
+                                            class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-300 hover:text-gray-700 dark:hover:text-white transition cursor-pointer"
                                         >
                                             <svg x-show="!showPassphrase" aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -401,27 +401,27 @@
                                         </div>
                                         {{-- Criteria list --}}
                                         <ul class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasMinLength() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasMinLength() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
                                                 <svg x-show="hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 <svg x-show="!hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_min_length') }}</span>
                                             </li>
-                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasLowercase() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasLowercase() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
                                                 <svg x-show="hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 <svg x-show="!hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_lowercase') }}</span>
                                             </li>
-                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasUppercase() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasUppercase() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
                                                 <svg x-show="hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 <svg x-show="!hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_uppercase') }}</span>
                                             </li>
-                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasDigit() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasDigit() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
                                                 <svg x-show="hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 <svg x-show="!hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_digit') }}</span>
                                             </li>
-                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasSpecial() ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-slate-500'">
+                                            <li class="flex items-center gap-1.5 transition-colors" :class="hasSpecial() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
                                                 <svg x-show="hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 <svg x-show="!hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_special') }}</span>
@@ -441,9 +441,9 @@
                                         x-model="creatorEmail"
                                         autocomplete="off"
                                         placeholder="{{ __('messages.email_placeholder') }}"
-                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     >
-                                    <p class="mt-1.5 text-xs text-gray-500 dark:text-slate-500">
+                                    <p class="mt-1.5 text-xs text-gray-600 dark:text-slate-400">
                                         {{ __('messages.email_hint') }}
                                     </p>
                                 </div>
@@ -460,7 +460,7 @@
                                             <span class="text-sm text-gray-600 dark:text-slate-300 group-hover:text-gray-900 dark:group-hover:text-white transition">
                                                 {{ __('messages.split_mode') }}
                                             </span>
-                                            <p class="mt-0.5 text-xs text-gray-500 dark:text-slate-500">
+                                            <p class="mt-0.5 text-xs text-gray-600 dark:text-slate-400">
                                                 {{ __('messages.split_mode_hint') }}
                                             </p>
                                         </div>
@@ -473,7 +473,7 @@
                                             @focus="showHint = true"
                                             @blur="showHint = false"
                                             aria-describedby="splitModeHint"
-                                            class="text-gray-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
+                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
                                         >
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
@@ -502,12 +502,12 @@
 
                         {{-- Error message --}}
                         <div x-show="error && !captchaRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
-                            <p class="text-sm text-red-600 dark:text-red-400" x-text="error"></p>
+                            <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
                         {{-- Captcha challenge --}}
                         <div x-show="captchaRequired" x-cloak class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">
+                            <p class="text-sm text-amber-700 dark:text-amber-300 mb-3">
                                 {{ __('messages.rate_limit_exceeded') }}
                             </p>
                             <label for="captchaAnswer" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
@@ -522,11 +522,11 @@
                                     type="number"
                                     x-model="captchaAnswer"
                                     placeholder="{{ __('messages.captcha_placeholder') }}"
-                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     @keydown.enter.prevent="submitWithCaptcha()"
                                 >
                             </div>
-                            <div x-show="error" class="mt-2 text-sm text-red-600 dark:text-red-400" x-text="error"></div>
+                            <div x-show="error" class="mt-2 text-sm text-red-600 dark:text-red-300" x-text="error"></div>
                         </div>
 
                         {{-- Submit button --}}
@@ -570,7 +570,7 @@
                     <div x-show="shareUrl" x-cloak class="space-y-6">
                         <div class="text-center">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors" aria-hidden="true">
-                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
@@ -601,10 +601,10 @@
                             </div>
 
                             <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                                <p class="text-xs text-amber-700 dark:text-amber-400" x-show="!passphraseUsed">
+                                <p class="text-xs text-amber-700 dark:text-amber-300" x-show="!passphraseUsed">
                                     <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.warning_link_contains_key') }}
                                 </p>
-                                <p class="text-xs text-amber-700 dark:text-amber-400" x-show="passphraseUsed">
+                                <p class="text-xs text-amber-700 dark:text-amber-300" x-show="passphraseUsed">
                                     <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.warning_passphrase_required') }}
                                 </p>
                             </div>
@@ -663,10 +663,10 @@
                             </div>
 
                             <div class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                                <p class="text-xs text-amber-700 dark:text-amber-400">
+                                <p class="text-xs text-amber-700 dark:text-amber-300">
                                     <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.split_mode_warning') }}
                                 </p>
-                                <p class="text-xs text-amber-700 dark:text-amber-400 mt-1" x-show="passphraseUsed">
+                                <p class="text-xs text-amber-700 dark:text-amber-300 mt-1" x-show="passphraseUsed">
                                     {{ __('messages.warning_passphrase_required') }}
                                 </p>
                             </div>
@@ -702,7 +702,7 @@
                                         </svg>
                                         {{ __('messages.download_qr_code') }}
                                     </button>
-                                    <p class="text-xs text-gray-500 dark:text-slate-500 text-center">
+                                    <p class="text-xs text-gray-600 dark:text-slate-400 text-center">
                                         {{ __('messages.qr_code_hint') }}
                                     </p>
                                 </div>

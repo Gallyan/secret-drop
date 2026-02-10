@@ -9,7 +9,7 @@
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 lg:p-12 transition-colors">
             {{-- Header --}}
             <div class="flex items-center gap-4 mb-8">
-                <a href="{{ route('home') }}" class="p-2 -ms-2 text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
+                <a href="{{ route('home') }}" class="p-2 -ms-2 text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-300 transition-colors" aria-label="{{ __('messages.a11y_back') }}">
                     <svg class="w-5 h-5 rtl:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -57,18 +57,18 @@
 
                     {{-- Step 2: Browser encrypts --}}
                     <div class="flex items-start gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold shrink-0">
                             2
                         </div>
                         <div class="flex-1 pt-1">
                             <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __('messages.how_step2_title') }}</h3>
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('messages.how_step2_desc') }}</p>
                             <div class="mt-2 p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg border border-emerald-200 dark:border-emerald-500/20">
-                                <code class="text-xs text-emerald-700 dark:text-emerald-400 font-mono">AES-256-GCM + WebCrypto API</code>
+                                <code class="text-xs text-emerald-700 dark:text-emerald-300 font-mono">AES-256-GCM + WebCrypto API</code>
                             </div>
                         </div>
                         <div class="hidden sm:flex items-center justify-center w-16 h-16 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 shrink-0" aria-hidden="true">
-                            <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
                         </div>
@@ -83,7 +83,7 @@
 
                     {{-- Step 3: Server stores ciphertext --}}
                     <div class="flex items-start gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-300 font-bold shrink-0">
                             3
                         </div>
                         <div class="flex-1 pt-1">
@@ -91,7 +91,7 @@
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('messages.how_step3_desc') }}</p>
                         </div>
                         <div class="hidden sm:flex items-center justify-center w-16 h-16 rounded-xl bg-amber-100 dark:bg-amber-500/20 shrink-0" aria-hidden="true">
-                            <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-amber-600 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
                             </svg>
                         </div>
@@ -106,18 +106,18 @@
 
                     {{-- Step 4: Key in URL fragment --}}
                     <div class="flex items-start gap-4">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold shrink-0">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-bold shrink-0">
                             4
                         </div>
                         <div class="flex-1 pt-1">
                             <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __('messages.how_step4_title') }}</h3>
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('messages.how_step4_desc') }}</p>
                             <div class="mt-2 p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-200 dark:border-indigo-500/20 overflow-x-auto">
-                                <code class="text-xs text-indigo-700 dark:text-indigo-400 font-mono whitespace-nowrap" dir="ltr">https://example.com/s/abc123<span class="text-red-500 dark:text-red-400 font-bold">#secret_key_here</span></code>
+                                <code class="text-xs text-indigo-700 dark:text-indigo-300 font-mono whitespace-nowrap" dir="ltr">https://example.com/s/abc123<span class="text-red-500 dark:text-red-300 font-bold">#secret_key_here</span></code>
                             </div>
                         </div>
                         <div class="hidden sm:flex items-center justify-center w-16 h-16 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 shrink-0" aria-hidden="true">
-                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                             </svg>
                         </div>
@@ -157,40 +157,40 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-400">{{ __('messages.how_feature1_title') }}</h3>
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature1_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature1_desc') }}</p>
                     </div>
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-400">{{ __('messages.how_feature2_title') }}</h3>
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature2_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature2_desc') }}</p>
                     </div>
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-400">{{ __('messages.how_feature3_title') }}</h3>
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature3_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature3_desc') }}</p>
                     </div>
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-400">{{ __('messages.how_feature4_title') }}</h3>
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature4_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature4_desc') }}</p>
                     </div>
@@ -202,7 +202,7 @@
                 <a href="{{ route('home') }}" class="inline-flex items-center justify-center py-3 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
                     {{ __('messages.how_cta') }}
                 </a>
-                <p class="mt-4 text-sm text-gray-500 dark:text-slate-500">
+                <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">
                     <a href="{{ route('use-cases') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                         {{ __('messages.how_see_use_cases') }}
                     </a>
