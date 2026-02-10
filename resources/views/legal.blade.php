@@ -33,7 +33,11 @@
                         @if(config('legal.editor_phone'))
                             <p>{{ __('messages.legal_editor_phone') }} {{ config('legal.editor_phone') }}</p>
                         @endif
-                        <p>{{ __('messages.legal_editor_email') }} {{ config('legal.contact_email', config('mail.from.address')) }}</p>
+                        @php
+                            $editorEmail = config('legal.contact_email', config('mail.from.address'));
+                            [$editorUser, $editorDomain] = explode('@', $editorEmail);
+                        @endphp
+                        <p>{{ __('messages.legal_editor_email') }} <span class="protected-email" dir="ltr" data-user="{{ $editorUser }}" data-domain="{{ $editorDomain }}">[e-mail]</span></p>
                     </div>
                 </section>
 
