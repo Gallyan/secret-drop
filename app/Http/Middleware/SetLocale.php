@@ -2,20 +2,19 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\LocaleConfig;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
-    private const SUPPORTED_LOCALES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'nl', 'pl', 'ja', 'ko', 'ar'];
-
-    private const DEFAULT_LOCALE = 'fr';
-
     public function handle(Request $request, Closure $next): Response
     {
         $locale = $this->detectLocale($request);
         app()->setLocale($locale);
+        URL::defaults(['locale' => $locale]);
 
         $response = $next($request);
 
@@ -26,22 +25,34 @@ class SetLocale
 
     private function detectLocale(Request $request): string
     {
+        $firstSegment = $request->segment(1);
+
+        if ($firstSegment && LocaleConfig::isSupported($firstSegment)) {
+            return $firstSegment;
+        }
+
+        return $this->detectFromAcceptLanguage($request);
+    }
+
+    private function detectFromAcceptLanguage(Request $request): string
+    {
         $acceptLanguage = $request->header('Accept-Language', '');
 
         if (empty($acceptLanguage)) {
-            return self::DEFAULT_LOCALE;
+            return LocaleConfig::DEFAULT_LOCALE;
         }
 
         $preferredLocales = $this->parseAcceptLanguage($acceptLanguage);
 
         foreach ($preferredLocales as $locale) {
             $shortLocale = substr($locale, 0, 2);
-            if (in_array($shortLocale, self::SUPPORTED_LOCALES, true)) {
+
+            if (LocaleConfig::isSupported($shortLocale)) {
                 return $shortLocale;
             }
         }
 
-        return self::DEFAULT_LOCALE;
+        return LocaleConfig::DEFAULT_LOCALE;
     }
 
     /**
@@ -53,6 +64,7 @@ class SetLocale
 
         foreach (explode(',', $header) as $part) {
             $part = trim($part);
+
             if (empty($part)) {
                 continue;
             }
@@ -63,6 +75,7 @@ class SetLocale
 
             if (isset($segments[1])) {
                 $qPart = trim($segments[1]);
+
                 if (str_starts_with($qPart, 'q=')) {
                     $quality = (float) substr($qPart, 2);
                 }

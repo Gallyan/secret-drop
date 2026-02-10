@@ -26,18 +26,7 @@
     <link rel="canonical" href="{{ url()->current() }}">
 
     {{-- Alternate languages --}}
-    <link rel="alternate" hreflang="fr" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="en" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="es" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="it" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="de" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="pt" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="nl" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="pl" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="ja" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="ko" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="ar" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
+    {!! hreflang_tags() !!}
 
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
@@ -153,11 +142,11 @@
         <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
             <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">{{ config('app.name') }}</a></span>
             <span aria-hidden="true">·</span>
-            <a href="{{ route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
+            <a href="{{ localized_route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_how_it_works') }}
             </a>
             <span aria-hidden="true">·</span>
-            <a href="{{ route('use-cases') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
+            <a href="{{ localized_route('use-cases') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_use_cases') }}
             </a>
             <span aria-hidden="true">·</span>
@@ -165,7 +154,7 @@
                 {{ __('messages.footer_manage') }}
             </a>
             <span aria-hidden="true">·</span>
-            <a href="{{ route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
+            <a href="{{ localized_route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
                 {{ __('messages.footer_legal') }}
             </a>
         </nav>

@@ -23,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);
 
+        $middleware->prependToPriorityList(
+            before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            prepend: SetLocale::class,
+        );
+
         $middleware->alias([
             'throttle.captcha' => ThrottleWithCaptcha::class,
             'no.cache' => NoCacheHeaders::class,

@@ -7,9 +7,16 @@ use Tests\TestCase;
 
 class CreateSecretTest extends TestCase
 {
-    public function testCreatePageReturnsSuccessfulResponse(): void
+    public function testRootRedirectsToLocalizedHome(): void
     {
         $response = $this->get('/');
+
+        $response->assertRedirect();
+    }
+
+    public function testCreatePageReturnsSuccessfulResponse(): void
+    {
+        $response = $this->get('/fr');
 
         $response->assertStatus(200);
         $response->assertSee('Secret Drop');

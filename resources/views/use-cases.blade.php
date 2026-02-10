@@ -154,7 +154,7 @@
                     {{ __('messages.use_cases_cta') }}
                 </a>
                 <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">
-                    <a href="{{ route('how-it-works') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                    <a href="{{ localized_route('how-it-works') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                         {{ __('messages.use_cases_see_how') }}
                     </a>
                 </p>

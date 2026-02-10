@@ -2,18 +2,35 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LocalizedPagesController;
+use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SecretsController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SuperAdminController;
+use App\Support\LocaleConfig;
 use Illuminate\Support\Facades\Route;
 
-// Home
-Route::get('/', [SecretsController::class, 'create'])->name('home');
+// Root: redirect to /{detected_locale}
+Route::get('/', [RedirectController::class, 'root']);
+
+// Legacy URL redirects (301)
+Route::get('/how-it-works', [RedirectController::class, 'howItWorks']);
+Route::get('/use-cases', [RedirectController::class, 'useCases']);
+Route::get('/legal', [RedirectController::class, 'legal']);
 
 // SEO
 Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/sitemap.xsl', [SeoController::class, 'sitemapStylesheet']);
+
+// Localized public pages
+Route::prefix('{locale}')
+    ->where(['locale' => LocaleConfig::localePattern()])
+    ->group(function () {
+        Route::get('/', [SecretsController::class, 'create'])->name('home');
+        Route::get('{pageSlug}', [LocalizedPagesController::class, 'show'])
+            ->name('page.show');
+    });
 
 // Secrets
 Route::get('/s/{token}', [SecretsController::class, 'show'])
@@ -23,10 +40,7 @@ Route::get('/s/{token}/download', [SecretsController::class, 'download'])
     ->middleware(['throttle:60,1', 'no.cache'])
     ->name('secrets.download');
 
-// Static pages
-Route::view('/legal', 'legal')->name('legal');
-Route::view('/how-it-works', 'how-it-works')->name('how-it-works');
-Route::view('/use-cases', 'use-cases')->name('use-cases');
+// Contact
 Route::get('/contact', [ContactController::class, 'email'])->name('contact.email');
 
 // Admin (user secrets management)

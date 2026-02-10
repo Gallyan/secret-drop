@@ -203,7 +203,7 @@
                     {{ __('messages.how_cta') }}
                 </a>
                 <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">
-                    <a href="{{ route('use-cases') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                    <a href="{{ localized_route('use-cases') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                         {{ __('messages.how_see_use_cases') }}
                     </a>
                 </p>

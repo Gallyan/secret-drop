@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\LocaleConfig;
 use Illuminate\Http\Response;
 
 class SeoController extends Controller
@@ -24,8 +25,12 @@ class SeoController extends Controller
 
     public function sitemap(): Response
     {
+        $locales = LocaleConfig::SUPPORTED_LOCALES;
+        $pages = LocaleConfig::translatablePages();
+        $lastmod = now()->utc()->format('Y-m-d\TH:i:s\Z');
+
         return response(
-            view('sitemap')->render(),
+            view('sitemap', compact('locales', 'pages', 'lastmod'))->render(),
             200,
             ['Content-Type' => 'application/xml']
         );

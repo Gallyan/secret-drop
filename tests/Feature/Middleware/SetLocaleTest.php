@@ -3,6 +3,7 @@
 namespace Tests\Feature\Middleware;
 
 use App\Http\Middleware\SetLocale;
+use App\Support\LocaleConfig;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
@@ -176,5 +177,44 @@ class SetLocaleTest extends TestCase
             'korean' => ['ko'],
             'arabic' => ['ar'],
         ];
+    }
+
+    public function testDetectsLocaleFromUrlSegment(): void
+    {
+        $request = Request::create('/en/test', 'GET');
+        $request->headers->set('Accept-Language', 'fr');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('en', app()->getLocale());
+    }
+
+    public function testUrlSegmentTakesPriorityOverHeader(): void
+    {
+        $request = Request::create('/de/something', 'GET');
+        $request->headers->set('Accept-Language', 'en');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('de', app()->getLocale());
+        $this->assertEquals('de', $response->headers->get('Content-Language'));
+    }
+
+    public function testFallsBackToHeaderWhenUrlSegmentIsNotLocale(): void
+    {
+        $request = Request::create('/admin/dashboard', 'GET');
+        $request->headers->set('Accept-Language', 'es');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('es', app()->getLocale());
+    }
+
+    public function testLocaleConfigConstants(): void
+    {
+        $this->assertContains('fr', LocaleConfig::SUPPORTED_LOCALES);
+        $this->assertContains('en', LocaleConfig::SUPPORTED_LOCALES);
+        $this->assertCount(11, LocaleConfig::SUPPORTED_LOCALES);
+        $this->assertEquals('fr', LocaleConfig::DEFAULT_LOCALE);
     }
 }
