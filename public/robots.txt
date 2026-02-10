@@ -1,9 +1,0 @@
-# Secret Drop - robots.txt
-# Only allow indexing of the homepage
-
-User-agent: *
-Allow: /$
-Disallow: /s/
-Disallow: /admin/
-Disallow: /api/
-Disallow: /legal

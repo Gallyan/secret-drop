@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SecretsController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [SecretsController::class, 'create'])->name('home');
 
 // SEO
-Route::get('/sitemap.xml', fn () => response(view('sitemap')->render(), 200, ['Content-Type' => 'application/xml']))
-    ->name('sitemap');
-Route::get('/sitemap.xsl', fn () => response(file_get_contents(resource_path('sitemap.xsl')), 200, ['Content-Type' => 'text/xsl']));
+Route::get('/robots.txt', [SeoController::class, 'robots']);
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/sitemap.xsl', [SeoController::class, 'sitemapStylesheet']);
 
 // Secrets
 Route::get('/s/{token}', [SecretsController::class, 'show'])
