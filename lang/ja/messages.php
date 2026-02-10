@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => 'フッターナビゲーション',
     'a11y_remove_file' => 'ファイルを削除',
     'a11y_decrypted_content' => '復号されたコンテンツ',
+    'a11y_switch_light' => 'ライトモードに切り替え',
+    'a11y_switch_dark' => 'ダークモードに切り替え',
     'a11y_back' => '戻る',
     'a11y_period_selector' => '期間を選択',
     'a11y_extend_days' => '延長する日数',

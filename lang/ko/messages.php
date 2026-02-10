@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => '푸터 내비게이션',
     'a11y_remove_file' => '파일 제거',
     'a11y_decrypted_content' => '복호화된 콘텐츠',
+    'a11y_switch_light' => '라이트 모드로 전환',
+    'a11y_switch_dark' => '다크 모드로 전환',
     'a11y_back' => '뒤로',
     'a11y_period_selector' => '기간 선택',
     'a11y_extend_days' => '연장할 일수',

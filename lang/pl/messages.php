@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => 'Nawigacja w stopce',
     'a11y_remove_file' => 'Usuń plik',
     'a11y_decrypted_content' => 'Odszyfrowana treść',
+    'a11y_switch_light' => 'Przełącz na tryb jasny',
+    'a11y_switch_dark' => 'Przełącz na tryb ciemny',
     'a11y_back' => 'Wstecz',
     'a11y_period_selector' => 'Wybierz okres',
     'a11y_extend_days' => 'Liczba dni do przedłużenia',

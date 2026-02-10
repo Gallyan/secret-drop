@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => 'Navegação do rodapé',
     'a11y_remove_file' => 'Remover ficheiro',
     'a11y_decrypted_content' => 'Conteúdo decifrado',
+    'a11y_switch_light' => 'Mudar para modo claro',
+    'a11y_switch_dark' => 'Mudar para modo escuro',
     'a11y_back' => 'Voltar',
     'a11y_period_selector' => 'Selecionar período',
     'a11y_extend_days' => 'Número de dias para estender',

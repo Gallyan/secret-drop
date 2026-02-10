@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => 'Footer navigation',
     'a11y_remove_file' => 'Remove file',
     'a11y_decrypted_content' => 'Decrypted content',
+    'a11y_switch_light' => 'Switch to light mode',
+    'a11y_switch_dark' => 'Switch to dark mode',
     'a11y_back' => 'Back',
     'a11y_period_selector' => 'Select period',
     'a11y_extend_days' => 'Number of days to extend',

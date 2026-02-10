@@ -337,6 +337,8 @@ return [
     'a11y_footer_nav' => 'Fußzeilennavigation',
     'a11y_remove_file' => 'Datei entfernen',
     'a11y_decrypted_content' => 'Entschlüsselter Inhalt',
+    'a11y_switch_light' => 'Zum hellen Modus wechseln',
+    'a11y_switch_dark' => 'Zum dunklen Modus wechseln',
     'a11y_back' => 'Zurück',
     'a11y_period_selector' => 'Zeitraum auswählen',
     'a11y_extend_days' => 'Anzahl der Tage zur Verlängerung',

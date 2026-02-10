@@ -6,7 +6,9 @@
         @click="toggle()"
         type="button"
         class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-slate-700/50 hover:border-violet-500/50 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all shadow-sm cursor-pointer"
-        :aria-label="dark ? 'Activer le mode clair' : 'Activer le mode sombre'"
+        data-label-light="{{ __('messages.a11y_switch_light') }}"
+        data-label-dark="{{ __('messages.a11y_switch_dark') }}"
+        :aria-label="ariaLabel()"
     >
         <template x-if="dark">
             <svg class="w-5 h-5 text-amber-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
