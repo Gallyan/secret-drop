@@ -15,8 +15,8 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 14px;
-            color: #1e293b;
-            background: #f8fafc;
+            color: #cbd5e1;
+            background: #0f172a;
             margin: 0;
             padding: 20px;
         }
@@ -27,7 +27,7 @@
         }
 
         #sitemap__header {
-            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%);
             color: white;
             padding: 30px 40px;
             border-radius: 8px 8px 0 0;
@@ -51,8 +51,8 @@
         }
 
         #sitemap__table {
-            background: white;
-            border: 1px solid #e2e8f0;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
             border-top: none;
             border-radius: 0 0 8px 8px;
             overflow: hidden;
@@ -64,15 +64,15 @@
         }
 
         th {
-            background: #f1f5f9;
-            color: #64748b;
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             padding: 12px 20px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
         }
 
         th:last-child {
@@ -82,7 +82,7 @@
 
         td {
             padding: 12px 20px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
         }
 
         tr:last-child td {
@@ -90,31 +90,32 @@
         }
 
         tr.odd td {
-            background: #faf5ff;
+            background: rgba(139, 92, 246, 0.05);
         }
 
         tr:hover td {
-            background: #ede9fe;
+            background: rgba(139, 92, 246, 0.1);
         }
 
         td a {
-            color: #7c3aed;
+            color: #a78bfa;
             text-decoration: none;
             font-weight: 500;
         }
 
         td a:hover {
             text-decoration: underline;
+            color: #c4b5fd;
         }
 
         td a:visited {
-            color: #6d28d9;
+            color: #8b5cf6;
         }
 
         .badge {
             display: inline-block;
-            background: #ede9fe;
-            color: #7c3aed;
+            background: rgba(139, 92, 246, 0.15);
+            color: #a78bfa;
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 12px;
@@ -124,7 +125,7 @@
         .priority {
             text-align: center;
             font-weight: 600;
-            color: #059669;
+            color: #6ee7b7;
         }
 
     </style>
