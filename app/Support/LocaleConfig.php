@@ -9,6 +9,21 @@ class LocaleConfig
 
     public const DEFAULT_LOCALE = 'fr';
 
+    /** @var array<string, string> */
+    public const NATIVE_NAMES = [
+        'en' => 'English',
+        'fr' => 'Français',
+        'de' => 'Deutsch',
+        'es' => 'Español',
+        'it' => 'Italiano',
+        'pt' => 'Português',
+        'nl' => 'Nederlands',
+        'pl' => 'Polski',
+        'ja' => '日本語',
+        'ko' => '한국어',
+        'ar' => 'العربية',
+    ];
+
     /** @var array<int, string> */
     private const TRANSLATABLE_PAGES = ['how-it-works', 'use-cases', 'legal'];
 

@@ -59,6 +59,29 @@ if (! function_exists('hreflang_tags')) {
     }
 }
 
+if (! function_exists('locale_switcher_urls')) {
+    /**
+     * @return array<string, string>
+     */
+    function locale_switcher_urls(): array
+    {
+        $route = request()->route();
+        $routeName = $route?->getName();
+
+        $urls = [];
+
+        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
+            $urls[$locale] = match ($routeName) {
+                'home' => route('home', ['locale' => $locale]),
+                'page.show' => hreflang_page_url($locale) ?? route('home', ['locale' => $locale]),
+                default => route('home', ['locale' => $locale]),
+            };
+        }
+
+        return $urls;
+    }
+}
+
 if (! function_exists('hreflang_page_url')) {
     function hreflang_page_url(string $locale): ?string
     {

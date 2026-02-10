@@ -234,6 +234,55 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    public function testLanguageSwitcherPresentOnHomePage(): void
+    {
+        $response = $this->get('/fr');
+
+        $response->assertOk();
+        $response->assertSee('x-data="languageSwitcher"', false);
+    }
+
+    public function testLanguageSwitcherContainsAllLocaleUrls(): void
+    {
+        $response = $this->get('/fr');
+
+        $response->assertOk();
+        $content = $response->getContent();
+
+        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
+            $this->assertStringContainsString(
+                "/{$locale}",
+                $content,
+                "Language switcher should contain URL for locale '{$locale}'"
+            );
+        }
+    }
+
+    public function testLanguageSwitcherOnLocalizedPagePointsToTranslatedPages(): void
+    {
+        $response = $this->get('/fr/comment-ca-marche');
+
+        $response->assertOk();
+        $content = $response->getContent();
+
+        $this->assertStringContainsString('/en/how-it-works', $content);
+        $this->assertStringContainsString('/de/so-funktioniert-es', $content);
+    }
+
+    public function testLocaleSwitcherUrlsHelperReturnsAllLocales(): void
+    {
+        $this->get('/fr');
+
+        $urls = locale_switcher_urls();
+
+        $this->assertCount(count(LocaleConfig::SUPPORTED_LOCALES), $urls);
+
+        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
+            $this->assertArrayHasKey($locale, $urls);
+            $this->assertStringContainsString("/{$locale}", $urls[$locale]);
+        }
+    }
+
     public function testAllTranslatablePagesWorkForAllLocales(): void
     {
         foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {

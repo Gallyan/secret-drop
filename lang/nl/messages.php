@@ -343,6 +343,7 @@ return [
     'a11y_period_selector' => 'Periode selecteren',
     'a11y_extend_days' => 'Aantal dagen om te verlengen',
     'a11y_expand_secret' => 'Geheimdetails tonen',
+    'a11y_language_selector' => 'Taal selecteren',
 
     // Split mode
     'split_mode' => 'Link en sleutel scheiden',

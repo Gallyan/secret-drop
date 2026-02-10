@@ -343,6 +343,7 @@ return [
     'a11y_period_selector' => 'Sélectionner la période',
     'a11y_extend_days' => 'Nombre de jours de prolongation',
     'a11y_expand_secret' => 'Afficher les détails du secret',
+    'a11y_language_selector' => 'Sélectionner la langue',
 
     // Split mode
     'split_mode' => 'Séparer le lien et la clé',

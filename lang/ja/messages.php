@@ -343,6 +343,7 @@ return [
     'a11y_period_selector' => '期間を選択',
     'a11y_extend_days' => '延長する日数',
     'a11y_expand_secret' => 'シークレットの詳細を表示',
+    'a11y_language_selector' => '言語を選択',
 
     // Split mode
     'split_mode' => 'リンクとキーを分離',

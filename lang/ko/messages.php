@@ -343,6 +343,7 @@ return [
     'a11y_period_selector' => '기간 선택',
     'a11y_extend_days' => '연장할 일수',
     'a11y_expand_secret' => '비밀 상세 보기',
+    'a11y_language_selector' => '언어 선택',
 
     // Split mode
     'split_mode' => '링크와 키 분리',

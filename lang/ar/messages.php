@@ -343,6 +343,7 @@ return [
     'a11y_period_selector' => 'اختر الفترة',
     'a11y_extend_days' => 'عدد أيام التمديد',
     'a11y_expand_secret' => 'عرض تفاصيل السر',
+    'a11y_language_selector' => 'اختر اللغة',
 
     // Split mode
     'split_mode' => 'فصل الرابط والمفتاح',
