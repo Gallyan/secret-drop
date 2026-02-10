@@ -34,7 +34,9 @@ Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
 Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
     ->middleware('throttle.captcha:3,10')
     ->name('admin.requestAccess');
-Route::get('/admin/verify/{token}', [AdminController::class, 'verify'])->name('admin.verify');
+Route::get('/admin/verify/{token}', [AdminController::class, 'verify'])
+    ->middleware('throttle:5,1')
+    ->name('admin.verify');
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 Route::post('/admin/secrets/{id}/revoke', [AdminController::class, 'revoke'])->name('admin.revoke');
@@ -45,6 +47,8 @@ Route::get('/superadmin', [SuperAdminController::class, 'index'])->name('superad
 Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
     ->middleware('throttle.captcha:3,10')
     ->name('superadmin.requestAccess');
-Route::get('/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])->name('superadmin.verify');
+Route::get('/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
+    ->middleware('throttle:5,1')
+    ->name('superadmin.verify');
 Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
 Route::post('/superadmin/logout', [SuperAdminController::class, 'logout'])->name('superadmin.logout');
