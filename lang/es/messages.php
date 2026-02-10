@@ -334,6 +334,9 @@ return [
     // Accessibility
     'a11y_show_passphrase' => 'Mostrar frase secreta',
     'a11y_hide_passphrase' => 'Ocultar frase secreta',
+    'a11y_footer_nav' => 'Navegación del pie de página',
+    'a11y_remove_file' => 'Eliminar archivo',
+    'a11y_decrypted_content' => 'Contenido descifrado',
     'a11y_back' => 'Volver',
     'a11y_period_selector' => 'Seleccionar período',
     'a11y_extend_days' => 'Número de días a extender',

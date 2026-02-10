@@ -156,6 +156,7 @@
                                     type="text"
                                     x-model="manualKey"
                                     required
+                                    aria-required="true"
                                     autofocus
                                     autocomplete="off"
                                     placeholder="{{ __('messages.key_placeholder') }}"
@@ -193,6 +194,7 @@
                                     type="password"
                                     x-model="passphrase"
                                     required
+                                    aria-required="true"
                                     autofocus
                                     placeholder="{{ __('messages.passphrase_input_placeholder') }}"
                                     class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
@@ -231,6 +233,8 @@
                         <div class="relative">
                             <pre
                                 x-text="plaintext"
+                                role="region"
+                                aria-label="{{ __('messages.a11y_decrypted_content') }}"
                                 class="w-full p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono whitespace-pre-wrap break-words max-h-96 overflow-auto transition-colors"
                             ></pre>
                             <button

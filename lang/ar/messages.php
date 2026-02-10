@@ -334,6 +334,9 @@ return [
     // Accessibility
     'a11y_show_passphrase' => 'إظهار عبارة المرور',
     'a11y_hide_passphrase' => 'إخفاء عبارة المرور',
+    'a11y_footer_nav' => 'تصفح التذييل',
+    'a11y_remove_file' => 'إزالة الملف',
+    'a11y_decrypted_content' => 'المحتوى المفكك تشفيره',
     'a11y_back' => 'رجوع',
     'a11y_period_selector' => 'اختر الفترة',
     'a11y_extend_days' => 'عدد أيام التمديد',

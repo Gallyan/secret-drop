@@ -31,14 +31,16 @@
                         name="email"
                         type="email"
                         required
+                        aria-required="true"
                         @if(!session('captcha_required')) autofocus @endif
                         autocomplete="off"
                         value="{{ old('email') }}"
                         placeholder="{{ __('messages.admin_email_placeholder') }}"
+                        @error('email') aria-describedby="email-error" aria-invalid="true" @enderror
                         class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition"
                     >
                     @error('email')
-                        <p class="mt-2 text-sm text-red-600 dark:text-red-300">{{ $message }}</p>
+                        <p id="email-error" class="mt-2 text-sm text-red-600 dark:text-red-300" role="alert">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -59,14 +61,16 @@
                                 name="captcha_answer"
                                 type="number"
                                 required
+                                aria-required="true"
                                 autofocus
                                 placeholder="{{ __('messages.captcha_placeholder') }}"
+                                @error('captcha') aria-describedby="captcha-error" aria-invalid="true" @enderror
                                 class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition"
                             >
                         </div>
                         <input type="hidden" name="captcha_token" value="{{ session('captcha_token') }}">
                         @error('captcha')
-                            <p class="mt-2 text-sm text-red-600 dark:text-red-300">{{ $message }}</p>
+                            <p id="captcha-error" class="mt-2 text-sm text-red-600 dark:text-red-300" role="alert">{{ $message }}</p>
                         @enderror
                     </div>
                 @endif

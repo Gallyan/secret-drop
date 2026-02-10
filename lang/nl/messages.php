@@ -334,6 +334,9 @@ return [
     // Accessibility
     'a11y_show_passphrase' => 'Wachtwoordzin tonen',
     'a11y_hide_passphrase' => 'Wachtwoordzin verbergen',
+    'a11y_footer_nav' => 'Voettekstnavigatie',
+    'a11y_remove_file' => 'Bestand verwijderen',
+    'a11y_decrypted_content' => 'Ontsleutelde inhoud',
     'a11y_back' => 'Terug',
     'a11y_period_selector' => 'Periode selecteren',
     'a11y_extend_days' => 'Aantal dagen om te verlengen',
