@@ -172,7 +172,11 @@ class SecurityHeadersTest extends TestCase
         $csp = $response->headers->get('Content-Security-Policy');
 
         $this->assertStringNotContainsString('unsafe-eval', $csp);
-        $this->assertStringNotContainsString('unsafe-inline', $csp);
+        // No unsafe-inline in script-src or style-src (nonce-only), but allowed in style-src-attr
+        $this->assertDoesNotMatchRegularExpression("/script-src[^;]*'unsafe-inline'/", $csp);
+        $this->assertDoesNotMatchRegularExpression("/style-src [^;]*'unsafe-inline'/", $csp);
+        // style-src-attr allows Alpine.js inline style="" attributes (no nonce mechanism for these)
+        $this->assertStringContainsString("style-src-attr 'unsafe-inline'", $csp);
     }
 
     public function testCspAllowsUnsafeEvalInLocal(): void
@@ -187,5 +191,14 @@ class SecurityHeadersTest extends TestCase
 
         $this->assertStringContainsString('unsafe-eval', $csp);
         $this->assertStringContainsString('unsafe-inline', $csp);
+    }
+
+    public function testSetsCoopHeader(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('same-origin', $response->headers->get('Cross-Origin-Opener-Policy'));
     }
 }

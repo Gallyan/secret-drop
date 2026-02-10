@@ -16,6 +16,7 @@ class SecurityHeaders
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
 
         if (app()->environment('production')) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
@@ -34,12 +35,13 @@ class SecurityHeaders
     {
         $isLocal = app()->environment('local');
 
-        // En local : unsafe-eval/unsafe-inline pour Vite hot reload
-        // En production : CSP stricte avec nonce uniquement
+        // unsafe-eval only needed in local for Vite hot reload
         $scriptSrc = $isLocal
             ? "script-src 'self' 'nonce-{$nonce}' 'unsafe-eval'"
             : "script-src 'self' 'nonce-{$nonce}'";
 
+        // style-src: nonce for <style> tags
+        // style-src-attr: allows inline style="" attributes (required by Alpine.js x-collapse, transitions)
         $styleSrc = $isLocal
             ? "style-src 'self' 'nonce-{$nonce}' 'unsafe-inline'"
             : "style-src 'self' 'nonce-{$nonce}'";
@@ -52,6 +54,7 @@ class SecurityHeaders
             "default-src 'self'",
             $scriptSrc,
             $styleSrc,
+            "style-src-attr 'unsafe-inline'",
             "img-src 'self' data: https:",
             "font-src 'self'",
             $connectSrc,
