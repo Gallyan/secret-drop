@@ -58,6 +58,7 @@ return [
     'btn_decrypt' => '復号化',
     'btn_decrypting' => '復号化中...',
     'btn_retry' => '再試行',
+    'btn_request_new_link' => '新しいリンクをリクエスト',
     'btn_cancel' => 'キャンセル',
     'btn_create_new' => '新しいシークレットを作成',
 

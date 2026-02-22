@@ -58,6 +58,7 @@ return [
     'btn_decrypt' => 'Ontsleutelen',
     'btn_decrypting' => 'Ontsleutelen...',
     'btn_retry' => 'Opnieuw proberen',
+    'btn_request_new_link' => 'Nieuwe link aanvragen',
     'btn_cancel' => 'Annuleren',
     'btn_create_new' => 'Nieuw geheim maken',
 

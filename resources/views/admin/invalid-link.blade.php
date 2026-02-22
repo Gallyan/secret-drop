@@ -14,7 +14,17 @@
             </div>
 
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_invalid_link_title') }}</h1>
-            <p class="text-gray-600 dark:text-slate-400">{{ __('messages.admin_invalid_link_description') }}</p>
+            <p class="text-gray-600 dark:text-slate-400 mb-6">{{ __('messages.admin_invalid_link_description') }}</p>
+
+            <a href="{{ route('admin.index') }}" class="inline-flex items-center justify-center w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                {{ __('messages.btn_request_new_link') }}
+            </a>
+
+            <div class="mt-6">
+                <a href="/" class="text-sm text-gray-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition">
+                    {{ __('messages.admin_back_home') }}
+                </a>
+            </div>
         </div>
     </div>
 </div>

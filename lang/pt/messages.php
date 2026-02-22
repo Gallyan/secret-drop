@@ -58,6 +58,7 @@ return [
     'btn_decrypt' => 'Descriptografar',
     'btn_decrypting' => 'Descriptografando...',
     'btn_retry' => 'Tentar novamente',
+    'btn_request_new_link' => 'Solicitar um novo link',
     'btn_cancel' => 'Cancelar',
     'btn_create_new' => 'Criar um novo segredo',
 
