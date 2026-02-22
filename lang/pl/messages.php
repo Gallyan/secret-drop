@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'Ten sekret nie jest już dostępny.',
     'error_loading' => 'Wystąpił błąd podczas ładowania sekretu.',
     'error_connection' => 'Nie można załadować sekretu. Sprawdź połączenie.',
+    'error_server_title' => 'Błąd serwera',
+    'error_server_message' => 'Wystąpił błąd wewnętrzny. Spróbuj ponownie później.',
+    'error_back_home' => 'Powrót do strony głównej',
 
     // Crypto errors
     'crypto_not_supported' => 'Twoja przeglądarka nie obsługuje bezpiecznego szyfrowania',

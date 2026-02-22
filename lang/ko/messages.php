@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => '이 비밀은 더 이상 접근할 수 없습니다.',
     'error_loading' => '비밀을 불러오는 중 오류가 발생했습니다.',
     'error_connection' => '비밀을 불러올 수 없습니다. 연결을 확인하세요.',
+    'error_server_title' => '서버 오류',
+    'error_server_message' => '내부 오류가 발생했습니다. 나중에 다시 시도해 주세요.',
+    'error_back_home' => '홈으로 돌아가기',
 
     // Crypto errors
     'crypto_not_supported' => '브라우저가 보안 암호화를 지원하지 않습니다',

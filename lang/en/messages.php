@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'This secret is no longer accessible.',
     'error_loading' => 'An error occurred while loading the secret.',
     'error_connection' => 'Unable to load the secret. Check your connection.',
+    'error_server_title' => 'Server error',
+    'error_server_message' => 'An internal error occurred. Please try again later.',
+    'error_back_home' => 'Back to home',
 
     // Crypto errors
     'crypto_not_supported' => 'Your browser does not support secure encryption',

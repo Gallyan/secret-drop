@@ -36,10 +36,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (QueryException $e) {
-            return response()->view('errors.minimal', [
-                'code' => 500,
-                'title' => __('Erreur serveur'),
-                'message' => __('Une erreur interne s\'est produite. Veuillez réessayer plus tard.'),
-            ], 500);
+            return response()->view('errors.minimal', [], 500);
         });
     })->create();

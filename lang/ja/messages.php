@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'このシークレットはもうアクセスできません。',
     'error_loading' => 'シークレットの読み込み中にエラーが発生しました。',
     'error_connection' => 'シークレットを読み込めません。接続を確認してください。',
+    'error_server_title' => 'サーバーエラー',
+    'error_server_message' => '内部エラーが発生しました。後でもう一度お試しください。',
+    'error_back_home' => 'ホームに戻る',
 
     // Crypto errors
     'crypto_not_supported' => 'お使いのブラウザは安全な暗号化をサポートしていません',

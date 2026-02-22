@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'Ce secret n\'est plus accessible.',
     'error_loading' => 'Une erreur est survenue lors du chargement du secret.',
     'error_connection' => 'Impossible de charger le secret. Vérifiez votre connexion.',
+    'error_server_title' => 'Erreur serveur',
+    'error_server_message' => 'Une erreur interne s\'est produite. Veuillez réessayer plus tard.',
+    'error_back_home' => 'Retour à l\'accueil',
 
     // Crypto errors
     'crypto_not_supported' => 'Votre navigateur ne supporte pas le chiffrement sécurisé',

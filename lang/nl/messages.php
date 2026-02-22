@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'Dit geheim is niet meer toegankelijk.',
     'error_loading' => 'Er is een fout opgetreden bij het laden van het geheim.',
     'error_connection' => 'Kan het geheim niet laden. Controleer uw verbinding.',
+    'error_server_title' => 'Serverfout',
+    'error_server_message' => 'Er is een interne fout opgetreden. Probeer het later opnieuw.',
+    'error_back_home' => 'Terug naar home',
 
     // Crypto errors
     'crypto_not_supported' => 'Uw browser ondersteunt geen veilige encryptie',

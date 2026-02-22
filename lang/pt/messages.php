@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'Este segredo não está mais acessível.',
     'error_loading' => 'Ocorreu um erro ao carregar o segredo.',
     'error_connection' => 'Não foi possível carregar o segredo. Verifique sua conexão.',
+    'error_server_title' => 'Erro do servidor',
+    'error_server_message' => 'Ocorreu um erro interno. Tente novamente mais tarde.',
+    'error_back_home' => 'Voltar ao início',
 
     // Crypto errors
     'crypto_not_supported' => 'Seu navegador não suporta criptografia segura',

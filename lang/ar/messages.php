@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'هذا السر لم يعد متاحاً.',
     'error_loading' => 'حدث خطأ أثناء تحميل السر.',
     'error_connection' => 'تعذر تحميل السر. تحقق من اتصالك.',
+    'error_server_title' => 'خطأ في الخادم',
+    'error_server_message' => 'حدث خطأ داخلي. يرجى المحاولة مرة أخرى لاحقًا.',
+    'error_back_home' => 'العودة إلى الصفحة الرئيسية',
 
     // Crypto errors
     'crypto_not_supported' => 'متصفحك لا يدعم التشفير الآمن',

@@ -106,6 +106,9 @@ return [
     'secret_unavailable_generic' => 'Dieses Geheimnis ist nicht mehr zugänglich.',
     'error_loading' => 'Beim Laden des Geheimnisses ist ein Fehler aufgetreten.',
     'error_connection' => 'Das Geheimnis konnte nicht geladen werden. Überprüfen Sie Ihre Verbindung.',
+    'error_server_title' => 'Serverfehler',
+    'error_server_message' => 'Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.',
+    'error_back_home' => 'Zurück zur Startseite',
 
     // Crypto errors
     'crypto_not_supported' => 'Ihr Browser unterstützt keine sichere Verschlüsselung',
