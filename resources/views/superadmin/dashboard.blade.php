@@ -4,7 +4,7 @@
 @section('title', __('messages.superadmin_dashboard_title'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 pb-16 md:p-8 md:pb-16 transition-colors">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 pb-16 md:p-8 md:pb-16 transition-colors">
     <div class="max-w-7xl mx-auto">
         <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

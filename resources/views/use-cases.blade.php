@@ -4,7 +4,7 @@
 @section('description', __('messages.use_cases_meta_description'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 transition-colors">
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 transition-colors">
     <div class="max-w-4xl mx-auto">
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 lg:p-12 transition-colors">
             {{-- Header --}}
