@@ -11,10 +11,7 @@ class SeoController extends Controller
     {
         $sitemap = url('/sitemap.xml');
         $disallowAdmin = collect(LocaleConfig::SUPPORTED_LOCALES)
-            ->flatMap(fn (string $locale) => [
-                "Disallow: /{$locale}/admin/",
-                "Disallow: /{$locale}/superadmin/",
-            ])
+            ->map(fn (string $locale) => "Disallow: /{$locale}/admin/")
             ->implode("\n");
 
         $content = <<<TXT
