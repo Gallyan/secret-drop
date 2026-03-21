@@ -64,7 +64,7 @@ class AdminController extends Controller
         return view('admin.access-sent');
     }
 
-    public function verify(Request $request, string $token): View|RedirectResponse
+    public function verify(Request $request, string $locale, string $token): View|RedirectResponse
     {
         $magicLink = MagicLink::findByToken($token);
 
@@ -108,7 +108,7 @@ class AdminController extends Controller
         return redirect()->route('admin.index');
     }
 
-    public function revoke(Request $request, string $id): JsonResponse
+    public function revoke(Request $request, string $locale, string $id): JsonResponse
     {
         $emailHash = $request->session()->get(self::SESSION_KEY);
 
@@ -140,7 +140,7 @@ class AdminController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function extend(ExtendSecretRequest $request, string $id): JsonResponse
+    public function extend(ExtendSecretRequest $request, string $locale, string $id): JsonResponse
     {
         $emailHash = $request->session()->get(self::SESSION_KEY);
 

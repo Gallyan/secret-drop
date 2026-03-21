@@ -104,11 +104,11 @@ class ThrottleWithCaptchaTest extends TestCase
     {
         // Exhaust the rate limit (3 per 10 minutes)
         for ($i = 0; $i < 3; $i++) {
-            $this->post('/admin/request-access', ['email' => 'test@example.com']);
+            $this->post('/fr/admin/request-access', ['email' => 'test@example.com']);
         }
 
         // Next request should redirect back with captcha
-        $response = $this->post('/admin/request-access', ['email' => 'test@example.com']);
+        $response = $this->post('/fr/admin/request-access', ['email' => 'test@example.com']);
 
         $response->assertRedirect();
         $response->assertSessionHas('captcha_required', true);
@@ -120,18 +120,18 @@ class ThrottleWithCaptchaTest extends TestCase
     {
         // Exhaust the rate limit
         for ($i = 0; $i < 3; $i++) {
-            $this->post('/admin/request-access', ['email' => 'test@example.com']);
+            $this->post('/fr/admin/request-access', ['email' => 'test@example.com']);
         }
 
         // Get captcha
-        $response = $this->post('/admin/request-access', ['email' => 'test@example.com']);
+        $response = $this->post('/fr/admin/request-access', ['email' => 'test@example.com']);
         $captchaToken = session('captcha_token');
 
         $captchaService = app(CaptchaService::class);
         $expectedAnswer = $captchaService->getExpectedAnswer($captchaToken);
 
         // Submit with valid captcha
-        $response = $this->post('/admin/request-access', [
+        $response = $this->post('/fr/admin/request-access', [
             'email' => 'test@example.com',
             'captcha_token' => $captchaToken,
             'captcha_answer' => $expectedAnswer,
@@ -145,11 +145,11 @@ class ThrottleWithCaptchaTest extends TestCase
     {
         // Exhaust the rate limit (3 per 10 minutes)
         for ($i = 0; $i < 3; $i++) {
-            $this->post('/superadmin/request-access', ['email' => 'test@example.com']);
+            $this->post('/fr/superadmin/request-access', ['email' => 'test@example.com']);
         }
 
         // Next request should redirect back with captcha
-        $response = $this->post('/superadmin/request-access', ['email' => 'test@example.com']);
+        $response = $this->post('/fr/superadmin/request-access', ['email' => 'test@example.com']);
 
         $response->assertRedirect();
         $response->assertSessionHas('captcha_required', true);

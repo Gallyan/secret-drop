@@ -84,7 +84,7 @@
             </form>
 
             <div class="mt-6 text-center">
-                <a href="/" class="text-sm text-gray-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition">
+                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition">
                     {{ __('messages.admin_back_home') }}
                 </a>
             </div>

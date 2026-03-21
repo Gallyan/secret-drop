@@ -38,7 +38,7 @@
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_no_secrets') }}</h2>
                 <p class="text-gray-500 dark:text-slate-400 mb-6">{{ __('messages.admin_no_secrets_description') }}</p>
-                <a href="/" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                <a href="{{ route('home') }}" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
                     {{ __('messages.btn_create_new') }}
                 </a>
             </div>
@@ -250,7 +250,7 @@
 
         {{-- Create new link --}}
         <div class="mt-8 text-center">
-            <a href="/" class="text-sm text-gray-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition">
+            <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition">
                 {{ __('messages.btn_create_new') }}
             </a>
         </div>

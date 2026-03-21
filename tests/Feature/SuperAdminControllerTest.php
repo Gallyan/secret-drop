@@ -21,7 +21,7 @@ class SuperAdminControllerTest extends TestCase
 
     public function testIndexPageDisplaysLoginForm(): void
     {
-        $response = $this->get('/superadmin');
+        $response = $this->get('/fr/superadmin');
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.index');
@@ -30,14 +30,14 @@ class SuperAdminControllerTest extends TestCase
     public function testIndexRedirectsToDashboardWhenAuthenticated(): void
     {
         $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/superadmin');
+            ->get('/fr/superadmin');
 
-        $response->assertRedirect(route('superadmin.dashboard'));
+        $response->assertRedirect(route('superadmin.dashboard', ['locale' => 'fr']));
     }
 
     public function testRequestAccessShowsConfirmationPage(): void
     {
-        $response = $this->post('/superadmin/request-access', [
+        $response = $this->post('/fr/superadmin/request-access', [
             'email' => 'random@example.com',
         ]);
 
@@ -49,7 +49,7 @@ class SuperAdminControllerTest extends TestCase
     {
         Config::set('app.super_admin_email', 'superadmin@example.com');
 
-        $response = $this->post('/superadmin/request-access', [
+        $response = $this->post('/fr/superadmin/request-access', [
             'email' => 'superadmin@example.com',
         ]);
 
@@ -65,7 +65,7 @@ class SuperAdminControllerTest extends TestCase
     {
         Config::set('app.super_admin_email', 'superadmin@example.com');
 
-        $response = $this->post('/superadmin/request-access', [
+        $response = $this->post('/fr/superadmin/request-access', [
             'email' => 'random@example.com',
         ]);
 
@@ -82,14 +82,14 @@ class SuperAdminControllerTest extends TestCase
             'expire_at' => now()->addMinutes(5),
         ]);
 
-        $response = $this->get("/superadmin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
 
-        $response->assertRedirect(route('superadmin.dashboard'));
+        $response->assertRedirect(route('superadmin.dashboard', ['locale' => 'fr']));
     }
 
     public function testVerifyWithInvalidTokenShowsError(): void
     {
-        $response = $this->get('/superadmin/verify/invalid-token');
+        $response = $this->get('/fr/superadmin/verify/invalid-token');
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.invalid-link');
@@ -104,7 +104,7 @@ class SuperAdminControllerTest extends TestCase
             'expire_at' => now()->subMinutes(1),
         ]);
 
-        $response = $this->get("/superadmin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.invalid-link');
@@ -119,7 +119,7 @@ class SuperAdminControllerTest extends TestCase
             'expire_at' => now()->addMinutes(5),
         ]);
 
-        $response = $this->get("/superadmin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.invalid-link');
@@ -127,15 +127,15 @@ class SuperAdminControllerTest extends TestCase
 
     public function testDashboardRequiresAuthentication(): void
     {
-        $response = $this->get('/superadmin/dashboard');
+        $response = $this->get('/fr/superadmin/dashboard');
 
-        $response->assertRedirect(route('superadmin.index'));
+        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
     }
 
     public function testDashboardDisplaysStatsWhenAuthenticated(): void
     {
         $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/superadmin/dashboard');
+            ->get('/fr/superadmin/dashboard');
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.dashboard');
@@ -145,9 +145,9 @@ class SuperAdminControllerTest extends TestCase
     public function testLogoutClearsSession(): void
     {
         $response = $this->withSession(['super_admin_verified' => true])
-            ->post('/superadmin/logout');
+            ->post('/fr/superadmin/logout');
 
-        $response->assertRedirect(route('superadmin.index'));
+        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
         $response->assertSessionMissing('super_admin_verified');
     }
 
@@ -156,15 +156,15 @@ class SuperAdminControllerTest extends TestCase
         $response = $this->withSession([
             'super_admin_verified' => true,
             'super_admin_expires_at' => now()->subHours(3)->timestamp,
-        ])->get('/superadmin/dashboard');
+        ])->get('/fr/superadmin/dashboard');
 
-        $response->assertRedirect(route('superadmin.index'));
+        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
     }
 
     public function testDashboardWithInvalidPeriodFallsBackToDefault(): void
     {
         $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/superadmin/dashboard?period=2d');
+            ->get('/fr/superadmin/dashboard?period=2d');
 
         $response->assertStatus(200);
         $response->assertViewIs('superadmin.dashboard');
@@ -174,7 +174,7 @@ class SuperAdminControllerTest extends TestCase
     public function testDashboardWithValidPeriodUsesRequestedPeriod(): void
     {
         $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/superadmin/dashboard?period=7d');
+            ->get('/fr/superadmin/dashboard?period=7d');
 
         $response->assertStatus(200);
         $response->assertViewHas('period', '7d');

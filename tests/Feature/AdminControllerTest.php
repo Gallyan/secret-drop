@@ -13,7 +13,7 @@ class AdminControllerTest extends TestCase
 {
     public function testAdminIndexPageLoads(): void
     {
-        $response = $this->get('/admin');
+        $response = $this->get('/fr/admin');
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.index');
@@ -23,7 +23,7 @@ class AdminControllerTest extends TestCase
     {
         Mail::fake();
 
-        $response = $this->post('/admin/request-access', [
+        $response = $this->post('/fr/admin/request-access', [
             'email' => 'nonexistent@example.com',
         ]);
 
@@ -38,7 +38,7 @@ class AdminControllerTest extends TestCase
 
         $secret = $this->createSecretWithEmail('test@example.com');
 
-        $response = $this->post('/admin/request-access', [
+        $response = $this->post('/fr/admin/request-access', [
             'email' => 'test@example.com',
         ]);
 
@@ -60,7 +60,7 @@ class AdminControllerTest extends TestCase
 
         $secret = $this->createSecretWithEmail('test@example.com');
 
-        $this->post('/admin/request-access', [
+        $this->post('/fr/admin/request-access', [
             'email' => 'test@example.com',
         ]);
 
@@ -83,9 +83,9 @@ class AdminControllerTest extends TestCase
             'expire_at' => now()->addMinutes(5),
         ]);
 
-        $response = $this->get("/admin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
 
-        $response->assertRedirect('/admin/dashboard');
+        $response->assertRedirect(route('admin.dashboard', ['locale' => 'fr']));
         $this->assertTrue(session()->has('admin_email_hash'));
 
         $secret->delete();
@@ -102,7 +102,7 @@ class AdminControllerTest extends TestCase
             'expire_at' => now()->subMinutes(1),
         ]);
 
-        $response = $this->get("/admin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.invalid-link');
@@ -120,7 +120,7 @@ class AdminControllerTest extends TestCase
             'used_at' => now(),
         ]);
 
-        $response = $this->get("/admin/verify/{$tokenData['token']}");
+        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.invalid-link');
@@ -128,9 +128,9 @@ class AdminControllerTest extends TestCase
 
     public function testDashboardRequiresAuthentication(): void
     {
-        $response = $this->get('/admin/dashboard');
+        $response = $this->get('/fr/admin/dashboard');
 
-        $response->assertRedirect('/admin');
+        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
     }
 
     public function testDashboardShowsSecretsForAuthenticatedUser(): void
@@ -139,7 +139,7 @@ class AdminControllerTest extends TestCase
         $secret = $this->createSecretWithEmail('test@example.com');
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->get('/admin/dashboard');
+            ->get('/fr/admin/dashboard');
 
         $response->assertStatus(200);
         $response->assertViewIs('admin.dashboard');
@@ -153,9 +153,9 @@ class AdminControllerTest extends TestCase
         $emailHash = MagicLink::hashEmail('test@example.com');
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->post('/admin/logout');
+            ->post('/fr/admin/logout');
 
-        $response->assertRedirect('/admin');
+        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
         $this->assertFalse(session()->has('admin_email_hash'));
     }
 
@@ -163,7 +163,7 @@ class AdminControllerTest extends TestCase
     {
         $secret = $this->createSecretWithEmail('test@example.com');
 
-        $response = $this->postJson("/admin/secrets/{$secret->id}/revoke");
+        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/revoke");
 
         $response->assertStatus(403);
 
@@ -176,7 +176,7 @@ class AdminControllerTest extends TestCase
         $secret = $this->createSecretWithEmail('test@example.com');
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/admin/secrets/{$secret->id}/revoke");
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
@@ -191,7 +191,7 @@ class AdminControllerTest extends TestCase
     {
         $secret = $this->createSecretWithEmail('test@example.com');
 
-        $response = $this->postJson("/admin/secrets/{$secret->id}/extend", [
+        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/extend", [
             'days' => 7,
         ]);
 
@@ -207,7 +207,7 @@ class AdminControllerTest extends TestCase
         $originalExpireAt = $secret->expire_at;
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/admin/secrets/{$secret->id}/extend", [
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
                 'days' => 7,
             ]);
 
@@ -226,7 +226,7 @@ class AdminControllerTest extends TestCase
         $secret = $this->createSecretWithEmail('victim@example.com');
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/admin/secrets/{$secret->id}/revoke");
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
 
         $response->assertStatus(404);
 

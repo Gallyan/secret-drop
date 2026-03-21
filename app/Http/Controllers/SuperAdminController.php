@@ -56,7 +56,7 @@ class SuperAdminController extends Controller
         return view('superadmin.access-sent');
     }
 
-    public function verify(Request $request, string $token): View|RedirectResponse
+    public function verify(Request $request, string $locale, string $token): View|RedirectResponse
     {
         $magicLink = MagicLink::findByToken($token);
 

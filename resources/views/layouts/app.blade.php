@@ -16,12 +16,12 @@
     <meta name="description" content="@yield('description', __('messages.app_description'))">
 
     {{-- SEO: noindex for sensitive pages --}}
-    @if(View::hasSection('noindex') || request()->is('s/*', 'admin/*', 'superadmin/*'))
+    @if(View::hasSection('noindex') || request()->is('s/*') || request()->routeIs('admin.*', 'superadmin.*'))
     <meta name="robots" content="noindex, nofollow">
     @endif
 
     {{-- Canonical URL, Open Graph, Twitter Card - disabled for sensitive pages --}}
-    @unless(request()->is('s/*', 'admin/*', 'superadmin/*'))
+    @unless(request()->is('s/*') || request()->routeIs('admin.*', 'superadmin.*'))
     {{-- Canonical URL --}}
     <link rel="canonical" href="{{ url()->current() }}">
 

@@ -12,7 +12,8 @@ class LocalizedRoutingTest extends TestCase
         $response = $this->withHeader('Accept-Language', 'fr')
             ->get('/');
 
-        $response->assertRedirect('/fr');
+        $response->assertRedirect();
+        $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
     }
 
     public function testRootRedirectsToEnglishLocale(): void
@@ -20,7 +21,8 @@ class LocalizedRoutingTest extends TestCase
         $response = $this->withHeader('Accept-Language', 'en')
             ->get('/');
 
-        $response->assertRedirect('/en');
+        $response->assertRedirect();
+        $this->assertStringEndsWith('/en/', $response->headers->get('Location'));
     }
 
     public function testRootDefaultsToFrenchWithoutHeader(): void
@@ -28,7 +30,8 @@ class LocalizedRoutingTest extends TestCase
         $response = $this->withHeader('Accept-Language', '')
             ->get('/');
 
-        $response->assertRedirect('/fr');
+        $response->assertRedirect();
+        $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
     }
 
     public function testHomePageRendersWithLocale(): void
@@ -145,9 +148,25 @@ class LocalizedRoutingTest extends TestCase
 
     public function testAdminRouteStillAccessible(): void
     {
-        $response = $this->get('/admin');
+        $response = $this->get('/fr/admin');
 
         $response->assertOk();
+    }
+
+    public function testNonLocalizedAdminRedirectsToLocalizedAdmin(): void
+    {
+        $response = $this->withHeader('Accept-Language', 'fr')
+            ->get('/admin');
+
+        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
+    }
+
+    public function testNonLocalizedSuperadminRedirectsToLocalizedSuperadmin(): void
+    {
+        $response = $this->withHeader('Accept-Language', 'en')
+            ->get('/superadmin');
+
+        $response->assertRedirect(route('superadmin.index', ['locale' => 'en']));
     }
 
     public function testRouteHelperGeneratesLocalizedUrl(): void

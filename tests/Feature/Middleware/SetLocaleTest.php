@@ -202,7 +202,7 @@ class SetLocaleTest extends TestCase
 
     public function testFallsBackToHeaderWhenUrlSegmentIsNotLocale(): void
     {
-        $request = Request::create('/admin/dashboard', 'GET');
+        $request = Request::create('/s/some-token', 'GET');
         $request->headers->set('Accept-Language', 'es');
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));

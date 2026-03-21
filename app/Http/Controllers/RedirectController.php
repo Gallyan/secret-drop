@@ -8,7 +8,7 @@ class RedirectController extends Controller
 {
     public function root(): RedirectResponse
     {
-        return redirect()->route('home', ['locale' => app()->getLocale()]);
+        return redirect(route('home', ['locale' => app()->getLocale()]).'/');
     }
 
     public function howItWorks(): RedirectResponse
@@ -24,5 +24,15 @@ class RedirectController extends Controller
     public function legal(): RedirectResponse
     {
         return redirect(localized_route('legal'), 301);
+    }
+
+    public function admin(): RedirectResponse
+    {
+        return redirect()->route('admin.index', ['locale' => app()->getLocale()]);
+    }
+
+    public function superadmin(): RedirectResponse
+    {
+        return redirect()->route('superadmin.index', ['locale' => app()->getLocale()]);
     }
 }

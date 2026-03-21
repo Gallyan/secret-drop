@@ -10,10 +10,17 @@ class SeoController extends Controller
     public function robots(): Response
     {
         $sitemap = url('/sitemap.xml');
+        $disallowAdmin = collect(LocaleConfig::SUPPORTED_LOCALES)
+            ->flatMap(fn (string $locale) => [
+                "Disallow: /{$locale}/admin/",
+                "Disallow: /{$locale}/superadmin/",
+            ])
+            ->implode("\n");
+
         $content = <<<TXT
             User-agent: *
             Disallow: /s/
-            Disallow: /admin/
+            {$disallowAdmin}
             Disallow: /api/
             Disallow: /contact
 

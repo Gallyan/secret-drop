@@ -17,7 +17,7 @@
             <p class="text-gray-600 dark:text-slate-400 mb-6">{{ __('messages.admin_not_found_description') }}</p>
 
             <a
-                href="/"
+                href="{{ route('home') }}"
                 class="inline-flex items-center justify-center w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all"
             >
                 {{ __('messages.btn_create_new') }}

@@ -18,16 +18,46 @@ Route::get('/how-it-works', [RedirectController::class, 'howItWorks']);
 Route::get('/use-cases', [RedirectController::class, 'useCases']);
 Route::get('/legal', [RedirectController::class, 'legal']);
 
+// Non-localized admin/superadmin redirects
+Route::get('/admin', [RedirectController::class, 'admin']);
+Route::get('/superadmin', [RedirectController::class, 'superadmin']);
+
 // SEO
 Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/sitemap.xsl', [SeoController::class, 'sitemapStylesheet']);
 
-// Localized public pages
+// Localized pages (public + admin + superadmin)
 Route::prefix('{locale}')
     ->where(['locale' => LocaleConfig::localePattern()])
     ->group(function () {
         Route::get('/', [SecretsController::class, 'create'])->name('home');
+
+        // Admin (user secrets management)
+        Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
+            ->middleware('throttle.captcha:3,10')
+            ->name('admin.requestAccess');
+        Route::get('/admin/verify/{token}', [AdminController::class, 'verify'])
+            ->middleware('throttle:5,1')
+            ->name('admin.verify');
+        Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+        Route::post('/admin/secrets/{id}/revoke', [AdminController::class, 'revoke'])->name('admin.revoke');
+        Route::post('/admin/secrets/{id}/extend', [AdminController::class, 'extend'])->name('admin.extend');
+
+        // Super Admin (global statistics)
+        Route::get('/superadmin', [SuperAdminController::class, 'index'])->name('superadmin.index');
+        Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
+            ->middleware('throttle.captcha:3,10')
+            ->name('superadmin.requestAccess');
+        Route::get('/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
+            ->middleware('throttle:5,1')
+            ->name('superadmin.verify');
+        Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+        Route::post('/superadmin/logout', [SuperAdminController::class, 'logout'])->name('superadmin.logout');
+
+        // Catch-all for localized pages (must be last)
         Route::get('{pageSlug}', [LocalizedPagesController::class, 'show'])
             ->name('page.show');
     });
@@ -42,27 +72,3 @@ Route::get('/s/{token}/download', [SecretsController::class, 'download'])
 
 // Contact
 Route::get('/contact', [ContactController::class, 'email'])->name('contact.email');
-
-// Admin (user secrets management)
-Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
-Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
-    ->middleware('throttle.captcha:3,10')
-    ->name('admin.requestAccess');
-Route::get('/admin/verify/{token}', [AdminController::class, 'verify'])
-    ->middleware('throttle:5,1')
-    ->name('admin.verify');
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
-Route::post('/admin/secrets/{id}/revoke', [AdminController::class, 'revoke'])->name('admin.revoke');
-Route::post('/admin/secrets/{id}/extend', [AdminController::class, 'extend'])->name('admin.extend');
-
-// Super Admin (global statistics)
-Route::get('/superadmin', [SuperAdminController::class, 'index'])->name('superadmin.index');
-Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
-    ->middleware('throttle.captcha:3,10')
-    ->name('superadmin.requestAccess');
-Route::get('/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
-    ->middleware('throttle:5,1')
-    ->name('superadmin.verify');
-Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
-Route::post('/superadmin/logout', [SuperAdminController::class, 'logout'])->name('superadmin.logout');
