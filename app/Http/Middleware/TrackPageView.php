@@ -132,7 +132,7 @@ class TrackPageView
 
     private function getLocalHour(Request $request, \Carbon\Carbon $now): int
     {
-        $offsetMinutes = (int) $request->cookie('tz_offset', 0);
+        $offsetMinutes = (int) $request->cookie('tz_offset', '0');
         $localHour = ($now->hour - (int) ($offsetMinutes / 60)) % 24;
 
         return ($localHour + 24) % 24;
