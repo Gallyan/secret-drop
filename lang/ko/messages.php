@@ -256,7 +256,7 @@ return [
     'admin_not_found_title' => '비밀을 찾을 수 없음',
     'admin_not_found_description' => '이 비밀은 존재하지 않거나 삭제되었습니다.',
     'admin_dashboard_title' => '내 비밀',
-    'admin_secrets_count' => ':count개의 비밀',
+    'admin_secrets_count' => ':count개 비밀',
     'admin_logout' => '로그아웃',
     'admin_no_secrets' => '비밀 없음',
     'admin_no_secrets_description' => '이 이메일 주소로 만든 비밀이 없습니다.',
