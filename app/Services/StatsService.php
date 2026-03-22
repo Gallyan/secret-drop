@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -74,16 +75,18 @@ class StatsService
 
         $startDate = $days ? now()->subDays($days)->toDateString() : null;
 
-        $query = DB::table('stats_daily')->orderBy('date');
+        $query = DB::table('stats_daily')
+            ->select('metric', 'date', 'count')
+            ->orderBy('date');
 
         if ($startDate) {
             $query->where('date', '>=', $startDate);
         }
 
-        $stats = $query->get()
-            ->groupBy('metric')
-            ->map(fn ($items) => $items->pluck('count', 'date')->toArray())
-            ->toArray();
+        $stats = [];
+        foreach ($query->cursor() as $row) {
+            $stats[$row->metric][$row->date] = $row->count;
+        }
 
         $firstDate = $startDate ?? DB::table('stats_daily')->min('date') ?? now()->toDateString();
 
@@ -196,14 +199,16 @@ class StatsService
      */
     public function getCurrentDiskUsage(): int
     {
-        $disk = Storage::disk('secrets');
-        $files = $disk->allFiles();
-        $totalSize = 0;
+        return Cache::remember('disk_usage_secrets', 3600, function () {
+            $disk = Storage::disk('secrets');
+            $files = $disk->allFiles();
+            $totalSize = 0;
 
-        foreach ($files as $file) {
-            $totalSize += $disk->size($file);
-        }
+            foreach ($files as $file) {
+                $totalSize += $disk->size($file);
+            }
 
-        return $totalSize;
+            return $totalSize;
+        });
     }
 }

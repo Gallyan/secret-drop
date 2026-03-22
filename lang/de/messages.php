@@ -174,6 +174,16 @@ return [
     'how_cta' => 'Ein sicheres Geheimnis erstellen',
     'how_see_use_cases' => 'Anwendungsfälle entdecken',
 
+    // FAQ (structured data)
+    'faq_q1' => 'Wie verschlüsselt Secret Drop meine Daten?',
+    'faq_a1' => 'Ihr Browser erzeugt einen zufälligen Verschlüsselungsschlüssel und verschlüsselt Ihre Inhalte lokal mit AES-256-GCM über die Web Crypto API. Der Server empfängt und speichert nur verschlüsselte Daten.',
+    'faq_q2' => 'Kann der Server meine Geheimnisse lesen?',
+    'faq_a2' => 'Nein. Secret Drop verwendet eine Zero-Knowledge-Architektur. Der Entschlüsselungsschlüssel wird im URL-Fragment (nach #) platziert, das niemals an den Server gesendet wird.',
+    'faq_q3' => 'Brauche ich ein Konto, um Secret Drop zu nutzen?',
+    'faq_a3' => 'Nein. Keine Registrierung, kein Tracking. Ihre Geheimnisse sind anonym und können nicht mit Ihnen verknüpft werden.',
+    'faq_q4' => 'Was passiert, nachdem ein Geheimnis gelesen wurde?',
+    'faq_a4' => 'Geheimnisse können für einmalige Nutzung, begrenzte Ansichten oder automatisches Ablaufen konfiguriert werden. Nach Ablauf werden die Daten dauerhaft vom Server gelöscht.',
+
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',
     'use_cases_meta_description' => 'Entdecken Sie, wie Sie Secret Drop nutzen können: Passwortweitergabe, vertrauliche Dokumente, API-Schlüssel und mehr.',

@@ -48,4 +48,20 @@ class SeoController extends Controller
             ['Content-Type' => 'text/xsl']
         );
     }
+
+    public function securityTxt(): Response
+    {
+        $email = config('legal.contact_email', config('mail.from.address'));
+        $canonical = url('/.well-known/security.txt');
+        $expires = now()->addYear()->utc()->format('Y-m-d\TH:i:s\Z');
+
+        $content = <<<TXT
+            Contact: mailto:{$email}
+            Expires: {$expires}
+            Preferred-Languages: fr, en
+            Canonical: {$canonical}
+            TXT;
+
+        return response($content, 200, ['Content-Type' => 'text/plain']);
+    }
 }

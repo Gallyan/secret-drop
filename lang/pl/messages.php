@@ -174,6 +174,16 @@ return [
     'how_cta' => 'Utwórz bezpieczny sekret',
     'how_see_use_cases' => 'Odkryj przypadki użycia',
 
+    // FAQ (structured data)
+    'faq_q1' => 'Jak Secret Drop szyfruje moje dane?',
+    'faq_a1' => 'Twoja przeglądarka generuje losowy klucz szyfrowania i szyfruje zawartość lokalnie za pomocą AES-256-GCM przez Web Crypto API. Serwer otrzymuje i przechowuje tylko zaszyfrowane dane.',
+    'faq_q2' => 'Czy serwer może odczytać moje sekrety?',
+    'faq_a2' => 'Nie. Secret Drop wykorzystuje architekturę zero-knowledge. Klucz deszyfrujący znajduje się we fragmencie URL (po #), który nigdy nie jest wysyłany na serwer.',
+    'faq_q3' => 'Czy potrzebuję konta, aby korzystać z Secret Drop?',
+    'faq_a3' => 'Nie. Bez rejestracji, bez śledzenia. Twoje sekrety są anonimowe i nie mogą być z Tobą powiązane.',
+    'faq_q4' => 'Co dzieje się po odczytaniu sekretu?',
+    'faq_a4' => 'Sekrety mogą być skonfigurowane do jednorazowego użycia, ograniczonej liczby wyświetleń lub automatycznego wygaśnięcia. Po wykorzystaniu lub wygaśnięciu dane są trwale usuwane z serwera.',
+
     // Use cases page
     'use_cases_title' => 'Przypadki użycia',
     'use_cases_meta_description' => 'Odkryj, jak używać Secret Drop: udostępnianie haseł, poufne dokumenty, klucze API i więcej.',

@@ -174,6 +174,16 @@ return [
     'how_cta' => 'Create a secure secret',
     'how_see_use_cases' => 'Discover use cases',
 
+    // FAQ (structured data)
+    'faq_q1' => 'How does Secret Drop encrypt my data?',
+    'faq_a1' => 'Your browser generates a random encryption key and encrypts your content locally using AES-256-GCM via the Web Crypto API. The server only receives and stores encrypted data — it never sees the plaintext.',
+    'faq_q2' => 'Can the server read my secrets?',
+    'faq_a2' => 'No. Secret Drop uses a zero-knowledge architecture. The decryption key is placed in the URL fragment (after #), which is never sent to the server.',
+    'faq_q3' => 'Do I need an account to use Secret Drop?',
+    'faq_a3' => 'No. No registration, no tracking. Your secrets are anonymous and cannot be linked to you.',
+    'faq_q4' => 'What happens after a secret is read?',
+    'faq_a4' => 'Secrets can be configured for single-use, limited views, or automatic expiration. Once expired or consumed, the data is permanently deleted from the server.',
+
     // Use cases page
     'use_cases_title' => 'Use cases',
     'use_cases_meta_description' => 'Discover how to use Secret Drop: password sharing, confidential documents, API keys, and more.',

@@ -262,6 +262,13 @@
                     </div>
                 @endforeach
             </div>
+
+            {{-- Pagination --}}
+            @if($secrets->hasPages())
+                <div class="mt-6">
+                    {{ $secrets->links() }}
+                </div>
+            @endif
         @endif
 
         {{-- Create new link --}}

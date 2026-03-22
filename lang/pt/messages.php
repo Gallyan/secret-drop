@@ -174,6 +174,16 @@ return [
     'how_cta' => 'Criar um segredo seguro',
     'how_see_use_cases' => 'Descobrir casos de uso',
 
+    // FAQ (structured data)
+    'faq_q1' => 'Como o Secret Drop criptografa meus dados?',
+    'faq_a1' => 'Seu navegador gera uma chave de criptografia aleatória e criptografa seu conteúdo localmente com AES-256-GCM via Web Crypto API. O servidor só recebe e armazena dados criptografados.',
+    'faq_q2' => 'O servidor pode ler meus segredos?',
+    'faq_a2' => 'Não. O Secret Drop utiliza uma arquitetura de conhecimento zero. A chave de descriptografia é colocada no fragmento da URL (após #), que nunca é enviado ao servidor.',
+    'faq_q3' => 'Preciso de uma conta para usar o Secret Drop?',
+    'faq_a3' => 'Não. Sem registro, sem rastreamento. Seus segredos são anônimos e não podem ser vinculados a você.',
+    'faq_q4' => 'O que acontece depois que um segredo é lido?',
+    'faq_a4' => 'Os segredos podem ser configurados para uso único, visualizações limitadas ou expiração automática. Os dados são permanentemente excluídos do servidor.',
+
     // Use cases page
     'use_cases_title' => 'Casos de uso',
     'use_cases_meta_description' => 'Descubra como usar o Secret Drop: compartilhamento de senhas, documentos confidenciais, chaves de API e mais.',

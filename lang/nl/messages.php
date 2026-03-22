@@ -33,7 +33,7 @@ return [
     'tab_file' => 'Bestand',
 
     // Form placeholders
-    'secret_placeholder' => 'Voer uw vertrouwelijk bericht in...',
+    'secret_placeholder' => 'Voer uw vertrouwelijke bericht in...',
     'max_reads_placeholder' => 'Onbeperkt',
 
     // Expiration options
@@ -173,6 +173,16 @@ return [
     'how_feature4_desc' => 'Geheimen verlopen automatisch en kunnen worden beperkt tot één lezing. Gegevens worden permanent verwijderd.',
     'how_cta' => 'Een veilig geheim maken',
     'how_see_use_cases' => 'Toepassingen ontdekken',
+
+    // FAQ (structured data)
+    'faq_q1' => 'Hoe versleutelt Secret Drop mijn gegevens?',
+    'faq_a1' => 'Uw browser genereert een willekeurige versleutelingssleutel en versleutelt uw inhoud lokaal met AES-256-GCM via de Web Crypto API. De server ontvangt en slaat alleen versleutelde gegevens op.',
+    'faq_q2' => 'Kan de server mijn geheimen lezen?',
+    'faq_a2' => 'Nee. Secret Drop gebruikt een zero-knowledge-architectuur. De ontsleutelingssleutel wordt in het URL-fragment (na #) geplaatst, dat nooit naar de server wordt gestuurd.',
+    'faq_q3' => 'Heb ik een account nodig om Secret Drop te gebruiken?',
+    'faq_a3' => 'Nee. Geen registratie, geen tracking. Uw geheimen zijn anoniem en kunnen niet aan u worden gekoppeld.',
+    'faq_q4' => 'Wat gebeurt er nadat een geheim is gelezen?',
+    'faq_a4' => 'Geheimen kunnen worden ingesteld voor eenmalig gebruik, beperkte weergaven of automatische vervaldatum. Na gebruik of verval worden de gegevens permanent van de server verwijderd.',
 
     // Use cases page
     'use_cases_title' => 'Toepassingen',

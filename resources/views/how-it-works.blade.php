@@ -23,6 +23,46 @@
     ]
 }
 </script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
+    "@@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q1') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a1') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q2') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a2') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q3') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a3') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q4') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a4') }}"
+            }
+        }
+    ]
+}
+</script>
 @endpush
 
 @section('content')

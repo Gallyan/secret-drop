@@ -96,7 +96,7 @@ class AdminController extends Controller
 
         $secrets = Secret::where('creator_email_hash', $emailHash)
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate(20);
 
         return view('admin.dashboard', ['secrets' => $secrets]);
     }

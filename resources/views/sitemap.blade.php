@@ -15,6 +15,10 @@
     <xhtml:link rel="alternate" hreflang="{{ $altLocale }}" href="{{ route('home', ['locale' => $altLocale]) }}" />
 @endforeach
     <xhtml:link rel="alternate" hreflang="x-default" href="{{ route('home', ['locale' => App\Support\LocaleConfig::DEFAULT_LOCALE]) }}" />
+    <image:image>
+      <image:loc>{{ url('/og-image.png') }}</image:loc>
+      <image:title>{{ config('app.name') }}</image:title>
+    </image:image>
   </url>
 @endforeach
 @foreach($pages as $page)
