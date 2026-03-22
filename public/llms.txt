@@ -2,6 +2,8 @@
 
 > Zero-knowledge secret sharing application
 
+For full documentation, see: /llms-full.txt
+
 Secret Drop allows users to securely share secrets (text or files) with end-to-end encryption. The server never sees plaintext data.
 
 ## How it works
