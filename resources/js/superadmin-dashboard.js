@@ -1,6 +1,11 @@
 import Chart from 'chart.js/auto';
 
+const chartInstances = [];
+
 function initDashboard() {
+    chartInstances.forEach(c => c.destroy());
+    chartInstances.length = 0;
+
     const data = window.superAdminData;
     if (!data) {
         console.error('superAdminData not found');
@@ -38,7 +43,7 @@ function initDashboard() {
     }
 
     // Secrets Created Chart
-    new Chart(document.getElementById('secretsCreatedChart'), {
+    chartInstances.push(new Chart(document.getElementById('secretsCreatedChart'), {
         type: 'line',
         data: {
             labels: dateLabels,
@@ -69,10 +74,10 @@ function initDashboard() {
                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
-    });
+    }));
 
     // Secrets Read Chart
-    new Chart(document.getElementById('secretsReadChart'), {
+    chartInstances.push(new Chart(document.getElementById('secretsReadChart'), {
         type: 'line',
         data: {
             labels: dateLabels,
@@ -93,10 +98,10 @@ function initDashboard() {
                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
-    });
+    }));
 
     // Secret Types Chart
-    new Chart(document.getElementById('secretTypesChart'), {
+    chartInstances.push(new Chart(document.getElementById('secretTypesChart'), {
         type: 'doughnut',
         data: {
             labels: [translations.stat_text, translations.stat_file],
@@ -109,10 +114,10 @@ function initDashboard() {
             responsive: true,
             plugins: { legend: { position: 'bottom' } }
         }
-    });
+    }));
 
     // Secret Options Chart
-    new Chart(document.getElementById('secretOptionsChart'), {
+    chartInstances.push(new Chart(document.getElementById('secretOptionsChart'), {
         type: 'bar',
         data: {
             labels: [
@@ -136,10 +141,10 @@ function initDashboard() {
                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
-    });
+    }));
 
     // Secret Outcomes Chart
-    new Chart(document.getElementById('secretOutcomesChart'), {
+    chartInstances.push(new Chart(document.getElementById('secretOutcomesChart'), {
         type: 'doughnut',
         data: {
             labels: [
@@ -162,10 +167,10 @@ function initDashboard() {
             responsive: true,
             plugins: { legend: { position: 'bottom' } }
         }
-    });
+    }));
 
     // Admin Activity Chart
-    new Chart(document.getElementById('adminActivityChart'), {
+    chartInstances.push(new Chart(document.getElementById('adminActivityChart'), {
         type: 'line',
         data: {
             labels: dateLabels,
@@ -198,7 +203,7 @@ function initDashboard() {
                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
-    });
+    }));
 
     // Heatmaps (hours as rows, days as columns)
     // Days reordered to start with Monday (data uses JS convention: 0=Sunday)
@@ -213,6 +218,12 @@ function initDashboard() {
         const dayOrder = [1, 2, 3, 4, 5, 6, 0];
         const allDays = translations.days || ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         const days = dayOrder.map(i => allDays[i]);
+
+        function esc(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
 
         let maxValue = 0;
         for (let day = 0; day < 7; day++) {
@@ -238,7 +249,7 @@ function initDashboard() {
         // Header row with day names (Monday first)
         html += '<tr><td class="w-8"></td>';
         for (let i = 0; i < 7; i++) {
-            html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${days[i]}</td>`;
+            html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${esc(days[i])}</td>`;
         }
         html += '</tr>';
 
@@ -249,7 +260,7 @@ function initDashboard() {
                 const dataIndex = dayOrder[i];
                 const val = heatmapData[dataIndex]?.[hour] || 0;
                 const intensityClass = getIntensityClass(val, maxValue, color);
-                const title = `${days[i]} ${hour}h: ${val}`;
+                const title = `${esc(days[i])} ${hour}h: ${val}`;
 
                 html += `<td class="p-0.5">`;
                 html += `<div class="h-5 rounded-sm flex items-center justify-center text-[10px] ${intensityClass}" title="${title}">`;

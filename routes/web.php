@@ -26,6 +26,7 @@ Route::get('/superadmin', [RedirectController::class, 'superadmin']);
 Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/sitemap.xsl', [SeoController::class, 'sitemapStylesheet']);
+Route::get('/.well-known/security.txt', [SeoController::class, 'securityTxt']);
 
 // Localized pages (public + admin + superadmin)
 Route::prefix('{locale}')

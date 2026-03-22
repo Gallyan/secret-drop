@@ -1,5 +1,3 @@
-import QRCode from 'qrcode';
-
 function t(key) {
     return window.translations?.[key] || key;
 }
@@ -391,6 +389,7 @@ export default () => ({
                         ? `${this.shareUrl}#${this.shareKey}`
                         : this.shareUrl;
 
+                    const { default: QRCode } = await import('qrcode');
                     this.qrCodeDataUrl = await QRCode.toDataURL(fullUrl, {
                         width: 256,
                         margin: 2,
