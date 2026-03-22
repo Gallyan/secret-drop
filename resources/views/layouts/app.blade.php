@@ -148,7 +148,11 @@
     <footer class="fixed bottom-0 inset-x-0 z-30 py-3 text-sm text-gray-500 dark:text-slate-400 transition-colors backdrop-blur-sm bg-white/30 dark:bg-slate-900/30">
         {{-- Desktop: inline links --}}
         <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="hidden sm:flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
-            <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">{{ config('app.name') }}</a></span>
+            <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+            <span aria-hidden="true">·</span>
+            <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                {{ config('app.name') }}
+            </a>
             <span aria-hidden="true">·</span>
             <a href="{{ localized_route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                 {{ __('messages.footer_how_it_works') }}
@@ -169,7 +173,7 @@
 
         {{-- Mobile: copyright + 3 icon buttons --}}
         <div class="sm:hidden flex flex-col items-center gap-2">
-            <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">{{ config('app.name') }}</a></span>
+            <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
             <div class="flex items-center gap-3">
                 <x-footer-menu />
                 <x-language-switcher />
