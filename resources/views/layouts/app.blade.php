@@ -130,7 +130,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
-    <div class="fixed top-4 end-4 z-50 flex items-center gap-2">
+    <div class="absolute top-4 end-4 z-50 flex items-center gap-2">
         <x-language-switcher />
         <x-theme-toggle />
     </div>
