@@ -99,6 +99,62 @@
                 "@@type": "Answer",
                 "text": "{{ __('messages.faq_a4') }}"
             }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q5') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a5') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q6') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a6') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q7') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a7') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q8') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a8') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q9') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a9') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q10') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a10') }}"
+            }
+        },
+        {
+            "@@type": "Question",
+            "name": "{{ __('messages.faq_q11') }}",
+            "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "{{ __('messages.faq_a11') }}"
+            }
         }
     ]
 }
@@ -306,7 +362,7 @@
                 </h2>
 
                 <dl class="space-y-4">
-                    @foreach(range(1, 4) as $i)
+                    @foreach(range(1, 11) as $i)
                     <div class="p-4 bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-slate-600/30 rounded-xl">
                         <dt class="font-medium text-gray-900 dark:text-white mb-2">{{ __("messages.faq_q{$i}") }}</dt>
                         <dd class="text-sm text-gray-600 dark:text-slate-400">{{ __("messages.faq_a{$i}") }}</dd>
