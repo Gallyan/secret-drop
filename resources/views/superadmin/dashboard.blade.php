@@ -139,11 +139,13 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_heatmap_created') }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_created') }}</h2>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 <div id="heatmapCreated" class="heatmap-container"></div>
             </div>
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_heatmap_read') }}</h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_read') }}</h2>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 <div id="heatmapRead" class="heatmap-container"></div>
             </div>
         </div>
@@ -228,7 +230,8 @@
 
             {{-- By hour --}}
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_hour') }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_hour') }}</h3>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 @php
                     $maxHour = max(1, max($pageviews['by_hour']));
                     $barMaxPx = 96;
