@@ -78,7 +78,7 @@
 
 /* Space for fixed footer on all pages */
 main > * {
-    padding-bottom: 5rem;
+    padding-bottom: 7rem;
 }
 
 /* Email obfuscation - hides real text, displays via CSS */
@@ -112,6 +112,20 @@ main > * {
 @keyframes twinkle {
     from { opacity: 0.35; transform: scale(0.85); }
     to { opacity: 1; transform: scale(1.2); }
+}
+
+/* Footer menu backdrop */
+.footer-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.footer-menu-backdrop.active {
+    opacity: 1;
 }
 
 /* Command palette */

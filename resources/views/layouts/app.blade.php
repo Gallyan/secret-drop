@@ -131,7 +131,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
-    <div class="absolute top-4 end-4 z-50 flex items-center gap-2">
+    {{-- Desktop: top-right --}}
+    <div class="hidden sm:flex absolute top-4 end-4 z-50 items-center gap-2">
         <x-language-switcher />
         <x-theme-toggle />
     </div>
@@ -140,8 +141,9 @@
         @yield('content')
     </main>
 
-    <footer class="fixed bottom-0 inset-x-0 z-30 py-3 text-center text-sm text-gray-500 dark:text-slate-400 transition-colors backdrop-blur-sm bg-white/30 dark:bg-slate-900/30">
-        <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
+    <footer class="fixed bottom-0 inset-x-0 z-30 py-3 text-sm text-gray-500 dark:text-slate-400 transition-colors backdrop-blur-sm bg-white/30 dark:bg-slate-900/30">
+        {{-- Desktop: inline links --}}
+        <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="hidden sm:flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
             <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">{{ config('app.name') }}</a></span>
             <span aria-hidden="true">·</span>
             <a href="{{ localized_route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
@@ -160,6 +162,16 @@
                 {{ __('messages.footer_legal') }}
             </a>
         </nav>
+
+        {{-- Mobile: copyright + 3 icon buttons --}}
+        <div class="sm:hidden flex flex-col items-center gap-2">
+            <span>&copy; {{ date('Y') }} <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 transition-colors">{{ config('app.name') }}</a></span>
+            <div class="flex items-center gap-3">
+                <x-footer-menu />
+                <x-language-switcher />
+                <x-theme-toggle />
+            </div>
+        </div>
     </footer>
 </body>
 </html>
