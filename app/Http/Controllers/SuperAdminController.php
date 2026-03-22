@@ -42,7 +42,7 @@ class SuperAdminController extends Controller
             MagicLink::create([
                 'email_hash' => 'superadmin',
                 'token_hash' => $tokenData['hash'],
-                'expire_at' => now()->addMinutes(5),
+                'expire_at' => now()->addMinutes(10),
             ]);
 
             $url = route('superadmin.verify', ['token' => $tokenData['token']]);

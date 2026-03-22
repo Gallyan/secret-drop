@@ -21,7 +21,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
@@ -47,7 +47,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
@@ -75,7 +75,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encryptedcontent',
@@ -102,11 +102,11 @@ class ShowSecretTest extends TestCase
         $response->assertJson(['error' => 'not_found']);
     }
 
-    public function testApiFetchReturns410ForExpiredSecret(): void
+    public function testApiFetchReturns404ForExpiredSecret(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'expired',
@@ -115,20 +115,17 @@ class ShowSecretTest extends TestCase
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
 
-        $response->assertStatus(410);
-        $response->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'expired',
-        ]);
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
 
         $secret->delete();
     }
 
-    public function testApiFetchReturns410ForRevokedSecret(): void
+    public function testApiFetchReturns404ForRevokedSecret(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'revoked',
@@ -138,20 +135,17 @@ class ShowSecretTest extends TestCase
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
 
-        $response->assertStatus(410);
-        $response->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'revoked',
-        ]);
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
 
         $secret->delete();
     }
 
-    public function testApiFetchReturns410WhenMaxViewsReached(): void
+    public function testApiFetchReturns404WhenMaxViewsReached(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'maxviews',
@@ -162,11 +156,8 @@ class ShowSecretTest extends TestCase
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
 
-        $response->assertStatus(410);
-        $response->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'max_views',
-        ]);
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
 
         $secret->delete();
     }
@@ -175,7 +166,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'counting',
@@ -197,7 +188,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'counting',
@@ -219,7 +210,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'singleuse',
@@ -234,7 +225,7 @@ class ShowSecretTest extends TestCase
         $this->postJson("/api/secrets/{$secret->token}/read");
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
-        $response->assertStatus(410);
+        $response->assertStatus(404);
 
         $secret->delete();
     }
@@ -247,11 +238,11 @@ class ShowSecretTest extends TestCase
         $response->assertJson(['error' => 'not_found']);
     }
 
-    public function testApiConfirmReadReturns410ForExpiredSecret(): void
+    public function testApiConfirmReadReturns404ForExpiredSecret(): void
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'expired',
@@ -260,11 +251,8 @@ class ShowSecretTest extends TestCase
 
         $response = $this->postJson("/api/secrets/{$secret->token}/read");
 
-        $response->assertStatus(410);
-        $response->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'expired',
-        ]);
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
 
         $secret->delete();
     }
@@ -273,7 +261,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'topsecretdata',
@@ -297,7 +285,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'limitedviewsdata',
@@ -320,7 +308,7 @@ class ShowSecretTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'secrets/test',
@@ -351,7 +339,7 @@ class ShowSecretTest extends TestCase
 
         $secret = Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $filePath,
@@ -370,16 +358,17 @@ class ShowSecretTest extends TestCase
 
     public function testRevokeSecretDeletesCiphertextAndMarksRevoked(): void
     {
+        $adminToken = bin2hex(random_bytes(16));
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => hash('sha256', $adminToken),
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
             'expire_at' => now()->addDay(),
         ]);
 
-        $response = $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+        $response = $this->postJson("/api/secrets/{$adminToken}/revoke");
 
         $response->assertStatus(200);
         $response->assertJson(['success' => true]);
@@ -397,12 +386,13 @@ class ShowSecretTest extends TestCase
 
         $token = $this->tokenService->generatePublicToken();
         $filePath = $token;
+        $adminToken = bin2hex(random_bytes(16));
 
         Storage::disk('secrets')->put($filePath, 'encrypted-file-content');
 
         $secret = Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => hash('sha256', $adminToken),
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $filePath,
@@ -411,7 +401,7 @@ class ShowSecretTest extends TestCase
 
         Storage::disk('secrets')->assertExists($filePath);
 
-        $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+        $this->postJson("/api/secrets/{$adminToken}/revoke");
 
         Storage::disk('secrets')->assertMissing($filePath);
 
@@ -431,9 +421,10 @@ class ShowSecretTest extends TestCase
 
     public function testRevokeReturns409ForAlreadyRevokedSecret(): void
     {
+        $adminToken = bin2hex(random_bytes(16));
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => hash('sha256', $adminToken),
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
@@ -441,7 +432,7 @@ class ShowSecretTest extends TestCase
             'revoked_at' => now(),
         ]);
 
-        $response = $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+        $response = $this->postJson("/api/secrets/{$adminToken}/revoke");
 
         $response->assertStatus(409);
         $response->assertJson(['error' => 'already_revoked']);
@@ -451,24 +442,22 @@ class ShowSecretTest extends TestCase
 
     public function testRevokedSecretIsInaccessible(): void
     {
+        $adminToken = bin2hex(random_bytes(16));
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => hash('sha256', $adminToken),
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'secretdata',
             'expire_at' => now()->addDay(),
         ]);
 
-        $this->postJson("/api/secrets/{$secret->admin_token}/revoke");
+        $this->postJson("/api/secrets/{$adminToken}/revoke");
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
 
-        $response->assertStatus(410);
-        $response->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'revoked',
-        ]);
+        $response->assertStatus(404);
+        $response->assertJson(['error' => 'not_found']);
 
         $secret->delete();
     }

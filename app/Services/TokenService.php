@@ -16,12 +16,19 @@ class TokenService
     }
 
     /**
-     * Generate a secure admin token for admin URLs.
-     * Format: 32 hex characters (128 bits of entropy)
+     * Generate a secure admin token and its hash.
+     * The plain token is returned to the client, only the hash is stored.
+     *
+     * @return array{token: string, hash: string}
      */
-    public function generateAdminToken(): string
+    public function generateAdminToken(): array
     {
-        return bin2hex(random_bytes(self::TOKEN_BYTES));
+        $token = bin2hex(random_bytes(self::TOKEN_BYTES));
+
+        return [
+            'token' => $token,
+            'hash' => $this->hashToken($token),
+        ];
     }
 
     /**

@@ -44,14 +44,14 @@ class StoreSecretRequest extends FormRequest
 
             // Common
             'cipher_meta' => ['required', 'array'],
-            'cipher_meta.alg' => ['required', 'string'],
+            'cipher_meta.alg' => ['required', 'in:AES-256-GCM'],
             'cipher_meta.iv' => ['required', 'string'],
             'cipher_meta.version' => ['required', 'integer', 'min:1'],
             'cipher_meta.salt' => ['nullable', 'string'],
             'cipher_meta.iv2' => ['nullable', 'string'],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
-            'expiration' => ['required', 'in:1h,1d,7d,30d'],
+            'expiration' => ['required', 'in:1h,1d,7d,30d,90d'],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],

@@ -20,7 +20,7 @@ class SecretModelTest extends TestCase
     {
         return Secret::create(array_merge([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'encrypted',

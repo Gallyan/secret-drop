@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/secrets', [SecretsController::class, 'store'])
     ->middleware('throttle.captcha:10,1'); // 10 per minute
 
-Route::middleware(['throttle:60,1', 'no.cache'])->group(function () {
+Route::middleware(['throttle:20,1', 'no.cache'])->group(function () {
     Route::get('/secrets/{token}', [SecretsController::class, 'fetch']);
     Route::post('/secrets/{token}/read', [SecretsController::class, 'confirmRead']);
 });

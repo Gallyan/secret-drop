@@ -64,10 +64,10 @@ Route::prefix('{locale}')
 
 // Secrets
 Route::get('/s/{token}', [SecretsController::class, 'show'])
-    ->middleware('no.cache')
+    ->middleware(['throttle:30,1', 'no.cache'])
     ->name('secrets.show');
 Route::get('/s/{token}/download', [SecretsController::class, 'download'])
-    ->middleware(['throttle:60,1', 'no.cache'])
+    ->middleware(['throttle:30,1', 'no.cache'])
     ->name('secrets.download');
 
 // Contact

@@ -18,7 +18,7 @@ class SecretFactory extends Factory
     {
         return [
             'token' => Str::random(32),
-            'admin_token' => Str::random(32),
+            'admin_token_hash' => hash('sha256', Str::random(32)),
             'type' => 'text',
             'cipher_meta' => [
                 'v' => 1,

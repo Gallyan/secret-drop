@@ -26,7 +26,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $expiredSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'expired',
@@ -35,7 +35,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
 
         $validSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'valid',
@@ -55,7 +55,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $revokedSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'revoked',
@@ -73,7 +73,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $maxViewsSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'maxviews',
@@ -92,7 +92,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $singleUseSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'singleuse',
@@ -115,7 +115,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
 
         $fileSecret = Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
@@ -135,7 +135,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $expiredSecret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'dryrun',

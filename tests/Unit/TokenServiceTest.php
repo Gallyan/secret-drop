@@ -44,19 +44,23 @@ class TokenServiceTest extends TestCase
     }
 
     #[Test]
-    public function adminTokenHasCorrectLength(): void
+    public function adminTokenReturnsTokenAndHash(): void
     {
-        $token = $this->tokenService->generateAdminToken();
+        $result = $this->tokenService->generateAdminToken();
 
-        $this->assertSame(32, strlen($token));
+        $this->assertArrayHasKey('token', $result);
+        $this->assertArrayHasKey('hash', $result);
+        $this->assertSame(32, strlen($result['token']));
+        $this->assertSame(64, strlen($result['hash']));
     }
 
     #[Test]
     public function adminTokenIsHexadecimal(): void
     {
-        $token = $this->tokenService->generateAdminToken();
+        $result = $this->tokenService->generateAdminToken();
 
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $token);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $result['token']);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['hash']);
     }
 
     #[Test]

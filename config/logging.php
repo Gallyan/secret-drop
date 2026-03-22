@@ -83,6 +83,7 @@ return [
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
+            'processors' => [SanitizeProcessor::class],
         ],
 
         'papertrail' => [
@@ -94,7 +95,7 @@ return [
                 'port' => env('PAPERTRAIL_PORT'),
                 'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
             ],
-            'processors' => [PsrLogMessageProcessor::class],
+            'processors' => [SanitizeProcessor::class, PsrLogMessageProcessor::class],
         ],
 
         'stderr' => [
@@ -105,7 +106,7 @@ return [
                 'stream' => 'php://stderr',
             ],
             'formatter' => env('LOG_STDERR_FORMATTER'),
-            'processors' => [PsrLogMessageProcessor::class],
+            'processors' => [SanitizeProcessor::class, PsrLogMessageProcessor::class],
         ],
 
         'syslog' => [
@@ -113,12 +114,14 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
             'replace_placeholders' => true,
+            'processors' => [SanitizeProcessor::class],
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'processors' => [SanitizeProcessor::class],
         ],
 
         'null' => [

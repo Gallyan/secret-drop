@@ -51,7 +51,7 @@ class AdminController extends Controller
         MagicLink::create([
             'email_hash' => $emailHash,
             'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
+            'expire_at' => now()->addMinutes(10),
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);

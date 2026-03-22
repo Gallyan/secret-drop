@@ -240,7 +240,7 @@ class AdminControllerTest extends TestCase
     {
         return Secret::create([
             'token' => bin2hex(random_bytes(16)),
-            'admin_token' => bin2hex(random_bytes(16)),
+            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
             'ciphertext' => 'encrypted',

@@ -108,7 +108,7 @@ class DownloadSecurityTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'ciphertext' => 'not_a_file',
@@ -130,7 +130,7 @@ class DownloadSecurityTest extends TestCase
 
         $secret = Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
@@ -152,7 +152,7 @@ class DownloadSecurityTest extends TestCase
 
         $secret = Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
@@ -171,7 +171,7 @@ class DownloadSecurityTest extends TestCase
     {
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'nonexistent_path',
@@ -193,7 +193,7 @@ class DownloadSecurityTest extends TestCase
 
         return Secret::create([
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,

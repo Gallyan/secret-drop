@@ -95,13 +95,10 @@ class ExpirationTest extends TestCase
             'expire_at' => now()->subMinute(),
         ]);
 
-        // Verify it's no longer accessible
+        // Verify it's no longer accessible (uniform 404 to prevent enumeration)
         $expiredResponse = $this->getJson("/api/secrets/{$token}");
-        $expiredResponse->assertStatus(410);
-        $expiredResponse->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'expired',
-        ]);
+        $expiredResponse->assertStatus(404);
+        $expiredResponse->assertJson(['error' => 'not_found']);
 
         // Cleanup
         Secret::where('token', $token)->delete();
@@ -118,13 +115,10 @@ class ExpirationTest extends TestCase
             'expire_at' => now()->subMinute(),
         ]);
 
-        // Try to confirm read on expired secret
+        // Try to confirm read on expired secret (uniform 404)
         $readResponse = $this->postJson("/api/secrets/{$token}/read");
-        $readResponse->assertStatus(410);
-        $readResponse->assertJson([
-            'error' => 'unavailable',
-            'reason' => 'expired',
-        ]);
+        $readResponse->assertStatus(404);
+        $readResponse->assertJson(['error' => 'not_found']);
 
         // Cleanup
         Secret::where('token', $token)->delete();

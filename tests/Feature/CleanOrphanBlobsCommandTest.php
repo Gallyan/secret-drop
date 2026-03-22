@@ -49,7 +49,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
         Secret::create([
             'token' => $token,
-            'admin_token' => bin2hex(random_bytes(16)),
+            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
             'file_path' => $filePath,
@@ -75,7 +75,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
         Secret::create([
             'token' => $validToken,
-            'admin_token' => bin2hex(random_bytes(16)),
+            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
             'file_path' => $validPath,

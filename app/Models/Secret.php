@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property string $id
  * @property string $token
- * @property string $admin_token
+ * @property string $admin_token_hash
  * @property string $type
  * @property array<string, mixed> $cipher_meta
  * @property string|null $ciphertext
@@ -33,7 +33,7 @@ class Secret extends Model
 
     protected $fillable = [
         'token',
-        'admin_token',
+        'admin_token_hash',
         'type',
         'cipher_meta',
         'ciphertext',

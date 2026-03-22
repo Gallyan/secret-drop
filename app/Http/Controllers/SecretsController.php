@@ -9,6 +9,7 @@ use App\Services\StatsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -34,10 +35,11 @@ class SecretsController extends Controller
         $token = $this->tokenService->generatePublicToken();
 
         $creatorEmail = $validated['creator_email'] ?? null;
+        $adminTokenData = $this->tokenService->generateAdminToken();
 
         $secretData = [
             'token' => $token,
-            'admin_token' => $this->tokenService->generateAdminToken(),
+            'admin_token_hash' => $adminTokenData['hash'],
             'type' => $validated['type'],
             'cipher_meta' => $validated['cipher_meta'],
             'max_views' => $validated['max_views'] ?? null,
@@ -104,15 +106,8 @@ class SecretsController extends Controller
     {
         $secret = Secret::where('token', $token)->first();
 
-        if (! $secret) {
+        if (! $secret || ! $secret->isAccessible()) {
             return response()->json(['error' => 'not_found'], 404);
-        }
-
-        if (! $secret->isAccessible()) {
-            return response()->json([
-                'error' => 'unavailable',
-                'reason' => $this->getInaccessibleReason($secret),
-            ], 410);
         }
 
         $willBeDestroyed = $secret->max_views !== null
@@ -134,43 +129,38 @@ class SecretsController extends Controller
 
     public function confirmRead(string $token): JsonResponse
     {
-        $secret = Secret::where('token', $token)->first();
+        return DB::transaction(function () use ($token) {
+            $secret = Secret::where('token', $token)->lockForUpdate()->first();
 
-        if (! $secret) {
-            return response()->json(['error' => 'not_found'], 404);
-        }
-
-        if (! $secret->isAccessible()) {
-            return response()->json([
-                'error' => 'unavailable',
-                'reason' => $this->getInaccessibleReason($secret),
-            ], 410);
-        }
-
-        $isFirstRead = $secret->first_read_at === null;
-        $createdAt = $secret->created_at;
-
-        $secret->incrementReadCount();
-        $this->stats->increment(StatsService::SECRETS_READ);
-        $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_READ);
-
-        if ($isFirstRead) {
-            $delaySeconds = (int) $createdAt->diffInSeconds(now());
-            $this->stats->trackFirstReadDelay($delaySeconds);
-        }
-
-        if ($secret->shouldBeDestroyed()) {
-            if ($secret->type === 'file' && $secret->file_path) {
-                $this->storage->delete($secret->file_path);
+            if (! $secret || ! $secret->isAccessible()) {
+                return response()->json(['error' => 'not_found'], 404);
             }
-            $secret->destroyContent();
 
-            if ($secret->hasReachedMaxViews()) {
-                $this->stats->increment(StatsService::SECRETS_MAX_VIEWS_REACHED);
+            $isFirstRead = $secret->first_read_at === null;
+            $createdAt = $secret->created_at;
+
+            $secret->incrementReadCount();
+            $this->stats->increment(StatsService::SECRETS_READ);
+            $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_READ);
+
+            if ($isFirstRead) {
+                $delaySeconds = (int) $createdAt->diffInSeconds(now());
+                $this->stats->trackFirstReadDelay($delaySeconds);
             }
-        }
 
-        return response()->json(['success' => true]);
+            if ($secret->shouldBeDestroyed()) {
+                if ($secret->type === 'file' && $secret->file_path) {
+                    $this->storage->delete($secret->file_path);
+                }
+                $secret->destroyContent();
+
+                if ($secret->hasReachedMaxViews()) {
+                    $this->stats->increment(StatsService::SECRETS_MAX_VIEWS_REACHED);
+                }
+            }
+
+            return response()->json(['success' => true]);
+        });
     }
 
     public function download(string $token): StreamedResponse|Response
@@ -194,7 +184,7 @@ class SecretsController extends Controller
 
     public function revoke(string $adminToken): JsonResponse
     {
-        $secret = Secret::where('admin_token', $adminToken)->first();
+        $secret = Secret::where('admin_token_hash', $this->tokenService->hashToken($adminToken))->first();
 
         if (! $secret) {
             return response()->json(['error' => 'not_found'], 404);
@@ -212,23 +202,6 @@ class SecretsController extends Controller
         $secret->destroyContent();
 
         return response()->json(['success' => true]);
-    }
-
-    private function getInaccessibleReason(Secret $secret): string
-    {
-        if ($secret->isRevoked()) {
-            return 'revoked';
-        }
-
-        if ($secret->isExpired()) {
-            return 'expired';
-        }
-
-        if ($secret->hasReachedMaxViews()) {
-            return 'max_views';
-        }
-
-        return 'unknown';
     }
 
     private function calculateExpireAt(string $expiration): \Carbon\Carbon

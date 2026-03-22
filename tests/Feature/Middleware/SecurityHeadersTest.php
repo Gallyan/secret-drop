@@ -31,7 +31,7 @@ class SecurityHeadersTest extends TestCase
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('SAMEORIGIN', $response->headers->get('X-Frame-Options'));
+        $this->assertEquals('DENY', $response->headers->get('X-Frame-Options'));
     }
 
     public function testDoesNotSetObsoleteXXssProtection(): void
@@ -49,7 +49,7 @@ class SecurityHeadersTest extends TestCase
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('strict-origin-when-cross-origin', $response->headers->get('Referrer-Policy'));
+        $this->assertEquals('no-referrer', $response->headers->get('Referrer-Policy'));
     }
 
     public function testSetsPermissionsPolicy(): void
@@ -58,7 +58,7 @@ class SecurityHeadersTest extends TestCase
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('camera=(), microphone=(), geolocation=()', $response->headers->get('Permissions-Policy'));
+        $this->assertEquals('camera=(), microphone=(), geolocation=(), payment=(), usb=()', $response->headers->get('Permissions-Policy'));
     }
 
     public function testSetsContentSecurityPolicy(): void
@@ -147,7 +147,7 @@ class SecurityHeadersTest extends TestCase
 
         $csp = $response->headers->get('Content-Security-Policy');
 
-        $this->assertStringContainsString("frame-ancestors 'self'", $csp);
+        $this->assertStringContainsString("frame-ancestors 'none'", $csp);
     }
 
     public function testCspBlocksFormActionToExternal(): void
