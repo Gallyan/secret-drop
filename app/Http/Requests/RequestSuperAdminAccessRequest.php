@@ -27,8 +27,8 @@ class RequestSuperAdminAccessRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'L\'adresse email est requise.',
-            'email.email' => 'L\'adresse email n\'est pas valide.',
+            'email.required' => __('messages.val_email_required'),
+            'email.email' => __('messages.val_email_invalid'),
         ];
     }
 }

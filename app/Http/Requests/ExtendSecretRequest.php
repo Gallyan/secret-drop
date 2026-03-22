@@ -27,10 +27,10 @@ class ExtendSecretRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'days.required' => 'Le nombre de jours est requis.',
-            'days.integer' => 'Le nombre de jours doit être un entier.',
-            'days.min' => 'Le nombre de jours doit être au moins 1.',
-            'days.max' => 'Le nombre de jours ne peut pas dépasser 30.',
+            'days.required' => __('messages.val_days_required'),
+            'days.integer' => __('messages.val_days_integer'),
+            'days.min' => __('messages.val_days_min'),
+            'days.max' => __('messages.val_days_max'),
         ];
     }
 }

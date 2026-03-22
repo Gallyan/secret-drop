@@ -64,21 +64,21 @@ class StoreSecretRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'type.required' => 'Le type de secret est requis.',
-            'type.in' => 'Le type doit être "text" ou "file".',
-            'ciphertext.required_if' => 'Le texte chiffré est requis pour un secret texte.',
-            'encrypted_file.required_if' => 'Le fichier chiffré est requis.',
-            'ciphertext.max' => 'Le texte ne doit pas dépasser 50 000 caractères.',
-            'encrypted_file.max' => 'Le fichier ne doit pas dépasser 10 Mo.',
-            'cipher_meta.required' => 'Les métadonnées de chiffrement sont requises.',
-            'cipher_meta.alg.required' => 'L\'algorithme de chiffrement est requis.',
-            'cipher_meta.iv.required' => 'Le vecteur d\'initialisation est requis.',
-            'cipher_meta.version.required' => 'La version du chiffrement est requise.',
-            'expiration.required' => 'La durée d\'expiration est requise.',
-            'expiration.in' => 'La durée d\'expiration est invalide.',
-            'max_views.min' => 'Le nombre de lectures doit être au moins 1.',
-            'max_views.max' => 'Le nombre de lectures ne peut pas dépasser 100.',
-            'creator_email.email' => 'L\'adresse email n\'est pas valide.',
+            'type.required' => __('messages.val_type_required'),
+            'type.in' => __('messages.val_type_in'),
+            'ciphertext.required_if' => __('messages.val_ciphertext_required'),
+            'encrypted_file.required_if' => __('messages.val_file_required'),
+            'ciphertext.max' => __('messages.val_ciphertext_max'),
+            'encrypted_file.max' => __('messages.val_file_max'),
+            'cipher_meta.required' => __('messages.val_cipher_meta_required'),
+            'cipher_meta.alg.required' => __('messages.val_cipher_alg_required'),
+            'cipher_meta.iv.required' => __('messages.val_cipher_iv_required'),
+            'cipher_meta.version.required' => __('messages.val_cipher_version_required'),
+            'expiration.required' => __('messages.val_expiration_required'),
+            'expiration.in' => __('messages.val_expiration_in'),
+            'max_views.min' => __('messages.val_max_views_min'),
+            'max_views.max' => __('messages.val_max_views_max'),
+            'creator_email.email' => __('messages.val_email_invalid'),
         ];
     }
 }
