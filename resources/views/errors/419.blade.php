@@ -1,8 +1,8 @@
 @extends('errors.layout')
 
 @section('code', '419')
-@section('title', 'Session expirée')
-@section('message', 'Votre session a expiré. Veuillez rafraîchir la page et réessayer.')
+@section('title', __('messages.error_419_title'))
+@section('message', __('messages.error_419_message'))
 
 @section('icon')
 <svg class="w-8 h-8 text-amber-400 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

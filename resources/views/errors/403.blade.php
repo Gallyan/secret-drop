@@ -1,8 +1,8 @@
 @extends('errors.layout')
 
 @section('code', '403')
-@section('title', 'Accès interdit')
-@section('message', 'Vous n\'avez pas l\'autorisation d\'accéder à cette ressource.')
+@section('title', __('messages.error_403_title'))
+@section('message', __('messages.error_403_message'))
 
 @section('icon')
 <svg class="w-8 h-8 text-red-400 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

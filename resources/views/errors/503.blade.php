@@ -1,8 +1,8 @@
 @extends('errors.layout')
 
 @section('code', '503')
-@section('title', 'Service indisponible')
-@section('message', 'Le service est temporairement indisponible pour maintenance. Veuillez réessayer dans quelques instants.')
+@section('title', __('messages.error_503_title'))
+@section('message', __('messages.error_503_message'))
 
 @section('icon')
 <svg class="w-8 h-8 text-amber-400 dark:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

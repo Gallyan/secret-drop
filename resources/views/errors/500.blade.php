@@ -1,8 +1,8 @@
 @extends('errors.layout')
 
 @section('code', '500')
-@section('title', 'Erreur serveur')
-@section('message', 'Une erreur interne s\'est produite. Veuillez réessayer plus tard.')
+@section('title', __('messages.error_server_title'))
+@section('message', __('messages.error_server_message'))
 
 @section('icon')
 <svg class="w-8 h-8 text-red-400 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
