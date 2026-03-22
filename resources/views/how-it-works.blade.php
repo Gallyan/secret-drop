@@ -4,7 +4,7 @@
 @section('description', __('messages.how_it_works_meta_description'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 transition-colors">
+<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 pb-16 overflow-x-hidden transition-colors">
     <div class="max-w-4xl mx-auto">
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 lg:p-12 transition-colors">
             {{-- Header --}}
@@ -199,7 +199,7 @@
 
             {{-- CTA --}}
             <div class="text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center justify-center py-3 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                <a href="{{ route('home') }}" class="inline-flex items-center justify-center py-3 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
                     {{ __('messages.how_cta') }}
                 </a>
                 <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">

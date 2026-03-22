@@ -4,7 +4,7 @@
 @section('title', __('messages.view_secret_title'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
+<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-2xl">
         <div
             x-data="secretViewer" data-token="{{ $token }}"
@@ -36,7 +36,7 @@
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <a
                         href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
+                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_create_new') }}
                     </a>
@@ -55,7 +55,7 @@
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <a
                         href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
+                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_create_new') }}
                     </a>
@@ -75,7 +75,7 @@
                     <button
                         type="button"
                         @click="reload()"
-                        class="inline-block py-2.5 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
+                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                     >
                         {{ __('messages.btn_retry') }}
                     </button>
@@ -85,7 +85,7 @@
                 <div x-show="!isLoading && !loadError" x-cloak>
                     {{-- Header --}}
                     <div class="text-center mb-8">
-                        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
+                        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
                             <template x-if="type === 'text'">
                                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -129,7 +129,7 @@
                         <button
                             type="button"
                             @click="confirmAndDecrypt()"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
+                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
                         >
                             {{ __('messages.btn_reveal_secret') }}
                         </button>
@@ -166,7 +166,7 @@
                             <button
                                 type="submit"
                                 :disabled="!manualKey.trim()"
-                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                                class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                             >
                                 {{ __('messages.btn_unlock') }}
                             </button>
@@ -203,7 +203,7 @@
                             <button
                                 type="submit"
                                 :disabled="isDecrypting || !passphrase.trim()"
-                                class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                                class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                             >
                                 <span x-show="!isDecrypting">{{ __('messages.btn_decrypt') }}</span>
                                 <span x-show="isDecrypting" role="status" class="inline-flex items-center justify-center gap-2">

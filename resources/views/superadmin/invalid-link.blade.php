@@ -4,7 +4,7 @@
 @section('title', __('messages.admin_invalid_link_title'))
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
+<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-md">
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 transition-colors text-center">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-100 dark:bg-red-500/10 mb-4" aria-hidden="true">
@@ -16,7 +16,7 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_invalid_link_title') }}</h1>
             <p class="text-gray-600 dark:text-slate-400 mb-6">{{ __('messages.admin_invalid_link_description') }}</p>
 
-            <a href="{{ route('superadmin.index') }}" class="inline-flex items-center justify-center w-full py-3 px-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-medium rounded-xl shadow-lg shadow-amber-500/25 transition-all">
+            <a href="{{ route('superadmin.index') }}" class="inline-flex items-center justify-center w-full py-3 px-4 bg-linear-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-medium rounded-xl shadow-lg shadow-amber-500/25 transition-all">
                 {{ __('messages.btn_retry') }}
             </a>
 
