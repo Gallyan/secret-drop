@@ -66,6 +66,23 @@
 <script type="application/ld+json" nonce="@nonce">
 {
     "@@context": "https://schema.org",
+    "@@type": "WebPage",
+    "name": "{{ __('messages.how_it_works_title') }}",
+    "description": "{{ __('messages.how_it_works_meta_description') }}",
+    "about": {
+        "@@type": "WebApplication",
+        "name": "{{ config('app.name') }}"
+    },
+    "isPartOf": {
+        "@@type": "WebSite",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}"
+    }
+}
+</script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
     "@@type": "FAQPage",
     "mainEntity": [
         {
