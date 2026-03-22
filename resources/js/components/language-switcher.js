@@ -2,6 +2,15 @@ export default () => ({
     isOpen: false,
     highlightedIndex: 0,
 
+    init() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const label = isMac ? '⌘K' : 'Ctrl+K';
+
+        this.$el.querySelectorAll('[data-shortcut-label]').forEach(el => {
+            el.textContent = label;
+        });
+    },
+
     openPalette() {
         this.isOpen = true;
         this.highlightedIndex = 0;
@@ -9,6 +18,7 @@ export default () => ({
         const items = this.getItems();
         items.forEach(item => {
             item.style.display = '';
+            item.removeAttribute('aria-selected');
         });
 
         this.updateHighlight();
@@ -39,6 +49,13 @@ export default () => ({
         return this.getItems().filter(item => item.style.display !== 'none');
     },
 
+    activeDescendantId() {
+        const visible = this.getVisibleItems();
+        const item = visible[this.highlightedIndex];
+
+        return item ? item.id : '';
+    },
+
     filterResults() {
         const query = this.$refs.searchInput.value.toLowerCase();
         const items = this.getItems();
@@ -57,7 +74,9 @@ export default () => ({
         const visible = this.getVisibleItems();
 
         visible.forEach((item, i) => {
-            item.classList.toggle('cmd-highlighted', i === this.highlightedIndex);
+            const isActive = i === this.highlightedIndex;
+            item.classList.toggle('cmd-highlighted', isActive);
+            item.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
     },
 

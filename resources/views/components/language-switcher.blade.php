@@ -22,8 +22,10 @@
                shadow-[0_4px_14px_rgba(0,0,0,0.18)] transition-shadow duration-300
                hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]"
         aria-label="{{ __('messages.a11y_language_selector') }}"
+        :aria-expanded="isOpen"
+        aria-haspopup="dialog"
     >
-        <div class="relative">
+        <div class="relative" aria-hidden="true">
             {{-- Globe --}}
             <div class="w-7 h-7 rounded-full bg-[radial-gradient(circle_at_30%_30%,#4fc3f7,#0288d1_50%,#01579b)]
                         shadow-[inset_-3px_-3px_6px_rgba(0,0,0,0.3),inset_2px_2px_4px_rgba(255,255,255,0.2)]
@@ -40,7 +42,7 @@
                 {{ strtoupper($currentLocale) }}
             </span>
         </div>
-        <kbd class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80 leading-none">Ctrl+K</kbd>
+        <kbd class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80 leading-none" data-shortcut-label>Ctrl+K</kbd>
     </button>
 
     {{-- Command Palette Overlay --}}
@@ -48,15 +50,18 @@
         x-show="isOpen"
         x-cloak
         class="fixed inset-0 z-100"
+        role="dialog"
+        aria-modal="true"
+        aria-label="{{ __('messages.a11y_language_selector') }}"
     >
         {{-- Backdrop --}}
         <div
             @click="closePalette()"
             x-show="isOpen"
-            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             class="absolute inset-0 bg-black/50"
@@ -65,15 +70,18 @@
         {{-- Panel --}}
         <div
             x-show="isOpen"
-            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter="transition ease-out duration-200 motion-reduce:duration-0"
             x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-100"
+            x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
             class="relative z-10 mx-auto max-w-lg mt-[20vh] px-4"
         >
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
+            <div
+                x-trap.noscroll="isOpen"
+                class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700"
+            >
                 {{-- Search --}}
                 <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                     <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -86,28 +94,35 @@
                         @keydown="handleKeydown($event)"
                         placeholder="{{ __('messages.a11y_language_selector') }}"
                         class="flex-1 bg-transparent outline-none text-sm placeholder-slate-400 dark:text-white"
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-controls="lang-listbox"
+                        :aria-activedescendant="activeDescendantId()"
                     />
                     <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400">ESC</kbd>
                 </div>
 
                 {{-- Results --}}
-                <div x-ref="results" class="max-h-[70vh] overflow-y-auto py-1">
+                <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="max-h-[70vh] overflow-y-auto py-1">
                     @foreach($urls as $locale => $url)
                         <a
                             href="{{ $url }}"
                             hreflang="{{ $locale }}"
                             lang="{{ $locale }}"
+                            id="lang-option-{{ $locale }}"
+                            role="option"
                             data-locale="{{ $locale }}"
                             data-name="{{ $nativeNames[$locale] }}"
                             @mouseenter="highlightItem($el)"
                             class="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors"
+                            @if($locale === $currentLocale) aria-current="true" @endif
                             @if($locale === 'ar') dir="rtl" @endif
                         >
-                            <span>{{ $flags[$locale] ?? '' }}</span>
+                            <span aria-hidden="true">{{ $flags[$locale] ?? '' }}</span>
                             <span class="flex-1">{{ $nativeNames[$locale] }}</span>
-                            <span class="text-xs text-slate-400 uppercase">{{ $locale }}</span>
+                            <span class="text-xs text-slate-400 uppercase" aria-hidden="true">{{ $locale }}</span>
                             @if($locale === $currentLocale)
-                                <span class="text-sky-400">✓</span>
+                                <span class="text-sky-400" aria-hidden="true">✓</span>
                             @endif
                         </a>
                     @endforeach

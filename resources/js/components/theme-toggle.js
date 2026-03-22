@@ -8,8 +8,8 @@ export default () => ({
     },
 
     ariaLabel() {
-        const btn = this.$el;
-
-        return this.dark ? btn.dataset.labelLight : btn.dataset.labelDark;
+        return this.dark
+            ? this.$el.dataset.labelLight
+            : this.$el.dataset.labelDark;
     }
 });
