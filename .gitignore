@@ -18,6 +18,8 @@
 /storage/*.key
 /storage/pail
 /vendor
+*.sqlite
+*.sqlite-journal
 Homestead.json
 Homestead.yaml
 Thumbs.db
