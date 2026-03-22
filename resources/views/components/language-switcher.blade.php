@@ -42,7 +42,7 @@
                 {{ strtoupper($currentLocale) }}
             </span>
         </div>
-        <kbd class="px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80 leading-none" data-shortcut-label>Ctrl+K</kbd>
+        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80 leading-none" data-shortcut-label>Ctrl+K</kbd>
     </button>
 
     {{-- Command Palette Overlay --}}
