@@ -316,6 +316,14 @@ return [
     'stat_max_reached' => '最大閲覧数到達',
     'stat_magic_links_requested' => 'リクエストされたマジックリンク',
     'stat_magic_links_used' => '使用されたマジックリンク',
+    'stat_by_hour' => '時間別',
+    'stat_by_country' => '国別',
+    'stat_by_page' => 'ページ別',
+    'stat_conversion' => 'コンバージョン',
+    'stat_countries' => '国',
+    'stat_bots' => 'ボット',
+    'stat_visitors' => '訪問者',
+    'stat_pageviews_title' => 'ページビュー',
     'stat_secrets_extended' => '延長されたシークレット',
 
     // Charts

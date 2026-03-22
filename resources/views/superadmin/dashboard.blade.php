@@ -147,6 +147,111 @@
                 <div id="heatmapRead" class="heatmap-container"></div>
             </div>
         </div>
+
+        {{-- Pageviews section --}}
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.stat_pageviews_title') }}</h2>
+
+        {{-- Pageview KPIs --}}
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($pageviews['total_human']) }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_visitors') }}</div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($pageviews['total_bot']) }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_bots') }}</div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ count($pageviews['by_country']) }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_countries') }}</div>
+            </div>
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                @php
+                    $totalViews = $pageviews['total_human'];
+                    $pvDates = array_keys($pageviews['daily']);
+                    $createdInPeriod = 0;
+                    $metricsData = $stats['metrics'] ?? [];
+                    foreach ($pvDates as $date) {
+                        $createdInPeriod += ($metricsData['secrets_created_text'][$date] ?? 0)
+                            + ($metricsData['secrets_created_file'][$date] ?? 0);
+                    }
+                    $conversionRate = $totalViews > 0 ? ($createdInPeriod / $totalViews) * 100 : 0;
+                @endphp
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalViews > 0 ? number_format($conversionRate, 1) . '%' : '-' }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_conversion') }}</div>
+            </div>
+        </div>
+
+        {{-- Daily visits chart --}}
+        <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_pageviews_title') }}</h3>
+            <canvas id="pageviewsChart" height="80" role="img" aria-label="{{ __('messages.stat_pageviews_title') }}"></canvas>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {{-- By page --}}
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_page') }}</h3>
+                <div class="space-y-2">
+                    @foreach($pageviews['by_page'] as $page => $counts)
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-mono">{{ $page }}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-900 dark:text-white font-medium">{{ number_format($counts['human']) }}</span>
+                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ number_format($counts['bot']) }} bot</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- By country (top 15) --}}
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_country') }}</h3>
+                <div class="space-y-2">
+                    @foreach(array_slice($pageviews['by_country'], 0, 15, true) as $country => $count)
+                        @php
+                            $pct = $pageviews['total_human'] > 0 ? ($count / $pageviews['total_human']) * 100 : 0;
+                        @endphp
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $country }}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-violet-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- By hour --}}
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_hour') }}</h3>
+                @php
+                    $maxHour = max(1, max($pageviews['by_hour']));
+                    $barMaxPx = 96;
+                @endphp
+                <div class="flex items-end gap-0.5" style="height: {{ $barMaxPx }}px">
+                    @foreach($pageviews['by_hour'] as $hour => $count)
+                        @php $heightPx = max(2, (int) (($count / $maxHour) * $barMaxPx)); @endphp
+                        <div
+                            class="flex-1 bg-violet-500/80 dark:bg-violet-400/80 rounded-t-sm transition-colors hover:bg-violet-600 dark:hover:bg-violet-300"
+                            style="height: {{ $heightPx }}px"
+                            title="{{ $hour }}h: {{ $count }}"
+                        ></div>
+                    @endforeach
+                </div>
+                <div class="flex gap-0.5 mt-1">
+                    @foreach($pageviews['by_hour'] as $hour => $count)
+                        <div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">
+                            @if($hour % 6 === 0){{ $hour }}@endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -155,6 +260,7 @@
         stats: @json($stats),
         heatmapCreated: @json($heatmapCreated),
         heatmapRead: @json($heatmapRead),
+        pageviewsDaily: @json($pageviews['daily']),
         translations: {
             stat_text: '{{ __('messages.stat_text') }}',
             stat_file: '{{ __('messages.stat_file') }}',
@@ -177,7 +283,9 @@
                 '{{ __('messages.day_thursday') }}',
                 '{{ __('messages.day_friday') }}',
                 '{{ __('messages.day_saturday') }}'
-            ]
+            ],
+            stat_visitors: '{{ __('messages.stat_visitors') }}',
+            stat_bots: '{{ __('messages.stat_bots') }}'
         }
     };
 </script>

@@ -316,6 +316,14 @@ return [
     'stat_max_reached' => 'Max weergaven bereikt',
     'stat_magic_links_requested' => 'Magische links aangevraagd',
     'stat_magic_links_used' => 'Magische links gebruikt',
+    'stat_by_hour' => 'Per uur',
+    'stat_by_country' => 'Per land',
+    'stat_by_page' => 'Per pagina',
+    'stat_conversion' => 'Conversie',
+    'stat_countries' => 'Landen',
+    'stat_bots' => 'Bots',
+    'stat_visitors' => 'Bezoekers',
+    'stat_pageviews_title' => 'Paginaweergaven',
     'stat_secrets_extended' => 'Geheimen verlengd',
 
     // Charts

@@ -316,6 +316,14 @@ return [
     'stat_max_reached' => 'Osiągnięto max wyświetleń',
     'stat_magic_links_requested' => 'Żądane magiczne linki',
     'stat_magic_links_used' => 'Użyte magiczne linki',
+    'stat_by_hour' => 'Według godziny',
+    'stat_by_country' => 'Według kraju',
+    'stat_by_page' => 'Według strony',
+    'stat_conversion' => 'Konwersja',
+    'stat_countries' => 'Kraje',
+    'stat_bots' => 'Boty',
+    'stat_visitors' => 'Odwiedzający',
+    'stat_pageviews_title' => 'Odsłony stron',
     'stat_secrets_extended' => 'Przedłużone sekrety',
 
     // Charts

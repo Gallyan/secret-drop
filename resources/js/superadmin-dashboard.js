@@ -281,6 +281,47 @@ function initDashboard() {
     if (heatmapRead) {
         renderHeatmap('heatmapRead', heatmapRead, 'green');
     }
+
+    // Pageviews daily chart
+    const pageviewsDaily = data.pageviewsDaily;
+    if (pageviewsDaily && document.getElementById('pageviewsChart')) {
+        const pvDates = Object.keys(pageviewsDaily).sort();
+        const pvHuman = pvDates.map(d => pageviewsDaily[d]?.human || 0);
+        const pvBot = pvDates.map(d => pageviewsDaily[d]?.bot || 0);
+
+        chartInstances.push(new Chart(document.getElementById('pageviewsChart'), {
+            type: 'line',
+            data: {
+                labels: pvDates,
+                datasets: [
+                    {
+                        label: translations.stat_visitors || 'Visitors',
+                        data: pvHuman,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                    },
+                    {
+                        label: translations.stat_bots || 'Bots',
+                        data: pvBot,
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom' } },
+                scales: {
+                    x: { display: true, grid: { display: false } },
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        }));
+    }
 }
 
 // Run when DOM is ready

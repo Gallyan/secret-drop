@@ -316,6 +316,14 @@ return [
     'stat_max_reached' => 'تم بلوغ الحد',
     'stat_magic_links_requested' => 'الروابط السحرية المطلوبة',
     'stat_magic_links_used' => 'الروابط السحرية المستخدمة',
+    'stat_by_hour' => 'حسب الساعة',
+    'stat_by_country' => 'حسب البلد',
+    'stat_by_page' => 'حسب الصفحة',
+    'stat_conversion' => 'التحويل',
+    'stat_countries' => 'البلدان',
+    'stat_bots' => 'الروبوتات',
+    'stat_visitors' => 'الزوار',
+    'stat_pageviews_title' => 'مشاهدات الصفحة',
     'stat_secrets_extended' => 'الأسرار الممددة',
 
     // Charts

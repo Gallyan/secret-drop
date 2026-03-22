@@ -316,6 +316,14 @@ return [
     'stat_max_reached' => 'Max visualizzazioni raggiunto',
     'stat_magic_links_requested' => 'Link magici richiesti',
     'stat_magic_links_used' => 'Link magici usati',
+    'stat_by_hour' => 'Per ora',
+    'stat_by_country' => 'Per paese',
+    'stat_by_page' => 'Per pagina',
+    'stat_conversion' => 'Conversione',
+    'stat_countries' => 'Paesi',
+    'stat_bots' => 'Bot',
+    'stat_visitors' => 'Visitatori',
+    'stat_pageviews_title' => 'Pagine visualizzate',
     'stat_secrets_extended' => 'Segreti estesi',
 
     // Charts
