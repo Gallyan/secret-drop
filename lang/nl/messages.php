@@ -249,7 +249,7 @@ return [
     'admin_back_home' => 'Terug naar home',
     'admin_link_sent_title' => 'Controleer uw inbox',
     'admin_link_sent_description' => 'Als er geheimen bestaan voor dit e-mailadres, is er een magische link verzonden.',
-    'admin_link_sent_warning' => 'De link is 5 minuten geldig en kan slechts één keer worden gebruikt.',
+    'admin_link_sent_warning' => 'De link is 10 minuten geldig en kan slechts één keer worden gebruikt.',
     'admin_invalid_link_title' => 'Ongeldige of verlopen link',
     'admin_invalid_link_description' => 'Deze magische link is ongeldig of al gebruikt. Vraag een nieuwe aan.',
     'admin_not_found_title' => 'Geheim niet gevonden',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'Uw toegangslink voor Secret Drop',
     'email_magic_link_intro' => 'U heeft toegang aangevraagd om uw geheimen te beheren. Klik op de onderstaande knop om in te loggen.',
     'email_magic_link_button' => 'Mijn geheimen openen',
-    'email_magic_link_warning' => 'Deze link verloopt over 5 minuten en kan slechts één keer worden gebruikt.',
+    'email_magic_link_warning' => 'Deze link verloopt over 10 minuten en kan slechts één keer worden gebruikt.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',

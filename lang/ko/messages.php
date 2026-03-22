@@ -249,7 +249,7 @@ return [
     'admin_back_home' => '홈으로 돌아가기',
     'admin_link_sent_title' => '받은편지함 확인',
     'admin_link_sent_description' => '이 이메일로 만든 비밀이 있으면 매직 링크가 전송되었습니다.',
-    'admin_link_sent_warning' => '링크는 5분간 유효하며 한 번만 사용할 수 있습니다.',
+    'admin_link_sent_warning' => '링크는 10분간 유효하며 한 번만 사용할 수 있습니다.',
     'admin_invalid_link_title' => '유효하지 않거나 만료된 링크',
     'admin_invalid_link_description' => '이 매직 링크는 유효하지 않거나 이미 사용되었습니다. 새로 요청하세요.',
     'admin_not_found_title' => '비밀을 찾을 수 없음',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'Secret Drop 접근 링크',
     'email_magic_link_intro' => '비밀 관리 접근을 요청했습니다. 아래 버튼을 클릭하여 로그인하세요.',
     'email_magic_link_button' => '내 비밀 접근',
-    'email_magic_link_warning' => '이 링크는 5분 후 만료되며 한 번만 사용할 수 있습니다.',
+    'email_magic_link_warning' => '이 링크는 10분 후 만료되며 한 번만 사용할 수 있습니다.',
 
     // Super Admin
     'superadmin_title' => '슈퍼 관리자',

@@ -211,4 +211,62 @@ class StatsService
             return $totalSize;
         });
     }
+
+    /**
+     * @return array{
+     *     total_human: int,
+     *     total_bot: int,
+     *     by_page: array<string, array{human: int, bot: int}>,
+     *     by_country: array<string, int>,
+     *     by_hour: array<int, int>,
+     *     daily: array<string, array{human: int, bot: int}>
+     * }
+     */
+    public function getPageviews(?string $startDate = null): array
+    {
+        $query = DB::table('stats_pageviews');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $rows = $query->get();
+
+        $totalHuman = 0;
+        $totalBot = 0;
+        $byPage = [];
+        $byCountry = [];
+        $byHour = array_fill(0, 24, 0);
+        $daily = [];
+
+        foreach ($rows as $row) {
+            if ($row->is_bot) {
+                $totalBot += $row->count;
+            } else {
+                $totalHuman += $row->count;
+            }
+
+            $byPage[$row->page] ??= ['human' => 0, 'bot' => 0];
+            $byPage[$row->page][$row->is_bot ? 'bot' : 'human'] += $row->count;
+
+            if (! $row->is_bot) {
+                $byCountry[$row->country] = ($byCountry[$row->country] ?? 0) + $row->count;
+                $byHour[$row->hour] += $row->count;
+            }
+
+            $daily[$row->date] ??= ['human' => 0, 'bot' => 0];
+            $daily[$row->date][$row->is_bot ? 'bot' : 'human'] += $row->count;
+        }
+
+        arsort($byCountry);
+
+        return [
+            'total_human' => $totalHuman,
+            'total_bot' => $totalBot,
+            'by_page' => $byPage,
+            'by_country' => $byCountry,
+            'by_hour' => $byHour,
+            'daily' => $daily,
+        ];
+    }
 }

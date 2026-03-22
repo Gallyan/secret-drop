@@ -249,7 +249,7 @@ return [
     'admin_back_home' => 'ホームに戻る',
     'admin_link_sent_title' => '受信トレイを確認',
     'admin_link_sent_description' => 'このメールアドレスにシークレットが存在する場合、マジックリンクが送信されました。',
-    'admin_link_sent_warning' => 'リンクは5分間有効で、1回のみ使用できます。',
+    'admin_link_sent_warning' => 'リンクは10分間有効で、1回のみ使用できます。',
     'admin_invalid_link_title' => '無効または期限切れのリンク',
     'admin_invalid_link_description' => 'このマジックリンクは無効か、すでに使用されています。新しいものをリクエストしてください。',
     'admin_not_found_title' => 'シークレットが見つかりません',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'Secret Dropアクセスリンク',
     'email_magic_link_intro' => 'シークレット管理へのアクセスをリクエストしました。以下のボタンをクリックしてログインしてください。',
     'email_magic_link_button' => 'シークレットにアクセス',
-    'email_magic_link_warning' => 'このリンクは5分で期限切れになり、1回のみ使用できます。',
+    'email_magic_link_warning' => 'このリンクは10分で期限切れになり、1回のみ使用できます。',
 
     // Super Admin
     'superadmin_title' => 'スーパー管理者',

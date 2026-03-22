@@ -249,7 +249,7 @@ return [
     'admin_back_home' => 'Powrót na stronę główną',
     'admin_link_sent_title' => 'Sprawdź swoją skrzynkę',
     'admin_link_sent_description' => 'Jeśli istnieją sekrety dla tego e-maila, wysłano magiczny link.',
-    'admin_link_sent_warning' => 'Link jest ważny przez 5 minut i może być użyty tylko raz.',
+    'admin_link_sent_warning' => 'Link jest ważny przez 10 minut i może być użyty tylko raz.',
     'admin_invalid_link_title' => 'Nieprawidłowy lub wygasły link',
     'admin_invalid_link_description' => 'Ten magiczny link jest nieprawidłowy lub już został użyty. Poproś o nowy.',
     'admin_not_found_title' => 'Sekret nie znaleziony',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'Twój link dostępu do Secret Drop',
     'email_magic_link_intro' => 'Poprosiłeś o dostęp do zarządzania sekretami. Kliknij poniższy przycisk, aby się zalogować.',
     'email_magic_link_button' => 'Otwórz moje sekrety',
-    'email_magic_link_warning' => 'Ten link wygasa za 5 minut i może być użyty tylko raz.',
+    'email_magic_link_warning' => 'Ten link wygasa za 10 minut i może być użyty tylko raz.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',

@@ -249,7 +249,7 @@ return [
     'admin_back_home' => 'Retour à l\'accueil',
     'admin_link_sent_title' => 'Vérifiez votre boîte mail',
     'admin_link_sent_description' => 'Si des secrets existent pour cet email, un lien magique a été envoyé.',
-    'admin_link_sent_warning' => 'Le lien est valable 5 minutes et ne peut être utilisé qu\'une seule fois.',
+    'admin_link_sent_warning' => 'Le lien est valable 10 minutes et ne peut être utilisé qu\'une seule fois.',
     'admin_invalid_link_title' => 'Lien invalide ou expiré',
     'admin_invalid_link_description' => 'Ce lien magique est invalide ou a déjà été utilisé. Veuillez en demander un nouveau.',
     'admin_not_found_title' => 'Secret introuvable',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'Votre lien d\'accès à Secret Drop',
     'email_magic_link_intro' => 'Vous avez demandé l\'accès pour gérer vos secrets. Cliquez sur le bouton ci-dessous pour vous connecter.',
     'email_magic_link_button' => 'Accéder à mes secrets',
-    'email_magic_link_warning' => 'Ce lien expire dans 5 minutes et ne peut être utilisé qu\'une seule fois.',
+    'email_magic_link_warning' => 'Ce lien expire dans 10 minutes et ne peut être utilisé qu\'une seule fois.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',

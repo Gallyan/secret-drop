@@ -249,7 +249,7 @@ return [
     'admin_back_home' => 'العودة إلى الصفحة الرئيسية',
     'admin_link_sent_title' => 'تحقق من بريدك الإلكتروني',
     'admin_link_sent_description' => 'إذا كانت هناك أسرار مرتبطة بهذا البريد الإلكتروني، فقد تم إرسال رابط سحري.',
-    'admin_link_sent_warning' => 'الرابط صالح لمدة 5 دقائق ويمكن استخدامه مرة واحدة فقط.',
+    'admin_link_sent_warning' => 'الرابط صالح لمدة 10 دقائق ويمكن استخدامه مرة واحدة فقط.',
     'admin_invalid_link_title' => 'رابط غير صالح أو منتهي الصلاحية',
     'admin_invalid_link_description' => 'هذا الرابط السحري غير صالح أو تم استخدامه بالفعل. يرجى طلب رابط جديد.',
     'admin_not_found_title' => 'السر غير موجود',
@@ -280,7 +280,7 @@ return [
     'email_magic_link_subject' => 'رابط الوصول إلى Secret Drop',
     'email_magic_link_intro' => 'لقد طلبت الوصول لإدارة أسرارك. انقر على الزر أدناه لتسجيل الدخول.',
     'email_magic_link_button' => 'الوصول إلى أسراري',
-    'email_magic_link_warning' => 'هذا الرابط ينتهي في 5 دقائق ويمكن استخدامه مرة واحدة فقط.',
+    'email_magic_link_warning' => 'هذا الرابط ينتهي في 10 دقائق ويمكن استخدامه مرة واحدة فقط.',
 
     // Super Admin
     'superadmin_title' => 'المسؤول الأعلى',
