@@ -114,6 +114,14 @@ main > * {
     to { opacity: 1; transform: scale(1.2); }
 }
 
+/* Command palette */
+.cmd-highlighted {
+    background-color: rgba(56, 189, 248, 0.1);
+}
+.dark .cmd-highlighted {
+    background-color: rgba(56, 189, 248, 0.15);
+}
+
 /* Heatmap intensity classes */
 .heatmap-empty {
     background-color: rgb(241 245 249);
