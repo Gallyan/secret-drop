@@ -172,11 +172,11 @@ class SecretsController extends Controller
         }
 
         if (! $secret->isAccessible()) {
-            return response('Secret indisponible', 410);
+            return response(__('messages.error_secret_unavailable'), 410);
         }
 
         if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
-            return response('Fichier introuvable', 404);
+            return response(__('messages.error_file_not_found'), 404);
         }
 
         return $this->storage->download($secret->file_path);
