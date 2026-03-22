@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 pb-16 md:pb-16 transition-colors">
+<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 pb-16 md:pb-16 transition-colors">
     <div class="w-full max-w-5xl">
         <div
             x-data="secretForm"
@@ -9,9 +9,9 @@
         >
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}
-                <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-gradient-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
+                <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-linear-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
+                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                             </svg>
@@ -96,8 +96,9 @@
                                 id="secret"
                                 x-model="secret"
                                 placeholder="{{ __('messages.secret_placeholder') }}"
-                                class="w-full h-[112px] px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
+                                class="w-full h-28 px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                             ></textarea>
+                            <div class="mt-1 text-right text-xs tabular-nums" :class="secret.length > 50000 ? 'text-red-500 dark:text-red-400' : 'text-gray-400 dark:text-slate-500'" x-text="secret.length.toLocaleString() + ' / 50 000'"></div>
                         </div>
 
                         {{-- File mode: Drag & drop zone --}}
@@ -534,7 +535,7 @@
                             x-show="!captchaRequired"
                             type="submit"
                             :disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
+                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
@@ -553,7 +554,7 @@
                             type="button"
                             @click="submitWithCaptcha()"
                             :disabled="isSubmitting || !captchaAnswer.trim()"
-                            class="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
+                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">

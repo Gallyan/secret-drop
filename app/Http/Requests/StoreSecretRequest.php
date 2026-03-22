@@ -36,8 +36,8 @@ class StoreSecretRequest extends FormRequest
         return [
             'type' => ['required', 'in:text,file'],
 
-            // Text secrets (~1 MB plaintext = ~1.5 MB ciphertext in base64)
-            'ciphertext' => ['required_if:type,text', 'string', 'max:1500000'],
+            // Text secrets (~50 KB plaintext = ~70 KB ciphertext in base64)
+            'ciphertext' => ['required_if:type,text', 'string', 'max:70000'],
 
             // File secrets: 10 MB before encryption = ~14 MB after (metadata encrypted in payload)
             'encrypted_file' => ['required_if:type,file', 'file', 'max:14336'], // ~14 MB
@@ -68,7 +68,7 @@ class StoreSecretRequest extends FormRequest
             'type.in' => 'Le type doit être "text" ou "file".',
             'ciphertext.required_if' => 'Le texte chiffré est requis pour un secret texte.',
             'encrypted_file.required_if' => 'Le fichier chiffré est requis.',
-            'ciphertext.max' => 'Le texte ne doit pas dépasser 1 Mo.',
+            'ciphertext.max' => 'Le texte ne doit pas dépasser 50 000 caractères.',
             'encrypted_file.max' => 'Le fichier ne doit pas dépasser 10 Mo.',
             'cipher_meta.required' => 'Les métadonnées de chiffrement sont requises.',
             'cipher_meta.alg.required' => 'L\'algorithme de chiffrement est requis.',
