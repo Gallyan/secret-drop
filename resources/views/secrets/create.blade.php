@@ -93,13 +93,15 @@
                             <label for="secret" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                 {{ __('messages.your_secret') }}
                             </label>
-                            <textarea
-                                id="secret"
-                                x-model="secret"
-                                placeholder="{{ __('messages.secret_placeholder') }}"
-                                class="w-full h-28 px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
-                            ></textarea>
-                            <div class="mt-1 text-right text-xs tabular-nums" :class="secret.length > 50000 ? 'text-red-500 dark:text-red-400' : 'text-gray-400 dark:text-slate-500'" x-text="secret.length.toLocaleString() + ' / 50 000'"></div>
+                            <div class="relative h-28">
+                                <textarea
+                                    id="secret"
+                                    x-model="secret"
+                                    placeholder="{{ __('messages.secret_placeholder') }}"
+                                    class="w-full h-28 px-4 py-3 pb-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
+                                ></textarea>
+                                <div class="absolute bottom-1.5 right-3 text-xs tabular-nums pointer-events-none" :class="secret.length > 50000 ? 'text-red-500 dark:text-red-400' : 'text-gray-400 dark:text-slate-500'" x-text="secret.length.toLocaleString() + ' / 50 000'"></div>
+                            </div>
                         </div>
 
                         {{-- File mode: Drag & drop zone --}}
@@ -115,7 +117,7 @@
                                 @dragleave.prevent="isDragging = false"
                                 @drop.prevent="handleFileDrop($event)"
                                 :class="isDragging ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-gray-300 dark:border-slate-600/50 hover:border-gray-400 dark:hover:border-slate-500'"
-                                class="relative flex flex-col items-center justify-center h-[118px] border border-dashed rounded-xl cursor-pointer transition"
+                                class="relative flex flex-col items-center justify-center h-28 border border-dashed rounded-xl cursor-pointer transition"
                             >
                                 <input
                                     id="fileInput"
@@ -137,7 +139,7 @@
                             {{-- File preview (when file selected) --}}
                             <div
                                 x-show="file"
-                                class="flex items-center gap-4 p-4 h-[118px] bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl"
+                                class="flex items-center gap-4 p-4 h-28 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl"
                             >
                                 <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-500/10 shrink-0">
                                     <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
