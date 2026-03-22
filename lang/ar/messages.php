@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => 'الإشعارات القانونية',
+    'legal_meta_description' => 'الإشعارات القانونية وسياسة الخصوصية وشروط الاستخدام الخاصة بـ Secret Drop.',
     'legal_editor_title' => 'ناشر الموقع',
     'legal_editor_text' => 'هذا الموقع منشور بواسطة :name.',
     'legal_editor_phone' => 'الهاتف:',

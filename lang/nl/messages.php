@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => 'Juridische Informatie',
+    'legal_meta_description' => 'Juridische informatie, privacybeleid en gebruiksvoorwaarden van Secret Drop.',
     'legal_editor_title' => 'Website-uitgever',
     'legal_editor_text' => 'Deze website wordt uitgegeven door :name.',
     'legal_editor_phone' => 'Telefoon:',

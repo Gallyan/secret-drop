@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => 'Aviso Legal',
+    'legal_meta_description' => 'Aviso legal, política de privacidade e termos de uso do Secret Drop.',
     'legal_editor_title' => 'Editor do Site',
     'legal_editor_text' => 'Este site é publicado por :name.',
     'legal_editor_phone' => 'Telefone:',

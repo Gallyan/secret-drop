@@ -12,7 +12,13 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#8b5cf6">
 
-    {{-- Fonts --}}
+    {{-- Fonts preload --}}
+    <link rel="preload" href="/fonts/instrument-sans-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/instrument-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+    @if(app()->getLocale() === 'ar')
+    <link rel="preload" href="/fonts/noto-sans-arabic-400.woff2" as="font" type="font/woff2" crossorigin>
+    @endif
+
     <meta name="description" content="@yield('description', __('messages.app_description'))">
 
     {{-- SEO: noindex for sensitive pages --}}
@@ -38,9 +44,12 @@
     <meta property="og:image" content="{{ url('/og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ __('messages.app_description') }}">
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@perceptron_sys">
+    <meta name="twitter:creator" content="@perceptron_sys">
     <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
     <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
     <meta name="twitter:image" content="{{ url('/og-image.png') }}">
@@ -75,6 +84,8 @@
     }
     </script>
     @endif
+
+    @stack('schema')
 
     @php
         $jsTranslations = array_intersect_key(__('messages'), array_flip([

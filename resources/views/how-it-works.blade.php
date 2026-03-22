@@ -3,6 +3,28 @@
 @section('title', __('messages.how_it_works_title'))
 @section('description', __('messages.how_it_works_meta_description'))
 
+@push('schema')
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@@type": "ListItem",
+            "position": 1,
+            "name": "{{ config('app.name') }}",
+            "item": "{{ route('home') }}"
+        },
+        {
+            "@@type": "ListItem",
+            "position": 2,
+            "name": "{{ __('messages.how_it_works_title') }}"
+        }
+    ]
+}
+</script>
+@endpush
+
 @section('content')
 <div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-12 px-4 pb-16 overflow-x-hidden transition-colors">
     <div class="max-w-4xl mx-auto">

@@ -49,7 +49,7 @@ class SecurityHeadersTest extends TestCase
 
         $response = $this->middleware->handle($request, fn ($req) => response('OK'));
 
-        $this->assertEquals('no-referrer', $response->headers->get('Referrer-Policy'));
+        $this->assertEquals('strict-origin-when-cross-origin', $response->headers->get('Referrer-Policy'));
     }
 
     public function testSetsPermissionsPolicy(): void

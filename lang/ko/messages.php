@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => '법적 고지',
+    'legal_meta_description' => 'Secret Drop의 법적 고지, 개인정보 보호정책 및 이용약관.',
     'legal_editor_title' => '웹사이트 발행인',
     'legal_editor_text' => '이 웹사이트는 :name에 의해 발행됩니다.',
     'legal_editor_phone' => '전화:',

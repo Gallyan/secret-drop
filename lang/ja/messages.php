@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => '法的情報',
+    'legal_meta_description' => 'Secret Dropの法的情報、プライバシーポリシー、利用規約。',
     'legal_editor_title' => 'サイト運営者',
     'legal_editor_text' => 'このサイトは :name によって運営されています。',
     'legal_editor_phone' => '電話：',

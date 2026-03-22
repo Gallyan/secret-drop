@@ -205,6 +205,7 @@ return [
 
     // Legal page
     'legal_title' => 'Impressum',
+    'legal_meta_description' => 'Impressum, Datenschutzrichtlinie und Nutzungsbedingungen von Secret Drop.',
     'legal_editor_title' => 'Website-Herausgeber',
     'legal_editor_text' => 'Diese Website wird herausgegeben von :name.',
     'legal_editor_phone' => 'Telefon:',

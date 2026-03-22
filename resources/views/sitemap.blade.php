@@ -18,7 +18,6 @@
   </url>
 @endforeach
 @foreach($pages as $page)
-@if($page !== 'legal')
 @foreach($locales as $locale)
   <url>
     <loc>{{ localized_route($page, $locale) }}</loc>
@@ -31,6 +30,5 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="{{ localized_route($page, App\Support\LocaleConfig::DEFAULT_LOCALE) }}" />
   </url>
 @endforeach
-@endif
 @endforeach
 </urlset>
