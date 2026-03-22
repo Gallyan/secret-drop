@@ -22,7 +22,7 @@
             </div>
             <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="text-sm text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition">
+                <button type="submit" class="text-sm text-gray-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded-lg transition">
                     {{ __('messages.admin_logout') }}
                 </button>
             </form>
@@ -230,7 +230,7 @@
                                             >
                                                 <span x-show="!extending">{{ __('messages.admin_extend') }}</span>
                                                 <span x-show="extending" class="flex items-center gap-1">
-                                                    <svg class="animate-spin h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                                                    <svg class="animate-spin motion-reduce:!animate-none h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
                                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                                     </svg>
@@ -248,7 +248,7 @@
                                             >
                                                 <span x-show="!revoking">{{ __('messages.admin_revoke') }}</span>
                                                 <span x-show="revoking" class="flex items-center gap-1">
-                                                    <svg class="animate-spin h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
+                                                    <svg class="animate-spin motion-reduce:!animate-none h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
                                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                                     </svg>

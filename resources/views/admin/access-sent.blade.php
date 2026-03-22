@@ -16,7 +16,7 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_link_sent_title') }}</h1>
             <p class="text-gray-600 dark:text-slate-400 mb-6">{{ __('messages.admin_link_sent_description') }}</p>
 
-            <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl">
+            <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl" role="alert">
                 <p class="text-sm text-amber-700 dark:text-amber-300">{{ __('messages.admin_link_sent_warning') }}</p>
             </div>
 

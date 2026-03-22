@@ -95,6 +95,12 @@ export default () => ({
 
     handleGlobalKeydown(event) {
         if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+            const tag = event.target.tagName;
+
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+                return;
+            }
+
             event.preventDefault();
             this.togglePalette();
         }

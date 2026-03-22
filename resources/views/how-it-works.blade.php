@@ -31,7 +31,7 @@
                 </h2>
 
                 {{-- Step-by-step flow --}}
-                <div class="space-y-6">
+                <ol class="space-y-6 list-none">
                     {{-- Step 1: User writes secret --}}
                     <div class="flex items-start gap-4">
                         <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 font-bold shrink-0">
@@ -145,7 +145,7 @@
                             </svg>
                         </div>
                     </div>
-                </div>
+                </ol>
             </div>
 
             {{-- Key security features --}}
