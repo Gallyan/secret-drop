@@ -19,7 +19,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
     protected function tearDown(): void
     {
-        $files = $this->storage->disk()->files();
+        $files = $this->storage->disk()->allFiles();
         foreach ($files as $file) {
             $this->storage->delete($file);
         }
@@ -29,7 +29,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
     public function testCommandDeletesOrphanBlobs(): void
     {
-        $orphanPath = 'orphan_file_'.bin2hex(random_bytes(8));
+        $orphanPath = 'orphan_file_' . bin2hex(random_bytes(8));
         $this->storage->disk()->put($orphanPath, 'orphan content');
 
         $this->assertTrue($this->storage->exists($orphanPath));
@@ -82,7 +82,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
             'expire_at' => now()->addDays(7),
         ]);
 
-        $orphanPath = 'orphan_'.bin2hex(random_bytes(8));
+        $orphanPath = 'orphan_' . bin2hex(random_bytes(8));
         $this->storage->disk()->put($orphanPath, 'orphan content');
 
         $this->assertTrue($this->storage->exists($validPath));
@@ -100,7 +100,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
     public function testDryRunDoesNotDeleteFiles(): void
     {
-        $orphanPath = 'orphan_dry_run_'.bin2hex(random_bytes(8));
+        $orphanPath = 'orphan_dry_run_' . bin2hex(random_bytes(8));
         $this->storage->disk()->put($orphanPath, 'orphan content');
 
         $this->assertTrue($this->storage->exists($orphanPath));
@@ -116,7 +116,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
     public function testCommandHandlesEmptyStorage(): void
     {
-        $files = $this->storage->disk()->files();
+        $files = $this->storage->disk()->allFiles();
         foreach ($files as $file) {
             $this->storage->delete($file);
         }

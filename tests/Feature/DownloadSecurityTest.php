@@ -189,14 +189,14 @@ class DownloadSecurityTest extends TestCase
     {
         $token = $this->tokenService->generatePublicToken();
         $file = UploadedFile::fake()->create('test.bin', 256);
-        $this->storage->store($token, $file);
+        $filePath = $this->storage->store($token, $file);
 
         return Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $token,
+            'file_path' => $filePath,
             'expire_at' => now()->addDay(),
         ]);
     }

@@ -19,7 +19,6 @@ class SecretStorageServiceTest extends TestCase
 
     protected function tearDown(): void
     {
-        // Clean up any test files
         Storage::disk('secrets')->deleteDirectory('.');
         parent::tearDown();
     }
@@ -27,11 +26,11 @@ class SecretStorageServiceTest extends TestCase
     public function testStoreCreatesFileOnDisk(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'test_token_'.uniqid();
+        $token = 'test_token_' . uniqid();
 
         $path = $this->storage->store($token, $file);
 
-        $this->assertEquals($token, $path);
+        $this->assertEquals(substr($token, 0, 2) . '/' . $token, $path);
         $this->assertTrue($this->storage->exists($path));
     }
 
@@ -43,37 +42,38 @@ class SecretStorageServiceTest extends TestCase
     public function testExistsReturnsTrueForExistingFile(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 50);
-        $token = 'exists_test_'.uniqid();
+        $token = 'exists_test_' . uniqid();
 
-        $this->storage->store($token, $file);
+        $path = $this->storage->store($token, $file);
 
-        $this->assertTrue($this->storage->exists($token));
+        $this->assertTrue($this->storage->exists($path));
     }
 
     public function testSizeReturnsFileSize(): void
     {
         $content = str_repeat('x', 1024);
         $file = UploadedFile::fake()->createWithContent('test.bin', $content);
-        $token = 'size_test_'.uniqid();
+        $token = 'size_test_' . uniqid();
 
-        $this->storage->store($token, $file);
+        $path = $this->storage->store($token, $file);
 
-        $size = $this->storage->size($token);
+        $size = $this->storage->size($path);
         $this->assertEquals(1024, $size);
     }
 
-    public function testDeleteRemovesFile(): void
+    public function testDeleteRemovesFileAndEmptyDirectory(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'delete_test_'.uniqid();
+        $token = 'delete_test_' . uniqid();
 
-        $this->storage->store($token, $file);
-        $this->assertTrue($this->storage->exists($token));
+        $path = $this->storage->store($token, $file);
+        $this->assertTrue($this->storage->exists($path));
 
-        $result = $this->storage->delete($token);
+        $result = $this->storage->delete($path);
 
         $this->assertTrue($result);
-        $this->assertFalse($this->storage->exists($token));
+        $this->assertFalse($this->storage->exists($path));
+        $this->assertFalse($this->storage->disk()->exists(dirname($path)));
     }
 
     public function testDeleteReturnsFalseForNonExistentFile(): void
@@ -86,11 +86,11 @@ class SecretStorageServiceTest extends TestCase
     public function testDownloadReturnsStreamedResponse(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'download_test_'.uniqid();
+        $token = 'download_test_' . uniqid();
 
-        $this->storage->store($token, $file);
+        $path = $this->storage->store($token, $file);
 
-        $response = $this->storage->download($token);
+        $response = $this->storage->download($path);
 
         $this->assertInstanceOf(\Symfony\Component\HttpFoundation\StreamedResponse::class, $response);
     }
@@ -98,11 +98,11 @@ class SecretStorageServiceTest extends TestCase
     public function testReadStreamReturnsResource(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'stream_test_'.uniqid();
+        $token = 'stream_test_' . uniqid();
 
-        $this->storage->store($token, $file);
+        $path = $this->storage->store($token, $file);
 
-        $stream = $this->storage->readStream($token);
+        $stream = $this->storage->readStream($path);
 
         $this->assertIsResource($stream);
         fclose($stream);

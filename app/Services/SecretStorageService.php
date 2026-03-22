@@ -87,7 +87,7 @@ class SecretStorageService
     }
 
     /**
-     * Delete an encrypted file.
+     * Delete an encrypted file and clean up empty parent directory.
      */
     public function delete(string $path): bool
     {
@@ -95,16 +95,23 @@ class SecretStorageService
             return false;
         }
 
-        return $this->disk()->delete($path);
+        $this->disk()->delete($path);
+
+        $dir = dirname($path);
+
+        if ($dir !== '.' && $this->disk()->exists($dir) && empty($this->disk()->files($dir))) {
+            $this->disk()->deleteDirectory($dir);
+        }
+
+        return true;
     }
 
     /**
      * Build the storage path for a secret file.
+     * Partitions into subdirectories using first 2 chars of token.
      */
     private function buildPath(string $token): string
     {
-        // Use a simple flat structure with the token as filename
-        // The token is already a secure random string
-        return $token;
+        return substr($token, 0, 2) . '/' . $token;
     }
 }

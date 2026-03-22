@@ -17,7 +17,7 @@ class CleanOrphanBlobsCommand extends Command
     {
         $dryRun = $this->option('dry-run');
 
-        $files = $storage->disk()->files();
+        $files = $storage->disk()->allFiles();
 
         if (empty($files)) {
             $this->info('No files in storage.');
@@ -25,15 +25,15 @@ class CleanOrphanBlobsCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info('Found '.count($files).' files in storage.');
+        $this->info('Found ' . count($files) . ' files in storage.');
 
-        $validTokens = Secret::query()
+        $validPaths = Secret::query()
             ->where('type', 'file')
             ->whereNotNull('file_path')
             ->pluck('file_path')
             ->toArray();
 
-        $orphans = array_diff($files, $validTokens);
+        $orphans = array_diff($files, $validPaths);
 
         if (empty($orphans)) {
             $this->info('No orphan blobs found.');
@@ -41,7 +41,7 @@ class CleanOrphanBlobsCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info(($dryRun ? '[DRY RUN] ' : '').'Found '.count($orphans).' orphan blobs to delete.');
+        $this->info(($dryRun ? '[DRY RUN] ' : '') . 'Found ' . count($orphans) . ' orphan blobs to delete.');
 
         $deleted = 0;
         foreach ($orphans as $file) {

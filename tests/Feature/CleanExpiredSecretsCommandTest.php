@@ -111,24 +111,24 @@ class CleanExpiredSecretsCommandTest extends TestCase
     {
         $token = $this->tokenService->generatePublicToken();
         $file = UploadedFile::fake()->create('encrypted', 256);
-        $this->storage->store($token, $file);
+        $filePath = $this->storage->store($token, $file);
 
         $fileSecret = Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'file',
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $token,
+            'file_path' => $filePath,
             'expire_at' => now()->subHour(),
         ]);
 
-        $this->assertTrue($this->storage->exists($token));
+        $this->assertTrue($this->storage->exists($filePath));
 
         $this->artisan('secrets:clean')
             ->assertSuccessful();
 
         $this->assertNull(Secret::find($fileSecret->id));
-        $this->assertFalse($this->storage->exists($token));
+        $this->assertFalse($this->storage->exists($filePath));
     }
 
     public function testDryRunDoesNotDelete(): void
