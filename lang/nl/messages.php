@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => 'Toepassingen ontdekken',
 
     // FAQ (structured data)
+    'faq_title' => 'Veelgestelde vragen',
     'faq_q1' => 'Hoe versleutelt Secret Drop mijn gegevens?',
     'faq_a1' => 'Uw browser genereert een willekeurige versleutelingssleutel en versleutelt uw inhoud lokaal met AES-256-GCM via de Web Crypto API. De server ontvangt en slaat alleen versleutelde gegevens op.',
     'faq_q2' => 'Kan de server mijn geheimen lezen?',

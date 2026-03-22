@@ -26,6 +26,46 @@
 <script type="application/ld+json" nonce="@nonce">
 {
     "@@context": "https://schema.org",
+    "@@type": "HowTo",
+    "name": "{{ __('messages.how_it_works_title') }}",
+    "description": "{{ __('messages.how_it_works_intro') }}",
+    "step": [
+        {
+            "@@type": "HowToStep",
+            "position": 1,
+            "name": "{{ __('messages.how_step1_title') }}",
+            "text": "{{ __('messages.how_step1_desc') }}"
+        },
+        {
+            "@@type": "HowToStep",
+            "position": 2,
+            "name": "{{ __('messages.how_step2_title') }}",
+            "text": "{{ __('messages.how_step2_desc') }}"
+        },
+        {
+            "@@type": "HowToStep",
+            "position": 3,
+            "name": "{{ __('messages.how_step3_title') }}",
+            "text": "{{ __('messages.how_step3_desc') }}"
+        },
+        {
+            "@@type": "HowToStep",
+            "position": 4,
+            "name": "{{ __('messages.how_step4_title') }}",
+            "text": "{{ __('messages.how_step4_desc') }}"
+        },
+        {
+            "@@type": "HowToStep",
+            "position": 5,
+            "name": "{{ __('messages.how_step5_title') }}",
+            "text": "{{ __('messages.how_step5_desc') }}"
+        }
+    ]
+}
+</script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
     "@@type": "FAQPage",
     "mainEntity": [
         {
@@ -257,6 +297,22 @@
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature4_desc') }}</p>
                     </div>
                 </div>
+            </div>
+
+            {{-- FAQ --}}
+            <div class="mb-12">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+                    {{ __('messages.faq_title') }}
+                </h2>
+
+                <dl class="space-y-4">
+                    @foreach(range(1, 4) as $i)
+                    <div class="p-4 bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-slate-600/30 rounded-xl">
+                        <dt class="font-medium text-gray-900 dark:text-white mb-2">{{ __("messages.faq_q{$i}") }}</dt>
+                        <dd class="text-sm text-gray-600 dark:text-slate-400">{{ __("messages.faq_a{$i}") }}</dd>
+                    </div>
+                    @endforeach
+                </dl>
             </div>
 
             {{-- CTA --}}

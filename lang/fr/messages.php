@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => 'Découvrir les cas d\'usage',
 
     // FAQ (structured data)
+    'faq_title' => 'Questions fréquentes',
     'faq_q1' => 'Comment Secret Drop chiffre-t-il mes données ?',
     'faq_a1' => 'Votre navigateur génère une clé de chiffrement aléatoire et chiffre votre contenu localement avec AES-256-GCM via l\'API Web Crypto. Le serveur ne reçoit et ne stocke que des données chiffrées.',
     'faq_q2' => 'Le serveur peut-il lire mes secrets ?',

@@ -23,6 +23,23 @@
     ]
 }
 </script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebPage",
+    "name": "{{ __('messages.use_cases_title') }}",
+    "description": "{{ __('messages.use_cases_meta_description') }}",
+    "about": {
+        "@@type": "WebApplication",
+        "name": "{{ config('app.name') }}"
+    },
+    "isPartOf": {
+        "@@type": "WebSite",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}"
+    }
+}
+</script>
 @endpush
 
 @section('content')

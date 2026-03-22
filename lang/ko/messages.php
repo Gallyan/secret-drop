@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => '사용 사례 보기',
 
     // FAQ (structured data)
+    'faq_title' => '자주 묻는 질문',
     'faq_q1' => 'Secret Drop은 어떻게 데이터를 암호화하나요?',
     'faq_a1' => '브라우저가 임의의 암호화 키를 생성하고 Web Crypto API를 통해 AES-256-GCM으로 콘텐츠를 로컬에서 암호화합니다. 서버는 암호화된 데이터만 수신하고 저장합니다.',
     'faq_q2' => '서버가 내 비밀을 읽을 수 있나요?',

@@ -14,6 +14,8 @@ class SeoController extends Controller
             ->map(fn (string $locale) => "Disallow: /{$locale}/admin/")
             ->implode("\n");
 
+        $llms = url('/llms.txt');
+
         $content = <<<TXT
             User-agent: *
             Disallow: /s/
@@ -21,7 +23,28 @@ class SeoController extends Controller
             Disallow: /api/
             Disallow: /contact
 
+            User-agent: GPTBot
+            Allow: /
+            Disallow: /s/
+            Disallow: /api/
+
+            User-agent: ChatGPT-User
+            Allow: /
+
+            User-agent: Google-Extended
+            Allow: /
+
+            User-agent: anthropic-ai
+            Allow: /
+
+            User-agent: PerplexityBot
+            Allow: /
+
+            User-agent: ClaudeBot
+            Allow: /
+
             Sitemap: {$sitemap}
+            LLMs: {$llms}
             TXT;
 
         return response($content, 200, ['Content-Type' => 'text/plain']);

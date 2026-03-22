@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => 'Discover use cases',
 
     // FAQ (structured data)
+    'faq_title' => 'Frequently asked questions',
     'faq_q1' => 'How does Secret Drop encrypt my data?',
     'faq_a1' => 'Your browser generates a random encryption key and encrypts your content locally using AES-256-GCM via the Web Crypto API. The server only receives and stores encrypted data — it never sees the plaintext.',
     'faq_q2' => 'Can the server read my secrets?',

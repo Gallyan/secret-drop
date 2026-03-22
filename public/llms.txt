@@ -18,10 +18,11 @@ Secret Drop allows users to securely share secrets (text or files) with end-to-e
 - Client-side encryption (WebCrypto API)
 - Zero-knowledge architecture
 - Optional passphrase protection
-- Auto-expiration (1 hour to 30 days)
+- Auto-expiration (1 hour to 90 days)
 - Single-use or limited views options
-- File support up to 100MB
+- File support up to 10MB
 - No account required
+- Available in 11 languages
 
 ## Privacy
 

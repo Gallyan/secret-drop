@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => 'Descubrir casos de uso',
 
     // FAQ (structured data)
+    'faq_title' => 'Preguntas frecuentes',
     'faq_q1' => '¿Cómo cifra Secret Drop mis datos?',
     'faq_a1' => 'Su navegador genera una clave de cifrado aleatoria y cifra su contenido localmente con AES-256-GCM a través de la API Web Crypto. El servidor solo recibe y almacena datos cifrados.',
     'faq_q2' => '¿Puede el servidor leer mis secretos?',

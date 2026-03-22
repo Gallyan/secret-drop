@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => 'Anwendungsfälle entdecken',
 
     // FAQ (structured data)
+    'faq_title' => 'Häufig gestellte Fragen',
     'faq_q1' => 'Wie verschlüsselt Secret Drop meine Daten?',
     'faq_a1' => 'Ihr Browser erzeugt einen zufälligen Verschlüsselungsschlüssel und verschlüsselt Ihre Inhalte lokal mit AES-256-GCM über die Web Crypto API. Der Server empfängt und speichert nur verschlüsselte Daten.',
     'faq_q2' => 'Kann der Server meine Geheimnisse lesen?',

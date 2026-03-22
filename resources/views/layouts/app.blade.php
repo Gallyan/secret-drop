@@ -81,7 +81,22 @@
             "{{ __('messages.feature_zero_knowledge') }}",
             "{{ __('messages.feature_auto_destroy') }}",
             "{{ __('messages.feature_expiration') }}"
-        ]
+        ],
+        "author": {
+            "@@type": "Organization",
+            "name": "{{ config('legal.editor_name') }}",
+            "url": "{{ url('/') }}"@if(config('legal.contact_email')),
+            "email": "{{ config('legal.contact_email') }}"@endif
+        }
+    }
+    </script>
+    <script type="application/ld+json" nonce="@nonce">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Organization",
+        "name": "{{ config('legal.editor_name') }}",
+        "url": "{{ url('/') }}"@if(config('legal.contact_email')),
+        "email": "{{ config('legal.contact_email') }}"@endif
     }
     </script>
     @endif

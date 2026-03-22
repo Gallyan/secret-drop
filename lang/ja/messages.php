@@ -175,6 +175,7 @@ return [
     'how_see_use_cases' => '使用例を見る',
 
     // FAQ (structured data)
+    'faq_title' => 'よくある質問',
     'faq_q1' => 'Secret Dropはどのようにデータを暗号化しますか？',
     'faq_a1' => 'ブラウザがランダムな暗号化キーを生成し、Web Crypto APIを使用してAES-256-GCMでコンテンツをローカルで暗号化します。サーバーは暗号化されたデータのみを受信・保存します。',
     'faq_q2' => 'サーバーは私のシークレットを読むことができますか？',
