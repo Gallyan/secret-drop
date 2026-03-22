@@ -343,6 +343,8 @@ return [
     'a11y_decrypted_content' => '복호화된 콘텐츠',
     'a11y_switch_light' => '라이트 모드로 전환',
     'a11y_switch_dark' => '다크 모드로 전환',
+    'a11y_skip_to_content' => '콘텐츠로 건너뛰기',
+    'a11y_passphrase_criteria' => '패스프레이즈 강도 기준',
     'a11y_back' => '뒤로',
     'a11y_period_selector' => '기간 선택',
     'a11y_extend_days' => '연장할 일수',

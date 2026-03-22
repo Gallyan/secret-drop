@@ -45,6 +45,22 @@
         @else
             {{-- Secrets list --}}
             <div class="space-y-4" x-data="adminSecrets">
+                {{-- Error banner --}}
+                <div
+                    x-show="errorMessage"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 -translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    role="alert"
+                    aria-live="assertive"
+                    class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-sm text-red-700 dark:text-red-300"
+                    x-text="errorMessage"
+                ></div>
+
                 {{-- Revoke confirmation modal --}}
                 <div
                     x-show="showRevokeModal"

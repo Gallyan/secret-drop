@@ -343,6 +343,8 @@ return [
     'a11y_decrypted_content' => 'Contenuto decifrato',
     'a11y_switch_light' => 'Passa alla modalità chiara',
     'a11y_switch_dark' => 'Passa alla modalità scura',
+    'a11y_skip_to_content' => 'Vai al contenuto',
+    'a11y_passphrase_criteria' => 'Criteri di sicurezza della passphrase',
     'a11y_back' => 'Indietro',
     'a11y_period_selector' => 'Seleziona periodo',
     'a11y_extend_days' => 'Numero di giorni da estendere',

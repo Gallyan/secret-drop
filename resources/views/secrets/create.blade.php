@@ -62,8 +62,10 @@
                         <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button
                                 type="button"
+                                id="tab-text"
                                 role="tab"
                                 :aria-selected="mode === 'text'"
+                                aria-controls="tabpanel-text"
                                 @click="setModeText()"
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
@@ -75,8 +77,10 @@
                             </button>
                             <button
                                 type="button"
+                                id="tab-file"
                                 role="tab"
                                 :aria-selected="mode === 'file'"
+                                aria-controls="tabpanel-file"
                                 @click="setModeFile()"
                                 :class="mode === 'file' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
@@ -89,7 +93,7 @@
                         </div>
 
                         {{-- Text mode: Secret textarea --}}
-                        <div x-show="mode === 'text'">
+                        <div x-show="mode === 'text'" id="tabpanel-text" role="tabpanel" aria-labelledby="tab-text">
                             <label for="secret" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                 {{ __('messages.your_secret') }}
                             </label>
@@ -105,7 +109,8 @@
                         </div>
 
                         {{-- File mode: Drag & drop zone --}}
-                        <div x-show="mode === 'file'" x-cloak>
+                        {{-- Note: both tabpanels share this container; file panel starts here --}}
+                        <div x-show="mode === 'file'" x-cloak id="tabpanel-file" role="tabpanel" aria-labelledby="tab-file">
                             <label for="fileInput" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
                                 {{ __('messages.your_file') }}
                             </label>
@@ -404,31 +409,36 @@
                                             ></div>
                                         </div>
                                         {{-- Criteria list --}}
-                                        <ul class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                                        <ul class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs" aria-label="{{ __('messages.a11y_passphrase_criteria') }}">
                                             <li class="flex items-center gap-1.5 transition-colors" :class="hasMinLength() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
-                                                <svg x-show="hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                <svg x-show="!hasMinLength()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="hasMinLength()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasMinLength()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_min_length') }}</span>
+                                                <span class="sr-only" x-text="hasMinLength() ? '✓' : '✗'"></span>
                                             </li>
                                             <li class="flex items-center gap-1.5 transition-colors" :class="hasLowercase() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
-                                                <svg x-show="hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                <svg x-show="!hasLowercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="hasLowercase()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasLowercase()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_lowercase') }}</span>
+                                                <span class="sr-only" x-text="hasLowercase() ? '✓' : '✗'"></span>
                                             </li>
                                             <li class="flex items-center gap-1.5 transition-colors" :class="hasUppercase() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
-                                                <svg x-show="hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                <svg x-show="!hasUppercase()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="hasUppercase()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasUppercase()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_uppercase') }}</span>
+                                                <span class="sr-only" x-text="hasUppercase() ? '✓' : '✗'"></span>
                                             </li>
                                             <li class="flex items-center gap-1.5 transition-colors" :class="hasDigit() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
-                                                <svg x-show="hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                <svg x-show="!hasDigit()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="hasDigit()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasDigit()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_digit') }}</span>
+                                                <span class="sr-only" x-text="hasDigit() ? '✓' : '✗'"></span>
                                             </li>
                                             <li class="flex items-center gap-1.5 transition-colors" :class="hasSpecial() ? 'text-green-700 dark:text-green-300' : 'text-gray-500 dark:text-slate-400'">
-                                                <svg x-show="hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                <svg x-show="!hasSpecial()" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="hasSpecial()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                <svg x-show="!hasSpecial()" aria-hidden="true" class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                                                 <span>{{ __('messages.passphrase_special') }}</span>
+                                                <span class="sr-only" x-text="hasSpecial() ? '✓' : '✗'"></span>
                                             </li>
                                         </ul>
                                     </div>

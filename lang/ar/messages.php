@@ -343,6 +343,8 @@ return [
     'a11y_decrypted_content' => 'المحتوى المفكك تشفيره',
     'a11y_switch_light' => 'التبديل إلى الوضع الفاتح',
     'a11y_switch_dark' => 'التبديل إلى الوضع الداكن',
+    'a11y_skip_to_content' => 'الانتقال إلى المحتوى',
+    'a11y_passphrase_criteria' => 'معايير قوة عبارة المرور',
     'a11y_back' => 'رجوع',
     'a11y_period_selector' => 'اختر الفترة',
     'a11y_extend_days' => 'عدد أيام التمديد',

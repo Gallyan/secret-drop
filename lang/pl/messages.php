@@ -343,6 +343,8 @@ return [
     'a11y_decrypted_content' => 'Odszyfrowana treść',
     'a11y_switch_light' => 'Przełącz na tryb jasny',
     'a11y_switch_dark' => 'Przełącz na tryb ciemny',
+    'a11y_skip_to_content' => 'Przejdź do treści',
+    'a11y_passphrase_criteria' => 'Kryteria siły hasła',
     'a11y_back' => 'Wstecz',
     'a11y_period_selector' => 'Wybierz okres',
     'a11y_extend_days' => 'Liczba dni do przedłużenia',

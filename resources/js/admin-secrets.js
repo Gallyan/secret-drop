@@ -3,6 +3,7 @@ export default () => ({
         showRevokeModal: false,
         pendingRevokeId: null,
         pendingRevokeEl: null,
+        errorMessage: '',
 
         init() {
             this.$watch('showRevokeModal', (value) => {
@@ -22,8 +23,13 @@ export default () => ({
 
         closeRevokeModal() {
             this.showRevokeModal = false;
+            const triggerEl = this.pendingRevokeEl;
             this.pendingRevokeId = null;
             this.pendingRevokeEl = null;
+
+            if (triggerEl) {
+                this.$nextTick(() => triggerEl.focus());
+            }
         },
 
         async confirmRevoke() {
@@ -31,6 +37,14 @@ export default () => ({
                 this.showRevokeModal = false;
                 await this.revoke(this.pendingRevokeId, this.pendingRevokeEl);
             }
+        },
+
+        showError(message) {
+            this.errorMessage = message;
+
+            setTimeout(() => {
+                this.errorMessage = '';
+            }, 5000);
         },
 
         async extend(buttonEl) {
@@ -54,10 +68,12 @@ export default () => ({
                     window.location.reload();
                 } else {
                     const result = await response.json();
-                    alert(result.error || 'Error extending secret');
+                    this.showError(result.error || 'Error extending secret');
+                    buttonEl.focus();
                 }
-            } catch (error) {
-                alert('Connection error');
+            } catch {
+                this.showError('Connection error');
+                buttonEl.focus();
             } finally {
                 data.extending = false;
             }
@@ -82,10 +98,12 @@ export default () => ({
                     window.location.reload();
                 } else {
                     const result = await response.json();
-                    alert(result.error || 'Error revoking secret');
+                    this.showError(result.error || 'Error revoking secret');
+                    buttonEl.focus();
                 }
-            } catch (error) {
-                alert('Connection error');
+            } catch {
+                this.showError('Connection error');
+                buttonEl.focus();
             } finally {
                 data.revoking = false;
             }

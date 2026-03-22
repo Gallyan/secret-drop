@@ -343,6 +343,8 @@ return [
     'a11y_decrypted_content' => 'Ontsleutelde inhoud',
     'a11y_switch_light' => 'Schakel naar lichte modus',
     'a11y_switch_dark' => 'Schakel naar donkere modus',
+    'a11y_skip_to_content' => 'Ga naar inhoud',
+    'a11y_passphrase_criteria' => 'Wachtwoordsterktecriteria',
     'a11y_back' => 'Terug',
     'a11y_period_selector' => 'Periode selecteren',
     'a11y_extend_days' => 'Aantal dagen om te verlengen',

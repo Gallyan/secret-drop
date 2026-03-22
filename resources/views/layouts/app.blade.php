@@ -131,13 +131,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-screen">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-[200] focus:px-4 focus:py-2 focus:bg-violet-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+        {{ __('messages.a11y_skip_to_content') }}
+    </a>
+
     {{-- Desktop: top-right --}}
     <div class="hidden sm:flex absolute top-4 end-4 z-50 items-center gap-2">
         <x-language-switcher />
         <x-theme-toggle />
     </div>
 
-    <main>
+    <main id="main-content">
         @yield('content')
     </main>
 
