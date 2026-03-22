@@ -1,24 +1,56 @@
-<div
+<label
     x-data="themeToggle"
-    class="relative"
+    class="group relative w-22 h-10 rounded-xl cursor-pointer overflow-hidden select-none
+           bg-linear-to-b from-sky-400 to-blue-600
+           shadow-[inset_0_2px_6px_rgba(255,255,255,0.42),inset_0_-6px_12px_rgba(0,0,0,0.25),0_8px_14px_rgba(0,0,0,0.18)]
+           transition-[background,box-shadow] duration-700
+           has-checked:bg-linear-to-b has-checked:from-[#0f1b3a] has-checked:to-[#050b17]"
+    data-label-light="{{ __('messages.a11y_switch_light') }}"
+    data-label-dark="{{ __('messages.a11y_switch_dark') }}"
+    :aria-label="ariaLabel()"
 >
-    <button
-        @click="toggle()"
-        type="button"
-        class="flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-slate-700/50 hover:border-violet-500/50 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all shadow-sm cursor-pointer"
-        data-label-light="{{ __('messages.a11y_switch_light') }}"
-        data-label-dark="{{ __('messages.a11y_switch_dark') }}"
-        :aria-label="ariaLabel()"
-    >
-        <template x-if="dark">
-            <svg class="w-5 h-5 text-amber-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/>
-            </svg>
-        </template>
-        <template x-if="!dark">
-            <svg class="w-5 h-5 text-violet-600" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-            </svg>
-        </template>
-    </button>
-</div>
+    <input type="checkbox" class="sr-only" :checked="dark" @change="toggle()" />
+
+    {{-- Stars (night) --}}
+    <div class="absolute inset-0 opacity-0 group-has-checked:opacity-100 transition-opacity duration-700">
+        <span class="star star--xs" style="top:20%;left:16%;animation-delay:.15s"></span>
+        <span class="star star--xs" style="top:55%;left:38%;animation-delay:.55s"></span>
+        <span class="star" style="top:22%;left:62%;animation-delay:.9s"></span>
+        <span class="star star--xs" style="top:50%;left:80%;animation-delay:1.2s"></span>
+    </div>
+
+    {{-- Cloud (day) - main --}}
+    <div class="absolute bottom-1.5 left-8.5 w-3.5 h-1.5 rounded-full bg-white
+                shadow-[-6px_-4px_0_4px_white,4px_-6px_0_4px_white,14px_-2px_0_4px_white,22px_0_0_2px_white,4px_2px_4px_rgba(0,0,0,0.06)]
+                transition-all duration-700
+                group-has-checked:opacity-0 group-has-checked:-translate-x-2 group-has-checked:blur-[1px]"></div>
+
+    {{-- Cloud (day) - small --}}
+    <div class="absolute bottom-4.5 left-14 w-2 h-1 rounded-full bg-white/90
+                shadow-[-4px_-2px_0_2px_rgba(255,255,255,0.9),3px_-4px_0_2px_rgba(255,255,255,0.9),8px_0_0_1px_rgba(255,255,255,0.9),2px_1px_3px_rgba(0,0,0,0.04)]
+                transition-all duration-700 delay-75
+                group-has-checked:opacity-0 group-has-checked:-translate-x-2 group-has-checked:blur-[1px]"></div>
+
+    {{-- Glow overlay --}}
+    <div class="absolute inset-0 opacity-100 transition-opacity duration-700
+                bg-[radial-gradient(72px_48px_at_30%_40%,rgba(255,255,255,0.35),transparent_60%)]
+                group-has-checked:opacity-70 group-has-checked:bg-[radial-gradient(88px_60px_at_70%_35%,rgba(255,255,255,0.16),transparent_60%)]"></div>
+
+    {{-- Thumb wrapper --}}
+    <div class="absolute top-1 left-1 w-8 h-8 rounded-full transition-transform duration-700 ease-[cubic-bezier(.2,.9,.2,1)]
+                group-has-checked:translate-x-12">
+        {{-- Sun --}}
+        <div class="absolute inset-0 rounded-full
+                    bg-[radial-gradient(circle_at_30%_30%,#fff7b1,#ffc933_60%,#f4a000)]
+                    shadow-[0_6px_12px_rgba(0,0,0,0.25),inset_0_2px_4px_rgba(255,255,255,0.5),inset_0_-6px_10px_rgba(0,0,0,0.12)]
+                    transition-opacity duration-500 group-has-checked:opacity-0"></div>
+
+        {{-- Moon --}}
+        <div class="absolute inset-0 rounded-full opacity-0 group-has-checked:opacity-100 transition-opacity duration-500
+                    bg-[radial-gradient(circle_at_30%_30%,#ffffff,#d9dde8_62%,#a9b2c7)]
+                    shadow-[0_6px_14px_rgba(0,0,0,0.40),inset_-6px_-6px_0_rgba(0,0,0,0.10),inset_6px_6px_0_rgba(255,255,255,0.15)]">
+            <span class="absolute top-1.5 left-2.5 w-1 h-1 rounded-full bg-slate-300/70 shadow-[inset_2px_2px_0_rgba(255,255,255,0.30)]"></span>
+            <span class="absolute top-3.5 left-4 w-1.5 h-1.5 rounded-full bg-slate-400/50 shadow-[inset_2px_2px_0_rgba(255,255,255,0.25)]"></span>
+        </div>
+    </div>
+</label>
