@@ -81,13 +81,14 @@ class AdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
+        $request->session()->put('admin_expires_at', now()->addMinutes(30)->timestamp);
 
         return redirect()->route('admin.dashboard');
     }
 
     public function dashboard(Request $request): View|RedirectResponse
     {
-        $emailHash = $request->session()->get(self::SESSION_KEY);
+        $emailHash = $this->authenticatedEmailHash($request);
 
         if (! $emailHash) {
             return redirect()->route('admin.index');
@@ -110,7 +111,7 @@ class AdminController extends Controller
 
     public function revoke(Request $request, string $locale, string $id): JsonResponse
     {
-        $emailHash = $request->session()->get(self::SESSION_KEY);
+        $emailHash = $this->authenticatedEmailHash($request);
 
         if (! $emailHash) {
             return response()->json(['error' => 'unauthorized'], 403);
@@ -142,7 +143,7 @@ class AdminController extends Controller
 
     public function extend(ExtendSecretRequest $request, string $locale, string $id): JsonResponse
     {
-        $emailHash = $request->session()->get(self::SESSION_KEY);
+        $emailHash = $this->authenticatedEmailHash($request);
 
         if (! $emailHash) {
             return response()->json(['error' => 'unauthorized'], 403);
@@ -170,5 +171,25 @@ class AdminController extends Controller
             'success' => true,
             'expire_at' => $secret->expire_at->toIso8601String(),
         ]);
+    }
+
+    private function authenticatedEmailHash(Request $request): ?string
+    {
+        $emailHash = $request->session()->get(self::SESSION_KEY);
+
+        if (! $emailHash) {
+            return null;
+        }
+
+        $expiresAt = $request->session()->get('admin_expires_at');
+
+        if ($expiresAt && $expiresAt < now()->timestamp) {
+            $request->session()->forget(self::SESSION_KEY);
+            $request->session()->forget('admin_expires_at');
+
+            return null;
+        }
+
+        return $emailHash;
     }
 }
