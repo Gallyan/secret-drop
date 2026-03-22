@@ -24,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);
 
+        $middleware->appendToGroup('web', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
+        $middleware->appendToGroup('api', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
+
         $middleware->prependToPriorityList(
             before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
             prepend: SetLocale::class,
