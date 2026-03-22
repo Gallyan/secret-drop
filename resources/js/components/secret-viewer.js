@@ -90,7 +90,7 @@ export default () => ({
 
                 this.parseFragment();
             } catch (e) {
-                console.error('Load error:', e);
+                console.error('Load error');
                 this.loadError = {
                     type: 'error',
                     message: t('error_connection'),
@@ -194,7 +194,7 @@ export default () => ({
                     }
                 });
             } catch (e) {
-                console.error('Decryption error:', e);
+                console.error('Decryption error');
 
                 if (e.name === 'OperationError') {
                     this.error = this.needsPassphrase
@@ -300,7 +300,7 @@ export default () => ({
                     },
                 });
             } catch (e) {
-                console.error('Failed to confirm read:', e);
+                console.error('Failed to confirm read');
             }
         },
 

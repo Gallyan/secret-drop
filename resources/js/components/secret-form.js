@@ -197,7 +197,7 @@ export default () => ({
                     await this.submitFile(passphrase);
                 }
             } catch (e) {
-                console.error('Encryption error:', e);
+                console.error('Encryption error');
                 this.error = e.message || t('crypto_creation_error');
             } finally {
                 this.isSubmitting = false;
@@ -401,7 +401,7 @@ export default () => ({
                         errorCorrectionLevel: 'M'
                     });
                 } catch (e) {
-                    console.error('QR Code generation failed:', e);
+                    console.error('QR Code generation failed');
                     this.error = t('qr_generation_failed');
                     return;
                 }
@@ -446,7 +446,7 @@ export default () => ({
                     await this.submitFile(this.pendingPassphrase);
                 }
             } catch (e) {
-                console.error('Submission error:', e);
+                console.error('Submission error');
                 this.error = e.message || t('crypto_creation_error');
             } finally {
                 this.isSubmitting = false;
