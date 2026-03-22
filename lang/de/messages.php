@@ -244,7 +244,7 @@ return [
     'admin_not_found_title' => 'Geheimnis nicht gefunden',
     'admin_not_found_description' => 'Dieses Geheimnis existiert nicht oder wurde gelöscht.',
     'admin_dashboard_title' => 'Meine Geheimnisse',
-    'admin_secrets_count' => ':count Geheimnis(se)',
+    'admin_secrets_count' => ':count Geheimnisse',
     'admin_logout' => 'Abmelden',
     'admin_no_secrets' => 'Keine Geheimnisse gefunden',
     'admin_no_secrets_description' => 'Sie haben keine Geheimnisse mit dieser E-Mail-Adresse erstellt.',

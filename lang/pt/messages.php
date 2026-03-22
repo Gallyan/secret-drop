@@ -339,7 +339,7 @@ return [
     'a11y_show_passphrase' => 'Mostrar frase secreta',
     'a11y_hide_passphrase' => 'Ocultar frase secreta',
     'a11y_footer_nav' => 'Navegação do rodapé',
-    'a11y_remove_file' => 'Remover ficheiro',
+    'a11y_remove_file' => 'Remover arquivo',
     'a11y_decrypted_content' => 'Conteúdo decifrado',
     'a11y_switch_light' => 'Mudar para modo claro',
     'a11y_switch_dark' => 'Mudar para modo escuro',

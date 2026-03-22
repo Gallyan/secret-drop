@@ -324,7 +324,7 @@ return [
     'day_sunday' => 'Dom',
     'day_monday' => 'Lun',
     'day_tuesday' => 'Mar',
-    'day_wednesday' => 'Mié',
+    'day_wednesday' => 'Mi',
     'day_thursday' => 'Jue',
     'day_friday' => 'Vie',
     'day_saturday' => 'Sáb',

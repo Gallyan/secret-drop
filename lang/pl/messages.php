@@ -244,7 +244,7 @@ return [
     'admin_not_found_title' => 'Sekret nie znaleziony',
     'admin_not_found_description' => 'Ten sekret nie istnieje lub został usunięty.',
     'admin_dashboard_title' => 'Moje sekrety',
-    'admin_secrets_count' => ':count sekret(ów)',
+    'admin_secrets_count' => ':count sekretów',
     'admin_logout' => 'Wyloguj',
     'admin_no_secrets' => 'Nie znaleziono sekretów',
     'admin_no_secrets_description' => 'Nie utworzyłeś żadnych sekretów z tym adresem e-mail.',

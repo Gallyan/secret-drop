@@ -33,7 +33,7 @@ return [
     'tab_file' => 'Bestand',
 
     // Form placeholders
-    'secret_placeholder' => 'Voer uw vertrouwelijke bericht in...',
+    'secret_placeholder' => 'Voer uw vertrouwelijk bericht in...',
     'max_reads_placeholder' => 'Onbeperkt',
 
     // Expiration options
@@ -225,7 +225,7 @@ return [
     'legal_data_not_item_file_meta' => 'Bestandsnaam, -type en -grootte (versleuteld met inhoud)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Deze website gebruikt alleen essentiële technische cookies (sessie, themavoorkeur). Er worden geen tracking- of advertentiecookies gebruikt.',
-    'legal_cookies_cnil' => 'In overeenstemming met CNIL-aanbevelingen zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',
+    'legal_cookies_cnil' => 'In overeenstemming met de CNIL-aanbevelingen zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',
     'legal_contact_title' => 'Contact',
     'legal_contact_text' => 'Voor vragen over deze website kunt u contact opnemen via :email.',
     'legal_contact_prefix' => 'Voor vragen over deze website kunt u contact opnemen via',
