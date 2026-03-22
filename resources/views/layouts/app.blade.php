@@ -114,6 +114,7 @@
             'a11y_hide_passphrase',
         ]));
     @endphp
+    <style nonce="@nonce">[x-cloak]{display:none!important}</style>
     <script nonce="@nonce">
         {{-- Only expose translations needed by JS --}}
         window.translations = @json($jsTranslations);
