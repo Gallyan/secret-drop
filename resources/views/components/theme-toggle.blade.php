@@ -3,6 +3,7 @@
     class="group relative w-22 h-10 rounded-xl cursor-pointer overflow-hidden select-none
            bg-linear-to-b from-sky-400 to-blue-600 dark:from-[#0f1b3a] dark:to-[#050b17]
            shadow-[inset_0_2px_6px_rgba(255,255,255,0.42),inset_0_-6px_12px_rgba(0,0,0,0.25),0_8px_14px_rgba(0,0,0,0.18)]
+           ring-1 ring-transparent dark:ring-white/10
            transition-[background,box-shadow] duration-700"
     data-label-light="{{ __('messages.a11y_switch_light') }}"
     data-label-dark="{{ __('messages.a11y_switch_dark') }}"
