@@ -237,7 +237,7 @@ return [
     'legal_data_not_item_file_meta' => 'File name, type and size (encrypted with content)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'This website only uses essential technical cookies (session, theme preference). No tracking or advertising cookies are used.',
-    'legal_cookies_cnil' => 'In accordance with CNIL recommendations, these strictly necessary cookies are exempt from consent requirements.',
+    'legal_cookies_cnil' => 'In accordance with CNIL (French data protection authority) recommendations, these strictly necessary cookies are exempt from consent requirements.',
     'legal_contact_title' => 'Contact',
     'legal_contact_text' => 'For any questions about this website, you can contact us at :email.',
     'legal_contact_prefix' => 'For any questions about this website, you can contact us at',
@@ -256,7 +256,7 @@ return [
     'admin_not_found_title' => 'Secret not found',
     'admin_not_found_description' => 'This secret does not exist or has been deleted.',
     'admin_dashboard_title' => 'My secrets',
-    'admin_secrets_count' => ':count secret(s)',
+    'admin_secrets_count' => '{1} :count secret|[2,*] :count secrets',
     'admin_logout' => 'Log out',
     'admin_no_secrets' => 'No secrets found',
     'admin_no_secrets_description' => 'You have not created any secrets with this email address.',
@@ -269,7 +269,7 @@ return [
     'admin_read_count' => 'Read count',
     'admin_first_read' => 'First read',
     'admin_mode' => 'Mode',
-    'admin_limited_views' => ':count view(s) max',
+    'admin_limited_views' => '{1} :count view max|[2,*] :count views max',
     'admin_unlimited' => 'Unlimited',
     'admin_day' => 'day',
     'admin_days' => 'days',
@@ -385,7 +385,7 @@ return [
     'btn_unlock' => 'Unlock',
 
     // Stats
-    'stat_split_mode' => 'Separate mode',
+    'stat_split_mode' => 'Split mode',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Too many requests. Please solve the calculation below to continue.',

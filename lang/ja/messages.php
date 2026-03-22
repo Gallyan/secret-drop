@@ -237,7 +237,7 @@ return [
     'legal_data_not_item_file_meta' => 'ファイル名、タイプ、サイズ（コンテンツと共に暗号化）',
     'legal_cookies_title' => 'Cookie',
     'legal_cookies_text' => 'このサイトは必須の技術的Cookieのみを使用しています（セッション、テーマ設定）。トラッキングや広告Cookieは使用していません。',
-    'legal_cookies_cnil' => 'CNIL勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',
+    'legal_cookies_cnil' => 'CNIL（フランスのデータ保護機関）勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',
     'legal_contact_title' => 'お問い合わせ',
     'legal_contact_text' => 'このサイトに関するご質問は :email までお問い合わせください。',
     'legal_contact_prefix' => 'このサイトに関するご質問はこちらまでお問い合わせください：',

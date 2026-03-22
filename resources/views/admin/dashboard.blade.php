@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('messages.admin_dashboard_title') }}</h1>
-                    <p class="text-sm text-gray-500 dark:text-slate-400">{{ __('messages.admin_secrets_count', ['count' => count($secrets)]) }}</p>
+                    <p class="text-sm text-gray-500 dark:text-slate-400">{{ trans_choice('messages.admin_secrets_count', count($secrets), ['count' => count($secrets)]) }}</p>
                 </div>
             </div>
             <form action="{{ route('admin.logout') }}" method="POST">
@@ -203,7 +203,7 @@
                                     <div class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
                                         <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_mode') }}</p>
                                         <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $secret->max_views ? __('messages.admin_limited_views', ['count' => $secret->max_views]) : __('messages.admin_unlimited') }}
+                                            {{ $secret->max_views ? trans_choice('messages.admin_limited_views', $secret->max_views, ['count' => $secret->max_views]) : __('messages.admin_unlimited') }}
                                         </p>
                                     </div>
                                 </div>
