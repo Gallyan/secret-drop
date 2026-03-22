@@ -401,6 +401,8 @@
                                         x-transition:enter-start="opacity-0"
                                         x-transition:enter-end="opacity-100"
                                         class="mt-1.5"
+                                        aria-live="polite"
+                                        aria-atomic="true"
                                     >
                                         <div class="h-1 w-full bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                             <div

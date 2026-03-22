@@ -71,6 +71,9 @@ export default () => ({
 
         this.highlightedIndex = 0;
         this.updateHighlight();
+
+        const visible = this.getVisibleItems();
+        this.$refs.resultCount.textContent = visible.length + ' / ' + items.length;
     },
 
     updateHighlight() {

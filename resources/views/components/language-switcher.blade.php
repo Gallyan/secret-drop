@@ -100,6 +100,7 @@
                         :aria-activedescendant="activeDescendantId()"
                     />
                     <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400">ESC</kbd>
+                    <span x-ref="resultCount" class="sr-only" aria-live="polite" aria-atomic="true"></span>
                 </div>
 
                 {{-- Results --}}

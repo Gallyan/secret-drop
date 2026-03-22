@@ -89,6 +89,31 @@
             body {
                 background-color: #1f2937;
             }
+            .container {
+                background-color: #1f2937;
+                border: 1px solid #374151;
+            }
+            .content p {
+                color: #d1d5db;
+            }
+            .warning {
+                background-color: #451a03;
+                border-left-color: #d97706;
+            }
+            .warning p {
+                color: #fde68a;
+            }
+            .url-box {
+                background-color: #111827;
+                color: #9ca3af;
+            }
+            .url-box a {
+                color: #9ca3af;
+            }
+            .footer {
+                background-color: #111827;
+                border-top-color: #374151;
+            }
         }
     </style>
 </head>
@@ -110,7 +135,7 @@
             </div>
 
             <p style="font-size: 14px; color: #6b7280;">{{ __('messages.email_link_label') }}</p>
-            <div class="url-box">{{ $verifyUrl }}</div>
+            <div class="url-box"><a href="{{ $verifyUrl }}" style="color: #6b7280; text-decoration: none;">{{ $verifyUrl }}</a></div>
         </div>
 
         <div class="footer">

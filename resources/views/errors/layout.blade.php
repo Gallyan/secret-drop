@@ -9,7 +9,7 @@
                     @yield('icon')
                 </div>
 
-                <p class="text-7xl font-bold text-gray-200 dark:text-slate-700 mb-4 transition-colors">
+                <p class="text-7xl font-bold text-gray-200 dark:text-slate-700 mb-4 transition-colors" aria-hidden="true">
                     @yield('code')
                 </p>
 
