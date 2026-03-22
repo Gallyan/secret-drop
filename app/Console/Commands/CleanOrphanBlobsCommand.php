@@ -25,7 +25,7 @@ class CleanOrphanBlobsCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info('Found ' . count($files) . ' files in storage.');
+        $this->info('Found '.count($files).' files in storage.');
 
         $validPaths = Secret::query()
             ->where('type', 'file')
@@ -41,7 +41,7 @@ class CleanOrphanBlobsCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->info(($dryRun ? '[DRY RUN] ' : '') . 'Found ' . count($orphans) . ' orphan blobs to delete.');
+        $this->info(($dryRun ? '[DRY RUN] ' : '').'Found '.count($orphans).' orphan blobs to delete.');
 
         $deleted = 0;
         foreach ($orphans as $file) {

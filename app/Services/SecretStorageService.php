@@ -112,6 +112,6 @@ class SecretStorageService
      */
     private function buildPath(string $token): string
     {
-        return substr($token, 0, 2) . '/' . $token;
+        return substr($token, 0, 2).'/'.$token;
     }
 }

@@ -26,11 +26,11 @@ class SecretStorageServiceTest extends TestCase
     public function testStoreCreatesFileOnDisk(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'test_token_' . uniqid();
+        $token = 'test_token_'.uniqid();
 
         $path = $this->storage->store($token, $file);
 
-        $this->assertEquals(substr($token, 0, 2) . '/' . $token, $path);
+        $this->assertEquals(substr($token, 0, 2).'/'.$token, $path);
         $this->assertTrue($this->storage->exists($path));
     }
 
@@ -42,7 +42,7 @@ class SecretStorageServiceTest extends TestCase
     public function testExistsReturnsTrueForExistingFile(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 50);
-        $token = 'exists_test_' . uniqid();
+        $token = 'exists_test_'.uniqid();
 
         $path = $this->storage->store($token, $file);
 
@@ -53,7 +53,7 @@ class SecretStorageServiceTest extends TestCase
     {
         $content = str_repeat('x', 1024);
         $file = UploadedFile::fake()->createWithContent('test.bin', $content);
-        $token = 'size_test_' . uniqid();
+        $token = 'size_test_'.uniqid();
 
         $path = $this->storage->store($token, $file);
 
@@ -64,7 +64,7 @@ class SecretStorageServiceTest extends TestCase
     public function testDeleteRemovesFileAndEmptyDirectory(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'delete_test_' . uniqid();
+        $token = 'delete_test_'.uniqid();
 
         $path = $this->storage->store($token, $file);
         $this->assertTrue($this->storage->exists($path));
@@ -86,7 +86,7 @@ class SecretStorageServiceTest extends TestCase
     public function testDownloadReturnsStreamedResponse(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'download_test_' . uniqid();
+        $token = 'download_test_'.uniqid();
 
         $path = $this->storage->store($token, $file);
 
@@ -98,7 +98,7 @@ class SecretStorageServiceTest extends TestCase
     public function testReadStreamReturnsResource(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'stream_test_' . uniqid();
+        $token = 'stream_test_'.uniqid();
 
         $path = $this->storage->store($token, $file);
 
