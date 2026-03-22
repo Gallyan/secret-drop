@@ -13,9 +13,10 @@ export default () => ({
 
     openPalette() {
         this.isOpen = true;
-        this.highlightedIndex = 0;
 
         const items = this.getItems();
+        const currentIndex = items.findIndex(item => item.getAttribute('aria-current') === 'true');
+        this.highlightedIndex = currentIndex >= 0 ? currentIndex : 0;
         items.forEach(item => {
             item.style.display = '';
             item.removeAttribute('aria-selected');
@@ -26,6 +27,8 @@ export default () => ({
         setTimeout(() => {
             this.$refs.searchInput.value = '';
             this.$refs.searchInput.focus();
+            const visible = this.getVisibleItems();
+            visible[this.highlightedIndex]?.scrollIntoView({ block: 'nearest' });
         }, 100);
     },
 
