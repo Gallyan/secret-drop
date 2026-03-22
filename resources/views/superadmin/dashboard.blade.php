@@ -190,7 +190,7 @@
             <canvas id="pageviewsChart" height="80" role="img" aria-label="{{ __('messages.stat_pageviews_title') }}"></canvas>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {{-- By page --}}
             <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_page') }}</h3>
@@ -248,6 +248,33 @@
                 </div>
                 <div class="flex gap-0.5 mt-1">
                     @foreach($pageviews['by_hour'] as $hour => $count)
+                        <div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">
+                            @if($hour % 6 === 0){{ $hour }}@endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- By local hour --}}
+            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_local_hour') }}</h3>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_local_hour_note') }}</p>
+                @php
+                    $maxLocalHour = max(1, max($pageviews['by_local_hour']));
+                    $localBarMaxPx = 96;
+                @endphp
+                <div class="flex items-end gap-0.5" style="height: {{ $localBarMaxPx }}px">
+                    @foreach($pageviews['by_local_hour'] as $hour => $count)
+                        @php $heightPx = max(2, (int) (($count / $maxLocalHour) * $localBarMaxPx)); @endphp
+                        <div
+                            class="flex-1 bg-amber-500/80 dark:bg-amber-400/80 rounded-t-sm transition-colors hover:bg-amber-600 dark:hover:bg-amber-300"
+                            style="height: {{ $heightPx }}px"
+                            title="{{ $hour }}h: {{ $count }}"
+                        ></div>
+                    @endforeach
+                </div>
+                <div class="flex gap-0.5 mt-1">
+                    @foreach($pageviews['by_local_hour'] as $hour => $count)
                         <div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">
                             @if($hour % 6 === 0){{ $hour }}@endif
                         </div>

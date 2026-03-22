@@ -317,6 +317,8 @@ return [
     'stat_magic_links_requested' => '요청된 매직 링크',
     'stat_magic_links_used' => '사용된 매직 링크',
     'stat_by_hour' => '시간별',
+    'stat_by_local_hour' => '현지 시간별',
+    'stat_local_hour_note' => '방문자 브라우저 시간 기준',
     'stat_by_country' => '국가별',
     'stat_by_page' => '페이지별',
     'stat_conversion' => '전환율',

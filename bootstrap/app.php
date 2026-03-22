@@ -34,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
             prepend: SetLocale::class,
         );
 
+        $middleware->encryptCookies(except: ['tz_offset']);
+
         $middleware->alias([
             'throttle.captcha' => ThrottleWithCaptcha::class,
             'no.cache' => NoCacheHeaders::class,

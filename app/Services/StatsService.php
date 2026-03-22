@@ -266,7 +266,31 @@ class StatsService
             'by_page' => $byPage,
             'by_country' => $byCountry,
             'by_hour' => $byHour,
+            'by_local_hour' => $this->getLocalHours($startDate),
             'daily' => $daily,
         ];
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function getLocalHours(?string $startDate = null): array
+    {
+        $query = DB::table('stats_local_hours')
+            ->select('local_hour', DB::raw('SUM(count) as total'))
+            ->groupBy('local_hour');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $data = $query->pluck('total', 'local_hour');
+        $hours = array_fill(0, 24, 0);
+
+        foreach ($data as $hour => $total) {
+            $hours[$hour] = (int) $total;
+        }
+
+        return $hours;
     }
 }

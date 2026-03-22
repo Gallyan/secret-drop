@@ -317,6 +317,8 @@ return [
     'stat_magic_links_requested' => 'الروابط السحرية المطلوبة',
     'stat_magic_links_used' => 'الروابط السحرية المستخدمة',
     'stat_by_hour' => 'حسب الساعة',
+    'stat_by_local_hour' => 'حسب التوقيت المحلي',
+    'stat_local_hour_note' => 'بناءً على توقيت متصفح الزائر',
     'stat_by_country' => 'حسب البلد',
     'stat_by_page' => 'حسب الصفحة',
     'stat_conversion' => 'التحويل',

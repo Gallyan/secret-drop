@@ -137,6 +137,9 @@
             if (theme === 'light') {
                 document.documentElement.classList.remove('dark');
             }
+            if (!document.cookie.includes('tz_offset=')) {
+                document.cookie = 'tz_offset=' + new Date().getTimezoneOffset() + ';path=/;max-age=86400;SameSite=Lax';
+            }
         })();
     </script>
 

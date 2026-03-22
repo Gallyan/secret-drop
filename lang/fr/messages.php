@@ -317,6 +317,8 @@ return [
     'stat_magic_links_requested' => 'Magic links demandés',
     'stat_magic_links_used' => 'Magic links utilisés',
     'stat_by_hour' => 'Par heure',
+    'stat_by_local_hour' => 'Par heure locale',
+    'stat_local_hour_note' => "Basé sur l'heure du navigateur",
     'stat_by_country' => 'Par pays',
     'stat_by_page' => 'Par page',
     'stat_conversion' => 'Conversion',

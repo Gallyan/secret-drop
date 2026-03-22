@@ -35,11 +35,13 @@ class TrackPageView
 
         $now = now();
 
+        $isBot = $this->isBot($request);
+
         DB::table('stats_pageviews')->upsert(
             [
                 'date' => $now->toDateString(),
                 'page' => $page,
-                'is_bot' => $this->isBot($request),
+                'is_bot' => $isBot,
                 'hour' => $now->hour,
                 'country' => $this->detectCountry($request),
                 'count' => 1,
@@ -49,6 +51,22 @@ class TrackPageView
             ['date', 'page', 'is_bot', 'hour', 'country'],
             ['count' => DB::raw('count + 1'), 'updated_at' => $now]
         );
+
+        if (! $isBot) {
+            $localHour = $this->getLocalHour($request, $now);
+
+            DB::table('stats_local_hours')->upsert(
+                [
+                    'date' => $now->toDateString(),
+                    'local_hour' => $localHour,
+                    'count' => 1,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                ['date', 'local_hour'],
+                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            );
+        }
 
         return $response;
     }
@@ -110,5 +128,13 @@ class TrackPageView
         }
 
         return strtoupper(substr($locale, 0, 2));
+    }
+
+    private function getLocalHour(Request $request, \Carbon\Carbon $now): int
+    {
+        $offsetMinutes = (int) $request->cookie('tz_offset', 0);
+        $localHour = ($now->hour - (int) ($offsetMinutes / 60)) % 24;
+
+        return ($localHour + 24) % 24;
     }
 }

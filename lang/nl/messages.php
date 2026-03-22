@@ -317,6 +317,8 @@ return [
     'stat_magic_links_requested' => 'Magische links aangevraagd',
     'stat_magic_links_used' => 'Magische links gebruikt',
     'stat_by_hour' => 'Per uur',
+    'stat_by_local_hour' => 'Per lokale tijd',
+    'stat_local_hour_note' => 'Gebaseerd op de browsertijd van de bezoeker',
     'stat_by_country' => 'Per land',
     'stat_by_page' => 'Per pagina',
     'stat_conversion' => 'Conversie',

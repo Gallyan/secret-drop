@@ -317,6 +317,8 @@ return [
     'stat_magic_links_requested' => 'リクエストされたマジックリンク',
     'stat_magic_links_used' => '使用されたマジックリンク',
     'stat_by_hour' => '時間別',
+    'stat_by_local_hour' => '現地時間別',
+    'stat_local_hour_note' => '訪問者のブラウザ時刻に基づく',
     'stat_by_country' => '国別',
     'stat_by_page' => 'ページ別',
     'stat_conversion' => 'コンバージョン',
