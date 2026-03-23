@@ -2,11 +2,7 @@
     $currentLocale = app()->getLocale();
     $urls = locale_switcher_urls();
     $nativeNames = \App\Support\LocaleConfig::NATIVE_NAMES;
-    $flags = [
-        'en' => '🇬🇧', 'fr' => '🇫🇷', 'de' => '🇩🇪', 'es' => '🇪🇸',
-        'it' => '🇮🇹', 'pt' => '🇵🇹', 'nl' => '🇳🇱', 'pl' => '🇵🇱',
-        'ja' => '🇯🇵', 'ko' => '🇰🇷', 'ar' => '🇸🇦',
-    ];
+    $flags = \App\Support\LocaleConfig::FLAGS;
 @endphp
 
 <div

@@ -24,6 +24,21 @@ class LocaleConfig
         'ar' => 'العربية',
     ];
 
+    /** @var array<string, string> */
+    public const FLAGS = [
+        'en' => '🇬🇧',
+        'fr' => '🇫🇷',
+        'de' => '🇩🇪',
+        'es' => '🇪🇸',
+        'it' => '🇮🇹',
+        'pt' => '🇵🇹',
+        'nl' => '🇳🇱',
+        'pl' => '🇵🇱',
+        'ja' => '🇯🇵',
+        'ko' => '🇰🇷',
+        'ar' => '🇸🇦',
+    ];
+
     /** @var array<int, string> */
     private const TRANSLATABLE_PAGES = ['how-it-works', 'use-cases', 'legal'];
 
