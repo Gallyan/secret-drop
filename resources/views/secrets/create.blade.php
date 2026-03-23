@@ -169,7 +169,7 @@
                                 <select
                                     id="expiration"
                                     x-model="expiration"
-                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full h-11 px-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                                     @foreach(array_keys(config('secrets.expirations')) as $key)
                                         <option value="{{ $key }}">{{ __("messages.expiration_{$key}") }}</option>
@@ -193,7 +193,7 @@
                                     max="100"
                                     autocomplete="off"
                                     placeholder="{{ __('messages.max_reads_placeholder') }}"
-                                    class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="w-full h-11 px-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
                         </div>
