@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Partagez des informations sensibles en toute sécurité avec un chiffrement de bout en bout.',
+    'app_description' => 'Partagez mots de passe, clés API et fichiers confidentiels avec un chiffrement de bout en bout. Le serveur ne voit jamais vos données. Liens autodestructibles, zéro connaissance.',
 
     // Features
     'feature_encryption' => 'Chiffrement de niveau militaire dans votre navigateur',

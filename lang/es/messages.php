@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Comparte información sensible de forma segura con cifrado de extremo a extremo.',
+    'app_description' => 'Comparte contraseñas, claves API y archivos confidenciales con cifrado de extremo a extremo. El servidor nunca ve tus datos. Enlaces autodestructivos, conocimiento cero.',
 
     // Features
     'feature_encryption' => 'Cifrado de grado militar en tu navegador',

@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'エンドツーエンド暗号化で機密情報を安全に共有。',
+    'app_description' => 'パスワード、APIキー、機密ファイルをエンドツーエンド暗号化で安全に共有。サーバーはデータを見ることができません。自動削除リンク、ゼロナレッジ。',
 
     // Features
     'feature_encryption' => 'ブラウザで軍事レベルの暗号化',

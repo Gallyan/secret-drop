@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => '종단간 암호화로 민감한 정보를 안전하게 공유하세요.',
+    'app_description' => '비밀번호, API 키, 기밀 파일을 종단간 암호화로 안전하게 공유하세요. 서버는 데이터를 볼 수 없습니다. 자동 삭제 링크, 제로 지식.',
 
     // Features
     'feature_encryption' => '브라우저에서 군사급 암호화',

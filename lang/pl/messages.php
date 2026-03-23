@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Bezpiecznie udostępniaj poufne informacje z szyfrowaniem end-to-end.',
+    'app_description' => 'Bezpiecznie udostępniaj hasła, klucze API i poufne pliki z szyfrowaniem end-to-end. Serwer nigdy nie widzi Twoich danych. Samozniszczalne linki, zero knowledge.',
 
     // Features
     'feature_encryption' => 'Szyfrowanie klasy wojskowej w przeglądarce',

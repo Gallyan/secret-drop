@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Securely share sensitive information with end-to-end encryption.',
+    'app_description' => 'Securely share passwords, API keys and confidential files with end-to-end encryption. The server never sees your data. Self-destructing links, zero knowledge.',
 
     // Features
     'feature_encryption' => 'Military-grade encryption in your browser',

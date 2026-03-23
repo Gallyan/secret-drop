@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Teilen Sie vertrauliche Informationen sicher mit Ende-zu-Ende-Verschlüsselung.',
+    'app_description' => 'Teilen Sie Passwörter, API-Schlüssel und vertrauliche Dateien sicher mit Ende-zu-Ende-Verschlüsselung. Der Server sieht Ihre Daten nie. Selbstzerstörende Links, Zero Knowledge.',
 
     // Features
     'feature_encryption' => 'Militärische Verschlüsselung in Ihrem Browser',

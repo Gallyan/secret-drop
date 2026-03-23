@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Compartilhe informações sensíveis com segurança usando criptografia de ponta a ponta.',
+    'app_description' => 'Compartilhe senhas, chaves de API e arquivos confidenciais com criptografia de ponta a ponta. O servidor nunca vê seus dados. Links autodestrutivos, conhecimento zero.',
 
     // Features
     'feature_encryption' => 'Criptografia de nível militar no seu navegador',

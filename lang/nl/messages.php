@@ -3,7 +3,7 @@
 return [
     // App
     'app_name' => 'Secret Drop',
-    'app_description' => 'Deel gevoelige informatie veilig met end-to-end encryptie.',
+    'app_description' => 'Deel wachtwoorden, API-sleutels en vertrouwelijke bestanden veilig met end-to-end encryptie. De server ziet uw gegevens nooit. Zelfvernietigende links, zero knowledge.',
 
     // Features
     'feature_encryption' => 'Militaire encryptie in uw browser',
