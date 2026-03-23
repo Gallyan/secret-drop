@@ -294,16 +294,11 @@
                                 {{ __('messages.advanced_options') }}
                             </button>
 
-                            {{-- Max security button with tooltip --}}
-                            <div class="relative" x-data="{ showHint: false }">
+                            {{-- Max security button with info hint --}}
+                            <div class="flex items-center gap-1.5">
                                 <button
                                     type="button"
                                     @click="applyMaxSecurity()"
-                                    @mouseenter="showHint = true"
-                                    @mouseleave="showHint = false"
-                                    @focus="showHint = true"
-                                    @blur="showHint = false"
-                                    aria-describedby="maxSecurityHint"
                                     class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition cursor-pointer"
                                 >
                                     <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,20 +306,37 @@
                                     </svg>
                                     {{ __('messages.max_security') }}
                                 </button>
-                                <div
-                                    id="maxSecurityHint"
-                                    role="tooltip"
-                                    x-show="showHint"
-                                    x-cloak
-                                    x-transition:enter="transition ease-out duration-150"
-                                    x-transition:enter-start="opacity-0 translate-y-1"
-                                    x-transition:enter-end="opacity-100 translate-y-0"
-                                    x-transition:leave="transition ease-in duration-100"
-                                    x-transition:leave-start="opacity-100 translate-y-0"
-                                    x-transition:leave-end="opacity-0 translate-y-1"
-                                    class="absolute end-0 top-full mt-2 w-64 p-3 text-xs text-gray-600 dark:text-slate-300 bg-white dark:bg-slate-700 rounded-lg shadow-lg border border-gray-100 dark:border-slate-600 z-20"
-                                >
-                                    {{ __('messages.max_security_tooltip') }}
+                                <div class="relative" x-data="{ showHint: false }">
+                                    <button
+                                        type="button"
+                                        @mouseenter="showHint = true"
+                                        @mouseleave="showHint = false"
+                                        @focus="showHint = true"
+                                        @blur="showHint = false"
+                                        aria-describedby="maxSecurityHint"
+                                        class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
+                                    >
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="sr-only">{{ __('messages.max_security_tooltip') }}</span>
+                                    </button>
+                                    <div
+                                        id="maxSecurityHint"
+                                        role="tooltip"
+                                        x-show="showHint"
+                                        x-cloak
+                                        x-transition:enter="transition ease-out duration-150"
+                                        x-transition:enter-start="opacity-0 translate-y-1"
+                                        x-transition:enter-end="opacity-100 translate-y-0"
+                                        x-transition:leave="transition ease-in duration-100"
+                                        x-transition:leave-start="opacity-100 translate-y-0"
+                                        x-transition:leave-end="opacity-0 translate-y-1"
+                                        class="absolute z-10 bottom-full end-0 mb-2 w-64 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+                                    >
+                                        {{ __('messages.max_security_tooltip') }}
+                                        <div class="absolute top-full end-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
