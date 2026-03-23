@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="view-transition" content="same-origin">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }} - {{ __('messages.app_description') }}@endif</title>
@@ -142,7 +141,7 @@
             'a11y_hide_passphrase',
         ]));
     @endphp
-    <style nonce="@nonce">[x-cloak]{display:none!important}</style>
+    <style nonce="@nonce">[x-cloak]{display:none!important}html{background:#e5e7eb}html.dark{background:#0f172a}</style>
     <script nonce="@nonce">
         {{-- Only expose translations needed by JS --}}
         window.translations = @json($jsTranslations);
