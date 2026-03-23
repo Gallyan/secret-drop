@@ -2,22 +2,17 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\PageviewService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackPageView
 {
-    /** @var array<int, string> */
-    private const BOT_PATTERNS = [
-        'bot', 'crawl', 'spider', 'slurp', 'mediapartners',
-        'lighthouse', 'pagespeed', 'headlesschrome', 'phantomjs',
-        'curl', 'wget', 'python-', 'go-http', 'java/', 'ruby',
-        'perl', 'libwww', 'apache-http', 'node-fetch', 'axios',
-        'postman', 'insomnia', 'httpclient', 'scrapy', 'semrush',
-        'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
-    ];
+    public function __construct(
+        private PageviewService $pageviewService,
+    ) {
+    }
 
     public function handle(Request $request, Closure $next): Response
     {
@@ -33,40 +28,12 @@ class TrackPageView
             return $response;
         }
 
-        $now = now();
-
-        $isBot = $this->isBot($request);
-
-        DB::table('stats_pageviews')->upsert(
-            [
-                'date' => $now->toDateString(),
-                'page' => $page,
-                'is_bot' => $isBot,
-                'hour' => $now->hour,
-                'country' => $this->detectCountry($request),
-                'count' => 1,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            ['date', 'page', 'is_bot', 'hour', 'country'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+        $this->pageviewService->track(
+            $page,
+            $request->userAgent() ?? '',
+            $request->header('Accept-Language', ''),
+            (int) $request->cookie('tz_offset', '0')
         );
-
-        if (! $isBot) {
-            $localHour = $this->getLocalHour($request, $now);
-
-            DB::table('stats_local_hours')->upsert(
-                [
-                    'date' => $now->toDateString(),
-                    'local_hour' => $localHour,
-                    'count' => 1,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ],
-                ['date', 'local_hour'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
-            );
-        }
 
         return $response;
     }
@@ -91,50 +58,5 @@ class TrackPageView
             'superadmin.dashboard' => 'superadmin_dashboard',
             default => null,
         };
-    }
-
-    private function isBot(Request $request): bool
-    {
-        $userAgent = strtolower($request->userAgent() ?? '');
-
-        if ($userAgent === '') {
-            return true;
-        }
-
-        foreach (self::BOT_PATTERNS as $pattern) {
-            if (str_contains($userAgent, $pattern)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function detectCountry(Request $request): string
-    {
-        $acceptLanguage = $request->header('Accept-Language', '');
-
-        if (empty($acceptLanguage)) {
-            return 'XX';
-        }
-
-        $first = explode(',', $acceptLanguage)[0];
-        $locale = trim(explode(';', $first)[0]);
-
-        if (str_contains($locale, '-')) {
-            $parts = explode('-', $locale);
-
-            return strtoupper($parts[1]);
-        }
-
-        return strtoupper(substr($locale, 0, 2));
-    }
-
-    private function getLocalHour(Request $request, \Carbon\Carbon $now): int
-    {
-        $offsetMinutes = (int) $request->cookie('tz_offset', '0');
-        $localHour = ($now->hour - (int) ($offsetMinutes / 60)) % 24;
-
-        return ($localHour + 24) % 24;
     }
 }

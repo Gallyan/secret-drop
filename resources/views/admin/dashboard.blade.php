@@ -44,7 +44,7 @@
             </div>
         @else
             {{-- Secrets list --}}
-            <div class="space-y-4" x-data="adminSecrets">
+            <div class="space-y-4" x-data="adminSecrets" data-extend-url="{{ route('admin.extend', ['id' => '__ID__']) }}" data-revoke-url="{{ route('admin.revoke', ['id' => '__ID__']) }}">
                 {{-- Error banner --}}
                 <div
                     x-show="errorMessage"

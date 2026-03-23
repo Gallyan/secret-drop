@@ -17,6 +17,10 @@ export default () => ({
             });
         },
 
+        buildUrl(template, secretId) {
+            return this.$el.dataset[template].replace('__ID__', secretId);
+        },
+
         openRevokeModal(buttonEl) {
             this.pendingRevokeId = buttonEl.dataset.secretId;
             this.pendingRevokeEl = buttonEl;
@@ -56,7 +60,7 @@ export default () => ({
             data.extending = true;
 
             try {
-                const response = await fetch(`/admin/secrets/${secretId}/extend`, {
+                const response = await fetch(this.buildUrl('extendUrl', secretId), {
                     method: 'POST',
                     headers: fetchHeaders(),
                     body: JSON.stringify({ days: parseInt(this.extendDays) }),
@@ -83,7 +87,7 @@ export default () => ({
             data.revoking = true;
 
             try {
-                const response = await fetch(`/admin/secrets/${secretId}/revoke`, {
+                const response = await fetch(this.buildUrl('revokeUrl', secretId), {
                     method: 'POST',
                     headers: fetchHeaders(),
                 });
