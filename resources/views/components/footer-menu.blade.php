@@ -16,7 +16,7 @@
     <button
         @click="toggle()"
         type="button"
-        class="flex items-center justify-center w-10 h-10 rounded-xl cursor-pointer select-none
+        class="flex items-center justify-center w-8 h-8 rounded-xl cursor-pointer select-none
                bg-linear-to-b from-violet-500 to-indigo-600 dark:from-violet-600 dark:to-indigo-800
                shadow-[0_4px_14px_rgba(0,0,0,0.18)] transition-shadow duration-300
                hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]
