@@ -21,7 +21,6 @@
         :aria-expanded="isOpen"
         aria-haspopup="dialog"
     >
-        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80">Ctrl+K</kbd>
         <div class="relative" aria-hidden="true">
             {{-- Globe --}}
             <div class="w-5 h-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,#4fc3f7,#0288d1_50%,#01579b)]
@@ -69,6 +68,9 @@
                             @endif
                         </a>
                     @endforeach
+                </div>
+                <div class="hidden sm:flex items-center justify-center py-2 border-t border-gray-200 dark:border-slate-700/50">
+                    <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400 dark:text-slate-500">Ctrl+K</kbd>
                 </div>
             </div>
         </div>
