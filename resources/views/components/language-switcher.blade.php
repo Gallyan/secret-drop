@@ -76,32 +76,13 @@
             >
                 <div
                     x-trap.noscroll="isOpen"
-                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50"
+                    x-ref="panel"
+                    @keydown="handleKeydown($event)"
+                    tabindex="-1"
+                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50 focus:outline-none"
                 >
-                    {{-- Search --}}
-                    <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-slate-700/50">
-                        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <input
-                            x-ref="searchInput"
-                            type="text"
-                            inputmode="none"
-                            @input="filterResults()"
-                            @keydown="handleKeydown($event)"
-                            placeholder="{{ __('messages.a11y_language_selector') }}"
-                            class="flex-1 bg-transparent outline-none text-sm placeholder-slate-400 dark:text-white"
-                            role="combobox"
-                            aria-autocomplete="list"
-                            aria-controls="lang-listbox"
-                            :aria-activedescendant="activeDescendantId()"
-                        />
-                        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400" data-shortcut-label>Ctrl+K</kbd>
-                        <span x-ref="resultCount" class="sr-only" aria-live="polite" aria-atomic="true"></span>
-                    </div>
-
-                    {{-- Results --}}
-                    <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="max-h-[70vh] overflow-y-auto py-1">
+                    {{-- Languages --}}
+                    <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="flex flex-col">
                         @foreach($urls as $locale => $url)
                             <a
                                 href="{{ $url }}"
@@ -110,7 +91,6 @@
                                 id="lang-option-{{ $locale }}"
                                 role="option"
                                 data-locale="{{ $locale }}"
-                                data-name="{{ $nativeNames[$locale] }}"
                                 @mouseenter="highlightItem($el)"
                                 class="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors"
                                 @if($locale === $currentLocale) aria-current="true" @endif
