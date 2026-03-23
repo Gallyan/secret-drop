@@ -14,8 +14,6 @@ class SeoController extends Controller
             ->map(fn (string $locale) => "Disallow: /{$locale}/admin/")
             ->implode("\n");
 
-        $llms = url('/llms.txt');
-
         $content = <<<TXT
             User-agent: *
             Disallow: /s/
@@ -44,7 +42,6 @@ class SeoController extends Controller
             Allow: /
 
             Sitemap: {$sitemap}
-            LLMs: {$llms}
             TXT;
 
         return response($content, 200, ['Content-Type' => 'text/plain']);
