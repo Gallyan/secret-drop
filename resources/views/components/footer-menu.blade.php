@@ -33,42 +33,51 @@
         </div>
     </button>
 
-    {{-- Menu panel (opens upward) --}}
-    <div
-        x-show="open"
-        x-cloak
-        x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
-        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-        x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
-        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-        @click.outside="close()"
-        @keydown.escape.window="close()"
-        class="absolute bottom-full mb-3 start-0 z-50 w-56
-               bg-white dark:bg-slate-800 rounded-xl shadow-2xl
-               border border-gray-200 dark:border-slate-700/50
-               overflow-hidden"
-        role="menu"
-        aria-label="{{ __('messages.a11y_footer_nav') }}"
-    >
-        <div class="py-1.5" x-trap="open">
-            @foreach($menuItems as $item)
-                <a
-                    href="{{ $item['route'] }}"
-                    role="menuitem"
-                    @if($item['active']) aria-current="page" @endif
-                    class="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors focus:outline-none
-                        {{ $item['active']
-                            ? 'bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300 font-medium border-s-2 border-violet-500'
-                            : 'text-slate-700 dark:text-slate-300 border-s-2 border-transparent' }}"
-                >
-                    <svg class="w-4 h-4 shrink-0 {{ $item['active'] ? 'text-violet-600 dark:text-violet-400' : 'text-violet-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
-                    </svg>
-                    {{ $item['label'] }}
-                </a>
-            @endforeach
+    {{-- Overlay (teleported to body) --}}
+    <template x-teleport="body">
+        <div
+            x-show="open"
+            x-cloak
+            @click="close()"
+            @keydown.escape.window="close()"
+            x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-100 bg-black/50"
+            role="menu"
+            aria-modal="true"
+            aria-label="{{ __('messages.a11y_footer_nav') }}"
+        >
+            {{-- Menu panel (bottom-left) --}}
+            <div
+                @click.stop
+                class="fixed bottom-16 start-4 w-56
+                       bg-white dark:bg-slate-800 rounded-xl shadow-2xl
+                       border border-gray-200 dark:border-slate-700/50
+                       overflow-hidden"
+            >
+                <div class="py-1.5">
+                    @foreach($menuItems as $item)
+                        <a
+                            href="{{ $item['route'] }}"
+                            role="menuitem"
+                            @if($item['active']) aria-current="page" @endif
+                            class="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors focus:outline-none
+                                {{ $item['active']
+                                    ? 'bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-300 font-medium border-s-2 border-violet-500'
+                                    : 'text-slate-700 dark:text-slate-300 border-s-2 border-transparent' }}"
+                        >
+                            <svg class="w-4 h-4 shrink-0 {{ $item['active'] ? 'text-violet-600 dark:text-violet-400' : 'text-violet-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
+                            </svg>
+                            {{ $item['label'] }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
         </div>
-    </div>
+    </template>
 </div>
