@@ -23,3 +23,24 @@ export function fetchHeaders() {
         'Accept': 'application/json',
     };
 }
+
+export function buildCipherMeta(encrypted) {
+    const meta = {
+        alg: 'AES-256-GCM',
+        iv: encrypted.iv,
+        version: encrypted.version,
+        has_passphrase: !!encrypted.salt
+    };
+
+    if (encrypted.salt) {
+        meta.salt = encrypted.salt;
+        meta.iv2 = encrypted.iv2;
+        meta.kdf = 'PBKDF2-SHA256-600k';
+    }
+
+    return meta;
+}
+
+export async function copyText(text) {
+    await navigator.clipboard.writeText(text);
+}

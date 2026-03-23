@@ -32,167 +32,118 @@
             </div>
         </div>
 
-        @php $totals = $stats['totals']; @endphp
+        @php
+            $totals = $stats['totals'];
+
+            if ($avgFirstReadDelay === null) {
+                $formattedDelay = '-';
+            } elseif ($avgFirstReadDelay < 60) {
+                $formattedDelay = number_format($avgFirstReadDelay, 0) . 's';
+            } elseif ($avgFirstReadDelay < 3600) {
+                $formattedDelay = number_format($avgFirstReadDelay / 60, 1) . 'm';
+            } elseif ($avgFirstReadDelay < 86400) {
+                $formattedDelay = number_format($avgFirstReadDelay / 3600, 1) . 'h';
+            } else {
+                $formattedDelay = number_format($avgFirstReadDelay / 86400, 1) . 'j';
+            }
+
+            $formatBytes = function (int|float $bytes) {
+                if ($bytes >= 1073741824) {
+                    return number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
+                }
+                if ($bytes >= 1048576) {
+                    return number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
+                }
+                if ($bytes >= 1024) {
+                    return number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
+                }
+                return $bytes . ' ' . __('messages.unit_bytes');
+            };
+        @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-8">
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0)) }}
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_secrets_created') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format($totals['secrets_read'] ?? 0) }}
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_secrets_read') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    @php
-                        if ($avgFirstReadDelay === null) {
-                            echo '-';
-                        } elseif ($avgFirstReadDelay < 60) {
-                            echo number_format($avgFirstReadDelay, 0) . 's';
-                        } elseif ($avgFirstReadDelay < 3600) {
-                            echo number_format($avgFirstReadDelay / 60, 1) . 'm';
-                        } elseif ($avgFirstReadDelay < 86400) {
-                            echo number_format($avgFirstReadDelay / 3600, 1) . 'h';
-                        } else {
-                            echo number_format($avgFirstReadDelay / 86400, 1) . 'j';
-                        }
-                    @endphp
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_avg_first_read') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    {{ number_format($totals['secrets_created_file'] ?? 0) }}
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_files_shared') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    @php
-                        $bytes = $totals['total_file_size_bytes'] ?? 0;
-                        if ($bytes >= 1073741824) {
-                            echo number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
-                        } elseif ($bytes >= 1048576) {
-                            echo number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
-                        } elseif ($bytes >= 1024) {
-                            echo number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
-                        } else {
-                            echo $bytes . ' ' . __('messages.unit_bytes');
-                        }
-                    @endphp
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_volume') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">
-                    @php
-                        $bytes = $currentDiskUsage;
-                        if ($bytes >= 1073741824) {
-                            echo number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
-                        } elseif ($bytes >= 1048576) {
-                            echo number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
-                        } elseif ($bytes >= 1024) {
-                            echo number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
-                        } else {
-                            echo $bytes . ' ' . __('messages.unit_bytes');
-                        }
-                    @endphp
-                </div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_current_disk_usage') }}</div>
-            </div>
+            <x-stat-card :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
+            <x-stat-card :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
+            <x-stat-card :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
+            <x-stat-card :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
+            <x-stat-card :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
+            <x-stat-card :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_created') }}</h2>
                 <canvas id="secretsCreatedChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_created') }}"></canvas>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            </x-card>
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_read') }}</h2>
                 <canvas id="secretsReadChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_read') }}"></canvas>
-            </div>
+            </x-card>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_types') }}</h2>
                 <canvas id="secretTypesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            </x-card>
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_options') }}</h2>
                 <canvas id="secretOptionsChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            </x-card>
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_outcomes') }}</h2>
                 <canvas id="secretOutcomesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
-            </div>
+            </x-card>
         </div>
 
-        <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6 mb-8">
+        <x-card class="p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_admin_activity') }}</h2>
             <canvas id="adminActivityChart" height="150" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
-        </div>
+        </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_created') }}</h2>
                 <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 <div id="heatmapCreated" class="heatmap-container"></div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            </x-card>
+            <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_read') }}</h2>
                 <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 <div id="heatmapRead" class="heatmap-container"></div>
-            </div>
+            </x-card>
         </div>
 
         {{-- Pageviews section --}}
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.stat_pageviews_title') }}</h2>
 
         {{-- Pageview KPIs --}}
+        @php
+            $totalViews = $pageviews['total_human'];
+            $pvDates = array_keys($pageviews['daily']);
+            $createdInPeriod = 0;
+            $metricsData = $stats['metrics'] ?? [];
+            foreach ($pvDates as $date) {
+                $createdInPeriod += ($metricsData['secrets_created_text'][$date] ?? 0)
+                    + ($metricsData['secrets_created_file'][$date] ?? 0);
+            }
+            $conversionRate = $totalViews > 0 ? ($createdInPeriod / $totalViews) * 100 : 0;
+        @endphp
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($pageviews['total_human']) }}</div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_visitors') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($pageviews['total_bot']) }}</div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_bots') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ count($pageviews['by_country']) }}</div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_countries') }}</div>
-            </div>
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
-                @php
-                    $totalViews = $pageviews['total_human'];
-                    $pvDates = array_keys($pageviews['daily']);
-                    $createdInPeriod = 0;
-                    $metricsData = $stats['metrics'] ?? [];
-                    foreach ($pvDates as $date) {
-                        $createdInPeriod += ($metricsData['secrets_created_text'][$date] ?? 0)
-                            + ($metricsData['secrets_created_file'][$date] ?? 0);
-                    }
-                    $conversionRate = $totalViews > 0 ? ($createdInPeriod / $totalViews) * 100 : 0;
-                @endphp
-                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ $totalViews > 0 ? number_format($conversionRate, 1) . '%' : '-' }}</div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_conversion') }}</div>
-            </div>
+            <x-stat-card :value="number_format($pageviews['total_human'])" :label="__('messages.stat_visitors')" />
+            <x-stat-card :value="number_format($pageviews['total_bot'])" :label="__('messages.stat_bots')" />
+            <x-stat-card :value="count($pageviews['by_country'])" :label="__('messages.stat_countries')" />
+            <x-stat-card :value="$totalViews > 0 ? number_format($conversionRate, 1) . '%' : '-'" :label="__('messages.stat_conversion')" />
         </div>
 
         {{-- Daily visits chart --}}
-        <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6 mb-8">
+        <x-card class="p-6 mb-8">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_pageviews_title') }}</h3>
             <canvas id="pageviewsChart" height="80" role="img" aria-label="{{ __('messages.stat_pageviews_title') }}"></canvas>
-        </div>
+        </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {{-- By page --}}
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_page') }}</h3>
                 <div class="space-y-2">
                     @foreach($pageviews['by_page'] as $page => $counts)
@@ -205,10 +156,10 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
 
             {{-- By country (top 15) --}}
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_country') }}</h3>
                 <div class="space-y-2">
                     @foreach(array_slice($pageviews['by_country'], 0, 15, true) as $country => $count)
@@ -226,10 +177,10 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
 
             {{-- By hour --}}
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_hour') }}</h3>
                 <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
                 @php
@@ -253,10 +204,10 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
 
             {{-- By local hour --}}
-            <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl p-6">
+            <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_local_hour') }}</h3>
                 <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_local_hour_note') }}</p>
                 @php
@@ -280,7 +231,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
 </div>

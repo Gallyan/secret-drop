@@ -1,4 +1,4 @@
-import { t, formatFileSize } from '../utils.js';
+import { t, formatFileSize, copyText } from '../utils.js';
 
 export default () => ({
         token: null,
@@ -269,7 +269,7 @@ export default () => ({
 
         async copyToClipboard() {
             try {
-                await navigator.clipboard.writeText(this.plaintext);
+                await copyText(this.plaintext);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
             } catch (e) {

@@ -28,9 +28,9 @@
                     icon="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <a href="{{ route('home') }}" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
+                    <x-btn-primary :href="route('home')">
                         {{ __('messages.btn_create_new') }}
-                    </a>
+                    </x-btn-primary>
                 </x-error-block>
 
                 {{-- Unavailable error --}}
@@ -41,9 +41,9 @@
                     icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <a href="{{ route('home') }}" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
+                    <x-btn-primary :href="route('home')">
                         {{ __('messages.btn_create_new') }}
-                    </a>
+                    </x-btn-primary>
                 </x-error-block>
 
                 {{-- Generic error --}}
@@ -54,9 +54,9 @@
                     icon="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <button type="button" @click="reload()" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
+                    <x-btn-primary type="button" @click="reload()">
                         {{ __('messages.btn_retry') }}
-                    </button>
+                    </x-btn-primary>
                 </x-error-block>
 
                 {{-- Secret content --}}
@@ -91,9 +91,7 @@
                     <div x-show="awaitingConfirmation && !decrypted" x-cloak class="space-y-6">
                         <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
                             <div class="flex gap-3">
-                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-300 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
+                                <x-icon.warning class="w-5 h-5 text-amber-600 dark:text-amber-300 shrink-0 mt-0.5" />
                                 <div>
                                     <p class="font-medium text-amber-800 dark:text-amber-300">
                                         {{ __('messages.last_read_warning_title') }}
@@ -104,13 +102,9 @@
                                 </div>
                             </div>
                         </div>
-                        <button
-                            type="button"
-                            @click="confirmAndDecrypt()"
-                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
-                        >
+                        <x-btn-primary type="button" @click="confirmAndDecrypt()" class="w-full">
                             {{ __('messages.btn_reveal_secret') }}
-                        </button>
+                        </x-btn-primary>
                     </div>
 
                     {{-- Manual key input (split mode) --}}
@@ -119,11 +113,7 @@
                             {{ __('messages.enter_key_manually') }}
                         </p>
                         {{-- Last read warning in manual key form --}}
-                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-300">
-                                <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
-                            </p>
-                        </div>
+                        <x-alert-warning x-show="willBeDestroyed" :label="__('messages.label_important')">{{ __('messages.last_read_warning_short') }}</x-alert-warning>
                         <form @submit.prevent="submitManualKey()" class="space-y-4">
                             <div>
                                 <label for="manualKey" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
@@ -141,13 +131,9 @@
                                     class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
-                            <button
-                                type="submit"
-                                :disabled="!manualKey.trim()"
-                                class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
-                            >
+                            <x-btn-primary type="submit" x-bind:disabled="!manualKey.trim()" class="w-full">
                                 {{ __('messages.btn_unlock') }}
-                            </button>
+                            </x-btn-primary>
                         </form>
                     </div>
 
@@ -157,11 +143,7 @@
                             {{ __('messages.passphrase_protected') }}
                         </p>
                         {{-- Last read warning in passphrase form --}}
-                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-300">
-                                <strong>{{ __('messages.label_important') }}</strong> {{ __('messages.last_read_warning_short') }}
-                            </p>
-                        </div>
+                        <x-alert-warning x-show="willBeDestroyed" :label="__('messages.label_important')">{{ __('messages.last_read_warning_short') }}</x-alert-warning>
                         <form @submit.prevent="decrypt()" class="space-y-4">
                             <div>
                                 <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2 transition-colors">
@@ -178,17 +160,13 @@
                                     class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
                             </div>
-                            <button
-                                type="submit"
-                                :disabled="isDecrypting || !passphrase.trim()"
-                                class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
-                            >
+                            <x-btn-primary type="submit" x-bind:disabled="isDecrypting || !passphrase.trim()" class="w-full">
                                 <span x-show="!isDecrypting">{{ __('messages.btn_decrypt') }}</span>
                                 <span x-show="isDecrypting" role="status" class="inline-flex items-center justify-center gap-2">
                                     <x-spinner />
                                     {{ __('messages.btn_decrypting') }}
                                 </span>
-                            </button>
+                            </x-btn-primary>
                         </form>
                     </div>
 
@@ -220,11 +198,7 @@
                             </button>
                         </div>
 
-                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-300">
-                                <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_text') }}
-                            </p>
-                        </div>
+                        <x-alert-warning x-show="willBeDestroyed" :label="__('messages.label_note')">{{ __('messages.note_destroyed_text') }}</x-alert-warning>
                     </div>
 
                     {{-- Decrypted file content --}}
@@ -237,11 +211,7 @@
                             <p class="text-sm text-gray-500 dark:text-slate-400" x-text="filename"></p>
                         </div>
 
-                        <div x-show="willBeDestroyed" class="p-3 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-xs text-amber-700 dark:text-amber-300">
-                                <strong>{{ __('messages.label_note') }}</strong> {{ __('messages.note_destroyed_file') }}
-                            </p>
-                        </div>
+                        <x-alert-warning x-show="willBeDestroyed" :label="__('messages.label_note')">{{ __('messages.note_destroyed_file') }}</x-alert-warning>
                     </div>
 
                     {{-- Decryption error --}}

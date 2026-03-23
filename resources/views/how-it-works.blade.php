@@ -215,9 +215,7 @@
 
                     {{-- Arrow --}}
                     <div class="flex justify-center" aria-hidden="true">
-                        <svg class="w-6 h-6 text-gray-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
+                        <x-icon.arrow-down class="w-6 h-6 text-gray-300 dark:text-slate-600" />
                     </div>
 
                     {{-- Step 2: Browser encrypts --}}
@@ -241,9 +239,7 @@
 
                     {{-- Arrow --}}
                     <div class="flex justify-center" aria-hidden="true">
-                        <svg class="w-6 h-6 text-gray-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
+                        <x-icon.arrow-down class="w-6 h-6 text-gray-300 dark:text-slate-600" />
                     </div>
 
                     {{-- Step 3: Server stores ciphertext --}}
@@ -264,9 +260,7 @@
 
                     {{-- Arrow --}}
                     <div class="flex justify-center" aria-hidden="true">
-                        <svg class="w-6 h-6 text-gray-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
+                        <x-icon.arrow-down class="w-6 h-6 text-gray-300 dark:text-slate-600" />
                     </div>
 
                     {{-- Step 4: Key in URL fragment --}}
@@ -290,9 +284,7 @@
 
                     {{-- Arrow --}}
                     <div class="flex justify-center" aria-hidden="true">
-                        <svg class="w-6 h-6 text-gray-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
+                        <x-icon.arrow-down class="w-6 h-6 text-gray-300 dark:text-slate-600" />
                     </div>
 
                     {{-- Step 5: Recipient decrypts --}}
@@ -320,37 +312,15 @@
                 </h2>
 
                 <div class="grid md:grid-cols-2 gap-4">
+                    @foreach(range(1, 4) as $i)
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
                             <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature1_title') }}</h3>
+                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __("messages.how_feature{$i}_title") }}</h3>
                         </div>
-                        <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature1_desc') }}</p>
+                        <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __("messages.how_feature{$i}_desc") }}</p>
                     </div>
-
-                    <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
-                        <div class="flex items-center gap-3 mb-2">
-                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature2_title') }}</h3>
-                        </div>
-                        <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature2_desc') }}</p>
-                    </div>
-
-                    <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
-                        <div class="flex items-center gap-3 mb-2">
-                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature3_title') }}</h3>
-                        </div>
-                        <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature3_desc') }}</p>
-                    </div>
-
-                    <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
-                        <div class="flex items-center gap-3 mb-2">
-                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
-                            <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature4_title') }}</h3>
-                        </div>
-                        <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature4_desc') }}</p>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -372,9 +342,9 @@
 
             {{-- CTA --}}
             <div class="text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center justify-center py-3 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                <x-btn-primary :href="route('home')">
                     {{ __('messages.how_cta') }}
-                </a>
+                </x-btn-primary>
                 <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">
                     <a href="{{ localized_route('use-cases') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                         {{ __('messages.how_see_use_cases') }}

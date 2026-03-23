@@ -1,4 +1,4 @@
-import { t, formatFileSize } from '../utils.js';
+import { t, formatFileSize, buildCipherMeta, copyText } from '../utils.js';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_TEXT_LENGTH = 50000;
@@ -198,20 +198,7 @@ export default () => ({
             }
 
             const encrypted = await window.SecretCrypto.encryptSecret(this.secret, passphrase);
-
-            const cipherMeta = {
-                alg: 'AES-256-GCM',
-                iv: encrypted.iv,
-                version: encrypted.version,
-                has_passphrase: !!encrypted.salt
-            };
-
-            if (encrypted.salt) {
-                cipherMeta.salt = encrypted.salt;
-                cipherMeta.iv2 = encrypted.iv2;
-                cipherMeta.kdf = 'PBKDF2-SHA256-600k';
-            }
-
+            const cipherMeta = buildCipherMeta(encrypted);
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
             const payload = {
@@ -243,13 +230,7 @@ export default () => ({
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 429 && data.captcha_required) {
-                    this.captchaRequired = true;
-                    this.captchaToken = data.captcha_token;
-                    this.captchaChallenge = data.captcha_challenge;
-                    this.captchaAnswer = '';
-                    this.pendingEncrypted = encrypted;
-                    this.pendingPassphrase = passphrase;
+                if (this.handleCaptchaChallenge(response, data, encrypted, passphrase)) {
                     return;
                 }
                 throw new Error(data.message || t('crypto_creation_error'));
@@ -265,20 +246,7 @@ export default () => ({
             }
 
             const encrypted = await window.SecretCrypto.encryptFile(this.file, passphrase);
-
-            const cipherMeta = {
-                alg: 'AES-256-GCM',
-                iv: encrypted.iv,
-                version: encrypted.version,
-                has_passphrase: !!encrypted.salt
-            };
-
-            if (encrypted.salt) {
-                cipherMeta.salt = encrypted.salt;
-                cipherMeta.iv2 = encrypted.iv2;
-                cipherMeta.kdf = 'PBKDF2-SHA256-600k';
-            }
-
+            const cipherMeta = buildCipherMeta(encrypted);
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
             // Create FormData for multipart upload
@@ -316,13 +284,7 @@ export default () => ({
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 429 && data.captcha_required) {
-                    this.captchaRequired = true;
-                    this.captchaToken = data.captcha_token;
-                    this.captchaChallenge = data.captcha_challenge;
-                    this.captchaAnswer = '';
-                    this.pendingEncrypted = encrypted;
-                    this.pendingPassphrase = passphrase;
+                if (this.handleCaptchaChallenge(response, data, encrypted, passphrase)) {
                     return;
                 }
                 throw new Error(data.message || t('crypto_creation_error'));
@@ -346,9 +308,23 @@ export default () => ({
             this.passphraseUsed = hasPassphrase;
         },
 
+        handleCaptchaChallenge(response, data, encrypted, passphrase) {
+            if (response.status === 429 && data.captcha_required) {
+                this.captchaRequired = true;
+                this.captchaToken = data.captcha_token;
+                this.captchaChallenge = data.captcha_challenge;
+                this.captchaAnswer = '';
+                this.pendingEncrypted = encrypted;
+                this.pendingPassphrase = passphrase;
+                return true;
+            }
+
+            return false;
+        },
+
         async copyToClipboard() {
             try {
-                await navigator.clipboard.writeText(this.shareUrl);
+                await copyText(this.shareUrl);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
             } catch (e) {
@@ -358,7 +334,7 @@ export default () => ({
 
         async copyKeyToClipboard() {
             try {
-                await navigator.clipboard.writeText(this.shareKey);
+                await copyText(this.shareKey);
                 this.keyCopied = true;
                 setTimeout(() => this.keyCopied = false, 2000);
             } catch (e) {

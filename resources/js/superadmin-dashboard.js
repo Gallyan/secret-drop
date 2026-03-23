@@ -22,6 +22,11 @@ function initDashboard() {
     Chart.defaults.color = textColor;
     Chart.defaults.borderColor = gridColor;
 
+    const defaultScales = {
+        x: { display: true, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+    };
+
     function generateDateLabels(startDate, endDate) {
         const labels = [];
         const start = new Date(startDate);
@@ -69,10 +74,7 @@ function initDashboard() {
         options: {
             responsive: true,
             plugins: { legend: { position: 'bottom' } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
+            scales: defaultScales
         }
     }));
 
@@ -93,10 +95,7 @@ function initDashboard() {
         options: {
             responsive: true,
             plugins: { legend: { display: false } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
+            scales: defaultScales
         }
     }));
 
@@ -137,9 +136,7 @@ function initDashboard() {
         options: {
             responsive: true,
             plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
+            scales: { y: defaultScales.y }
         }
     }));
 
@@ -198,10 +195,7 @@ function initDashboard() {
         options: {
             responsive: true,
             plugins: { legend: { position: 'bottom' } },
-            scales: {
-                x: { display: true, grid: { display: false } },
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
+            scales: defaultScales
         }
     }));
 
@@ -315,10 +309,7 @@ function initDashboard() {
             options: {
                 responsive: true,
                 plugins: { legend: { position: 'bottom' } },
-                scales: {
-                    x: { display: true, grid: { display: false } },
-                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                }
+                scales: defaultScales
             }
         }));
     }

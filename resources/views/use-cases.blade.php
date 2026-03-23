@@ -75,9 +75,7 @@
                 <div class="p-6 bg-linear-to-br from-emerald-50 to-teal-50 dark:from-emerald-500/10 dark:to-teal-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                     <div class="flex items-start gap-4">
                         <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 shrink-0" aria-hidden="true">
-                            <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
+                            <x-icon.document class="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
                         </div>
                         <div>
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('messages.usecase2_title') }}</h2>
@@ -179,9 +177,9 @@
 
             {{-- CTA --}}
             <div class="text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center justify-center py-3 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                <x-btn-primary :href="route('home')">
                     {{ __('messages.use_cases_cta') }}
-                </a>
+                </x-btn-primary>
                 <p class="mt-4 text-sm text-gray-600 dark:text-slate-400">
                     <a href="{{ localized_route('how-it-works') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                         {{ __('messages.use_cases_see_how') }}

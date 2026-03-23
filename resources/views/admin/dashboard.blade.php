@@ -38,9 +38,9 @@
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_no_secrets') }}</h2>
                 <p class="text-gray-500 dark:text-slate-400 mb-6">{{ __('messages.admin_no_secrets_description') }}</p>
-                <a href="{{ route('home') }}" class="inline-flex items-center justify-center px-6 py-3 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all">
+                <x-btn-primary :href="route('home')">
                     {{ __('messages.btn_create_new') }}
-                </a>
+                </x-btn-primary>
             </div>
         @else
             {{-- Secrets list --}}
@@ -92,9 +92,7 @@
                     >
                         <div class="flex items-center gap-4 mb-4">
                             <div class="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 shrink-0">
-                                <svg class="w-6 h-6 text-red-600 dark:text-red-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
+                                <x-icon.warning class="w-6 h-6 text-red-600 dark:text-red-300" />
                             </div>
                             <div>
                                 <h3 id="revoke-modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.admin_revoke') }}</h3>
@@ -132,9 +130,7 @@
                                 {{-- Type icon --}}
                                 <div class="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 {{ $secret->type === 'text' ? 'bg-blue-100 dark:bg-blue-500/10' : 'bg-purple-100 dark:bg-purple-500/10' }}">
                                     @if($secret->type === 'text')
-                                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
+                                        <x-icon.document class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                                     @else
                                         <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />

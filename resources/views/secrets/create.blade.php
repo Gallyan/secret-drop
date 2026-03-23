@@ -60,9 +60,7 @@
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
                                 class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
                             >
-                                <svg class="w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+                                <x-icon.document class="w-4 h-4" />
                                 {{ __('messages.tab_text') }}
                             </button>
                             <button
@@ -392,34 +390,34 @@
                         </div>
 
                         {{-- Submit button --}}
-                        <button
+                        <x-btn-primary
                             x-show="!captchaRequired"
                             type="submit"
-                            :disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
-                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
+                            x-bind:disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
+                            class="w-full"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
                                 <x-spinner />
                                 <span x-text="encryptingButtonText()"></span>
                             </span>
-                        </button>
+                        </x-btn-primary>
 
                         {{-- Captcha submit button --}}
-                        <button
+                        <x-btn-primary
                             x-show="captchaRequired"
                             x-cloak
                             type="button"
                             @click="submitWithCaptcha()"
-                            :disabled="isSubmitting || !captchaAnswer.trim()"
-                            class="w-full py-3 px-4 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all cursor-pointer"
+                            x-bind:disabled="isSubmitting || !captchaAnswer.trim()"
+                            class="w-full"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
                             <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
                                 <x-spinner />
                                 <span x-text="encryptingButtonText()"></span>
                             </span>
-                        </button>
+                        </x-btn-primary>
                     </form>
 
                     {{-- Success state --}}
