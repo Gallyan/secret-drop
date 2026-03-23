@@ -40,48 +40,33 @@
         </div>
     </button>
 
-    {{-- Command Palette Overlay (teleported to body to escape footer stacking context) --}}
+    {{-- Overlay (teleported to body to escape footer stacking context) --}}
     <template x-teleport="body">
         <div
             x-show="isOpen"
             x-cloak
+            x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="closePalette()"
             class="fixed inset-0 z-100"
             role="dialog"
             aria-modal="true"
             aria-label="{{ __('messages.a11y_language_selector') }}"
         >
             {{-- Backdrop --}}
-            <div
-                @click="closePalette()"
-                x-show="isOpen"
-                x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="absolute inset-0 bg-black/50"
-            ></div>
+            <div class="absolute inset-0 bg-black/50"></div>
 
             {{-- Panel --}}
-            <div
-                x-show="isOpen"
-                x-transition:enter="transition ease-out duration-200 motion-reduce:duration-0"
-                x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="relative z-10 mx-auto max-w-sm mt-[20vh] px-4"
-            >
+            <div class="relative z-10 mx-auto max-w-sm mt-[20vh] px-4">
                 <div
-                    x-trap.noscroll="isOpen"
-                    x-ref="panel"
+                    @click.stop
                     @keydown="handleKeydown($event)"
-                    tabindex="-1"
-                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50 focus:outline-none"
+                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50"
                 >
-                    {{-- Languages --}}
                     <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="flex flex-col">
                         @foreach($urls as $locale => $url)
                             <a
@@ -92,7 +77,7 @@
                                 role="option"
                                 data-locale="{{ $locale }}"
                                 @mouseenter="highlightItem($el)"
-                                class="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors"
+                                class="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors focus:outline-none"
                                 @if($locale === $currentLocale) aria-current="true" @endif
                                 @if($locale === 'ar') dir="rtl" @endif
                             >

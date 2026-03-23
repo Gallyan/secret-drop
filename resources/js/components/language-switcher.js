@@ -4,19 +4,26 @@ export default () => ({
 
     openPalette() {
         this.isOpen = true;
+        document.body.style.overflow = 'hidden';
 
         const items = this.getItems();
         const currentIndex = items.findIndex(item => item.getAttribute('aria-current') === 'true');
         this.highlightedIndex = currentIndex >= 0 ? currentIndex : 0;
         this.updateHighlight();
 
-        this.$nextTick(() => {
-            this.$refs.panel.focus();
-        });
+        setTimeout(() => {
+            const items = this.getItems();
+            const target = items[this.highlightedIndex];
+
+            if (target) {
+                target.focus({ preventScroll: true });
+            }
+        }, 100);
     },
 
     closePalette() {
         this.isOpen = false;
+        document.body.style.overflow = '';
     },
 
     togglePalette() {
@@ -60,6 +67,7 @@ export default () => ({
             }
 
             event.preventDefault();
+            event.stopImmediatePropagation();
             this.togglePalette();
         }
 
