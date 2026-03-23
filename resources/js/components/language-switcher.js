@@ -71,9 +71,6 @@ export default () => ({
             this.togglePalette();
         }
 
-        if (event.key === 'Escape' && this.isOpen) {
-            this.closePalette();
-        }
     },
 
     handleKeydown(event) {

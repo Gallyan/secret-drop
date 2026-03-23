@@ -40,57 +40,36 @@
         </div>
     </button>
 
-    {{-- Overlay (teleported to body to escape footer stacking context) --}}
-    <template x-teleport="body">
-        <div
-            x-show="isOpen"
-            x-cloak
-            x-transition:enter="transition ease-out duration-150 motion-reduce:duration-0"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            @click="closePalette()"
-            class="fixed inset-0 z-100"
-            role="dialog"
-            aria-modal="true"
-            aria-label="{{ __('messages.a11y_language_selector') }}"
-        >
-            {{-- Backdrop --}}
-            <div class="absolute inset-0 bg-black/50"></div>
-
-            {{-- Panel --}}
-            <div class="relative z-10 mx-auto max-w-sm mt-[20vh] px-4">
-                <div
-                    @click.stop
-                    @keydown="handleKeydown($event)"
-                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50"
-                >
-                    <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="flex flex-col">
-                        @foreach($urls as $locale => $url)
-                            <a
-                                href="{{ $url }}"
-                                hreflang="{{ $locale }}"
-                                lang="{{ $locale }}"
-                                id="lang-option-{{ $locale }}"
-                                role="option"
-                                data-locale="{{ $locale }}"
-                                @mouseenter="highlightItem($el)"
-                                class="flex items-center gap-2.5 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors focus:outline-none"
-                                @if($locale === $currentLocale) aria-current="true" @endif
-                                @if($locale === 'ar') dir="rtl" @endif
-                            >
-                                <span aria-hidden="true">{{ $flags[$locale] ?? '' }}</span>
-                                <span class="flex-1">{{ $nativeNames[$locale] }}</span>
-                                @if($locale === $currentLocale)
-                                    <span class="text-violet-500" aria-hidden="true">✓</span>
-                                @endif
-                            </a>
-                        @endforeach
-                    </div>
+    <x-modal-overlay show="isOpen" close="closePalette()" role="dialog" aria-modal="true" aria-label="{{ __('messages.a11y_language_selector') }}">
+        <div class="mx-auto max-w-sm mt-[20vh] px-4">
+            <div
+                @click.stop
+                @keydown="handleKeydown($event)"
+                class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50"
+            >
+                <div x-ref="results" id="lang-listbox" role="listbox" aria-label="{{ __('messages.a11y_language_selector') }}" class="flex flex-col py-1">
+                    @foreach($urls as $locale => $url)
+                        <a
+                            href="{{ $url }}"
+                            hreflang="{{ $locale }}"
+                            lang="{{ $locale }}"
+                            id="lang-option-{{ $locale }}"
+                            role="option"
+                            data-locale="{{ $locale }}"
+                            @mouseenter="highlightItem($el)"
+                            class="flex items-center gap-3 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 transition-colors focus:outline-none"
+                            @if($locale === $currentLocale) aria-current="true" @endif
+                            @if($locale === 'ar') dir="rtl" @endif
+                        >
+                            <span aria-hidden="true">{{ $flags[$locale] ?? '' }}</span>
+                            <span class="flex-1">{{ $nativeNames[$locale] }}</span>
+                            @if($locale === $currentLocale)
+                                <span class="text-violet-500" aria-hidden="true">✓</span>
+                            @endif
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
-    </template>
+    </x-modal-overlay>
 </div>
