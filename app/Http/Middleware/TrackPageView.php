@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Services\PageviewService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackPageView
@@ -42,21 +43,16 @@ class TrackPageView
     {
         $route = $request->route();
 
-        if (! $route) {
+        if (! $route || ! $route->getName()) {
             return null;
         }
 
         $name = $route->getName();
 
-        return match ($name) {
-            'home' => 'home',
-            'page.show' => $route->parameter('pageSlug', 'unknown'),
-            'secrets.show' => 'secret_view',
-            'admin.index' => 'admin',
-            'admin.dashboard' => 'admin_dashboard',
-            'superadmin.index' => 'superadmin',
-            'superadmin.dashboard' => 'superadmin_dashboard',
-            default => null,
-        };
+        if ($name === 'page.show') {
+            return $route->parameter('pageSlug', 'unknown');
+        }
+
+        return Str::slug($name, '_');
     }
 }

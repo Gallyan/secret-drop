@@ -468,8 +468,9 @@ export default () => ({
             this.maxViews = 1;
             await delay(150);
 
-            // Step 2: Set expiration to 1h
-            this.expiration = '1h';
+            // Step 2: Set shortest expiration
+            const firstOption = this.$el.querySelector('select[x-model="expiration"] option');
+            this.expiration = firstOption ? firstOption.value : '1h';
             await delay(150);
 
             // Step 3: Open advanced options

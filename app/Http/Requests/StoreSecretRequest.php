@@ -52,7 +52,7 @@ class StoreSecretRequest extends FormRequest
             'cipher_meta.iv2' => ['nullable', 'string'],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
-            'expiration' => ['required', 'in:1h,1d,7d,30d,90d'],
+            'expiration' => ['required', 'in:'.implode(',', array_keys(config('secrets.expirations')))],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],

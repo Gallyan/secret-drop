@@ -214,10 +214,9 @@
                                     x-model="expiration"
                                     class="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
-                                    <option value="1h">{{ __('messages.expiration_1h') }}</option>
-                                    <option value="1d">{{ __('messages.expiration_1d') }}</option>
-                                    <option value="7d">{{ __('messages.expiration_7d') }}</option>
-                                    <option value="30d">{{ __('messages.expiration_30d') }}</option>
+                                    @foreach(array_keys(config('secrets.expirations')) as $key)
+                                        <option value="{{ $key }}">{{ __("messages.expiration_{$key}") }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 

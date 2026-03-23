@@ -206,13 +206,8 @@ class SecretsController extends Controller
 
     private function calculateExpireAt(string $expiration): \Carbon\Carbon
     {
-        return match ($expiration) {
-            '1h' => now()->addHour(),
-            '1d' => now()->addDay(),
-            '7d' => now()->addDays(7),
-            '30d' => now()->addDays(30),
-            '90d' => now()->addDays(90),
-            default => now()->addDays(7),
-        };
+        $hours = config('secrets.expirations.'.$expiration, config('secrets.expirations.'.config('secrets.default_expiration')));
+
+        return now()->addHours($hours);
     }
 }
