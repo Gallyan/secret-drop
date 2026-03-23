@@ -72,7 +72,7 @@
                 x-transition:leave="transition ease-in duration-100 motion-reduce:duration-0"
                 x-transition:leave-start="opacity-100 scale-100"
                 x-transition:leave-end="opacity-0 scale-95"
-                class="relative z-10 mx-auto max-w-lg mt-[20vh] px-4"
+                class="relative z-10 mx-auto max-w-sm mt-[20vh] px-4"
             >
                 <div
                     x-trap.noscroll="isOpen"
@@ -118,7 +118,6 @@
                             >
                                 <span aria-hidden="true">{{ $flags[$locale] ?? '' }}</span>
                                 <span class="flex-1">{{ $nativeNames[$locale] }}</span>
-                                <span class="text-xs text-slate-400 uppercase" aria-hidden="true">{{ $locale }}</span>
                                 @if($locale === $currentLocale)
                                     <span class="text-violet-500" aria-hidden="true">✓</span>
                                 @endif
