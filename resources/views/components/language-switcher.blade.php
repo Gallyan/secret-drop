@@ -87,6 +87,7 @@
                         <input
                             x-ref="searchInput"
                             type="text"
+                            inputmode="none"
                             @input="filterResults()"
                             @keydown="handleKeydown($event)"
                             placeholder="{{ __('messages.a11y_language_selector') }}"
