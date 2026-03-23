@@ -15,3 +15,11 @@ export function formatFileSize(bytes) {
 
     return (bytes / (1024 * 1024)).toFixed(1) + ' ' + t('unit_megabytes');
 }
+
+export function fetchHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'Accept': 'application/json',
+    };
+}

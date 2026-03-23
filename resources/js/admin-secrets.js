@@ -1,3 +1,5 @@
+import { fetchHeaders } from './utils.js';
+
 export default () => ({
         extendDays: '7',
         showRevokeModal: false,
@@ -56,11 +58,7 @@ export default () => ({
             try {
                 const response = await fetch(`/admin/secrets/${secretId}/extend`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                    },
+                    headers: fetchHeaders(),
                     body: JSON.stringify({ days: parseInt(this.extendDays) }),
                 });
 
@@ -87,11 +85,7 @@ export default () => ({
             try {
                 const response = await fetch(`/admin/secrets/${secretId}/revoke`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                    },
+                    headers: fetchHeaders(),
                 });
 
                 if (response.ok) {
