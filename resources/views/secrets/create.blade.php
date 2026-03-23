@@ -191,7 +191,7 @@
                                     x-model="maxViews"
                                     min="1"
                                     max="100"
-                                    autocomplete="off"
+                                    autocomplete="one-time-code"
                                     placeholder="{{ __('messages.max_reads_placeholder') }}"
                                     class="w-full h-11 px-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
