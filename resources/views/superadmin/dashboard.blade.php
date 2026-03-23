@@ -6,7 +6,7 @@
 @section('content')
 <div class="flex-1 px-4 pt-0 md:p-8 transition-colors">
     <div class="max-w-7xl mx-auto">
-        <div class="sm:mt-12 sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-3 sm:py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
+        <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-3 sm:py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
                 <div>
                     <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white">{{ __('messages.superadmin_dashboard_title') }}</h1>

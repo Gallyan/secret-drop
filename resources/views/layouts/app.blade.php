@@ -165,43 +165,44 @@
         {{ __('messages.a11y_skip_to_content') }}
     </a>
 
-    {{-- Desktop: top-right --}}
-    <div class="hidden sm:flex absolute top-4 end-4 z-50 items-center gap-2">
-        <x-language-switcher />
-        <x-theme-toggle />
-    </div>
-
     <main id="main-content" class="flex-1 flex flex-col">
         @yield('content')
     </main>
 
     <footer class="py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors">
-        {{-- Desktop: inline links --}}
-        <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="hidden sm:flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-4">
-            <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+        {{-- Desktop: links + switchers --}}
+        <div class="hidden sm:flex items-center justify-center gap-x-2 gap-y-1 px-4">
+            <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+                <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <span aria-hidden="true">·</span>
+                <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ config('app.name') }}
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ localized_route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.footer_how_it_works') }}
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ localized_route('use-cases') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.footer_use_cases') }}
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ route('admin.index') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.footer_manage') }}
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ localized_route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.footer_legal') }}
+                </a>
+            </nav>
             <span aria-hidden="true">·</span>
-            <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                {{ config('app.name') }}
-            </a>
-            <span aria-hidden="true">·</span>
-            <a href="{{ localized_route('how-it-works') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                {{ __('messages.footer_how_it_works') }}
-            </a>
-            <span aria-hidden="true">·</span>
-            <a href="{{ localized_route('use-cases') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                {{ __('messages.footer_use_cases') }}
-            </a>
-            <span aria-hidden="true">·</span>
-            <a href="{{ route('admin.index') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                {{ __('messages.footer_manage') }}
-            </a>
-            <span aria-hidden="true">·</span>
-            <a href="{{ localized_route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                {{ __('messages.footer_legal') }}
-            </a>
-        </nav>
+            <div class="flex items-center gap-2">
+                <x-language-switcher />
+                <x-theme-toggle />
+            </div>
+        </div>
 
-        {{-- Mobile: copyright + 3 icon buttons --}}
+        {{-- Mobile: copyright + icon buttons --}}
         <div class="sm:hidden flex flex-col items-center gap-2">
             <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
             <div class="flex items-center gap-3">
