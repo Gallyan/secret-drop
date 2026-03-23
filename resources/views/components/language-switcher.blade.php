@@ -13,7 +13,7 @@
     <button
         @click="togglePalette()"
         type="button"
-        class="relative flex items-center gap-2 h-10 pl-1.5 pr-2.5 rounded-xl cursor-pointer select-none
+        class="relative flex items-center gap-2 h-10 sm:h-8 pl-1.5 pr-2.5 sm:pl-1 sm:pr-2 rounded-xl cursor-pointer select-none
                bg-linear-to-b from-violet-500 to-indigo-600 dark:from-violet-600 dark:to-indigo-800
                shadow-[0_4px_14px_rgba(0,0,0,0.18)] transition-shadow duration-300
                hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]"
@@ -23,7 +23,7 @@
     >
         <div class="relative" aria-hidden="true">
             {{-- Globe --}}
-            <div class="w-7 h-7 rounded-full bg-[radial-gradient(circle_at_30%_30%,#4fc3f7,#0288d1_50%,#01579b)]
+            <div class="w-7 h-7 sm:w-5 sm:h-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,#4fc3f7,#0288d1_50%,#01579b)]
                         shadow-[inset_-3px_-3px_6px_rgba(0,0,0,0.3),inset_2px_2px_4px_rgba(255,255,255,0.2)]
                         relative overflow-hidden">
                 <div class="absolute top-1 left-1.5 w-2 h-1.5 rounded-[40%] bg-emerald-400/70 -rotate-15"></div>
@@ -38,7 +38,6 @@
                 {{ strtoupper($currentLocale) }}
             </span>
         </div>
-        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80 leading-none" data-shortcut-label>Ctrl+K</kbd>
     </button>
 
     {{-- Command Palette Overlay (teleported to body to escape footer stacking context) --}}
@@ -97,7 +96,7 @@
                             aria-controls="lang-listbox"
                             :aria-activedescendant="activeDescendantId()"
                         />
-                        <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400">ESC</kbd>
+                        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-[10px] font-mono text-slate-400" data-shortcut-label>Ctrl+K</kbd>
                         <span x-ref="resultCount" class="sr-only" aria-live="polite" aria-atomic="true"></span>
                     </div>
 

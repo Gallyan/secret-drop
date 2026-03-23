@@ -1,6 +1,6 @@
 <label
     x-data="themeToggle"
-    class="group relative w-22 h-10 rounded-xl cursor-pointer overflow-hidden select-none
+    class="group relative w-22 h-10 sm:w-18 sm:h-8 rounded-xl cursor-pointer overflow-hidden select-none
            bg-linear-to-b from-sky-400 to-blue-600 dark:from-[#0f1b3a] dark:to-[#050b17]
            shadow-[inset_0_2px_6px_rgba(255,255,255,0.42),inset_0_-6px_12px_rgba(0,0,0,0.25),0_8px_14px_rgba(0,0,0,0.18)]
            ring-1 ring-transparent dark:ring-white/10
@@ -43,8 +43,8 @@
                 dark:opacity-70 dark:bg-[radial-gradient(88px_60px_at_70%_35%,rgba(255,255,255,0.16),transparent_60%)]" aria-hidden="true"></div>
 
     {{-- Thumb wrapper --}}
-    <div class="absolute top-1 left-1 w-8 h-8 rounded-full transition-transform duration-700 ease-[cubic-bezier(.2,.9,.2,1)] motion-reduce:transition-none
-                dark:translate-x-12" aria-hidden="true">
+    <div class="absolute top-1 left-1 w-8 h-8 sm:w-6 sm:h-6 rounded-full transition-transform duration-700 ease-[cubic-bezier(.2,.9,.2,1)] motion-reduce:transition-none
+                dark:translate-x-12 sm:dark:translate-x-10" aria-hidden="true">
         {{-- Sun --}}
         <div class="absolute inset-0 rounded-full
                     bg-[radial-gradient(circle_at_30%_30%,#fff7b1,#ffc933_60%,#f4a000)]
