@@ -13,9 +13,7 @@
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-linear-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
-                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
+                            <x-icon.lock class="w-7 h-7 text-white" />
                         </div>
                         <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
                             Secret Drop
@@ -28,27 +26,19 @@
 
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
                             {{ __('messages.feature_encryption') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
                             {{ __('messages.feature_zero_knowledge') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
                             {{ __('messages.feature_auto_destroy') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
                             {{ __('messages.feature_expiration') }}
                         </li>
                     </ul>
@@ -176,38 +166,7 @@
                                     <label for="expiration" class="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors">
                                         {{ __('messages.expires_in') }}
                                     </label>
-                                    <div class="relative" x-data="{ showHint: false }">
-                                        <button
-                                            type="button"
-                                            @mouseenter="showHint = true"
-                                            @mouseleave="showHint = false"
-                                            @focus="showHint = true"
-                                            @blur="showHint = false"
-                                            aria-describedby="expirationHint"
-                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
-                                        >
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span class="sr-only">{{ __('messages.expires_in_hint') }}</span>
-                                        </button>
-                                        <div
-                                            x-show="showHint"
-                                            x-cloak
-                                            x-transition:enter="transition ease-out duration-150"
-                                            x-transition:enter-start="opacity-0 translate-y-1"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            x-transition:leave="transition ease-in duration-100"
-                                            x-transition:leave-start="opacity-100 translate-y-0"
-                                            x-transition:leave-end="opacity-0 translate-y-1"
-                                            id="expirationHint"
-                                            role="tooltip"
-                                            class="absolute z-10 bottom-full start-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
-                                        >
-                                            {{ __('messages.expires_in_hint') }}
-                                            <div class="absolute top-full start-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-                                        </div>
-                                    </div>
+                                    <x-hint-tooltip id="expirationHint" :text="__('messages.expires_in_hint')" />
                                 </div>
                                 <select
                                     id="expiration"
@@ -226,38 +185,7 @@
                                     <label for="maxViews" class="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors">
                                         {{ __('messages.max_reads') }}
                                     </label>
-                                    <div class="relative" x-data="{ showHint: false }">
-                                        <button
-                                            type="button"
-                                            @mouseenter="showHint = true"
-                                            @mouseleave="showHint = false"
-                                            @focus="showHint = true"
-                                            @blur="showHint = false"
-                                            aria-describedby="maxViewsHint"
-                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
-                                        >
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span class="sr-only">{{ __('messages.max_reads_hint') }}</span>
-                                        </button>
-                                        <div
-                                            x-show="showHint"
-                                            x-cloak
-                                            x-transition:enter="transition ease-out duration-150"
-                                            x-transition:enter-start="opacity-0 translate-y-1"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            x-transition:leave="transition ease-in duration-100"
-                                            x-transition:leave-start="opacity-100 translate-y-0"
-                                            x-transition:leave-end="opacity-0 translate-y-1"
-                                            id="maxViewsHint"
-                                            role="tooltip"
-                                            class="absolute z-10 bottom-full end-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
-                                        >
-                                            {{ __('messages.max_reads_hint') }}
-                                            <div class="absolute top-full end-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-                                        </div>
-                                    </div>
+                                    <x-hint-tooltip id="maxViewsHint" :text="__('messages.max_reads_hint')" position="end" />
                                 </div>
                                 <input
                                     id="maxViews"
@@ -301,43 +229,10 @@
                                     @click="applyMaxSecurity()"
                                     class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-500/20 transition cursor-pointer"
                                 >
-                                    <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
+                                    <x-icon.shield-check />
                                     {{ __('messages.max_security') }}
                                 </button>
-                                <div class="relative" x-data="{ showHint: false }">
-                                    <button
-                                        type="button"
-                                        @mouseenter="showHint = true"
-                                        @mouseleave="showHint = false"
-                                        @focus="showHint = true"
-                                        @blur="showHint = false"
-                                        aria-describedby="maxSecurityHint"
-                                        class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
-                                    >
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="sr-only">{{ __('messages.max_security_tooltip') }}</span>
-                                    </button>
-                                    <div
-                                        id="maxSecurityHint"
-                                        role="tooltip"
-                                        x-show="showHint"
-                                        x-cloak
-                                        x-transition:enter="transition ease-out duration-150"
-                                        x-transition:enter-start="opacity-0 translate-y-1"
-                                        x-transition:enter-end="opacity-100 translate-y-0"
-                                        x-transition:leave="transition ease-in duration-100"
-                                        x-transition:leave-start="opacity-100 translate-y-0"
-                                        x-transition:leave-end="opacity-0 translate-y-1"
-                                        class="absolute z-10 bottom-full end-0 mb-2 w-64 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
-                                    >
-                                        {{ __('messages.max_security_tooltip') }}
-                                        <div class="absolute top-full end-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-                                    </div>
-                                </div>
+                                <x-hint-tooltip id="maxSecurityHint" :text="__('messages.max_security_tooltip')" position="end" />
                             </div>
                         </div>
 
@@ -348,38 +243,7 @@
                                         <label for="passphrase" class="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors">
                                             {{ __('messages.passphrase') }}
                                         </label>
-                                        <div class="relative" x-data="{ showHint: false }">
-                                            <button
-                                                type="button"
-                                                @mouseenter="showHint = true"
-                                                @mouseleave="showHint = false"
-                                                @focus="showHint = true"
-                                                @blur="showHint = false"
-                                                aria-describedby="passphraseHint"
-                                                class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
-                                            >
-                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                                </svg>
-                                                <span class="sr-only">{{ __('messages.passphrase_hint') }}</span>
-                                            </button>
-                                            <div
-                                                x-show="showHint"
-                                                x-cloak
-                                                x-transition:enter="transition ease-out duration-150"
-                                                x-transition:enter-start="opacity-0 translate-y-1"
-                                                x-transition:enter-end="opacity-100 translate-y-0"
-                                                x-transition:leave="transition ease-in duration-100"
-                                                x-transition:leave-start="opacity-100 translate-y-0"
-                                                x-transition:leave-end="opacity-0 translate-y-1"
-                                                id="passphraseHint"
-                                                role="tooltip"
-                                                class="absolute z-10 bottom-full start-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
-                                            >
-                                                {{ __('messages.passphrase_hint') }}
-                                                <div class="absolute top-full start-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-                                            </div>
-                                        </div>
+                                        <x-hint-tooltip id="passphraseHint" :text="__('messages.passphrase_hint')" />
                                     </div>
                                     <div class="relative">
                                         <input
@@ -492,37 +356,8 @@
                                             </p>
                                         </div>
                                     </label>
-                                    <div class="relative mt-0.5">
-                                        <button
-                                            type="button"
-                                            @mouseenter="showHint = true"
-                                            @mouseleave="showHint = false"
-                                            @focus="showHint = true"
-                                            @blur="showHint = false"
-                                            aria-describedby="splitModeHint"
-                                            class="text-gray-500 dark:text-slate-400 hover:text-violet-500 dark:hover:text-violet-400 transition cursor-pointer"
-                                        >
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span class="sr-only">{{ __('messages.split_mode_tooltip') }}</span>
-                                        </button>
-                                        <div
-                                            x-show="showHint"
-                                            x-cloak
-                                            x-transition:enter="transition ease-out duration-150"
-                                            x-transition:enter-start="opacity-0 translate-y-1"
-                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                            x-transition:leave="transition ease-in duration-100"
-                                            x-transition:leave-start="opacity-100 translate-y-0"
-                                            x-transition:leave-end="opacity-0 translate-y-1"
-                                            id="splitModeHint"
-                                            role="tooltip"
-                                            class="absolute z-10 bottom-full end-0 mb-2 w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
-                                        >
-                                            {{ __('messages.split_mode_tooltip') }}
-                                            <div class="absolute top-full end-3 border-4 border-transparent border-t-gray-900 dark:border-t-slate-700"></div>
-                                        </div>
+                                    <div class="mt-0.5">
+                                        <x-hint-tooltip id="splitModeHint" :text="__('messages.split_mode_tooltip')" position="end" />
                                     </div>
                                 </div>
                             </div>
@@ -591,9 +426,7 @@
                     <div x-show="shareUrl" x-cloak class="space-y-6">
                         <div class="text-center">
                             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors" aria-hidden="true">
-                                <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <x-icon.check class="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
                             </div>
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white transition-colors">{{ __('messages.secret_created') }}</h2>
                             <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">{{ __('messages.share_link_instruction') }}</p>

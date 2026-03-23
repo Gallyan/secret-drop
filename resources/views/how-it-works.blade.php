@@ -322,9 +322,7 @@
                 <div class="grid md:grid-cols-2 gap-4">
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
                             <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature1_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature1_desc') }}</p>
@@ -332,9 +330,7 @@
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
                             <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature2_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature2_desc') }}</p>
@@ -342,9 +338,7 @@
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
                             <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature3_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature3_desc') }}</p>
@@ -352,9 +346,7 @@
 
                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl">
                         <div class="flex items-center gap-3 mb-2">
-                            <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-300" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+                            <x-icon.check class="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
                             <h3 class="font-medium text-emerald-800 dark:text-emerald-300">{{ __('messages.how_feature4_title') }}</h3>
                         </div>
                         <p class="text-sm text-emerald-700 dark:text-emerald-300">{{ __('messages.how_feature4_desc') }}</p>
