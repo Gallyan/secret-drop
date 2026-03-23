@@ -97,7 +97,7 @@ class Secret extends Model
 
     public function shouldBeDestroyed(): bool
     {
-        return $this->max_views !== null && $this->read_count >= $this->max_views;
+        return $this->hasReachedMaxViews();
     }
 
     public function destroyContent(): void

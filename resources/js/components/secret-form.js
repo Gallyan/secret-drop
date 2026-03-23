@@ -1,6 +1,8 @@
-function t(key) {
-    return window.translations?.[key] || key;
-}
+import { t, formatFileSize } from '../utils.js';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_TEXT_LENGTH = 50000;
+const MIN_PASSPHRASE_LENGTH = 12;
 
 export default () => ({
         // Mode: 'text' or 'file'
@@ -43,7 +45,7 @@ export default () => ({
             // Length scoring (main factor)
             if (len >= 6) score += 15;
             if (len >= 8) score += 15;
-            if (len >= 12) score += 20;
+            if (len >= MIN_PASSPHRASE_LENGTH) score += 20;
             if (len >= 16) score += 20;
 
             // Character variety
@@ -56,7 +58,7 @@ export default () => ({
         },
 
         hasMinLength() {
-            return this.passphrase.length >= 12;
+            return this.passphrase.length >= MIN_PASSPHRASE_LENGTH;
         },
 
         hasLowercase() {
@@ -147,8 +149,7 @@ export default () => ({
         },
 
         selectFile(file) {
-            const maxSize = 10 * 1024 * 1024; // 10MB
-            if (file.size > maxSize) {
+            if (file.size > MAX_FILE_SIZE) {
                 this.error = t('file_too_large');
                 return;
             }
@@ -165,18 +166,7 @@ export default () => ({
             }
         },
 
-        formatFileSize(bytes) {
-            if (!bytes && bytes !== 0) {
-                return '';
-            }
-            if (bytes < 1024) {
-                return bytes + ' ' + t('unit_bytes');
-            }
-            if (bytes < 1024 * 1024) {
-                return (bytes / 1024).toFixed(1) + ' ' + t('unit_kilobytes');
-            }
-            return (bytes / (1024 * 1024)).toFixed(1) + ' ' + t('unit_megabytes');
-        },
+        formatFileSize,
 
         async handleSubmit() {
             this.error = null;

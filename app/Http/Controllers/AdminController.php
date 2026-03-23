@@ -18,7 +18,10 @@ use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    private const SESSION_KEY = 'admin_email_hash';
+    use Concerns\HasSessionAuth;
+
+    protected const SESSION_KEY = 'admin_email_hash';
+    protected const SESSION_EXPIRES_KEY = 'admin_expires_at';
 
     public function __construct(
         private TokenService $tokenService,
@@ -81,14 +84,14 @@ class AdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
-        $request->session()->put('admin_expires_at', now()->addMinutes(30)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(30)->timestamp);
 
         return redirect()->route('admin.dashboard');
     }
 
     public function dashboard(Request $request): View|RedirectResponse
     {
-        $emailHash = $this->authenticatedEmailHash($request);
+        $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
             return redirect()->route('admin.index');
@@ -111,7 +114,7 @@ class AdminController extends Controller
 
     public function revoke(Request $request, string $locale, string $id): JsonResponse
     {
-        $emailHash = $this->authenticatedEmailHash($request);
+        $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
             return response()->json(['error' => 'unauthorized'], 403);
@@ -143,7 +146,7 @@ class AdminController extends Controller
 
     public function extend(ExtendSecretRequest $request, string $locale, string $id): JsonResponse
     {
-        $emailHash = $this->authenticatedEmailHash($request);
+        $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
             return response()->json(['error' => 'unauthorized'], 403);
@@ -173,23 +176,4 @@ class AdminController extends Controller
         ]);
     }
 
-    private function authenticatedEmailHash(Request $request): ?string
-    {
-        $emailHash = $request->session()->get(self::SESSION_KEY);
-
-        if (! $emailHash) {
-            return null;
-        }
-
-        $expiresAt = $request->session()->get('admin_expires_at');
-
-        if ($expiresAt && $expiresAt < now()->timestamp) {
-            $request->session()->forget(self::SESSION_KEY);
-            $request->session()->forget('admin_expires_at');
-
-            return null;
-        }
-
-        return $emailHash;
-    }
 }

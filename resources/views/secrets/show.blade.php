@@ -13,10 +13,7 @@
             <div class="p-8 lg:p-12">
                 {{-- Loading state --}}
                 <div x-show="isLoading" class="text-center py-8" role="status">
-                    <svg class="animate-spin motion-reduce:!animate-none h-10 w-10 mx-auto text-violet-500" aria-hidden="true" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <x-spinner class="h-10 w-10 mx-auto text-violet-500" />
                     <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">{{ __('messages.loading_secret') }}</p>
                 </div>
 
@@ -24,62 +21,43 @@
                 <div aria-live="assertive" aria-atomic="true" class="sr-only" x-text="errorMessage()"></div>
 
                 {{-- Not found error --}}
-                <div x-show="isNotFound()" x-cloak class="text-center" role="alert">
-                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        {{ __('messages.error_not_found') }}
-                    </h1>
+                <x-error-block
+                    x-show="isNotFound()" x-cloak
+                    color="red"
+                    :title="__('messages.error_not_found')"
+                    icon="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <a
-                        href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
-                    >
+                    <a href="{{ route('home') }}" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
                         {{ __('messages.btn_create_new') }}
                     </a>
-                </div>
+                </x-error-block>
 
                 {{-- Unavailable error --}}
-                <div x-show="isUnavailable()" x-cloak class="text-center" role="alert">
-                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-amber-500 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        {{ __('messages.error_unavailable') }}
-                    </h1>
+                <x-error-block
+                    x-show="isUnavailable()" x-cloak
+                    color="amber"
+                    :title="__('messages.error_unavailable')"
+                    icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <a
-                        href="{{ route('home') }}"
-                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
-                    >
+                    <a href="{{ route('home') }}" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
                         {{ __('messages.btn_create_new') }}
                     </a>
-                </div>
+                </x-error-block>
 
                 {{-- Generic error --}}
-                <div x-show="isGenericError()" x-cloak class="text-center" role="alert">
-                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 mb-6 transition-colors" aria-hidden="true">
-                        <svg class="w-7 h-7 text-red-500 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
-                        {{ __('messages.error_generic') }}
-                    </h1>
+                <x-error-block
+                    x-show="isGenericError()" x-cloak
+                    color="red"
+                    :title="__('messages.error_generic')"
+                    icon="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
-                    <button
-                        type="button"
-                        @click="reload()"
-                        class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer"
-                    >
+                    <button type="button" @click="reload()" class="inline-block py-2.5 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium rounded-xl shadow-lg shadow-violet-500/25 transition-all cursor-pointer">
                         {{ __('messages.btn_retry') }}
                     </button>
-                </div>
+                </x-error-block>
 
                 {{-- Secret content --}}
                 <div x-show="!isLoading && !loadError" x-cloak>
@@ -207,10 +185,7 @@
                             >
                                 <span x-show="!isDecrypting">{{ __('messages.btn_decrypt') }}</span>
                                 <span x-show="isDecrypting" role="status" class="inline-flex items-center justify-center gap-2">
-                                    <svg class="animate-spin motion-reduce:!animate-none h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
+                                    <x-spinner />
                                     {{ __('messages.btn_decrypting') }}
                                 </span>
                             </button>
@@ -219,10 +194,7 @@
 
                     {{-- Loading state for decryption --}}
                     <div x-show="isDecrypting && !needsPassphrase" x-cloak class="text-center py-8" role="status">
-                        <svg class="animate-spin motion-reduce:!animate-none h-8 w-8 mx-auto text-violet-500" aria-hidden="true" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <x-spinner class="h-8 w-8 mx-auto text-violet-500" />
                         <p class="mt-4 text-gray-600 dark:text-slate-400 transition-colors">
                             <span x-text="decryptingText()"></span>
                         </p>

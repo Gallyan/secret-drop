@@ -90,8 +90,9 @@ class SanitizeProcessor implements ProcessorInterface
             // Superadmin verify URLs: /superadmin/verify/{token}
             '#(/superadmin/verify/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
 
-            // Base64-encoded data (potential ciphertext) - long strings
-            '/[A-Za-z0-9_-]{100,}/i' => '[REDACTED_DATA]',
+            // Base64-encoded data (potential ciphertext) - very long unbroken strings
+            // Threshold at 200 to avoid redacting stack traces or long class names
+            '/[A-Za-z0-9+\/=_-]{200,}/' => '[REDACTED_DATA]',
         ];
 
         foreach ($patterns as $pattern => $replacement) {

@@ -25,10 +25,13 @@ class SecretStorageService
         $path = $this->buildPath($token);
 
         $stream = fopen($file->getRealPath(), 'rb');
-        $this->disk()->writeStream($path, $stream);
 
-        if (is_resource($stream)) {
-            fclose($stream);
+        try {
+            $this->disk()->writeStream($path, $stream);
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
         }
 
         return $path;

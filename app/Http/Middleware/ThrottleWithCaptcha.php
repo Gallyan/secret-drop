@@ -54,7 +54,7 @@ class ThrottleWithCaptcha
         // Generate new captcha challenge
         $captchaData = $this->captcha->generate($identifier);
 
-        $retryAfter = $this->getRetryAfter($cacheKey, $decayMinutes);
+        $retryAfter = $this->getRetryAfter($decayMinutes);
 
         return $this->buildCaptchaResponse($captchaData, $retryAfter, $request);
     }
@@ -64,14 +64,8 @@ class ThrottleWithCaptcha
         return hash('sha256', $request->ip());
     }
 
-    private function getRetryAfter(string $cacheKey, int $decayMinutes): int
+    private function getRetryAfter(int $decayMinutes): int
     {
-        $ttl = Cache::getStore()->get($cacheKey.':ttl');
-
-        if ($ttl) {
-            return max(0, $ttl - time());
-        }
-
         return $decayMinutes * 60;
     }
 

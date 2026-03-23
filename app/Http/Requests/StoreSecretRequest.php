@@ -15,8 +15,9 @@ class StoreSecretRequest extends FormRequest
     {
         // Handle cipher_meta as JSON string from FormData
         if ($this->has('cipher_meta') && is_string($this->cipher_meta)) {
+            $decoded = json_decode($this->cipher_meta, true);
             $this->merge([
-                'cipher_meta' => json_decode($this->cipher_meta, true),
+                'cipher_meta' => is_array($decoded) ? $decoded : [],
             ]);
         }
 

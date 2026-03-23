@@ -14,7 +14,11 @@ use Illuminate\View\View;
 
 class SuperAdminController extends Controller
 {
-    private const SESSION_KEY = 'super_admin_verified';
+    use Concerns\HasSessionAuth;
+
+    protected const SESSION_KEY = 'super_admin_verified';
+    protected const SESSION_EXPIRES_KEY = 'super_admin_expires_at';
+    private const VALID_PERIODS = ['7d', '30d', '90d', '1y', 'all'];
 
     public function __construct(
         private TokenService $tokenService,
@@ -73,16 +77,14 @@ class SuperAdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put('super_admin_expires_at', now()->addMinutes(15)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(15)->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }
 
-    private const VALID_PERIODS = ['7d', '30d', '90d', '1y', 'all'];
-
     public function dashboard(Request $request): View|RedirectResponse
     {
-        if (! $this->isAuthenticated($request)) {
+        if (! $this->getSessionAuth($request)) {
             return redirect()->route('superadmin.index');
         }
 
@@ -117,21 +119,4 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.index');
     }
 
-    private function isAuthenticated(Request $request): bool
-    {
-        if (! $request->session()->get(self::SESSION_KEY)) {
-            return false;
-        }
-
-        $expiresAt = $request->session()->get('super_admin_expires_at');
-
-        if ($expiresAt && $expiresAt < now()->timestamp) {
-            $request->session()->forget(self::SESSION_KEY);
-            $request->session()->forget('super_admin_expires_at');
-
-            return false;
-        }
-
-        return true;
-    }
 }
