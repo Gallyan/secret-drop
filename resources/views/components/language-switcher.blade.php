@@ -17,10 +17,11 @@
                bg-linear-to-b from-violet-500 to-indigo-600 dark:from-violet-600 dark:to-indigo-800
                shadow-[0_4px_14px_rgba(0,0,0,0.18)] transition-shadow duration-300
                hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]"
-        aria-label="{{ __('messages.a11y_language_selector') }}"
+        aria-label="{{ __('messages.a11y_language_selector') }} (Ctrl+K)"
         :aria-expanded="isOpen"
         aria-haspopup="dialog"
     >
+        <kbd class="hidden sm:inline px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono text-white/80">Ctrl+K</kbd>
         <div class="relative" aria-hidden="true">
             {{-- Globe --}}
             <div class="w-5 h-5 rounded-full bg-[radial-gradient(circle_at_30%_30%,#4fc3f7,#0288d1_50%,#01579b)]

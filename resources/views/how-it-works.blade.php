@@ -271,8 +271,8 @@
                         <div class="flex-1 pt-1">
                             <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __('messages.how_step4_title') }}</h3>
                             <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __('messages.how_step4_desc') }}</p>
-                            <div class="mt-2 p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-200 dark:border-indigo-500/20 overflow-x-auto">
-                                <code class="text-xs text-indigo-700 dark:text-indigo-300 font-mono whitespace-nowrap" dir="ltr">https://example.com/s/abc123<span class="text-red-500 dark:text-red-300 font-bold">#secret_key_here</span></code>
+                            <div class="mt-2 p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-lg border border-indigo-200 dark:border-indigo-500/20">
+                                <code class="text-xs text-indigo-700 dark:text-indigo-300 font-mono break-all" dir="ltr">https://example.com/s/abc123<span class="text-red-500 dark:text-red-300 font-bold">#secret_key_here</span></code>
                             </div>
                         </div>
                         <div class="hidden sm:flex items-center justify-center w-16 h-16 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 shrink-0" aria-hidden="true">
