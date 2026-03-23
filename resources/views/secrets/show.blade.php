@@ -4,7 +4,7 @@
 @section('title', __('messages.view_secret_title'))
 
 @section('content')
-<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
+<div class="flex-1 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-2xl">
         <div
             x-data="secretViewer" data-token="{{ $token }}"

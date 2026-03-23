@@ -4,7 +4,7 @@
 @section('title', __('messages.admin_dashboard_title'))
 
 @section('content')
-<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 px-4 pb-16 transition-colors">
+<div class="flex-1 py-8 px-4 transition-colors">
     <div class="max-w-4xl mx-auto">
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">

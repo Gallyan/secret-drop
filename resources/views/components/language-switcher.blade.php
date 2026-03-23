@@ -18,7 +18,7 @@
         @click="togglePalette()"
         type="button"
         class="relative flex items-center gap-2 h-10 pl-1.5 pr-2.5 rounded-xl cursor-pointer select-none
-               bg-linear-to-b from-sky-400 to-blue-600 dark:from-indigo-600 dark:to-indigo-900
+               bg-linear-to-b from-violet-500 to-indigo-600 dark:from-violet-600 dark:to-indigo-800
                shadow-[0_4px_14px_rgba(0,0,0,0.18)] transition-shadow duration-300
                hover:shadow-[0_6px_20px_rgba(0,0,0,0.25)]"
         aria-label="{{ __('messages.a11y_language_selector') }}"
@@ -81,10 +81,10 @@
             >
                 <div
                     x-trap.noscroll="isOpen"
-                    class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700"
+                    class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-slate-700/50"
                 >
                     {{-- Search --}}
-                    <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-slate-700/50">
                         <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
@@ -124,7 +124,7 @@
                                 <span class="flex-1">{{ $nativeNames[$locale] }}</span>
                                 <span class="text-xs text-slate-400 uppercase" aria-hidden="true">{{ $locale }}</span>
                                 @if($locale === $currentLocale)
-                                    <span class="text-sky-400" aria-hidden="true">✓</span>
+                                    <span class="text-violet-500" aria-hidden="true">✓</span>
                                 @endif
                             </a>
                         @endforeach

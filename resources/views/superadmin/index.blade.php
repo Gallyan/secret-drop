@@ -4,7 +4,7 @@
 @section('title', __('messages.superadmin_title'))
 
 @section('content')
-<div class="min-h-screen bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center p-4 transition-colors">
+<div class="flex-1 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-md">
         <div class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl p-8 transition-colors">
             <div class="text-center mb-8">
