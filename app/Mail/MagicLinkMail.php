@@ -29,6 +29,7 @@ class MagicLinkMail extends Mailable
     {
         return new Content(
             view: 'emails.magic-link',
+            text: 'emails.magic-link-text',
             with: [
                 'verifyUrl' => $this->verifyUrl,
             ],

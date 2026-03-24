@@ -29,6 +29,7 @@ class SuperAdminMagicLinkMail extends Mailable
     {
         return new Content(
             view: 'emails.superadmin-magic-link',
+            text: 'emails.superadmin-magic-link-text',
             with: [
                 'verifyUrl' => $this->verifyUrl,
             ],
