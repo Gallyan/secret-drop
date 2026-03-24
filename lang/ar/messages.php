@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'شارك كلمات المرور ومفاتيح API والملفات السرية بأمان مع التشفير من طرف إلى طرف. الخادم لا يرى بياناتك أبداً. روابط ذاتية التدمير، معرفة صفرية.',
 
     // Features
@@ -20,7 +19,6 @@ return [
     'max_reads_hint' => 'يحدد عدد مرات عرض السر. عند الوصول إلى الحد يُحذف تلقائياً.',
     'advanced_options' => 'خيارات متقدمة',
     'max_security' => 'أقصى أمان',
-    'max_security_tooltip' => 'يُهيئ جميع الخيارات بنقرة واحدة لأقصى مستوى أمان.',
     'passphrase' => 'عبارة المرور',
     'passphrase_hint' => 'حماية إضافية. المستلم يحتاجها لفك التشفير. لا تُرسل أبداً للخادم.',
     'passphrase_placeholder' => 'حماية إضافية',
@@ -113,7 +111,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'متصفحك لا يدعم التشفير الآمن',
-    'crypto_key_missing' => 'مفتاح فك التشفير مفقود من الرابط',
     'crypto_fragment_invalid' => 'تنسيق الجزء غير صالح',
     'crypto_passphrase_required' => 'عبارة المرور مطلوبة',
     'crypto_passphrase_incorrect' => 'عبارة المرور غير صحيحة أو البيانات معدلة',
@@ -130,16 +127,9 @@ return [
     'loading_secret' => 'جارٍ تحميل السر...',
 
     // Emails
-    'email_secret_created_subject' => 'تم إنشاء سرك',
-    'email_secret_created_intro' => 'لقد أنشأت سراً جديداً. استخدم الرابط أدناه لإدارته (عرض الحالة، إلغاء، تمديد).',
-    'email_type' => 'النوع',
-    'email_expires' => 'انتهاء الصلاحية',
-    'email_manage_secret' => 'إدارة سري',
-    'email_save_link_warning' => 'احفظ هذا الرابط! إنه الطريقة الوحيدة للوصول إلى إدارة سرك.',
     'email_link_label' => 'أو انسخ هذا الرابط:',
     'email_footer' => 'تم إرسال هذا البريد الإلكتروني بواسطة :app.',
     'type_text' => 'نص',
-    'type_file' => 'ملف',
 
     // Footer
     'footer_manage' => 'إدارة أسراري',
@@ -236,7 +226,6 @@ return [
     'legal_about_security' => 'تضمن بنية المعرفة الصفرية أن الخادم لا يمكنه أبداً الوصول إلى محتوى أسرارك. يتم تنفيذ تشفير AES-256-GCM بالكامل في متصفحك، ولا يتم إرسال مفتاح فك التشفير إلى الخادم أبداً.',
 
     'legal_editor_title' => 'ناشر الموقع',
-    'legal_editor_text' => 'هذا الموقع منشور بواسطة :name.',
     'legal_editor_phone' => 'الهاتف:',
     'legal_editor_email' => 'البريد الإلكتروني:',
     'legal_hosting_title' => 'الاستضافة',
@@ -247,7 +236,6 @@ return [
     'legal_data_stored' => 'البيانات المخزنة:',
     'legal_data_item_ciphertext' => 'البيانات المشفرة (المحتوى ومعلمات التشفير)',
     'legal_data_item_metadata' => 'البيانات الوصفية (تاريخ الإنشاء، انتهاء الصلاحية، عدد القراءات)',
-    'legal_data_item_file_meta' => 'حجم الملف المشفر (للإحصائيات)',
     'legal_data_item_email' => 'بصمة البريد الإلكتروني (إذا تم تقديمه، للوصول الإداري)',
     'legal_data_not_stored' => 'البيانات غير المخزنة:',
     'legal_data_not_item_plaintext' => 'المحتوى النصي للأسرار',
@@ -257,7 +245,6 @@ return [
     'legal_cookies_text' => 'يستخدم هذا الموقع فقط ملفات تعريف الارتباط التقنية الأساسية للتشغيل (الجلسة، تفضيل السمة). لا تُستخدم ملفات تعريف الارتباط للتتبع أو الإعلان.',
     'legal_cookies_cnil' => 'وفقاً لتوصيات CNIL (هيئة حماية البيانات الفرنسية)، فإن ملفات تعريف الارتباط الضرورية للغاية معفاة من جمع الموافقة.',
     'legal_contact_title' => 'الاتصال',
-    'legal_contact_text' => 'لأي سؤال يتعلق بهذا الموقع، يمكنك الاتصال بنا على :email.',
     'legal_contact_prefix' => 'لأي سؤال يتعلق بهذا الموقع، يمكنك الاتصال بنا على',
 
     // Admin
@@ -408,7 +395,6 @@ return [
     'stat_active_secrets' => 'الأسرار النشطة',
     'stat_read_rate' => 'معدل القراءة',
     'stat_unique_creators' => 'المنشئون الفريدون (Gini)',
-    'stat_system_health' => 'صحة النظام',
     'stat_health_active_short' => 'نشط',
     'stat_health_cleanup_short' => 'للتنظيف',
     'stat_by_referrer' => 'حسب مصدر الزيارات',
@@ -425,7 +411,6 @@ return [
     'rate_limit_exceeded' => 'طلبات كثيرة جداً. يرجى حل العملية الحسابية أدناه للمتابعة.',
     'captcha_label' => 'التحقق من الروبوت',
     'captcha_placeholder' => 'إجابتك',
-    'captcha_hint' => 'حل: :challenge = ؟',
     'captcha_invalid' => 'إجابة غير صحيحة. يرجى المحاولة مرة أخرى.',
 
     // Labels

@@ -220,18 +220,15 @@
                                 {{ __('messages.advanced_options') }}
                             </button>
 
-                            {{-- Max security button with info hint --}}
-                            <div class="flex items-center gap-1.5">
-                                <button
-                                    type="button"
-                                    @click="applyMaxSecurity()"
-                                    class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
-                                >
-                                    <x-icon.shield-check />
-                                    {{ __('messages.max_security') }}
-                                </button>
-                                <x-hint-tooltip id="maxSecurityHint" :text="__('messages.max_security_tooltip')" position="end" />
-                            </div>
+                            {{-- Max security CTA --}}
+                            <button
+                                type="button"
+                                @click="applyMaxSecurity()"
+                                class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
+                            >
+                                <x-icon.shield-check />
+                                {{ __('messages.max_security') }}
+                            </button>
                         </div>
 
                             <div id="advancedOptions" x-show="showAdvanced" x-collapse class="mt-4 space-y-4">

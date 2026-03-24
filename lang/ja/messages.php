@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'パスワード、APIキー、機密ファイルをエンドツーエンド暗号化で安全に共有。サーバーはデータを見ることができません。自動削除リンク、ゼロナレッジ。',
 
     // Features
@@ -20,7 +19,6 @@ return [
     'max_reads_hint' => '閲覧回数を制限します。上限に達すると自動的に削除されます。',
     'advanced_options' => '詳細オプション',
     'max_security' => '最高セキュリティ',
-    'max_security_tooltip' => 'ワンクリックで全オプションを最高セキュリティに設定。',
     'passphrase' => 'パスフレーズ',
     'passphrase_hint' => '追加の保護。受信者は復号のために知っている必要があります。サーバーには送信されません。',
     'passphrase_placeholder' => '追加の保護',
@@ -113,7 +111,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'お使いのブラウザは安全な暗号化をサポートしていません',
-    'crypto_key_missing' => 'URLに復号化キーがありません',
     'crypto_fragment_invalid' => '無効なフラグメント形式',
     'crypto_passphrase_required' => 'パスフレーズが必要です',
     'crypto_passphrase_incorrect' => 'パスフレーズが間違っているか、データが改変されています',
@@ -130,16 +127,9 @@ return [
     'loading_secret' => 'シークレット読み込み中...',
 
     // Emails
-    'email_secret_created_subject' => 'シークレットが作成されました',
-    'email_secret_created_intro' => '新しいシークレットを作成しました。以下のリンクで管理（ステータス確認、取り消し、延長）できます。',
-    'email_type' => 'タイプ',
-    'email_expires' => '有効期限',
-    'email_manage_secret' => 'シークレットを管理',
-    'email_save_link_warning' => 'このリンクを保存してください！シークレットの管理画面にアクセスする唯一の方法です。',
     'email_link_label' => 'またはこのリンクをコピー：',
     'email_footer' => 'このメールは :app から送信されました。',
     'type_text' => 'テキスト',
-    'type_file' => 'ファイル',
 
     // Footer
     'footer_manage' => 'シークレットを管理',
@@ -236,7 +226,6 @@ return [
     'legal_about_security' => 'ゼロナレッジアーキテクチャにより、サーバーがシークレットの内容にアクセスすることは決してありません。AES-256-GCM暗号化はすべてブラウザ内で実行され、復号鍵がサーバーに送信されることはありません。',
 
     'legal_editor_title' => 'サイト運営者',
-    'legal_editor_text' => 'このサイトは :name によって運営されています。',
     'legal_editor_phone' => '電話：',
     'legal_editor_email' => 'メール：',
     'legal_hosting_title' => 'ホスティング',
@@ -247,7 +236,6 @@ return [
     'legal_data_stored' => '保存されるデータ：',
     'legal_data_item_ciphertext' => '暗号化データ（内容と暗号化パラメータ）',
     'legal_data_item_metadata' => 'メタデータ（作成日、有効期限、閲覧数）',
-    'legal_data_item_file_meta' => '暗号化されたファイルサイズ（統計用）',
     'legal_data_item_email' => 'メールのフィンガープリント（管理者アクセス用に提供された場合）',
     'legal_data_not_stored' => '保存されないデータ：',
     'legal_data_not_item_plaintext' => 'シークレットの平文',
@@ -257,7 +245,6 @@ return [
     'legal_cookies_text' => 'このサイトは必須の技術的Cookieのみを使用しています（セッション、テーマ設定）。トラッキングや広告Cookieは使用していません。',
     'legal_cookies_cnil' => 'CNIL（フランスのデータ保護機関）勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',
     'legal_contact_title' => 'お問い合わせ',
-    'legal_contact_text' => 'このサイトに関するご質問は :email までお問い合わせください。',
     'legal_contact_prefix' => 'このサイトに関するご質問はこちらまでお問い合わせください：',
 
     // Admin
@@ -408,7 +395,6 @@ return [
     'stat_active_secrets' => 'アクティブな秘密',
     'stat_read_rate' => '閲覧率',
     'stat_unique_creators' => 'ユニーク作成者 (Gini)',
-    'stat_system_health' => 'システム状態',
     'stat_health_active_short' => 'アクティブ',
     'stat_health_cleanup_short' => '削除待ち',
     'stat_by_referrer' => 'トラフィック元別',
@@ -425,7 +411,6 @@ return [
     'rate_limit_exceeded' => 'リクエストが多すぎます。続行するには以下の計算を解いてください。',
     'captcha_label' => 'ロボット検証',
     'captcha_placeholder' => '答え',
-    'captcha_hint' => '計算：:challenge = ?',
     'captcha_invalid' => '答えが間違っています。もう一度お試しください。',
 
     // Labels

@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => '비밀번호, API 키, 기밀 파일을 종단간 암호화로 안전하게 공유하세요. 서버는 데이터를 볼 수 없습니다. 자동 삭제 링크, 제로 지식.',
 
     // Features
@@ -20,7 +19,6 @@ return [
     'max_reads_hint' => '비밀을 볼 수 있는 횟수를 제한합니다. 한도 도달 시 자동으로 삭제됩니다.',
     'advanced_options' => '고급 옵션',
     'max_security' => '최대 보안',
-    'max_security_tooltip' => '한 번의 클릭으로 모든 옵션을 최대 보안으로 설정합니다.',
     'passphrase' => '암호문구',
     'passphrase_hint' => '추가 보호. 수신자가 복호화하려면 필요합니다. 서버로 전송되지 않습니다.',
     'passphrase_placeholder' => '추가 보호',
@@ -113,7 +111,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => '브라우저가 보안 암호화를 지원하지 않습니다',
-    'crypto_key_missing' => 'URL에 복호화 키가 없습니다',
     'crypto_fragment_invalid' => '잘못된 프래그먼트 형식',
     'crypto_passphrase_required' => '암호문구가 필요합니다',
     'crypto_passphrase_incorrect' => '암호문구가 잘못되었거나 데이터가 변경되었습니다',
@@ -130,16 +127,9 @@ return [
     'loading_secret' => '비밀 로딩 중...',
 
     // Emails
-    'email_secret_created_subject' => '비밀이 생성되었습니다',
-    'email_secret_created_intro' => '새 비밀을 만들었습니다. 아래 링크를 사용하여 관리(상태 확인, 취소, 연장)하세요.',
-    'email_type' => '유형',
-    'email_expires' => '만료',
-    'email_manage_secret' => '내 비밀 관리',
-    'email_save_link_warning' => '이 링크를 저장하세요! 비밀 관리에 접근하는 유일한 방법입니다.',
     'email_link_label' => '또는 이 링크를 복사:',
     'email_footer' => '이 이메일은 :app에서 발송되었습니다.',
     'type_text' => '텍스트',
-    'type_file' => '파일',
 
     // Footer
     'footer_manage' => '내 비밀 관리',
@@ -236,7 +226,6 @@ return [
     'legal_about_security' => '제로 지식 아키텍처는 서버가 비밀의 내용에 절대 접근할 수 없도록 보장합니다. AES-256-GCM 암호화는 전적으로 브라우저에서 수행되며, 복호화 키는 서버로 전송되지 않습니다.',
 
     'legal_editor_title' => '웹사이트 발행인',
-    'legal_editor_text' => '이 웹사이트는 :name에 의해 발행됩니다.',
     'legal_editor_phone' => '전화:',
     'legal_editor_email' => '이메일:',
     'legal_hosting_title' => '호스팅',
@@ -247,7 +236,6 @@ return [
     'legal_data_stored' => '저장되는 데이터:',
     'legal_data_item_ciphertext' => '암호화된 데이터 (내용 및 암호화 매개변수)',
     'legal_data_item_metadata' => '메타데이터 (생성일, 만료일, 조회 수)',
-    'legal_data_item_file_meta' => '암호화된 파일 크기 (통계용)',
     'legal_data_item_email' => '이메일 지문 (관리자 접근을 위해 제공된 경우)',
     'legal_data_not_stored' => '저장되지 않는 데이터:',
     'legal_data_not_item_plaintext' => '비밀의 평문 내용',
@@ -257,7 +245,6 @@ return [
     'legal_cookies_text' => '이 웹사이트는 필수 기술 쿠키만 사용합니다 (세션, 테마 설정). 추적이나 광고 쿠키는 사용하지 않습니다.',
     'legal_cookies_cnil' => 'CNIL(프랑스 개인정보 보호 기관) 권고에 따라 이러한 필수 쿠키는 동의 요건에서 면제됩니다.',
     'legal_contact_title' => '연락처',
-    'legal_contact_text' => '이 웹사이트에 대한 질문은 :email로 연락하세요.',
     'legal_contact_prefix' => '이 웹사이트에 대한 질문은 다음 주소로 연락하세요:',
 
     // Admin
@@ -408,7 +395,6 @@ return [
     'stat_active_secrets' => '활성 비밀',
     'stat_read_rate' => '읽기 비율',
     'stat_unique_creators' => '고유 생성자 (Gini)',
-    'stat_system_health' => '시스템 상태',
     'stat_health_active_short' => '활성',
     'stat_health_cleanup_short' => '정리 대기',
     'stat_by_referrer' => '트래픽 소스별',
@@ -425,7 +411,6 @@ return [
     'rate_limit_exceeded' => '요청이 너무 많습니다. 계속하려면 아래 계산을 풀어주세요.',
     'captcha_label' => '로봇 방지 확인',
     'captcha_placeholder' => '답변',
-    'captcha_hint' => '계산: :challenge = ?',
     'captcha_invalid' => '답이 틀렸습니다. 다시 시도하세요.',
 
     // Labels

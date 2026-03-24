@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'Comparte contraseñas, claves API y archivos confidenciales con cifrado de extremo a extremo. El servidor nunca ve tus datos. Enlaces autodestructivos, conocimiento cero.',
 
     // Features
@@ -20,7 +19,6 @@ return [
     'max_reads_hint' => 'Limita cuántas veces se puede ver el secreto. Una vez alcanzado, se elimina automáticamente.',
     'advanced_options' => 'Opciones avanzadas',
     'max_security' => 'Seguridad máx.',
-    'max_security_tooltip' => 'Configura todas las opciones en un clic para el nivel máximo de seguridad.',
     'passphrase' => 'Frase secreta',
     'passphrase_hint' => 'Protección adicional. El destinatario debe conocerla para descifrar. Nunca se envía al servidor.',
     'passphrase_placeholder' => 'Protección adicional',
@@ -113,7 +111,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'Tu navegador no soporta cifrado seguro',
-    'crypto_key_missing' => 'Falta la clave de descifrado en la URL',
     'crypto_fragment_invalid' => 'Formato de fragmento inválido',
     'crypto_passphrase_required' => 'Se requiere frase secreta',
     'crypto_passphrase_incorrect' => 'Frase secreta incorrecta o datos alterados',
@@ -130,16 +127,9 @@ return [
     'loading_secret' => 'Cargando secreto...',
 
     // Emails
-    'email_secret_created_subject' => 'Tu secreto ha sido creado',
-    'email_secret_created_intro' => 'Has creado un nuevo secreto. Usa el enlace de abajo para gestionarlo (ver estado, revocar, extender).',
-    'email_type' => 'Tipo',
-    'email_expires' => 'Expira',
-    'email_manage_secret' => 'Gestionar mi secreto',
-    'email_save_link_warning' => '¡Guarda este enlace! Es la única forma de acceder a la administración de tu secreto.',
     'email_link_label' => 'O copia este enlace:',
     'email_footer' => 'Este correo fue enviado por :app.',
     'type_text' => 'Texto',
-    'type_file' => 'Archivo',
 
     // Footer
     'footer_manage' => 'Gestionar mis secretos',
@@ -236,7 +226,6 @@ return [
     'legal_about_security' => 'La arquitectura zero-knowledge garantiza que el servidor nunca puede acceder al contenido de tus secretos. El cifrado AES-256-GCM se realiza íntegramente en tu navegador, y la clave de descifrado nunca se transmite al servidor.',
 
     'legal_editor_title' => 'Editor del sitio web',
-    'legal_editor_text' => 'Este sitio web es publicado por :name.',
     'legal_editor_phone' => 'Teléfono:',
     'legal_editor_email' => 'Correo:',
     'legal_hosting_title' => 'Alojamiento',
@@ -247,7 +236,6 @@ return [
     'legal_data_stored' => 'Datos almacenados:',
     'legal_data_item_ciphertext' => 'Datos cifrados (contenido y parámetros de cifrado)',
     'legal_data_item_metadata' => 'Metadatos (fecha de creación, expiración, contador de lecturas)',
-    'legal_data_item_file_meta' => 'Tamaño del archivo cifrado (para estadísticas)',
     'legal_data_item_email' => 'Huella del correo electrónico (si se proporciona, para acceso de administración)',
     'legal_data_not_stored' => 'Datos NO almacenados:',
     'legal_data_not_item_plaintext' => 'Contenido en texto plano de los secretos',
@@ -257,7 +245,6 @@ return [
     'legal_cookies_text' => 'Este sitio web solo utiliza cookies técnicas esenciales (sesión, preferencia de tema). No se utilizan cookies de seguimiento ni publicidad.',
     'legal_cookies_cnil' => 'De acuerdo con las recomendaciones de la CNIL (autoridad francesa de protección de datos), estas cookies estrictamente necesarias están exentas de requisitos de consentimiento.',
     'legal_contact_title' => 'Contacto',
-    'legal_contact_text' => 'Para cualquier pregunta sobre este sitio web, puedes contactarnos en :email.',
     'legal_contact_prefix' => 'Para cualquier pregunta sobre este sitio web, puedes contactarnos en',
 
     // Admin
@@ -408,7 +395,6 @@ return [
     'stat_active_secrets' => 'Secretos activos',
     'stat_read_rate' => 'Tasa de lectura',
     'stat_unique_creators' => 'Creadores únicos (Gini)',
-    'stat_system_health' => 'Salud del sistema',
     'stat_health_active_short' => 'activos',
     'stat_health_cleanup_short' => 'a purgar',
     'stat_by_referrer' => 'Por fuente de tráfico',
@@ -425,7 +411,6 @@ return [
     'rate_limit_exceeded' => 'Demasiadas solicitudes. Por favor, resuelve el cálculo de abajo para continuar.',
     'captcha_label' => 'Verificación anti-robot',
     'captcha_placeholder' => 'Tu respuesta',
-    'captcha_hint' => 'Resuelve: :challenge = ?',
     'captcha_invalid' => 'Respuesta incorrecta. Por favor, inténtalo de nuevo.',
 
     // Labels
