@@ -119,7 +119,7 @@
 
         <x-card class="p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_admin_activity') }}</h2>
-            <canvas id="adminActivityChart" height="150" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
+            <canvas id="adminActivityChart" height="80" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
         </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
