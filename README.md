@@ -1,6 +1,11 @@
 # Secret Drop
 
+[![CI](https://github.com/perceptron-systems/secret-drop/actions/workflows/ci.yml/badge.svg)](https://github.com/perceptron-systems/secret-drop/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![Alpine.js](https://img.shields.io/badge/Alpine.js-3-8BC0D0?logo=alpine.js&logoColor=white)](https://alpinejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 Application open source de partage de secrets et fichiers chiffrés côté client. Le serveur ne voit jamais les données en clair.
 
