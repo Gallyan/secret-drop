@@ -2,8 +2,8 @@
 
 @section('title', __('messages.email_magic_link_subject'))
 
-@section('gradient-start', '#7c3aed')
-@section('gradient-end', '#4f46e5')
+@section('gradient-start', '#8b5cf6')
+@section('gradient-end', '#6366f1')
 
 @section('intro', __('messages.email_magic_link_intro'))
 @section('button-text', __('messages.email_magic_link_button'))
