@@ -113,7 +113,7 @@ class StatsService
             $query->where('date', '>=', $startDate);
         }
 
-        return $query->pluck('total', 'metric')->toArray();
+        return $query->pluck('total', 'metric')->map(fn ($v) => (int) $v)->toArray();
     }
 
     /**
