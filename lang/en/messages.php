@@ -19,7 +19,7 @@ return [
     'max_reads' => 'Max reads',
     'max_reads_hint' => 'Limits how many times the secret can be viewed. Once reached, the secret is automatically deleted.',
     'advanced_options' => 'Advanced options',
-    'max_security' => 'Max security',
+    'max_security' => 'Enable max security',
     'max_security_tooltip' => 'Configures all options in one click for maximum security level.',
     'passphrase' => 'Passphrase',
     'passphrase_hint' => 'Extra protection. The recipient must know it to decrypt. It\'s never sent to the server.',

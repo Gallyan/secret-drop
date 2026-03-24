@@ -19,7 +19,7 @@ return [
     'max_reads' => 'Lectures max',
     'max_reads_hint' => 'Limite le nombre de fois que le secret peut être consulté. Une fois atteint, le secret est automatiquement supprimé.',
     'advanced_options' => 'Options avancées',
-    'max_security' => 'Sécurité max',
+    'max_security' => 'Activer la sécurité max',
     'max_security_tooltip' => 'Configure toutes les options en un clic pour le niveau de sécurité maximum.',
     'passphrase' => 'Phrase secrète',
     'passphrase_hint' => 'Protection supplémentaire. Le destinataire devra la connaître pour déchiffrer. Elle n\'est jamais transmise au serveur.',
