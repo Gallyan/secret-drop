@@ -34,7 +34,8 @@ class TrackPageView
             $request->userAgent() ?? '',
             $request->header('Accept-Language', ''),
             (int) $request->cookie('tz_offset', '0'),
-            $this->extractLocale($request)
+            $this->extractLocale($request),
+            $request->header('Referer', '')
         );
 
         return $response;

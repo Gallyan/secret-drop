@@ -99,6 +99,11 @@ class SuperAdminController extends Controller
         $avgFirstReadDelay = $this->stats->getAverageFirstReadDelay($startDate);
         $currentDiskUsage = $this->stats->getCurrentDiskUsage();
         $pageviews = $this->stats->getPageviews($startDate);
+        $activeSecrets = $this->stats->getActiveSecretsCount();
+        $readRate = $this->stats->getReadRate($startDate);
+        $creatorConcentration = $this->stats->getCreatorConcentration();
+        $systemHealth = $this->stats->getSystemHealth();
+        $referrers = $this->stats->getReferrers($startDate);
 
         return view('superadmin.dashboard', [
             'stats' => $stats,
@@ -108,6 +113,11 @@ class SuperAdminController extends Controller
             'avgFirstReadDelay' => $avgFirstReadDelay,
             'currentDiskUsage' => $currentDiskUsage,
             'pageviews' => $pageviews,
+            'activeSecrets' => $activeSecrets,
+            'readRate' => $readRate,
+            'creatorConcentration' => $creatorConcentration,
+            'systemHealth' => $systemHealth,
+            'referrers' => $referrers,
         ]);
     }
 

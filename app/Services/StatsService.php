@@ -194,6 +194,101 @@ class StatsService
         return $total / $count;
     }
 
+    public function getActiveSecretsCount(): int
+    {
+        return DB::table('secrets')
+            ->whereNull('revoked_at')
+            ->where(function ($q) {
+                $q->whereNull('expire_at')
+                    ->orWhere('expire_at', '>', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('max_views')
+                    ->orWhereColumn('read_count', '<', 'max_views');
+            })
+            ->count();
+    }
+
+    public function getReadRate(?string $startDate = null): ?float
+    {
+        $totals = $this->getTotals($startDate);
+        $created = ($totals[self::SECRETS_CREATED_TEXT] ?? 0) + ($totals[self::SECRETS_CREATED_FILE] ?? 0);
+
+        if ($created === 0) {
+            return null;
+        }
+
+        return (($totals[self::SECRETS_READ] ?? 0) / $created) * 100;
+    }
+
+    /**
+     * @return array{unique_creators: int, gini: float}
+     */
+    public function getCreatorConcentration(): array
+    {
+        $counts = DB::table('secrets')
+            ->whereNotNull('creator_email_hash')
+            ->select('creator_email_hash', DB::raw('COUNT(*) as total'))
+            ->groupBy('creator_email_hash')
+            ->orderBy('total')
+            ->pluck('total')
+            ->toArray();
+
+        $uniqueCreators = count($counts);
+
+        if ($uniqueCreators <= 1) {
+            return ['unique_creators' => $uniqueCreators, 'gini' => 0.0];
+        }
+
+        $n = count($counts);
+        $sum = array_sum($counts);
+        $weightedSum = 0;
+
+        foreach ($counts as $i => $value) {
+            $weightedSum += ($i + 1) * $value;
+        }
+
+        $gini = (2 * $weightedSum) / ($n * $sum) - ($n + 1) / $n;
+
+        return ['unique_creators' => $uniqueCreators, 'gini' => round($gini, 2)];
+    }
+
+    /**
+     * @return array{active_secrets: int, total_files: int, pending_cleanup: int}
+     */
+    public function getSystemHealth(): array
+    {
+        $activeSecrets = $this->getActiveSecretsCount();
+
+        $totalFiles = count(Storage::disk('secrets')->allFiles());
+
+        $pendingCleanup = DB::table('secrets')
+            ->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->whereNotNull('revoked_at');
+                })
+                ->orWhere(function ($q2) {
+                    $q2->whereNotNull('expire_at')
+                        ->where('expire_at', '<=', now());
+                })
+                ->orWhere(function ($q2) {
+                    $q2->whereNotNull('max_views')
+                        ->whereColumn('read_count', '>=', 'max_views');
+                });
+            })
+            ->where(function ($q) {
+                $q->whereNotNull('ciphertext')
+                    ->orWhereNotNull('file_path');
+            })
+            ->count();
+
+        return [
+            'active_secrets' => $activeSecrets,
+            'total_files' => $totalFiles,
+            'pending_cleanup' => $pendingCleanup,
+        ];
+    }
+
     /**
      * Get the current disk usage of stored secret files in bytes.
      */
@@ -278,6 +373,30 @@ class StatsService
             'by_local_hour' => $this->getLocalHours($startDate),
             'daily' => $daily,
         ];
+    }
+
+    /**
+     * @return array<string, array{human: int, bot: int}>
+     */
+    public function getReferrers(?string $startDate = null): array
+    {
+        $query = DB::table('stats_referrers');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $rows = $query->get();
+        $byDomain = [];
+
+        foreach ($rows as $row) {
+            $byDomain[$row->referrer_domain] ??= ['human' => 0, 'bot' => 0];
+            $byDomain[$row->referrer_domain][$row->is_bot ? 'bot' : 'human'] += $row->count;
+        }
+
+        uasort($byDomain, fn ($a, $b) => $b['human'] <=> $a['human']);
+
+        return $byDomain;
     }
 
     /**

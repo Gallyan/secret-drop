@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => 'Split mode',
+    'stat_active_secrets' => 'Active secrets',
+    'stat_read_rate' => 'Read rate',
+    'stat_unique_creators' => 'Unique creators (Gini)',
+    'stat_system_health' => 'System health',
+    'stat_health_active_short' => 'active',
+    'stat_health_cleanup_short' => 'to purge',
+    'stat_by_referrer' => 'By traffic source',
+    'stat_no_data' => 'No data yet.',
+    'stat_gini_tooltip' => 'Gini: 0 = evenly distributed usage, 1 = one creator dominates',
+    'stat_page_home' => 'Home',
+    'stat_page_download' => 'Download',
+    'stat_page_admin_login' => 'Admin - Login',
+    'stat_page_admin_dashboard' => 'Admin - My secrets',
+    'stat_page_superadmin_login' => 'Super Admin - Login',
+    'stat_page_superadmin_dashboard' => 'Super Admin - Usage statistics',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Too many requests. Please solve the calculation below to continue.',

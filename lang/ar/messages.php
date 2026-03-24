@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => 'وضع الفصل',
+    'stat_active_secrets' => 'الأسرار النشطة',
+    'stat_read_rate' => 'معدل القراءة',
+    'stat_unique_creators' => 'المنشئون الفريدون (Gini)',
+    'stat_system_health' => 'صحة النظام',
+    'stat_health_active_short' => 'نشط',
+    'stat_health_cleanup_short' => 'للتنظيف',
+    'stat_by_referrer' => 'حسب مصدر الزيارات',
+    'stat_no_data' => 'لا توجد بيانات حتى الآن.',
+    'stat_gini_tooltip' => 'Gini: 0 = استخدام موزع بالتساوي، 1 = منشئ واحد يهيمن',
+    'stat_page_home' => 'الرئيسية',
+    'stat_page_download' => 'تحميل',
+    'stat_page_admin_login' => 'المشرف - تسجيل الدخول',
+    'stat_page_admin_dashboard' => 'المشرف - أسراري',
+    'stat_page_superadmin_login' => 'المشرف العام - تسجيل الدخول',
+    'stat_page_superadmin_dashboard' => 'المشرف العام - إحصائيات الاستخدام',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'طلبات كثيرة جداً. يرجى حل العملية الحسابية أدناه للمتابعة.',

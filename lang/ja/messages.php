@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => '分離モード',
+    'stat_active_secrets' => 'アクティブな秘密',
+    'stat_read_rate' => '閲覧率',
+    'stat_unique_creators' => 'ユニーク作成者 (Gini)',
+    'stat_system_health' => 'システム状態',
+    'stat_health_active_short' => 'アクティブ',
+    'stat_health_cleanup_short' => '削除待ち',
+    'stat_by_referrer' => 'トラフィック元別',
+    'stat_no_data' => 'まだデータがありません。',
+    'stat_gini_tooltip' => 'Gini: 0 = 均等に分散、1 = 一人の作成者が独占',
+    'stat_page_home' => 'ホーム',
+    'stat_page_download' => 'ダウンロード',
+    'stat_page_admin_login' => '管理者 - ログイン',
+    'stat_page_admin_dashboard' => '管理者 - マイシークレット',
+    'stat_page_superadmin_login' => 'スーパー管理者 - ログイン',
+    'stat_page_superadmin_dashboard' => 'スーパー管理者 - 利用統計',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'リクエストが多すぎます。続行するには以下の計算を解いてください。',

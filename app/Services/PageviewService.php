@@ -17,7 +17,7 @@ class PageviewService
         'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
     ];
 
-    public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = ''): void
+    public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = '', string $referrer = ''): void
     {
         $now = now();
         $isBot = $this->isBot($userAgent);
@@ -50,6 +50,23 @@ class PageviewService
                     'updated_at' => $now,
                 ],
                 ['date', 'local_hour'],
+                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            );
+        }
+
+        $domain = $this->extractReferrerDomain($referrer);
+
+        if ($domain !== '') {
+            DB::table('stats_referrers')->upsert(
+                [
+                    'date' => $now->toDateString(),
+                    'referrer_domain' => $domain,
+                    'is_bot' => $isBot,
+                    'count' => 1,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                ['date', 'referrer_domain', 'is_bot'],
                 ['count' => DB::raw('count + 1'), 'updated_at' => $now]
             );
         }
@@ -95,5 +112,40 @@ class PageviewService
         $localHour = ($now->hour - (int) ($tzOffset / 60)) % 24;
 
         return ($localHour + 24) % 24;
+    }
+
+    private function extractReferrerDomain(string $referrer): string
+    {
+        if ($referrer === '') {
+            return '';
+        }
+
+        $host = parse_url($referrer, PHP_URL_HOST);
+
+        if (! $host) {
+            return '';
+        }
+
+        $host = strtolower($host);
+
+        if (str_starts_with($host, 'www.')) {
+            $host = substr($host, 4);
+        }
+
+        $appHost = parse_url(config('app.url', ''), PHP_URL_HOST);
+
+        if ($appHost) {
+            $appHost = strtolower($appHost);
+
+            if (str_starts_with($appHost, 'www.')) {
+                $appHost = substr($appHost, 4);
+            }
+
+            if ($host === $appHost) {
+                return '';
+            }
+        }
+
+        return mb_substr($host, 0, 100);
     }
 }

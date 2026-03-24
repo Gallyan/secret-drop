@@ -59,14 +59,30 @@
                 }
                 return $bytes . ' ' . __('messages.unit_bytes');
             };
+
         @endphp
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-4">
             <x-stat-card :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
             <x-stat-card :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
+            <x-stat-card :value="number_format($activeSecrets)" :label="__('messages.stat_active_secrets')" />
+            <x-stat-card :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
             <x-stat-card :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
             <x-stat-card :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
             <x-stat-card :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
             <x-stat-card :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
+            <x-card class="p-6 overflow-visible">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ number_format($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ number_format($creatorConcentration['gini'], 2) }}</span></div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_unique_creators') }}</span>
+                    <x-hint-tooltip id="giniHint" :text="__('messages.stat_gini_tooltip')" />
+                </div>
+            </x-card>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white">{{ $systemHealth['active_secrets'] }} / {{ $systemHealth['pending_cleanup'] }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_health_active_short') }} / {{ __('messages.stat_health_cleanup_short') }}</div>
+            </x-card>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -143,12 +159,56 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {{-- By page --}}
+            @php
+                $pageTitleMap = [
+                    'home' => __('messages.stat_page_home'),
+                    'how-it-works' => __('messages.how_it_works_title'),
+                    'use-cases' => __('messages.use_cases_title'),
+                    'legal' => __('messages.legal_title'),
+                    'secrets.show' => __('messages.view_secret_title'),
+                    'secrets.download' => __('messages.stat_page_download'),
+                    'admin.index' => __('messages.stat_page_admin_login'),
+                    'admin.dashboard' => __('messages.stat_page_admin_dashboard'),
+                    'superadmin.index' => __('messages.stat_page_superadmin_login'),
+                    'superadmin.dashboard' => __('messages.stat_page_superadmin_dashboard'),
+                    // Legacy underscore variants
+                    'admin' => __('messages.stat_page_admin_login'),
+                    'admin_dashboard' => __('messages.stat_page_admin_dashboard'),
+                    'superadmin' => __('messages.stat_page_superadmin_login'),
+                    'superadmin_dashboard' => __('messages.stat_page_superadmin_dashboard'),
+                ];
+
+                // Add localized slugs from all locales
+                $slugTitleKeys = [
+                    'how-it-works' => 'messages.how_it_works_title',
+                    'use-cases' => 'messages.use_cases_title',
+                    'legal' => 'messages.legal_title',
+                ];
+                foreach (\App\Support\LocaleConfig::SUPPORTED_LOCALES as $loc) {
+                    foreach ($slugTitleKeys as $routeName => $titleKey) {
+                        $slug = trans("routes.{$routeName}", [], $loc);
+                        if ($slug !== "routes.{$routeName}" && ! isset($pageTitleMap[$slug])) {
+                            $pageTitleMap[$slug] = __($titleKey);
+                        }
+                    }
+                }
+            @endphp
+            @php
+                $mergedByPage = [];
+                foreach ($pageviews['by_page'] as $page => $counts) {
+                    $title = $pageTitleMap[$page] ?? $page;
+                    $mergedByPage[$title] ??= ['human' => 0, 'bot' => 0];
+                    $mergedByPage[$title]['human'] += $counts['human'];
+                    $mergedByPage[$title]['bot'] += $counts['bot'];
+                }
+                uasort($mergedByPage, fn ($a, $b) => $b['human'] <=> $a['human']);
+            @endphp
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_page') }}</h3>
                 <div class="space-y-2">
-                    @foreach($pageviews['by_page'] as $page => $counts)
+                    @foreach($mergedByPage as $title => $counts)
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-slate-300 font-mono">{{ $page }}</span>
+                            <span class="text-gray-700 dark:text-slate-300">{{ $title }}</span>
                             <div class="flex items-center gap-3">
                                 <span class="text-gray-900 dark:text-white font-medium">{{ number_format($counts['human']) }}</span>
                                 <span class="text-gray-400 dark:text-slate-500 text-xs">{{ number_format($counts['bot']) }} bot</span>
@@ -205,7 +265,7 @@
             {{-- By hour --}}
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_hour') }}</h3>
-                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC</p>
                 @php
                     $maxHour = max(1, max($pageviews['by_hour']));
                     $barMaxPx = 96;
@@ -227,6 +287,35 @@
                         </div>
                     @endforeach
                 </div>
+            </x-card>
+
+            {{-- Referrers --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_referrer') }}</h3>
+                @if(count($referrers) > 0)
+                    <div class="space-y-2">
+                        @php
+                            $maxRefCount = max(1, max(array_column($referrers, 'human')));
+                        @endphp
+                        @foreach(array_slice($referrers, 0, 20, true) as $domain => $counts)
+                            @php
+                                $pct = $maxRefCount > 0 ? ($counts['human'] / $maxRefCount) * 100 : 0;
+                            @endphp
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">{{ $domain }}</span>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                    </div>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($counts['human']) }}</span>
+                                    <span class="text-gray-400 dark:text-slate-500 text-xs w-14 text-right">{{ number_format($counts['bot']) }} bot</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
+                @endif
             </x-card>
 
             {{-- By local hour --}}

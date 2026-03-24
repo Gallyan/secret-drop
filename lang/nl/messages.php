@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => 'Gescheiden modus',
+    'stat_active_secrets' => 'Actieve geheimen',
+    'stat_read_rate' => 'Leespercentage',
+    'stat_unique_creators' => 'Unieke makers (Gini)',
+    'stat_system_health' => 'Systeemstatus',
+    'stat_health_active_short' => 'actief',
+    'stat_health_cleanup_short' => 'op te ruimen',
+    'stat_by_referrer' => 'Per verkeersbron',
+    'stat_no_data' => 'Nog geen gegevens.',
+    'stat_gini_tooltip' => 'Gini: 0 = gelijkmatig verdeeld, 1 = één maker domineert',
+    'stat_page_home' => 'Startpagina',
+    'stat_page_download' => 'Download',
+    'stat_page_admin_login' => 'Admin - Inloggen',
+    'stat_page_admin_dashboard' => 'Admin - Mijn geheimen',
+    'stat_page_superadmin_login' => 'Super Admin - Inloggen',
+    'stat_page_superadmin_dashboard' => 'Super Admin - Gebruiksstatistieken',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Te veel verzoeken. Los de berekening hieronder op om door te gaan.',

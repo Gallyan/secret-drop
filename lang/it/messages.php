@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => 'Modalità separata',
+    'stat_active_secrets' => 'Segreti attivi',
+    'stat_read_rate' => 'Tasso di lettura',
+    'stat_unique_creators' => 'Creatori unici (Gini)',
+    'stat_system_health' => 'Salute del sistema',
+    'stat_health_active_short' => 'attivi',
+    'stat_health_cleanup_short' => 'da eliminare',
+    'stat_by_referrer' => 'Per fonte di traffico',
+    'stat_no_data' => 'Nessun dato al momento.',
+    'stat_gini_tooltip' => 'Gini: 0 = uso equamente distribuito, 1 = un solo creatore domina',
+    'stat_page_home' => 'Home',
+    'stat_page_download' => 'Download',
+    'stat_page_admin_login' => 'Admin - Accesso',
+    'stat_page_admin_dashboard' => 'Admin - I miei segreti',
+    'stat_page_superadmin_login' => 'Super Admin - Accesso',
+    'stat_page_superadmin_dashboard' => 'Super Admin - Statistiche di utilizzo',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Troppe richieste. Per favore risolvi il calcolo qui sotto per continuare.',

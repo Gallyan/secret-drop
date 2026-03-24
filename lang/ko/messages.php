@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => '분리 모드',
+    'stat_active_secrets' => '활성 비밀',
+    'stat_read_rate' => '읽기 비율',
+    'stat_unique_creators' => '고유 생성자 (Gini)',
+    'stat_system_health' => '시스템 상태',
+    'stat_health_active_short' => '활성',
+    'stat_health_cleanup_short' => '정리 대기',
+    'stat_by_referrer' => '트래픽 소스별',
+    'stat_no_data' => '아직 데이터가 없습니다.',
+    'stat_gini_tooltip' => 'Gini: 0 = 균등 분포, 1 = 한 명이 독점',
+    'stat_page_home' => '홈',
+    'stat_page_download' => '다운로드',
+    'stat_page_admin_login' => '관리자 - 로그인',
+    'stat_page_admin_dashboard' => '관리자 - 내 비밀',
+    'stat_page_superadmin_login' => '슈퍼 관리자 - 로그인',
+    'stat_page_superadmin_dashboard' => '슈퍼 관리자 - 사용 통계',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => '요청이 너무 많습니다. 계속하려면 아래 계산을 풀어주세요.',

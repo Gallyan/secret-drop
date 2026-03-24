@@ -405,6 +405,21 @@ return [
 
     // Stats
     'stat_split_mode' => 'Geteilter Modus',
+    'stat_active_secrets' => 'Aktive Geheimnisse',
+    'stat_read_rate' => 'Leserate',
+    'stat_unique_creators' => 'Einzigartige Ersteller (Gini)',
+    'stat_system_health' => 'Systemzustand',
+    'stat_health_active_short' => 'aktiv',
+    'stat_health_cleanup_short' => 'zu bereinigen',
+    'stat_by_referrer' => 'Nach Traffic-Quelle',
+    'stat_no_data' => 'Noch keine Daten.',
+    'stat_gini_tooltip' => 'Gini: 0 = gleichmäßig verteilt, 1 = ein Ersteller dominiert',
+    'stat_page_home' => 'Startseite',
+    'stat_page_download' => 'Download',
+    'stat_page_admin_login' => 'Admin - Anmeldung',
+    'stat_page_admin_dashboard' => 'Admin - Meine Geheimnisse',
+    'stat_page_superadmin_login' => 'Super Admin - Anmeldung',
+    'stat_page_superadmin_dashboard' => 'Super Admin - Nutzungsstatistiken',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte lösen Sie die Berechnung unten, um fortzufahren.',
