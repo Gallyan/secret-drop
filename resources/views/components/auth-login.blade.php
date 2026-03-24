@@ -9,22 +9,22 @@
     };
 @endphp
 
-<div class="flex-1 flex items-center justify-center p-3 sm:p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
-        <x-card class="p-4 sm:p-8">
-            <div class="text-center mb-4 sm:mb-8">
-                <div class="logo-icon inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 shadow-lg shadow-{{ $color }}-500/25 mb-3 sm:mb-4" aria-hidden="true">
-                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <x-card class="p-8">
+            <div class="text-center mb-8">
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 shadow-lg shadow-{{ $color }}-500/25 mb-4" aria-hidden="true">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         {!! $icon !!}
                     </svg>
                 </div>
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
                 @if($description)
-                    <p class="mt-1 sm:mt-2 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ $description }}</p>
+                    <p class="mt-2 text-gray-600 dark:text-slate-400">{{ $description }}</p>
                 @endif
             </div>
 
-            <form action="{{ $formAction }}" method="POST" class="space-y-4 sm:space-y-6" autocomplete="off">
+            <form action="{{ $formAction }}" method="POST" class="space-y-6" autocomplete="off">
                 @csrf
 
                 <div>
@@ -85,7 +85,7 @@
                 </x-btn-primary>
             </form>
 
-            <div class="mt-4 sm:mt-6 text-center">
+            <div class="mt-6 text-center">
                 <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-{{ $color }}-600 dark:hover:text-{{ $color }}-400 transition">
                     {{ __('messages.admin_back_home') }}
                 </a>
