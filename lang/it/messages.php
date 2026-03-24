@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'Condividi password, chiavi API e file riservati con crittografia end-to-end. Il server non vede mai i tuoi dati. Link autodistruttivi, zero knowledge.',
 
     // Features
@@ -113,7 +112,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'Il tuo browser non supporta la crittografia sicura',
-    'crypto_key_missing' => 'Chiave di decrittazione mancante nell\'URL',
     'crypto_fragment_invalid' => 'Formato del frammento non valido',
     'crypto_passphrase_required' => 'Frase segreta richiesta',
     'crypto_passphrase_incorrect' => 'Frase segreta errata o dati alterati',
@@ -130,16 +128,9 @@ return [
     'loading_secret' => 'Caricamento segreto...',
 
     // Emails
-    'email_secret_created_subject' => 'Il tuo segreto è stato creato',
-    'email_secret_created_intro' => 'Hai creato un nuovo segreto. Usa il link qui sotto per gestirlo (visualizza stato, revoca, estendi).',
-    'email_type' => 'Tipo',
-    'email_expires' => 'Scade',
-    'email_manage_secret' => 'Gestisci il mio segreto',
-    'email_save_link_warning' => 'Salva questo link! È l\'unico modo per accedere all\'amministrazione del tuo segreto.',
     'email_link_label' => 'Oppure copia questo link:',
     'email_footer' => 'Questa email è stata inviata da :app.',
     'type_text' => 'Testo',
-    'type_file' => 'File',
 
     // Footer
     'footer_manage' => 'Gestisci i miei segreti',
@@ -236,7 +227,6 @@ return [
     'legal_about_security' => 'L\'architettura zero-knowledge garantisce che il server non possa mai accedere al contenuto dei tuoi segreti. La crittografia AES-256-GCM viene eseguita interamente nel tuo browser e la chiave di decrittazione non viene mai trasmessa al server.',
 
     'legal_editor_title' => 'Editore del sito web',
-    'legal_editor_text' => 'Questo sito web è pubblicato da :name.',
     'legal_editor_phone' => 'Telefono:',
     'legal_editor_email' => 'Email:',
     'legal_hosting_title' => 'Hosting',
@@ -247,7 +237,6 @@ return [
     'legal_data_stored' => 'Dati memorizzati:',
     'legal_data_item_ciphertext' => 'Dati crittografati (contenuto e parametri di crittografia)',
     'legal_data_item_metadata' => 'Metadati (data di creazione, scadenza, contatore letture)',
-    'legal_data_item_file_meta' => 'Dimensione del file crittografato (per statistiche)',
     'legal_data_item_email' => 'Impronta dell\'email (se fornito, per accesso amministrativo)',
     'legal_data_not_stored' => 'Dati NON memorizzati:',
     'legal_data_not_item_plaintext' => 'Contenuto in chiaro dei segreti',
@@ -257,7 +246,6 @@ return [
     'legal_cookies_text' => 'Questo sito web utilizza solo cookie tecnici essenziali (sessione, preferenza tema). Non vengono utilizzati cookie di tracciamento o pubblicitari.',
     'legal_cookies_cnil' => 'In conformità con le raccomandazioni della CNIL (autorità francese per la protezione dei dati), questi cookie strettamente necessari sono esenti dai requisiti di consenso.',
     'legal_contact_title' => 'Contatto',
-    'legal_contact_text' => 'Per qualsiasi domanda su questo sito web, puoi contattarci a :email.',
     'legal_contact_prefix' => 'Per qualsiasi domanda su questo sito web, puoi contattarci a',
 
     // Admin
@@ -408,7 +396,6 @@ return [
     'stat_active_secrets' => 'Segreti attivi',
     'stat_read_rate' => 'Tasso di lettura',
     'stat_unique_creators' => 'Creatori unici (Gini)',
-    'stat_system_health' => 'Salute del sistema',
     'stat_health_active_short' => 'attivi',
     'stat_health_cleanup_short' => 'da eliminare',
     'stat_by_referrer' => 'Per fonte di traffico',
@@ -425,7 +412,6 @@ return [
     'rate_limit_exceeded' => 'Troppe richieste. Per favore risolvi il calcolo qui sotto per continuare.',
     'captcha_label' => 'Verifica anti-robot',
     'captcha_placeholder' => 'La tua risposta',
-    'captcha_hint' => 'Risolvi: :challenge = ?',
     'captcha_invalid' => 'Risposta errata. Per favore riprova.',
 
     // Labels

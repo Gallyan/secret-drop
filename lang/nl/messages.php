@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'Deel wachtwoorden, API-sleutels en vertrouwelijke bestanden veilig met end-to-end encryptie. De server ziet uw gegevens nooit. Zelfvernietigende links, zero knowledge.',
 
     // Features
@@ -113,7 +112,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'Uw browser ondersteunt geen veilige encryptie',
-    'crypto_key_missing' => 'Ontsleutelingssleutel ontbreekt in URL',
     'crypto_fragment_invalid' => 'Ongeldig fragmentformaat',
     'crypto_passphrase_required' => 'Wachtwoordzin is vereist',
     'crypto_passphrase_incorrect' => 'Onjuiste wachtwoordzin of gewijzigde gegevens',
@@ -130,16 +128,9 @@ return [
     'loading_secret' => 'Geheim laden...',
 
     // Emails
-    'email_secret_created_subject' => 'Uw geheim is aangemaakt',
-    'email_secret_created_intro' => 'U heeft een nieuw geheim aangemaakt. Gebruik de onderstaande link om het te beheren (status bekijken, intrekken, verlengen).',
-    'email_type' => 'Type',
-    'email_expires' => 'Verloopt',
-    'email_manage_secret' => 'Mijn geheim beheren',
-    'email_save_link_warning' => 'Bewaar deze link! Dit is de enige manier om toegang te krijgen tot het beheer van uw geheim.',
     'email_link_label' => 'Of kopieer deze link:',
     'email_footer' => 'Deze e-mail is verzonden door :app.',
     'type_text' => 'Tekst',
-    'type_file' => 'Bestand',
 
     // Footer
     'footer_manage' => 'Mijn geheimen beheren',
@@ -236,7 +227,6 @@ return [
     'legal_about_security' => 'De zero-knowledge-architectuur garandeert dat de server nooit toegang heeft tot de inhoud van uw geheimen. De AES-256-GCM-versleuteling wordt volledig in uw browser uitgevoerd en de ontsleutelingssleutel wordt nooit naar de server verzonden.',
 
     'legal_editor_title' => 'Website-uitgever',
-    'legal_editor_text' => 'Deze website wordt uitgegeven door :name.',
     'legal_editor_phone' => 'Telefoon:',
     'legal_editor_email' => 'E-mail:',
     'legal_hosting_title' => 'Hosting',
@@ -247,7 +237,6 @@ return [
     'legal_data_stored' => 'Opgeslagen gegevens:',
     'legal_data_item_ciphertext' => 'Versleutelde gegevens (inhoud en encryptieparameters)',
     'legal_data_item_metadata' => 'Metadata (aanmaakdatum, vervaldatum, leesteller)',
-    'legal_data_item_file_meta' => 'Versleutelde bestandsgrootte (voor statistieken)',
     'legal_data_item_email' => 'E-mail vingerafdruk (indien opgegeven, voor beheerderstoegang)',
     'legal_data_not_stored' => 'NIET opgeslagen gegevens:',
     'legal_data_not_item_plaintext' => 'Onversleutelde inhoud van geheimen',
@@ -257,7 +246,6 @@ return [
     'legal_cookies_text' => 'Deze website gebruikt alleen essentiële technische cookies (sessie, themavoorkeur). Er worden geen tracking- of advertentiecookies gebruikt.',
     'legal_cookies_cnil' => 'In overeenstemming met de CNIL-aanbevelingen (Franse gegevensbeschermingsautoriteit) zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',
     'legal_contact_title' => 'Contact',
-    'legal_contact_text' => 'Voor vragen over deze website kunt u contact opnemen via :email.',
     'legal_contact_prefix' => 'Voor vragen over deze website kunt u contact opnemen via',
 
     // Admin
@@ -408,7 +396,6 @@ return [
     'stat_active_secrets' => 'Actieve geheimen',
     'stat_read_rate' => 'Leespercentage',
     'stat_unique_creators' => 'Unieke makers (Gini)',
-    'stat_system_health' => 'Systeemstatus',
     'stat_health_active_short' => 'actief',
     'stat_health_cleanup_short' => 'op te ruimen',
     'stat_by_referrer' => 'Per verkeersbron',
@@ -425,7 +412,6 @@ return [
     'rate_limit_exceeded' => 'Te veel verzoeken. Los de berekening hieronder op om door te gaan.',
     'captcha_label' => 'Anti-robot verificatie',
     'captcha_placeholder' => 'Uw antwoord',
-    'captcha_hint' => 'Reken uit: :challenge = ?',
     'captcha_invalid' => 'Onjuist antwoord. Probeer het opnieuw.',
 
     // Labels

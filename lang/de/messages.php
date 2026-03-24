@@ -2,7 +2,6 @@
 
 return [
     // App
-    'app_name' => 'Secret Drop',
     'app_description' => 'Teilen Sie Passwörter, API-Schlüssel und vertrauliche Dateien sicher mit Ende-zu-Ende-Verschlüsselung. Der Server sieht Ihre Daten nie. Selbstzerstörende Links, Zero Knowledge.',
 
     // Features
@@ -113,7 +112,6 @@ return [
 
     // Crypto errors
     'crypto_not_supported' => 'Ihr Browser unterstützt keine sichere Verschlüsselung',
-    'crypto_key_missing' => 'Entschlüsselungsschlüssel fehlt in der URL',
     'crypto_fragment_invalid' => 'Ungültiges Fragment-Format',
     'crypto_passphrase_required' => 'Geheimphrase erforderlich',
     'crypto_passphrase_incorrect' => 'Falsche Geheimphrase oder beschädigte Daten',
@@ -130,16 +128,9 @@ return [
     'loading_secret' => 'Geheimnis laden...',
 
     // Emails
-    'email_secret_created_subject' => 'Ihr Geheimnis wurde erstellt',
-    'email_secret_created_intro' => 'Sie haben ein neues Geheimnis erstellt. Verwenden Sie den folgenden Link, um es zu verwalten (Status anzeigen, widerrufen, verlängern).',
-    'email_type' => 'Typ',
-    'email_expires' => 'Läuft ab',
-    'email_manage_secret' => 'Mein Geheimnis verwalten',
-    'email_save_link_warning' => 'Speichern Sie diesen Link! Er ist der einzige Weg, um auf die Verwaltung Ihres Geheimnisses zuzugreifen.',
     'email_link_label' => 'Oder kopieren Sie diesen Link:',
     'email_footer' => 'Diese E-Mail wurde von :app gesendet.',
     'type_text' => 'Text',
-    'type_file' => 'Datei',
 
     // Footer
     'footer_manage' => 'Meine Geheimnisse verwalten',
@@ -236,7 +227,6 @@ return [
     'legal_about_security' => 'Die Zero-Knowledge-Architektur stellt sicher, dass der Server niemals auf den Inhalt Ihrer Geheimnisse zugreifen kann. Die AES-256-GCM-Verschlüsselung erfolgt vollständig in Ihrem Browser, und der Entschlüsselungsschlüssel wird niemals an den Server übermittelt.',
 
     'legal_editor_title' => 'Website-Herausgeber',
-    'legal_editor_text' => 'Diese Website wird herausgegeben von :name.',
     'legal_editor_phone' => 'Telefon:',
     'legal_editor_email' => 'E-Mail:',
     'legal_hosting_title' => 'Hosting',
@@ -247,7 +237,6 @@ return [
     'legal_data_stored' => 'Gespeicherte Daten:',
     'legal_data_item_ciphertext' => 'Verschlüsselte Daten (Inhalt und Verschlüsselungsparameter)',
     'legal_data_item_metadata' => 'Metadaten (Erstellungsdatum, Ablauf, Lesezähler)',
-    'legal_data_item_file_meta' => 'Verschlüsselte Dateigröße (für Statistiken)',
     'legal_data_item_email' => 'E-Mail-Fingerabdruck (falls angegeben, für Admin-Zugriff)',
     'legal_data_not_stored' => 'NICHT gespeicherte Daten:',
     'legal_data_not_item_plaintext' => 'Klartext-Inhalt der Geheimnisse',
@@ -257,7 +246,6 @@ return [
     'legal_cookies_text' => 'Diese Website verwendet nur essentielle technische Cookies (Sitzung, Theme-Präferenz). Es werden keine Tracking- oder Werbe-Cookies verwendet.',
     'legal_cookies_cnil' => 'Gemäß den CNIL-Empfehlungen (französische Datenschutzbehörde) sind diese streng notwendigen Cookies von der Einwilligungspflicht ausgenommen.',
     'legal_contact_title' => 'Kontakt',
-    'legal_contact_text' => 'Bei Fragen zu dieser Website können Sie uns unter :email kontaktieren.',
     'legal_contact_prefix' => 'Bei Fragen zu dieser Website können Sie uns kontaktieren unter',
 
     // Admin
@@ -408,7 +396,6 @@ return [
     'stat_active_secrets' => 'Aktive Geheimnisse',
     'stat_read_rate' => 'Leserate',
     'stat_unique_creators' => 'Einzigartige Ersteller (Gini)',
-    'stat_system_health' => 'Systemzustand',
     'stat_health_active_short' => 'aktiv',
     'stat_health_cleanup_short' => 'zu bereinigen',
     'stat_by_referrer' => 'Nach Traffic-Quelle',
@@ -425,7 +412,6 @@ return [
     'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte lösen Sie die Berechnung unten, um fortzufahren.',
     'captcha_label' => 'Anti-Roboter-Verifizierung',
     'captcha_placeholder' => 'Ihre Antwort',
-    'captcha_hint' => 'Lösen Sie: :challenge = ?',
     'captcha_invalid' => 'Falsche Antwort. Bitte versuchen Sie es erneut.',
 
     // Labels
