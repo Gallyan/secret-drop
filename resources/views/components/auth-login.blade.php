@@ -2,9 +2,14 @@
 
 @php
     $ringColor = "focus:ring-{$color}-500/50 focus:border-{$color}-500/50";
+    $accentRgb = match($color) {
+        'amber' => '217, 119, 6',
+        'emerald' => '16, 185, 129',
+        default => '139, 92, 246',
+    };
 @endphp
 
-<div class="flex-1 flex items-center justify-center p-4 transition-colors">
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <x-card class="p-8">
             <div class="text-center mb-8">
