@@ -89,6 +89,8 @@ class SuperAdminController extends Controller
             return redirect()->route('superadmin.index');
         }
 
+        $this->renewSessionAuth($request);
+
         $data = $this->collectStats($request);
 
         return view('superadmin.dashboard', $data);

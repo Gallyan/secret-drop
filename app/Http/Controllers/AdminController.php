@@ -97,6 +97,8 @@ class AdminController extends Controller
             return redirect()->route('admin.index');
         }
 
+        $this->renewSessionAuth($request);
+
         $secrets = Secret::where('creator_email_hash', $emailHash)
             ->orderByDesc('created_at')
             ->paginate(20);
