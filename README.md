@@ -215,7 +215,6 @@ Et ajouter l'enregistrement DNS TXT :
 secretdrop._domainkey.votredomaine.com  TXT  "v=DKIM1; k=rsa; p=VOTRE_CLE_PUBLIQUE"
 ```
 
-Pour plus de détails (SPF, DMARC, OVH), voir [docs/email-configuration.md](docs/email-configuration.md).
 
 ## Scheduler
 
