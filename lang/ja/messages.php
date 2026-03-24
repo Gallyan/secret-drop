@@ -231,6 +231,10 @@ return [
     // Legal page
     'legal_title' => '法的情報',
     'legal_meta_description' => 'Secret Dropの法的情報、プライバシーポリシー、利用規約。',
+    'legal_about_title' => 'Secret Dropについて',
+    'legal_about_text' => 'Secret Dropは、メールやメッセージアプリを使ったパスワードや機密ファイルの共有に対して、シンプルで無料かつプライバシーを尊重する代替手段を提供するために作られたオープンソースプロジェクトです。ソースコードは公開されており、誰でも監査できます。',
+    'legal_about_security' => 'ゼロナレッジアーキテクチャにより、サーバーがシークレットの内容にアクセスすることは決してありません。AES-256-GCM暗号化はすべてブラウザ内で実行され、復号鍵がサーバーに送信されることはありません。',
+
     'legal_editor_title' => 'サイト運営者',
     'legal_editor_text' => 'このサイトは :name によって運営されています。',
     'legal_editor_phone' => '電話：',

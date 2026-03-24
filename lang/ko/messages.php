@@ -231,6 +231,10 @@ return [
     // Legal page
     'legal_title' => '법적 고지',
     'legal_meta_description' => 'Secret Drop의 법적 고지, 개인정보 보호정책 및 이용약관.',
+    'legal_about_title' => 'Secret Drop 소개',
+    'legal_about_text' => 'Secret Drop은 이메일이나 메신저를 통한 비밀번호 및 민감한 파일 공유에 대해 간편하고 무료이며 개인정보를 존중하는 대안을 제공하기 위해 만들어진 오픈 소스 프로젝트입니다. 소스 코드는 공개되어 있으며 누구나 감사할 수 있습니다.',
+    'legal_about_security' => '제로 지식 아키텍처는 서버가 비밀의 내용에 절대 접근할 수 없도록 보장합니다. AES-256-GCM 암호화는 전적으로 브라우저에서 수행되며, 복호화 키는 서버로 전송되지 않습니다.',
+
     'legal_editor_title' => '웹사이트 발행인',
     'legal_editor_text' => '이 웹사이트는 :name에 의해 발행됩니다.',
     'legal_editor_phone' => '전화:',

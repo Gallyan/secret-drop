@@ -231,6 +231,10 @@ return [
     // Legal page
     'legal_title' => 'Note Legali',
     'legal_meta_description' => 'Note legali, informativa sulla privacy e condizioni d\'uso di Secret Drop.',
+    'legal_about_title' => 'Informazioni su Secret Drop',
+    'legal_about_text' => 'Secret Drop è un progetto open source creato per offrire un\'alternativa semplice, gratuita e rispettosa della privacy alla condivisione di password e file sensibili tramite email o messaggistica. Il codice sorgente è pubblico e verificabile.',
+    'legal_about_security' => 'L\'architettura zero-knowledge garantisce che il server non possa mai accedere al contenuto dei tuoi segreti. La crittografia AES-256-GCM viene eseguita interamente nel tuo browser e la chiave di decrittazione non viene mai trasmessa al server.',
+
     'legal_editor_title' => 'Editore del sito web',
     'legal_editor_text' => 'Questo sito web è pubblicato da :name.',
     'legal_editor_phone' => 'Telefono:',

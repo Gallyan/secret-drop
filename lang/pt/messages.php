@@ -231,6 +231,10 @@ return [
     // Legal page
     'legal_title' => 'Aviso Legal',
     'legal_meta_description' => 'Aviso legal, política de privacidade e termos de uso do Secret Drop.',
+    'legal_about_title' => 'Sobre o Secret Drop',
+    'legal_about_text' => 'O Secret Drop é um projeto de código aberto criado para oferecer uma alternativa simples, gratuita e respeitosa da privacidade ao compartilhamento de senhas e arquivos sensíveis por e-mail ou mensagens. O código-fonte é público e auditável.',
+    'legal_about_security' => 'A arquitetura zero-knowledge garante que o servidor nunca pode acessar o conteúdo dos seus segredos. A criptografia AES-256-GCM é realizada inteiramente no seu navegador, e a chave de descriptografia nunca é transmitida ao servidor.',
+
     'legal_editor_title' => 'Editor do Site',
     'legal_editor_text' => 'Este site é publicado por :name.',
     'legal_editor_phone' => 'Telefone:',

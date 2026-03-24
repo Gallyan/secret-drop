@@ -231,6 +231,10 @@ return [
     // Legal page
     'legal_title' => 'Juridische Informatie',
     'legal_meta_description' => 'Juridische informatie, privacybeleid en gebruiksvoorwaarden van Secret Drop.',
+    'legal_about_title' => 'Over Secret Drop',
+    'legal_about_text' => 'Secret Drop is een open-sourceproject dat is gebouwd om een eenvoudig, gratis en privacyvriendelijk alternatief te bieden voor het delen van wachtwoorden en gevoelige bestanden via e-mail of berichten-apps. De broncode is openbaar en controleerbaar.',
+    'legal_about_security' => 'De zero-knowledge-architectuur garandeert dat de server nooit toegang heeft tot de inhoud van uw geheimen. De AES-256-GCM-versleuteling wordt volledig in uw browser uitgevoerd en de ontsleutelingssleutel wordt nooit naar de server verzonden.',
+
     'legal_editor_title' => 'Website-uitgever',
     'legal_editor_text' => 'Deze website wordt uitgegeven door :name.',
     'legal_editor_phone' => 'Telefoon:',
