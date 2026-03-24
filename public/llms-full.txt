@@ -25,7 +25,7 @@ The decryption key is placed in the URL fragment (after #). This part is never s
 ### Step 5: Recipient decrypts
 When the recipient opens the link, their browser fetches the encrypted data and uses the key from the URL to decrypt locally.
 
-## Security Guarantees
+## What is Zero-Knowledge Encryption?
 
 - **Zero-knowledge**: The server can never read your secrets. Even under legal pressure, we can only provide useless encrypted data.
 - **Military-grade encryption**: AES-256-GCM is used by governments and military. It is the safest standard available.
@@ -48,7 +48,7 @@ When the recipient opens the link, their browser fetches the encrypted data and 
 
 ## Use Cases
 
-### Password sharing
+### How to securely share a password
 Securely share credentials with colleagues, clients, or contractors without using insecure channels like email or messaging apps. Example: Send login credentials to a new team member, share Wi-Fi password with a guest.
 
 ### Confidential documents
