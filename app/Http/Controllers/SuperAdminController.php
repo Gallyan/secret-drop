@@ -140,6 +140,8 @@ class SuperAdminController extends Controller
             'creatorConcentration' => $this->stats->getCreatorConcentration(),
             'systemHealth' => $this->stats->getSystemHealth(),
             'referrers' => $this->stats->getReferrers($startDate),
+            'botStats' => $this->stats->getBotStats($startDate),
+            'deviceStats' => $this->stats->getDeviceStats($startDate),
         ];
     }
 }

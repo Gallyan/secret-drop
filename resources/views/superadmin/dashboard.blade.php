@@ -332,6 +332,66 @@
                 </div>
             </x-card>
 
+            {{-- By device --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_device') }}</h3>
+                <div id="pollByDevice">
+                @if(count($deviceStats) > 0)
+                    @php
+                        $totalDevices = max(1, array_sum($deviceStats));
+                        $deviceIcons = ['desktop' => '🖥️', 'mobile' => '📱', 'tablet' => '📟'];
+                        $deviceLabels = ['desktop' => __('messages.stat_device_desktop'), 'mobile' => __('messages.stat_device_mobile'), 'tablet' => __('messages.stat_device_tablet')];
+                    @endphp
+                    <div class="space-y-3">
+                        @foreach($deviceStats as $device => $count)
+                            @php $pct = ($count / $totalDevices) * 100; @endphp
+                            <div>
+                                <div class="flex items-center justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $deviceIcons[$device] ?? '❓' }} {{ $deviceLabels[$device] ?? $device }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-indigo-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
+                @endif
+                </div>
+            </x-card>
+
+            {{-- Bots --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_bot') }}</h3>
+                <div id="pollByBot">
+                @if(count($botStats) > 0)
+                    <div class="space-y-2">
+                        @php
+                            $maxBotCount = max(1, max($botStats));
+                        @endphp
+                        @foreach(array_slice($botStats, 0, 20, true) as $botName => $count)
+                            @php
+                                $pct = ($count / $maxBotCount) * 100;
+                            @endphp
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $botName }}</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-sky-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                    </div>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
+                @endif
+                </div>
+            </x-card>
+
             {{-- Referrers --}}
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_referrer') }}</h3>
@@ -382,6 +442,8 @@
         creatorConcentration: @json($creatorConcentration),
         systemHealth: @json($systemHealth),
         referrers: @json($referrers),
+        botStats: @json($botStats),
+        deviceStats: @json($deviceStats),
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),
