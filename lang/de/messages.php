@@ -322,7 +322,7 @@ return [
     'stat_max_reached' => 'Max. Aufrufe erreicht',
     'stat_magic_links_requested' => 'Magic Links angefordert',
     'stat_magic_links_used' => 'Magic Links verwendet',
-    'stat_by_hour' => 'Nach Stunde',
+    'stat_by_hour' => 'Nach Serverstunde',
     'stat_by_local_hour' => 'Nach Ortszeit',
     'stat_local_hour_note' => 'Basierend auf der Browserzeit des Besuchers',
     'stat_by_country' => 'Nach Land',

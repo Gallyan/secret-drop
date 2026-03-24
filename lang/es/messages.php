@@ -322,7 +322,7 @@ return [
     'stat_max_reached' => 'Máximo de vistas alcanzado',
     'stat_magic_links_requested' => 'Enlaces mágicos solicitados',
     'stat_magic_links_used' => 'Enlaces mágicos usados',
-    'stat_by_hour' => 'Por hora',
+    'stat_by_hour' => 'Por hora del servidor',
     'stat_by_local_hour' => 'Por hora local',
     'stat_local_hour_note' => 'Basado en la hora del navegador del visitante',
     'stat_by_country' => 'Por país',

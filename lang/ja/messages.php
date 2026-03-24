@@ -322,7 +322,7 @@ return [
     'stat_max_reached' => '最大閲覧数到達',
     'stat_magic_links_requested' => 'リクエストされたマジックリンク',
     'stat_magic_links_used' => '使用されたマジックリンク',
-    'stat_by_hour' => '時間別',
+    'stat_by_hour' => 'サーバー時間別',
     'stat_by_local_hour' => '現地時間別',
     'stat_local_hour_note' => '訪問者のブラウザ時刻に基づく',
     'stat_by_country' => '国別',
