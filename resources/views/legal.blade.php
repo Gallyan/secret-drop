@@ -32,6 +32,19 @@
             <x-page-header :title="__('messages.legal_title')" />
 
             <div class="prose prose-gray dark:prose-invert max-w-none">
+                {{-- About --}}
+                <section class="mb-8">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                        {{ __('messages.legal_about_title') }}
+                    </h2>
+                    <p class="text-gray-600 dark:text-slate-400 mb-3">
+                        {{ __('messages.legal_about_text') }}
+                    </p>
+                    <p class="text-gray-600 dark:text-slate-400">
+                        {{ __('messages.legal_about_security') }}
+                    </p>
+                </section>
+
                 {{-- Editor --}}
                 <section class="mb-8">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
