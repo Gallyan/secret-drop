@@ -13,11 +13,7 @@
             color: #1f2937;
             background-color: #f3f4f6;
             margin: 0;
-            padding: 32px 16px;
-        }
-        .wrapper {
-            max-width: 600px;
-            margin: 0 auto;
+            padding: 16px;
         }
         .container {
             max-width: 600px;
@@ -25,29 +21,35 @@
             background-color: #ffffff;
             border-radius: 16px;
             overflow: hidden;
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
         }
         .accent-line {
             height: 3px;
-            background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, #8b5cf6, transparent);
+            background: linear-gradient(90deg, transparent, @yield('gradient-start', '#8b5cf6'), @yield('gradient-end', '#6366f1'), @yield('gradient-start', '#8b5cf6'), transparent);
         }
         .header {
-            padding: 32px 32px 24px;
+            background: linear-gradient(180deg, @yield('header-bg-start', 'rgba(139, 92, 246, 0.06)'), @yield('header-bg-end', 'rgba(99, 102, 241, 0.02)'));
+            padding: 36px 32px 28px;
             text-align: center;
         }
         .logo-icon {
             display: inline-block;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
             margin-bottom: 16px;
         }
         .header h1 {
             color: #111827;
             margin: 0;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
+        }
+        .header-sub {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 6px 0 0;
         }
         .badge {
             display: inline-block;
@@ -57,17 +59,12 @@
             font-weight: 600;
             padding: 4px 12px;
             border-radius: 20px;
-            margin-top: 10px;
+            margin-top: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
-            margin: 0 32px;
-        }
         .content {
-            padding: 28px 32px 32px;
+            padding: 32px;
         }
         .content p {
             margin: 0 0 16px;
@@ -76,18 +73,41 @@
         }
         .button-wrapper {
             text-align: center;
-            margin: 24px 0;
+            margin: 28px 0;
         }
         .button {
             display: inline-block;
             background: linear-gradient(135deg, @yield('gradient-start', '#8b5cf6'), @yield('gradient-end', '#6366f1'));
             color: #ffffff !important;
             text-decoration: none;
-            padding: 14px 32px;
+            padding: 16px 40px;
             border-radius: 12px;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 16px;
             letter-spacing: -0.01em;
+            box-shadow: 0 4px 14px @yield('button-shadow', 'rgba(139, 92, 246, 0.35)');
+        }
+        .features {
+            display: table;
+            width: 100%;
+            margin: 8px 0 0;
+            border-spacing: 8px 0;
+        }
+        .feature {
+            display: table-cell;
+            width: 33.33%;
+            text-align: center;
+            padding: 10px 4px;
+            background-color: #f9fafb;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #6b7280;
+            vertical-align: middle;
+        }
+        .feature-icon {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 2px;
         }
         .warning {
             background-color: #fefce8;
@@ -123,8 +143,9 @@
             text-decoration: none;
         }
         .footer {
-            padding: 20px 32px;
+            padding: 24px 32px;
             text-align: center;
+            background-color: #f9fafb;
             border-top: 1px solid #f3f4f6;
         }
         .footer p {
@@ -136,11 +157,12 @@
         .footer-brand {
             color: #9ca3af;
             font-size: 11px;
-            margin-top: 4px;
+            margin-top: 6px;
         }
         .footer-brand a {
-            color: #8b5cf6;
+            color: @yield('gradient-start', '#8b5cf6');
             text-decoration: none;
+            font-weight: 500;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -149,16 +171,23 @@
             }
             .container {
                 background-color: #1e293b;
-                border-color: #334155;
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            }
+            .header {
+                background: linear-gradient(180deg, @yield('header-bg-dark-start', 'rgba(139, 92, 246, 0.12)'), @yield('header-bg-dark-end', 'rgba(99, 102, 241, 0.04)'));
             }
             .header h1 {
                 color: #f1f5f9;
             }
-            .divider {
-                background: linear-gradient(90deg, transparent, #334155, transparent);
+            .header-sub {
+                color: #94a3b8;
             }
             .content p {
                 color: #cbd5e1;
+            }
+            .feature {
+                background-color: #0f172a;
+                color: #94a3b8;
             }
             .warning {
                 background-color: #422006;
@@ -169,54 +198,66 @@
             }
             .url-box {
                 background-color: #0f172a;
-                border-color: #1e293b;
+                border-color: #334155;
             }
             .url-box a {
                 color: #94a3b8;
             }
             .footer {
+                background-color: #162031;
                 border-top-color: #334155;
             }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="container">
-            <div class="accent-line"></div>
+    <div class="container">
+        <div class="accent-line"></div>
 
-            <div class="header">
-                {{-- Lock icon matching favicon --}}
-                <img src="{{ asset('favicon.png') }}" alt="" width="48" height="48" class="logo-icon" style="width:48px;height:48px;border-radius:14px;">
-                <h1>{{ config('app.name') }}</h1>
-                @yield('badge')
+        <div class="header">
+            <img src="{{ asset('icon-192.png') }}" alt="" width="56" height="56" class="logo-icon" style="width:56px;height:56px;border-radius:16px;">
+            <h1>{{ config('app.name') }}</h1>
+            <p class="header-sub">@yield('header-sub', __('messages.app_tagline'))</p>
+            @yield('badge')
+        </div>
+
+        <div class="content">
+            <p>@yield('intro')</p>
+
+            <div class="button-wrapper">
+                <a href="{{ $verifyUrl }}" class="button">@yield('button-text')</a>
             </div>
 
-            <div class="divider"></div>
-
-            <div class="content">
-                <p>@yield('intro')</p>
-
-                <div class="button-wrapper">
-                    <a href="{{ $verifyUrl }}" class="button">@yield('button-text')</a>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">&#x1F512;</span>
+                    {{ __('messages.email_feature_encrypted') }}
                 </div>
-
-                <div class="warning">
-                    <p>{{ __('messages.email_magic_link_warning') }}</p>
+                <div class="feature">
+                    <span class="feature-icon">&#x1F441;</span>
+                    {{ __('messages.email_feature_zero_knowledge') }}
                 </div>
-
-                <div class="url-section">
-                    <p class="url-label">{{ __('messages.email_link_label') }}</p>
-                    <div class="url-box">
-                        <a href="{{ $verifyUrl }}">{{ $verifyUrl }}</a>
-                    </div>
+                <div class="feature">
+                    <span class="feature-icon">&#x23F1;</span>
+                    {{ __('messages.email_feature_ephemeral') }}
                 </div>
             </div>
 
-            <div class="footer">
-                <p>{{ __('messages.email_footer', ['app' => config('app.name')]) }}</p>
-                <p class="footer-brand">&copy; {{ date('Y') }} <a href="{{ url('/') }}">Perceptron Systems</a></p>
+            <div class="warning">
+                <p>{{ __('messages.email_magic_link_warning') }}</p>
             </div>
+
+            <div class="url-section">
+                <p class="url-label">{{ __('messages.email_link_label') }}</p>
+                <div class="url-box">
+                    <a href="{{ $verifyUrl }}">{{ $verifyUrl }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>{{ __('messages.email_footer', ['app' => config('app.name')]) }}</p>
+            <p class="footer-brand">&copy; {{ date('Y') }} <a href="{{ url('/') }}">Perceptron Systems</a></p>
         </div>
     </div>
 </body>

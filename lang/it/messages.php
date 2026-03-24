@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Oppure copia questo link:',
     'email_footer' => 'Questa email è stata inviata da :app.',
+    'app_tagline' => 'Condivisione segreta zero-knowledge',
+    'email_feature_encrypted' => 'Crittografia end-to-end',
+    'email_feature_zero_knowledge' => 'Zero conoscenza server',
+    'email_feature_ephemeral' => 'Autodistruzione',
     'type_text' => 'Testo',
 
     // Footer

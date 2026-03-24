@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Lub skopiuj ten link:',
     'email_footer' => 'Ten e-mail został wysłany przez :app.',
+    'app_tagline' => 'Udostępnianie sekretów zero-knowledge',
+    'email_feature_encrypted' => 'Szyfrowanie end-to-end',
+    'email_feature_zero_knowledge' => 'Zero wiedzy serwera',
+    'email_feature_ephemeral' => 'Automatyczne wygasanie',
     'type_text' => 'Tekst',
 
     // Footer

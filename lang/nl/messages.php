@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Of kopieer deze link:',
     'email_footer' => 'Deze e-mail is verzonden door :app.',
+    'app_tagline' => 'Zero-knowledge geheimen delen',
+    'email_feature_encrypted' => 'End-to-end versleuteld',
+    'email_feature_zero_knowledge' => 'Geen serverkennis',
+    'email_feature_ephemeral' => 'Automatisch verlopend',
     'type_text' => 'Tekst',
 
     // Footer

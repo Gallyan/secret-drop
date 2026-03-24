@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => '또는 이 링크를 복사:',
     'email_footer' => '이 이메일은 :app에서 발송되었습니다.',
+    'app_tagline' => '제로 지식 비밀 공유',
+    'email_feature_encrypted' => '종단 간 암호화',
+    'email_feature_zero_knowledge' => '서버 무지식',
+    'email_feature_ephemeral' => '자동 만료',
     'type_text' => '텍스트',
 
     // Footer

@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Or copy this link:',
     'email_footer' => 'This email was sent by :app.',
+    'app_tagline' => 'Zero-knowledge secret sharing',
+    'email_feature_encrypted' => 'End-to-end encrypted',
+    'email_feature_zero_knowledge' => 'Zero server knowledge',
+    'email_feature_ephemeral' => 'Auto-expiring',
     'type_text' => 'Text',
 
     // Footer

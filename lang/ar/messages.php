@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'أو انسخ هذا الرابط:',
     'email_footer' => 'تم إرسال هذا البريد الإلكتروني بواسطة :app.',
+    'app_tagline' => 'مشاركة الأسرار بدون معرفة',
+    'email_feature_encrypted' => 'تشفير من طرف إلى طرف',
+    'email_feature_zero_knowledge' => 'صفر معرفة للخادم',
+    'email_feature_ephemeral' => 'انتهاء تلقائي',
     'type_text' => 'نص',
 
     // Footer

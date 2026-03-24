@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Ou copie este link:',
     'email_footer' => 'Este e-mail foi enviado por :app.',
+    'app_tagline' => 'Partilha de segredos zero-knowledge',
+    'email_feature_encrypted' => 'Criptografia ponta a ponta',
+    'email_feature_zero_knowledge' => 'Zero conhecimento do servidor',
+    'email_feature_ephemeral' => 'Autoexpiração',
     'type_text' => 'Texto',
 
     // Footer

@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'Oder kopieren Sie diesen Link:',
     'email_footer' => 'Diese E-Mail wurde von :app gesendet.',
+    'app_tagline' => 'Zero-Knowledge-Geheimnisaustausch',
+    'email_feature_encrypted' => 'Ende-zu-Ende-verschlüsselt',
+    'email_feature_zero_knowledge' => 'Kein Serverwissen',
+    'email_feature_ephemeral' => 'Automatisch ablaufend',
     'type_text' => 'Text',
 
     // Footer

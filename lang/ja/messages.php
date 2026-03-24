@@ -129,6 +129,10 @@ return [
     // Emails
     'email_link_label' => 'またはこのリンクをコピー：',
     'email_footer' => 'このメールは :app から送信されました。',
+    'app_tagline' => 'ゼロ知識の秘密共有',
+    'email_feature_encrypted' => 'エンドツーエンド暗号化',
+    'email_feature_zero_knowledge' => 'サーバー知識ゼロ',
+    'email_feature_ephemeral' => '自動期限切れ',
     'type_text' => 'テキスト',
 
     // Footer
