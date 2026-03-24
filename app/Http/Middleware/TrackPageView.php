@@ -19,7 +19,7 @@ class TrackPageView
     {
         $response = $next($request);
 
-        if (! $request->isMethod('GET') || $response->getStatusCode() !== 200) {
+        if (! $request->isMethod('GET') || $response->getStatusCode() !== 200 || $request->ajax()) {
             return $response;
         }
 

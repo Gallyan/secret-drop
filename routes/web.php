@@ -56,6 +56,7 @@ Route::prefix('{locale}')
             ->middleware('throttle:5,1')
             ->name('superadmin.verify');
         Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
+        Route::get('/superadmin/dashboard/poll', [SuperAdminController::class, 'poll'])->name('superadmin.poll');
         Route::post('/superadmin/logout', [SuperAdminController::class, 'logout'])->name('superadmin.logout');
 
         // Catch-all for localized pages (must be last)

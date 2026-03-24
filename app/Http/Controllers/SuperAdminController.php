@@ -7,6 +7,7 @@ use App\Mail\SuperAdminMagicLinkMail;
 use App\Models\MagicLink;
 use App\Services\StatsService;
 use App\Services\TokenService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -88,37 +89,18 @@ class SuperAdminController extends Controller
             return redirect()->route('superadmin.index');
         }
 
-        $period = $request->input('period', '30d');
-        if (! in_array($period, self::VALID_PERIODS, true)) {
-            $period = '30d';
-        }
-        $stats = $this->stats->getStats($period);
-        $startDate = $period === 'all' ? null : $stats['start_date'];
-        $heatmapCreated = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate);
-        $heatmapRead = $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate);
-        $avgFirstReadDelay = $this->stats->getAverageFirstReadDelay($startDate);
-        $currentDiskUsage = $this->stats->getCurrentDiskUsage();
-        $pageviews = $this->stats->getPageviews($startDate);
-        $activeSecrets = $this->stats->getActiveSecretsCount();
-        $readRate = $this->stats->getReadRate($startDate);
-        $creatorConcentration = $this->stats->getCreatorConcentration();
-        $systemHealth = $this->stats->getSystemHealth();
-        $referrers = $this->stats->getReferrers($startDate);
+        $data = $this->collectStats($request);
 
-        return view('superadmin.dashboard', [
-            'stats' => $stats,
-            'period' => $period,
-            'heatmapCreated' => $heatmapCreated,
-            'heatmapRead' => $heatmapRead,
-            'avgFirstReadDelay' => $avgFirstReadDelay,
-            'currentDiskUsage' => $currentDiskUsage,
-            'pageviews' => $pageviews,
-            'activeSecrets' => $activeSecrets,
-            'readRate' => $readRate,
-            'creatorConcentration' => $creatorConcentration,
-            'systemHealth' => $systemHealth,
-            'referrers' => $referrers,
-        ]);
+        return view('superadmin.dashboard', $data);
+    }
+
+    public function poll(Request $request): JsonResponse
+    {
+        if (! $this->getSessionAuth($request)) {
+            return response()->json(['error' => 'unauthenticated'], 401);
+        }
+
+        return response()->json($this->collectStats($request));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -129,4 +111,33 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.index');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    private function collectStats(Request $request): array
+    {
+        $period = $request->input('period', '30d');
+
+        if (! in_array($period, self::VALID_PERIODS, true)) {
+            $period = '30d';
+        }
+
+        $stats = $this->stats->getStats($period);
+        $startDate = $period === 'all' ? null : $stats['start_date'];
+
+        return [
+            'stats' => $stats,
+            'period' => $period,
+            'heatmapCreated' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate),
+            'heatmapRead' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate),
+            'avgFirstReadDelay' => $this->stats->getAverageFirstReadDelay($startDate),
+            'currentDiskUsage' => $this->stats->getCurrentDiskUsage(),
+            'pageviews' => $this->stats->getPageviews($startDate),
+            'activeSecrets' => $this->stats->getActiveSecretsCount(),
+            'readRate' => $this->stats->getReadRate($startDate),
+            'creatorConcentration' => $this->stats->getCreatorConcentration(),
+            'systemHealth' => $this->stats->getSystemHealth(),
+            'referrers' => $this->stats->getReferrers($startDate),
+        ];
+    }
 }
