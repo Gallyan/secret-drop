@@ -311,7 +311,7 @@ return [
 
     // Stats
     'stat_secrets_created' => 'Geheimen aangemaakt',
-    'stat_secrets_read' => 'Geheimen gelezen',
+    'stat_secrets_read' => 'Leesbeurten',
     'stat_files_shared' => 'Bestanden gedeeld',
     'stat_volume' => 'Volume',
     'stat_current_disk_usage' => 'Huidig schijfgebruik',
@@ -341,7 +341,7 @@ return [
 
     // Charts
     'chart_secrets_created' => 'Geheimen aangemaakt',
-    'chart_secrets_read' => 'Geheimen gelezen',
+    'chart_secrets_read' => 'Leesbeurten',
     'chart_secret_types' => 'Geheimtypes',
     'chart_secret_options' => 'Gebruikte opties',
     'chart_secret_outcomes' => 'Geheimresultaten',

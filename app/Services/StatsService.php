@@ -211,14 +211,21 @@ class StatsService
 
     public function getReadRate(?string $startDate = null): ?float
     {
-        $totals = $this->getTotals($startDate);
-        $created = ($totals[self::SECRETS_CREATED_TEXT] ?? 0) + ($totals[self::SECRETS_CREATED_FILE] ?? 0);
+        $query = DB::table('secrets');
 
-        if ($created === 0) {
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        $total = $query->count();
+
+        if ($total === 0) {
             return null;
         }
 
-        return (($totals[self::SECRETS_READ] ?? 0) / $created) * 100;
+        $read = (clone $query)->whereNotNull('first_read_at')->count();
+
+        return ($read / $total) * 100;
     }
 
     /**

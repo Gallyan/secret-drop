@@ -311,7 +311,7 @@ return [
 
     // Stats
     'stat_secrets_created' => '作成されたシークレット',
-    'stat_secrets_read' => '閲覧されたシークレット',
+    'stat_secrets_read' => '閲覧回数',
     'stat_files_shared' => '共有されたファイル',
     'stat_volume' => '容量',
     'stat_current_disk_usage' => '現在のディスク使用量',
@@ -341,7 +341,7 @@ return [
 
     // Charts
     'chart_secrets_created' => '作成されたシークレット',
-    'chart_secrets_read' => '閲覧されたシークレット',
+    'chart_secrets_read' => '閲覧回数',
     'chart_secret_types' => 'シークレットの種類',
     'chart_secret_options' => '使用されたオプション',
     'chart_secret_outcomes' => 'シークレットの結果',

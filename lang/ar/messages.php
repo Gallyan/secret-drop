@@ -311,7 +311,7 @@ return [
 
     // Stats
     'stat_secrets_created' => 'الأسرار المنشأة',
-    'stat_secrets_read' => 'الأسرار المقروءة',
+    'stat_secrets_read' => 'القراءات',
     'stat_files_shared' => 'الملفات المشاركة',
     'stat_volume' => 'الحجم',
     'stat_current_disk_usage' => 'مساحة القرص الحالية',
@@ -341,7 +341,7 @@ return [
 
     // Charts
     'chart_secrets_created' => 'الأسرار المنشأة',
-    'chart_secrets_read' => 'الأسرار المقروءة',
+    'chart_secrets_read' => 'القراءات',
     'chart_secret_types' => 'أنواع الأسرار',
     'chart_secret_options' => 'الخيارات المستخدمة',
     'chart_secret_outcomes' => 'مصير الأسرار',

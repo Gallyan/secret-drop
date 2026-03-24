@@ -311,7 +311,7 @@ return [
 
     // Stats
     'stat_secrets_created' => 'Secretos creados',
-    'stat_secrets_read' => 'Secretos leídos',
+    'stat_secrets_read' => 'Lecturas',
     'stat_files_shared' => 'Archivos compartidos',
     'stat_volume' => 'Volumen',
     'stat_current_disk_usage' => 'Uso de disco actual',
@@ -341,7 +341,7 @@ return [
 
     // Charts
     'chart_secrets_created' => 'Secretos creados',
-    'chart_secrets_read' => 'Secretos leídos',
+    'chart_secrets_read' => 'Lecturas',
     'chart_secret_types' => 'Tipos de secretos',
     'chart_secret_options' => 'Opciones usadas',
     'chart_secret_outcomes' => 'Resultados de secretos',

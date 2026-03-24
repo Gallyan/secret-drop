@@ -311,7 +311,7 @@ return [
 
     // Stats
     'stat_secrets_created' => '생성된 비밀',
-    'stat_secrets_read' => '조회된 비밀',
+    'stat_secrets_read' => '조회 수',
     'stat_files_shared' => '공유된 파일',
     'stat_volume' => '용량',
     'stat_current_disk_usage' => '현재 디스크 사용량',
@@ -341,7 +341,7 @@ return [
 
     // Charts
     'chart_secrets_created' => '생성된 비밀',
-    'chart_secrets_read' => '조회된 비밀',
+    'chart_secrets_read' => '조회 수',
     'chart_secret_types' => '비밀 유형',
     'chart_secret_options' => '사용된 옵션',
     'chart_secret_outcomes' => '비밀 결과',
