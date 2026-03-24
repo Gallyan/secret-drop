@@ -11,7 +11,7 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
 
             $table->string('token', 32)->unique();
-            $table->string('admin_token', 32)->unique();
+            $table->string('admin_token_hash', 64)->unique();
 
             $table->enum('type', ['text', 'file']);
             $table->json('cipher_meta');
@@ -26,7 +26,7 @@ return new class () extends Migration {
             $table->timestamp('expire_at')->nullable()->index();
             $table->timestamp('revoked_at')->nullable();
 
-            $table->string('creator_email')->nullable();
+            $table->string('creator_email_hash')->nullable()->index();
 
             $table->timestamps();
 

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::dropIfExists('magic_links');
-
         Schema::create('magic_links', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('email_hash', 64);
