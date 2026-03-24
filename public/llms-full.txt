@@ -128,6 +128,14 @@ Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand, w
 - GDPR compliant by design
 - Servers located in France
 
+## About
+
+Secret Drop is an open source project built to provide a simple, free, and privacy-respecting alternative to sharing passwords and sensitive files via email or messaging apps. The source code is public and auditable.
+
+The zero-knowledge architecture ensures the server can never access the content of your secrets. AES-256-GCM encryption is performed entirely in your browser, and the decryption key is never transmitted to the server.
+
+Secret Drop is free to use, requires no account, and is available in 11 languages.
+
 ## Contact
 
 See the legal notice page at /legal for contact information.
