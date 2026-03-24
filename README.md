@@ -1,6 +1,8 @@
 # Secret Drop
 
-Application de partage de secrets et fichiers chiffrés côté client. Le serveur ne voit jamais les données en clair.
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+Application open source de partage de secrets et fichiers chiffrés côté client. Le serveur ne voit jamais les données en clair.
 
 ## Principe Zero-Knowledge
 
@@ -12,25 +14,31 @@ Application de partage de secrets et fichiers chiffrés côté client. Le serveu
 ## Fonctionnalités
 
 - **Secrets texte** : messages chiffrés avec copie facile
-- **Fichiers chiffrés** : upload/download avec chiffrement côté client
+- **Fichiers chiffrés** : upload/download avec chiffrement côté client (jusqu'à 10 Mo)
 - **Usage unique** : destruction après première lecture
-- **Expiration** : 1h, 1j, 7j ou 30j
+- **Expiration** : 1h, 1j, 7j, 30j ou 90j
 - **Limite de lectures** : max_views configurable
-- **Révocation** : annulation immédiate via admin_token
 - **Passphrase** : protection supplémentaire optionnelle
+- **Mode split** : lien et clé séparés pour un partage plus sécurisé
+- **QR code** : partage mobile du lien
+- **Révocation** : annulation immédiate via le dashboard admin
+- **Administration** : accès par magic link (sans compte), suivi des lectures, extension d'expiration
+- **Super admin** : dashboard de statistiques avec graphiques, heatmaps, pageviews
+- **11 langues** : fr, en, de, es, it, pt, nl, pl, ja, ko, ar
+- **Dark mode** : thème clair/sombre
 
 ## Stack technique
 
-- **Backend** : Laravel 12, PHP 8.4
-- **Frontend** : Alpine.js 3.14, Tailwind CSS 4.0
+- **Backend** : Laravel 12, PHP 8.2+
+- **Frontend** : Alpine.js 3.14 (build CSP), Tailwind CSS 4.0, Vite
 - **Crypto** : Web Crypto API (navigateur)
-- **Base de données** : SQLite
+- **Base de données** : MySQL ou SQLite
 
 ## Installation
 
 ```bash
 # Cloner le repo
-git clone https://github.com/Gallyan/secret-drop.git
+git clone https://github.com/perceptron-systems/secret-drop.git
 cd secret-drop
 
 # Installation et configuration
@@ -99,10 +107,11 @@ Cette commande supprime :
 - Le fragment URL
 
 ### Mesures de protection
-- CSP stricte avec nonce
+- CSP stricte avec nonce (compatible Alpine.js CSP build)
 - Headers de sécurité (HSTS, X-Frame-Options, etc.)
 - Sanitization des logs (pas de tokens, pas de secrets)
 - Tokens cryptographiquement sécurisés (128+ bits)
+- Rate limiting progressif avec captcha
 
 ### Données stockées
 - `ciphertext` : contenu chiffré (base64url)
@@ -118,10 +127,14 @@ APP_URL=https://your-domain.com
 APP_ENV=production
 
 # Base de données
-DB_CONNECTION=sqlite
-DB_DATABASE=/path/to/database.sqlite
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=secretdrop
+DB_USERNAME=secretdrop
+DB_PASSWORD=
 
-# Mail (optionnel)
+# Mail
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.example.com
 MAIL_PORT=587
@@ -129,10 +142,8 @@ MAIL_USERNAME=
 MAIL_PASSWORD=
 MAIL_FROM_ADDRESS=noreply@example.com
 
-# DKIM (optionnel, si votre SMTP ne signe pas)
-# MAIL_DKIM_DOMAIN=example.com
-# MAIL_DKIM_SELECTOR=secretdrop
-# MAIL_DKIM_PRIVATE_KEY_PATH=storage/dkim/private.key
+# Super Admin
+SUPER_ADMIN_EMAIL=admin@example.com
 ```
 
 ### Configuration DKIM (optionnel)
@@ -250,7 +261,7 @@ Le projet utilise GitHub Actions pour l'intégration continue (`.github/workflow
 |-----|-------------|
 | **Pint** | Vérification du style de code PHP |
 | **Larastan** | Analyse statique (PHPStan niveau max) |
-| **Tests** | Suite complète PHPUnit (262 tests) |
+| **Tests** | Suite complète PHPUnit (332 tests) |
 
 Les checks sont exécutés sur chaque push et pull request vers `main`.
 
