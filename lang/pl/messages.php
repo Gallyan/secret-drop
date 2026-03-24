@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Bezpiecznie udostępniaj hasła, klucze API i poufne pliki z szyfrowaniem end-to-end. Serwer nigdy nie widzi Twoich danych. Samozniszczalne linki, zero knowledge.',
+    'home_meta_description' => 'Udostępnij hasło, klucz API lub poufny plik za pomocą bezpiecznego, samozniszczalnego linku. Szyfrowanie end-to-end — serwer nigdy nie widzi Twoich danych.',
 
     // Features
     'feature_encryption' => 'Szyfrowanie klasy wojskowej w przeglądarce',

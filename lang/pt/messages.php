@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Compartilhe senhas, chaves de API e arquivos confidenciais com criptografia de ponta a ponta. O servidor nunca vê seus dados. Links autodestrutivos, conhecimento zero.',
+    'home_meta_description' => 'Compartilhe uma senha, chave de API ou arquivo confidencial por meio de um link seguro e autodestrutivo. Criptografia de ponta a ponta — o servidor nunca vê seus dados.',
 
     // Features
     'feature_encryption' => 'Criptografia de nível militar no seu navegador',

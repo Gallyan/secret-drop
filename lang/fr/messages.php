@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Partagez mots de passe, clés API et fichiers confidentiels avec un chiffrement de bout en bout. Le serveur ne voit jamais vos données. Liens autodestructibles, zéro connaissance.',
+    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien sécurisé et autodestructible. Chiffrement de bout en bout — le serveur ne voit jamais vos données.',
 
     // Features
     'feature_encryption' => 'Chiffrement de niveau militaire dans votre navigateur',

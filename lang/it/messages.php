@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Condividi password, chiavi API e file riservati con crittografia end-to-end. Il server non vede mai i tuoi dati. Link autodistruttivi, zero knowledge.',
+    'home_meta_description' => 'Condividi una password, chiave API o file riservato tramite un link sicuro e autodistruttivo. Crittografia end-to-end — il server non vede mai i tuoi dati.',
 
     // Features
     'feature_encryption' => 'Crittografia di livello militare nel tuo browser',

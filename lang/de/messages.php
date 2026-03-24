@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Teilen Sie Passwörter, API-Schlüssel und vertrauliche Dateien sicher mit Ende-zu-Ende-Verschlüsselung. Der Server sieht Ihre Daten nie. Selbstzerstörende Links, Zero Knowledge.',
+    'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen sicheren, selbstzerstörenden Link. Ende-zu-Ende-verschlüsselt — der Server sieht Ihre Daten nie.',
 
     // Features
     'feature_encryption' => 'Militärische Verschlüsselung in Ihrem Browser',

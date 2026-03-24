@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Comparte contraseñas, claves API y archivos confidenciales con cifrado de extremo a extremo. El servidor nunca ve tus datos. Enlaces autodestructivos, conocimiento cero.',
+    'home_meta_description' => 'Comparte una contraseña, clave API o archivo confidencial mediante un enlace seguro y autodestructivo. Cifrado de extremo a extremo — el servidor nunca ve tus datos.',
 
     // Features
     'feature_encryption' => 'Cifrado de grado militar en tu navegador',

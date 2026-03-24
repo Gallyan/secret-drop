@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Securely share passwords, API keys and confidential files with end-to-end encryption. The server never sees your data. Self-destructing links, zero knowledge.',
+    'home_meta_description' => 'Share a password, API key or confidential file via a secure, self-destructing link. End-to-end encrypted — the server never sees your data.',
 
     // Features
     'feature_encryption' => 'Military-grade encryption in your browser',

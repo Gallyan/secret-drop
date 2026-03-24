@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('description', __('messages.home_meta_description'))
+
 @section('content')
 <div class="flex-1 flex items-center justify-center p-4 transition-colors">
     <div class="w-full max-w-5xl">

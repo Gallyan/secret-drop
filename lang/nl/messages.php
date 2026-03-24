@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Deel wachtwoorden, API-sleutels en vertrouwelijke bestanden veilig met end-to-end encryptie. De server ziet uw gegevens nooit. Zelfvernietigende links, zero knowledge.',
+    'home_meta_description' => 'Deel een wachtwoord, API-sleutel of vertrouwelijk bestand via een veilige, zelfvernietigende link. End-to-end versleuteld — de server ziet uw gegevens nooit.',
 
     // Features
     'feature_encryption' => 'Militaire encryptie in uw browser',
