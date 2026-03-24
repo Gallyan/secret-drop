@@ -425,7 +425,7 @@ function initDashboard() {
                 { label: translations.stat_file, data: metricData(m, 'secrets_created_file', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 }
             ]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
     });
 
     charts.read = new Chart(document.getElementById('secretsReadChart'), {
@@ -434,7 +434,7 @@ function initDashboard() {
             labels,
             datasets: [{ label: translations.stat_reads, data: metricData(m, 'secrets_read', labels), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales }
     });
 
     charts.types = new Chart(document.getElementById('secretTypesChart'), {
@@ -474,7 +474,7 @@ function initDashboard() {
                 { label: translations.stat_secrets_extended, data: metricData(m, 'secrets_extended', labels), borderColor: '#06b6d4', tension: 0.3 }
             ]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
     });
 
     if (heatmapCreated) {
@@ -497,7 +497,7 @@ function initDashboard() {
                     { label: translations.stat_bots || 'Bots', data: pvDates.map(d => daily[d]?.bot || 0), borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.1)', fill: true, tension: 0.3 }
                 ]
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } }, scales }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
         });
     }
 

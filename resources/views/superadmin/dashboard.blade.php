@@ -94,11 +94,15 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_created') }}</h2>
-                <canvas id="secretsCreatedChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_created') }}"></canvas>
+                <div class="h-56">
+                    <canvas id="secretsCreatedChart" role="img" aria-label="{{ __('messages.chart_secrets_created') }}"></canvas>
+                </div>
             </x-card>
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secrets_read') }}</h2>
-                <canvas id="secretsReadChart" height="200" role="img" aria-label="{{ __('messages.chart_secrets_read') }}"></canvas>
+                <div class="h-56">
+                    <canvas id="secretsReadChart" role="img" aria-label="{{ __('messages.chart_secrets_read') }}"></canvas>
+                </div>
             </x-card>
         </div>
 
@@ -119,7 +123,9 @@
 
         <x-card class="p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_admin_activity') }}</h2>
-            <canvas id="adminActivityChart" height="80" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
+            <div class="h-56">
+                <canvas id="adminActivityChart" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
+            </div>
         </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -160,7 +166,9 @@
         {{-- Daily visits chart --}}
         <x-card class="p-6 mb-8">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_pageviews_title') }}</h3>
-            <canvas id="pageviewsChart" height="80" role="img" aria-label="{{ __('messages.stat_pageviews_title') }}"></canvas>
+            <div class="h-56">
+                <canvas id="pageviewsChart" role="img" aria-label="{{ __('messages.stat_pageviews_title') }}"></canvas>
+            </div>
         </x-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -245,29 +253,6 @@
                 </div>
             </x-card>
 
-            {{-- By language --}}
-            <x-card class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_language') }}</h3>
-                <div id="pollByLanguage" class="space-y-2">
-                    @foreach($pageviews['by_language'] as $locale => $count)
-                        @php
-                            $pct = $pageviews['total_human'] > 0 ? ($count / $pageviews['total_human']) * 100 : 0;
-                            $flag = \App\Support\LocaleConfig::FLAGS[$locale] ?? '';
-                            $name = \App\Support\LocaleConfig::NATIVE_NAMES[$locale] ?? strtoupper($locale);
-                        @endphp
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $flag }} {{ $name }}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                    <div class="h-full bg-amber-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
-                                </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </x-card>
-
             {{-- By hour --}}
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_hour') }}</h3>
@@ -294,6 +279,58 @@
                             </div>
                         @endforeach
                     </div>
+                </div>
+            </x-card>
+
+            {{-- By local hour --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_local_hour') }}</h3>
+                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_local_hour_note') }}</p>
+                <div id="pollByLocalHour">
+                    @php
+                        $maxLocalHour = max(1, max($pageviews['by_local_hour']));
+                        $localBarMaxPx = 96;
+                    @endphp
+                    <div class="flex items-end gap-0.5" style="height: {{ $localBarMaxPx }}px">
+                        @foreach($pageviews['by_local_hour'] as $hour => $count)
+                            @php $heightPx = max(2, (int) (($count / $maxLocalHour) * $localBarMaxPx)); @endphp
+                            <div
+                                class="flex-1 bg-amber-500/80 dark:bg-amber-400/80 rounded-t-sm transition-colors hover:bg-amber-600 dark:hover:bg-amber-300"
+                                style="height: {{ $heightPx }}px"
+                                title="{{ $hour }}h: {{ $count }}"
+                            ></div>
+                        @endforeach
+                    </div>
+                    <div class="flex gap-0.5 mt-1">
+                        @foreach($pageviews['by_local_hour'] as $hour => $count)
+                            <div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">
+                                @if($hour % 6 === 0){{ $hour }}@endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </x-card>
+
+            {{-- By language --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_language') }}</h3>
+                <div id="pollByLanguage" class="space-y-2">
+                    @foreach($pageviews['by_language'] as $locale => $count)
+                        @php
+                            $pct = $pageviews['total_human'] > 0 ? ($count / $pageviews['total_human']) * 100 : 0;
+                            $flag = \App\Support\LocaleConfig::FLAGS[$locale] ?? '';
+                            $name = \App\Support\LocaleConfig::NATIVE_NAMES[$locale] ?? strtoupper($locale);
+                        @endphp
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $flag }} {{ $name }}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </x-card>
 
@@ -325,35 +362,6 @@
                 @else
                     <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
                 @endif
-                </div>
-            </x-card>
-
-            {{-- By local hour --}}
-            <x-card class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_local_hour') }}</h3>
-                <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_local_hour_note') }}</p>
-                <div id="pollByLocalHour">
-                    @php
-                        $maxLocalHour = max(1, max($pageviews['by_local_hour']));
-                        $localBarMaxPx = 96;
-                    @endphp
-                    <div class="flex items-end gap-0.5" style="height: {{ $localBarMaxPx }}px">
-                        @foreach($pageviews['by_local_hour'] as $hour => $count)
-                            @php $heightPx = max(2, (int) (($count / $maxLocalHour) * $localBarMaxPx)); @endphp
-                            <div
-                                class="flex-1 bg-amber-500/80 dark:bg-amber-400/80 rounded-t-sm transition-colors hover:bg-amber-600 dark:hover:bg-amber-300"
-                                style="height: {{ $heightPx }}px"
-                                title="{{ $hour }}h: {{ $count }}"
-                            ></div>
-                        @endforeach
-                    </div>
-                    <div class="flex gap-0.5 mt-1">
-                        @foreach($pageviews['by_local_hour'] as $hour => $count)
-                            <div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">
-                                @if($hour % 6 === 0){{ $hour }}@endif
-                            </div>
-                        @endforeach
-                    </div>
                 </div>
             </x-card>
         </div>
