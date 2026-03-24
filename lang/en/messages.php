@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'How do I securely share a password?',
     'faq_a9' => 'Paste your password, choose an expiration time, and optionally limit to a single read. Secret Drop encrypts it in your browser and gives you a secure link to share. The password is never visible to the server.',
     'faq_q10' => 'Is Secret Drop open source?',
-    'faq_a10' => 'Yes, Secret Drop\'s source code is publicly available under the Business Source License (BSL). You can inspect the encryption logic, verify there are no backdoors, and confirm that the zero-knowledge architecture works as described.',
+    'faq_a10' => 'Yes, Secret Drop is open source under the GNU Affero General Public License v3 (AGPL-3.0). You can inspect the encryption logic, verify there are no backdoors, and confirm that the zero-knowledge architecture works as described.',
     'faq_q11' => 'What is the difference between Secret Drop and encrypted email?',
     'faq_a11' => 'Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand, which is complex. Secret Drop requires nothing from the recipient — just a link. Additionally, the secret self-destructs after reading and leaves no trace, unlike an email which remains in both inboxes indefinitely.',
 

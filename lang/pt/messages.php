@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'Como compartilhar uma senha com segurança?',
     'faq_a9' => 'Cole sua senha, escolha um tempo de expiração e opcionalmente limite a uma única leitura. O Secret Drop a criptografa no navegador e fornece um link seguro para compartilhar. A senha nunca é visível para o servidor.',
     'faq_q10' => 'O Secret Drop é open source?',
-    'faq_a10' => 'Sim, o código-fonte do Secret Drop está disponível publicamente sob a licença Business Source License (BSL). Você pode inspecionar a lógica de criptografia, verificar a ausência de backdoors e confirmar que a arquitetura de conhecimento zero funciona como descrito.',
+    'faq_a10' => 'Sim, o Secret Drop é open source sob a licença GNU Affero General Public License v3 (AGPL-3.0). Você pode inspecionar a lógica de criptografia, verificar a ausência de backdoors e confirmar que a arquitetura de conhecimento zero funciona como descrito.',
     'faq_q11' => 'Qual é a diferença entre o Secret Drop e um e-mail criptografado?',
     'faq_a11' => 'O e-mail criptografado (PGP, S/MIME) exige que ambas as partes configurem chaves previamente, o que é complexo. O Secret Drop não exige nada do destinatário — apenas um link. Além disso, o segredo se autodestrói após a leitura e não deixa rastros, diferente de um e-mail que permanece em ambas as caixas indefinidamente.',
 

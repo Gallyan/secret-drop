@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'Hoe deel ik een wachtwoord veilig?',
     'faq_a9' => 'Plak uw wachtwoord, kies een vervaltijd en beperk optioneel tot één keer lezen. Secret Drop versleutelt het in uw browser en geeft u een veilige link om te delen. Het wachtwoord is nooit zichtbaar voor de server.',
     'faq_q10' => 'Is Secret Drop open source?',
-    'faq_a10' => 'Ja, de broncode van Secret Drop is publiek beschikbaar onder de Business Source License (BSL). U kunt de versleutelingslogica inspecteren, controleren of er geen achterdeurtjes zijn, en bevestigen dat de zero-knowledge-architectuur werkt zoals beschreven.',
+    'faq_a10' => 'Ja, Secret Drop is open source onder de GNU Affero General Public License v3 (AGPL-3.0). U kunt de versleutelingslogica inspecteren, controleren of er geen achterdeurtjes zijn, en bevestigen dat de zero-knowledge-architectuur werkt zoals beschreven.',
     'faq_q11' => 'Wat is het verschil tussen Secret Drop en versleutelde e-mail?',
     'faq_a11' => 'Versleutelde e-mail (PGP, S/MIME) vereist dat beide partijen vooraf sleutels instellen, wat complex is. Secret Drop vraagt niets van de ontvanger — alleen een link. Bovendien vernietigt het geheim zichzelf na het lezen en laat geen spoor achter, in tegenstelling tot een e-mail die onbeperkt in beide inboxen blijft staan.',
 

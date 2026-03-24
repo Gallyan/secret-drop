@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'Comment partager un mot de passe en toute sécurité ?',
     'faq_a9' => 'Collez votre mot de passe, choisissez une durée d\'expiration et limitez éventuellement à une seule lecture. Secret Drop le chiffre dans votre navigateur et vous donne un lien sécurisé à partager. Le mot de passe n\'est jamais visible par le serveur.',
     'faq_q10' => 'Secret Drop est-il open source ?',
-    'faq_a10' => 'Oui, le code source de Secret Drop est accessible publiquement sous licence Business Source License (BSL). Vous pouvez inspecter la logique de chiffrement, vérifier l\'absence de portes dérobées et confirmer que l\'architecture zero-knowledge fonctionne comme décrit.',
+    'faq_a10' => 'Oui, Secret Drop est open source sous licence GNU Affero General Public License v3 (AGPL-3.0). Vous pouvez inspecter la logique de chiffrement, vérifier l\'absence de portes dérobées et confirmer que l\'architecture zero-knowledge fonctionne comme décrit.',
     'faq_q11' => 'Quelle est la différence entre Secret Drop et un email chiffré ?',
     'faq_a11' => 'L\'email chiffré (PGP, S/MIME) exige que les deux parties configurent des clés au préalable, ce qui est complexe. Secret Drop ne demande rien au destinataire — juste un lien. De plus, le secret s\'autodétruit après lecture et ne laisse aucune trace, contrairement à un email qui reste dans les deux boîtes indéfiniment.',
 

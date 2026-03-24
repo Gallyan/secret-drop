@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'Wie teile ich ein Passwort sicher?',
     'faq_a9' => 'Fügen Sie Ihr Passwort ein, wählen Sie eine Ablaufzeit und begrenzen Sie optional auf einmaliges Lesen. Secret Drop verschlüsselt es in Ihrem Browser und gibt Ihnen einen sicheren Link zum Teilen. Das Passwort ist für den Server niemals sichtbar.',
     'faq_q10' => 'Ist Secret Drop Open Source?',
-    'faq_a10' => 'Ja, der Quellcode von Secret Drop ist unter der Business Source License (BSL) öffentlich zugänglich. Sie können die Verschlüsselungslogik überprüfen, sicherstellen, dass keine Hintertüren vorhanden sind, und bestätigen, dass die Zero-Knowledge-Architektur wie beschrieben funktioniert.',
+    'faq_a10' => 'Ja, Secret Drop ist Open Source unter der GNU Affero General Public License v3 (AGPL-3.0). Sie können die Verschlüsselungslogik überprüfen, sicherstellen, dass keine Hintertüren vorhanden sind, und bestätigen, dass die Zero-Knowledge-Architektur wie beschrieben funktioniert.',
     'faq_q11' => 'Was ist der Unterschied zwischen Secret Drop und verschlüsselter E-Mail?',
     'faq_a11' => 'Verschlüsselte E-Mail (PGP, S/MIME) erfordert, dass beide Parteien vorab Schlüssel einrichten — das ist aufwändig. Secret Drop verlangt vom Empfänger nichts — nur einen Link. Außerdem zerstört sich das Geheimnis nach dem Lesen selbst und hinterlässt keine Spuren, anders als eine E-Mail, die in beiden Postfächern unbegrenzt bestehen bleibt.',
 

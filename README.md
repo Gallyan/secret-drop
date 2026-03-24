@@ -278,4 +278,4 @@ Le workflow supporte plusieurs stratégies de déploiement :
 
 ## Licence
 
-MIT
+AGPL-3.0 — voir [LICENSE](LICENSE)

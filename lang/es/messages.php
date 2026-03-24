@@ -189,7 +189,7 @@ return [
     'faq_q9' => '¿Cómo comparto una contraseña de forma segura?',
     'faq_a9' => 'Pegue su contraseña, elija un tiempo de expiración y opcionalmente limite a una sola lectura. Secret Drop la cifra en su navegador y le proporciona un enlace seguro para compartir. La contraseña nunca es visible para el servidor.',
     'faq_q10' => '¿Es Secret Drop de código abierto?',
-    'faq_a10' => 'Sí, el código fuente de Secret Drop está disponible públicamente bajo la licencia Business Source License (BSL). Puede inspeccionar la lógica de cifrado, verificar que no hay puertas traseras y confirmar que la arquitectura de conocimiento cero funciona como se describe.',
+    'faq_a10' => 'Sí, Secret Drop es de código abierto bajo la licencia GNU Affero General Public License v3 (AGPL-3.0). Puede inspeccionar la lógica de cifrado, verificar que no hay puertas traseras y confirmar que la arquitectura de conocimiento cero funciona como se describe.',
     'faq_q11' => '¿Cuál es la diferencia entre Secret Drop y un correo electrónico cifrado?',
     'faq_a11' => 'El correo cifrado (PGP, S/MIME) requiere que ambas partes configuren claves de antemano, lo cual es complejo. Secret Drop no exige nada al destinatario — solo un enlace. Además, el secreto se autodestruye tras la lectura y no deja rastro, a diferencia de un correo que permanece en ambas bandejas indefinidamente.',
 

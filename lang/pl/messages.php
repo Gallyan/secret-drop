@@ -189,7 +189,7 @@ return [
     'faq_q9' => 'Jak bezpiecznie udostępnić hasło?',
     'faq_a9' => 'Wklej hasło, wybierz czas wygaśnięcia i opcjonalnie ogranicz do jednego odczytu. Secret Drop zaszyfruje je w przeglądarce i da Ci bezpieczny link do udostępnienia. Hasło nigdy nie jest widoczne dla serwera.',
     'faq_q10' => 'Czy Secret Drop jest open source?',
-    'faq_a10' => 'Tak, kod źródłowy Secret Drop jest publicznie dostępny na licencji Business Source License (BSL). Możesz sprawdzić logikę szyfrowania, upewnić się, że nie ma żadnych tylnych drzwi, i potwierdzić, że architektura zero-knowledge działa zgodnie z opisem.',
+    'faq_a10' => 'Tak, Secret Drop jest open source na licencji GNU Affero General Public License v3 (AGPL-3.0). Możesz sprawdzić logikę szyfrowania, upewnić się, że nie ma żadnych tylnych drzwi, i potwierdzić, że architektura zero-knowledge działa zgodnie z opisem.',
     'faq_q11' => 'Jaka jest różnica między Secret Drop a szyfrowanym e-mailem?',
     'faq_a11' => 'Szyfrowany e-mail (PGP, S/MIME) wymaga, aby obie strony wcześniej skonfigurowały klucze, co jest skomplikowane. Secret Drop nie wymaga niczego od odbiorcy — wystarczy link. Ponadto sekret ulega samozniszczeniu po odczytaniu i nie pozostawia śladów, w przeciwieństwie do e-maila, który pozostaje w obu skrzynkach na czas nieokreślony.',
 

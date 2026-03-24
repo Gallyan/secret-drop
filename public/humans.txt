@@ -1,6 +1,6 @@
 /* TEAM */
 Developer: Guillaume Orsal
-Site: https://orsal.fr
+Site: https://www.orsal.fr
 GitHub: https://github.com/perceptron-systems
 Location: France
 
@@ -8,7 +8,7 @@ Location: France
 Claude (Anthropic) - AI pair programming assistant
 
 /* SITE */
-Last update: 2026/01
+Last update: 2026/03
 Language: French / English
 Standards: HTML5, CSS3, ES6+
 Components: Laravel, Alpine.js, Tailwind CSS
