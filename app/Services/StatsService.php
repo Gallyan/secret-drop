@@ -259,6 +259,7 @@ class StatsService
         }
 
         arsort($byCountry);
+        uasort($byPage, fn ($a, $b) => $b['human'] <=> $a['human']);
 
         return [
             'total_human' => $totalHuman,
