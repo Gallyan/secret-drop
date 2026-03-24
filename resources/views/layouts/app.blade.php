@@ -95,8 +95,18 @@
         "@@context": "https://schema.org",
         "@@type": "Organization",
         "name": "{{ config('legal.editor_name') }}",
-        "url": "{{ url('/') }}"@if(config('legal.contact_email')),
-        "email": "{{ config('legal.contact_email') }}"@endif
+        "url": "{{ url('/') }}",
+        "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
+        "email": "{{ config('legal.contact_email') }}"@endif,
+        "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
+        "makesOffer": {
+            "@@type": "Offer",
+            "itemOffered": {
+                "@@type": "WebApplication",
+                "name": "{{ config('app.name') }}",
+                "url": "{{ url('/') }}"
+            }
+        }
     }
     </script>
     @endif
