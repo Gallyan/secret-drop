@@ -179,6 +179,29 @@
                 </div>
             </x-card>
 
+            {{-- By language --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_language') }}</h3>
+                <div class="space-y-2">
+                    @foreach($pageviews['by_language'] as $locale => $count)
+                        @php
+                            $pct = $pageviews['total_human'] > 0 ? ($count / $pageviews['total_human']) * 100 : 0;
+                            $flag = \App\Support\LocaleConfig::FLAGS[$locale] ?? '';
+                            $name = \App\Support\LocaleConfig::NATIVE_NAMES[$locale] ?? strtoupper($locale);
+                        @endphp
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $flag }} {{ $name }}</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </x-card>
+
             {{-- By hour --}}
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.stat_by_hour') }}</h3>

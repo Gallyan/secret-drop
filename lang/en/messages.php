@@ -339,6 +339,7 @@ return [
     'stat_by_local_hour' => 'By local hour',
     'stat_local_hour_note' => 'Based on visitor browser time',
     'stat_by_country' => 'By country',
+    'stat_by_language' => 'By language',
     'stat_by_page' => 'By page',
     'stat_conversion' => 'Conversion',
     'stat_countries' => 'Countries',

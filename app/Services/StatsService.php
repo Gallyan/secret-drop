@@ -218,6 +218,7 @@ class StatsService
      *     total_bot: int,
      *     by_page: array<string, array{human: int, bot: int}>,
      *     by_country: array<string, int>,
+     *     by_language: array<string, int>,
      *     by_hour: array<int, int>,
      *     daily: array<string, array{human: int, bot: int}>
      * }
@@ -236,6 +237,7 @@ class StatsService
         $totalBot = 0;
         $byPage = [];
         $byCountry = [];
+        $byLanguage = [];
         $byHour = array_fill(0, 24, 0);
         $daily = [];
 
@@ -252,6 +254,10 @@ class StatsService
             if (! $row->is_bot) {
                 $byCountry[$row->country] = ($byCountry[$row->country] ?? 0) + $row->count;
                 $byHour[$row->hour] += $row->count;
+
+                if ($row->locale !== '') {
+                    $byLanguage[$row->locale] = ($byLanguage[$row->locale] ?? 0) + $row->count;
+                }
             }
 
             $daily[$row->date] ??= ['human' => 0, 'bot' => 0];
@@ -259,6 +265,7 @@ class StatsService
         }
 
         arsort($byCountry);
+        arsort($byLanguage);
         uasort($byPage, fn ($a, $b) => $b['human'] <=> $a['human']);
 
         return [
@@ -266,6 +273,7 @@ class StatsService
             'total_bot' => $totalBot,
             'by_page' => $byPage,
             'by_country' => $byCountry,
+            'by_language' => $byLanguage,
             'by_hour' => $byHour,
             'by_local_hour' => $this->getLocalHours($startDate),
             'daily' => $daily,

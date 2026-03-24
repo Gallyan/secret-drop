@@ -339,6 +339,7 @@ return [
     'stat_by_local_hour' => '現地時間別',
     'stat_local_hour_note' => '訪問者のブラウザ時刻に基づく',
     'stat_by_country' => '国別',
+    'stat_by_language' => '言語別',
     'stat_by_page' => 'ページ別',
     'stat_conversion' => 'コンバージョン',
     'stat_countries' => '国',

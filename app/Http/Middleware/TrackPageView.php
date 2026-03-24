@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Services\PageviewService;
+use App\Support\LocaleConfig;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackPageView
@@ -33,7 +33,8 @@ class TrackPageView
             $page,
             $request->userAgent() ?? '',
             $request->header('Accept-Language', ''),
-            (int) $request->cookie('tz_offset', '0')
+            (int) $request->cookie('tz_offset', '0'),
+            $this->extractLocale($request)
         );
 
         return $response;
@@ -50,9 +51,25 @@ class TrackPageView
         $name = $route->getName();
 
         if ($name === 'page.show') {
-            return $route->parameter('pageSlug', 'unknown');
+            $slug = $route->parameter('pageSlug', 'unknown');
+            $locale = $route->parameter('locale', LocaleConfig::DEFAULT_LOCALE);
+            $canonical = LocaleConfig::findRouteBySlug($slug, $locale);
+
+            return $canonical ?? $slug;
         }
 
-        return Str::slug($name, '_');
+        return $name;
+    }
+
+    private function extractLocale(Request $request): string
+    {
+        $route = $request->route();
+        $locale = $route?->parameter('locale');
+
+        if ($locale && LocaleConfig::isSupported($locale)) {
+            return $locale;
+        }
+
+        return app()->getLocale();
     }
 }

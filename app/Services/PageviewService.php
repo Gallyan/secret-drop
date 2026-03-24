@@ -17,7 +17,7 @@ class PageviewService
         'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
     ];
 
-    public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0): void
+    public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = ''): void
     {
         $now = now();
         $isBot = $this->isBot($userAgent);
@@ -29,11 +29,12 @@ class PageviewService
                 'is_bot' => $isBot,
                 'hour' => $now->hour,
                 'country' => $this->detectCountry($acceptLanguage),
+                'locale' => $locale,
                 'count' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
-            ['date', 'page', 'is_bot', 'hour', 'country'],
+            ['date', 'page', 'is_bot', 'hour', 'country', 'locale'],
             ['count' => DB::raw('count + 1'), 'updated_at' => $now]
         );
 

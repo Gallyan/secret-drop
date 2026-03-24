@@ -339,6 +339,7 @@ return [
     'stat_by_local_hour' => 'Per ora locale',
     'stat_local_hour_note' => "Basato sull'ora del browser del visitatore",
     'stat_by_country' => 'Per paese',
+    'stat_by_language' => 'Per lingua',
     'stat_by_page' => 'Per pagina',
     'stat_conversion' => 'Conversione',
     'stat_countries' => 'Paesi',
