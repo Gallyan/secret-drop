@@ -6,13 +6,13 @@
         <div
             x-data="secretForm"
             x-cloak
-            class="relative z-20 md:bg-white/80 md:dark:bg-slate-800/50 md:backdrop-blur-xl md:border md:border-gray-200 md:dark:border-slate-700/50 md:rounded-2xl md:shadow-2xl transition-colors"
+            class="card-accent relative z-20 md:bg-white/80 md:dark:bg-slate-800/50 md:backdrop-blur-xl md:border md:border-gray-200 md:dark:border-slate-700/50 md:rounded-2xl md:shadow-2xl transition-colors"
         >
             <div class="grid lg:grid-cols-2">
                 {{-- Left: Branding & Info --}}
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-linear-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
+                        <div class="logo-icon flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
                             <x-icon.lock class="w-7 h-7 text-white" />
                         </div>
                         <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
@@ -199,7 +199,7 @@
                         </div>
 
                         {{-- Collapsible options --}}
-                        <div class="flex items-center justify-between">
+                        <div class="grid grid-cols-2 gap-4 items-center">
                             <button
                                 type="button"
                                 @click="showAdvanced = !showAdvanced"
@@ -224,7 +224,7 @@
                             <button
                                 type="button"
                                 @click="applyMaxSecurity()"
-                                class="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
+                                class="flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
                             >
                                 <x-icon.shield-check />
                                 {{ __('messages.max_security') }}

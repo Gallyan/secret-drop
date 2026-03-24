@@ -84,6 +84,128 @@
     display: none !important;
 }
 
+/* ── Identity: text selection ── */
+::selection {
+    background-color: rgba(139, 92, 246, 0.25);
+    color: inherit;
+}
+.dark ::selection {
+    background-color: rgba(139, 92, 246, 0.4);
+}
+
+/* ── Background grid overlay ── */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+.dark body::before {
+    background-image:
+        linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+}
+
+/* ── Ambient glow (dark mode only) ── */
+body::after {
+    content: "";
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 60%;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 9999px;
+    opacity: 0;
+    background: radial-gradient(ellipse, rgba(139, 92, 246, 0.12), rgba(99, 102, 241, 0.06), transparent 70%);
+    filter: blur(80px);
+    animation: ambient-drift 12s ease-in-out infinite;
+}
+.dark body::after {
+    opacity: 1;
+}
+@keyframes ambient-drift {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(15px); }
+}
+
+/* ── Card accent line ── */
+.card-accent {
+    position: relative;
+    overflow: hidden;
+}
+.card-accent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 10;
+    background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, #8b5cf6, transparent);
+    background-size: 200% 100%;
+    animation: accent-shimmer 6s ease-in-out infinite;
+}
+@keyframes accent-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ── Card hover lift + glow ── */
+.card-accent {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+@media (hover: hover) {
+    .card-accent:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 25px 50px -12px rgba(0, 0, 0, 0.15),
+            0 0 30px rgba(139, 92, 246, 0.08);
+    }
+    .dark .card-accent:hover {
+        box-shadow:
+            0 25px 50px -12px rgba(0, 0, 0, 0.4),
+            0 0 40px rgba(139, 92, 246, 0.12);
+    }
+}
+
+/* ── Button glow ── */
+.btn-glow {
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.15s ease;
+}
+.btn-glow:hover {
+    box-shadow: 0 0 24px rgba(139, 92, 246, 0.4), 0 4px 16px rgba(139, 92, 246, 0.25);
+}
+.dark .btn-glow:hover {
+    box-shadow: 0 0 32px rgba(139, 92, 246, 0.5), 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+.btn-glow:active {
+    transform: scale(0.97);
+}
+
+/* ── Input focus accent ── */
+input:focus, textarea:focus, select:focus {
+    border-left: 3px solid #8b5cf6 !important;
+    padding-left: calc(1rem - 2px) !important;
+}
+
+/* ── Logo icon breathe ── */
+.logo-icon {
+    animation: logo-breathe 4s ease-in-out infinite;
+}
+@keyframes logo-breathe {
+    0%, 100% { box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.25); }
+    50% { box-shadow: 0 10px 25px -3px rgba(139, 92, 246, 0.45); }
+}
+
 /* Custom scrollbar */
 html {
     scrollbar-width: thin;

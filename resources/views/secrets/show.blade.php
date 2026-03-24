@@ -8,7 +8,7 @@
     <div class="w-full max-w-2xl">
         <div
             x-data="secretViewer" data-token="{{ $token }}"
-            class="bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
+            class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
         >
             <div class="p-8 lg:p-12">
                 {{-- Loading state --}}
@@ -63,7 +63,7 @@
                 <div x-show="!isLoading && !loadError" x-cloak>
                     {{-- Header --}}
                     <div class="text-center mb-8">
-                        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
+                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
                             <template x-if="type === 'text'">
                                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

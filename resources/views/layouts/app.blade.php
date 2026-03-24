@@ -175,11 +175,11 @@
         {{ __('messages.a11y_skip_to_content') }}
     </a>
 
-    <main id="main-content" class="flex-1 flex flex-col">
+    <main id="main-content" class="relative z-10 flex-1 flex flex-col">
         @yield('content')
     </main>
 
-    <footer class="py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors">
+    <footer class="relative z-10 py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors border-t border-transparent" style="border-image: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent) 1;">
         {{-- Desktop: links + switchers --}}
         <div class="hidden sm:flex items-center justify-center gap-x-2 gap-y-1 px-4">
             <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">

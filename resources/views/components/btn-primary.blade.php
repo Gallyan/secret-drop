@@ -7,7 +7,7 @@
         'emerald' => 'bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-500/25',
     ];
     $colorClasses = $colors[$color] ?? $colors['violet'];
-    $baseClasses = "inline-flex items-center justify-center py-3 px-6 {$colorClasses} text-white font-medium rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    $baseClasses = "btn-glow inline-flex items-center justify-center py-3 px-6 {$colorClasses} text-white font-medium rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 @endphp
 
 @if($href)
