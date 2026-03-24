@@ -1,7 +1,7 @@
 # Secret Drop
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
 
 Application open source de partage de secrets et fichiers chiffrés côté client. Le serveur ne voit jamais les données en clair.
 
@@ -30,8 +30,8 @@ Application open source de partage de secrets et fichiers chiffrés côté clien
 
 ## Stack technique
 
-- **Backend** : Laravel 12, PHP 8.2+
-- **Frontend** : Alpine.js 3.14 (build CSP), Tailwind CSS 4.0, Vite
+- **Backend** : Laravel 13, PHP 8.2+
+- **Frontend** : Alpine.js 3.15 (build CSP), Tailwind CSS 4.2, Vite
 - **Crypto** : Web Crypto API (navigateur)
 - **Base de données** : MySQL ou SQLite
 
@@ -71,34 +71,75 @@ npm run build     # Build production
 # Nettoyer les secrets expirés/révoqués/consommés
 php artisan secrets:clean
 
+# Supprimer les fichiers orphelins (sans secret correspondant)
+php artisan secrets:clean-blobs
+
 # Mode dry-run (affiche sans supprimer)
 php artisan secrets:clean --dry-run
+php artisan secrets:clean-blobs --dry-run
 ```
 
-Cette commande supprime :
+`secrets:clean` supprime :
 - Les secrets expirés (`expire_at` dépassé)
 - Les secrets révoqués (`revoked_at` défini)
 - Les secrets ayant atteint leur limite de lectures
 - Les secrets à usage unique déjà lus
+- Les magic links expirés ou utilisés
+
+`secrets:clean-blobs` supprime les fichiers stockés qui n'ont plus de secret correspondant en base.
 
 ## API
 
-### Endpoints publics
+### Endpoints API
 
 | Méthode | URL | Description |
 |---------|-----|-------------|
-| `GET` | `/` | Page de création |
 | `POST` | `/api/secrets` | Créer un secret |
-| `GET` | `/s/{token}` | Page de lecture |
 | `GET` | `/api/secrets/{token}` | Récupérer les métadonnées + ciphertext |
 | `POST` | `/api/secrets/{token}/read` | Confirmer la lecture (après déchiffrement) |
-| `GET` | `/s/{token}/download` | Télécharger un fichier chiffré |
+| `POST` | `/api/secrets/{adminToken}/revoke` | Révoquer un secret |
 
-### Endpoints admin
+### Routes web publiques
 
 | Méthode | URL | Description |
 |---------|-----|-------------|
-| `POST` | `/api/secrets/{adminToken}/revoke` | Révoquer un secret |
+| `GET` | `/` | Redirection vers `/{locale}` |
+| `GET` | `/{locale}` | Page de création |
+| `GET` | `/{locale}/{pageSlug}` | Pages statiques localisées |
+| `GET` | `/s/{token}` | Page de lecture d'un secret |
+| `GET` | `/s/{token}/download` | Télécharger un fichier chiffré |
+| `GET` | `/contact` | Page de contact |
+
+### Routes admin
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| `GET` | `/{locale}/admin` | Page de connexion admin |
+| `POST` | `/{locale}/admin/request-access` | Demander un magic link |
+| `GET` | `/{locale}/admin/verify/{token}` | Vérifier le magic link |
+| `GET` | `/{locale}/admin/dashboard` | Dashboard admin |
+| `POST` | `/{locale}/admin/secrets/{id}/revoke` | Révoquer un secret |
+| `POST` | `/{locale}/admin/secrets/{id}/extend` | Étendre l'expiration |
+| `POST` | `/{locale}/admin/logout` | Déconnexion admin |
+
+### Routes super admin
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| `GET` | `/{locale}/superadmin` | Page de connexion super admin |
+| `POST` | `/{locale}/superadmin/request-access` | Demander un magic link |
+| `GET` | `/{locale}/superadmin/verify/{token}` | Vérifier le magic link |
+| `GET` | `/{locale}/superadmin/dashboard` | Dashboard statistiques |
+| `GET` | `/{locale}/superadmin/dashboard/poll` | Polling des données en temps réel |
+| `POST` | `/{locale}/superadmin/logout` | Déconnexion super admin |
+
+### Routes SEO & utilitaires
+
+| Méthode | URL | Description |
+|---------|-----|-------------|
+| `GET` | `/robots.txt` | Fichier robots |
+| `GET` | `/sitemap.xml` | Sitemap XML |
+| `GET` | `/.well-known/security.txt` | Fichier security.txt |
 
 ## Sécurité
 
@@ -189,9 +230,10 @@ Tâches planifiées (configurées dans `routes/console.php`) :
 | Commande | Fréquence | Description |
 |----------|-----------|-------------|
 | `secrets:clean` | Toutes les heures | Supprime les secrets expirés, révoqués, consommés et les magic links |
-| `secrets:clean-blobs` | Quotidien | Supprime les fichiers orphelins (sans secret correspondant) |
+| `secrets:clean-blobs` | Toutes les 6 heures | Supprime les fichiers orphelins (sans secret correspondant) |
+| `session:gc` | Quotidien | Nettoyage des sessions expirées |
 
-Les deux commandes supportent l'option `--dry-run` pour prévisualiser les suppressions.
+Les commandes `secrets:*` supportent l'option `--dry-run` pour prévisualiser les suppressions.
 
 ## Logs Apache (zero-knowledge)
 
@@ -222,11 +264,11 @@ Pour masquer complètement les tokens, utilisez `mod_rewrite` avec une variable 
     RewriteCond %{REQUEST_URI} ^/api/secrets/[^/]+
     RewriteRule ^/api/secrets/(.*)$ - [E=SANITIZED_URI:/api/secrets/[TOKEN]]
 
-    RewriteCond %{REQUEST_URI} ^/admin/verify/[^/]+
-    RewriteRule ^/admin/verify/(.*)$ - [E=SANITIZED_URI:/admin/verify/[TOKEN]]
+    RewriteCond %{REQUEST_URI} ^/[a-z]{2}/admin/verify/[^/]+
+    RewriteRule ^/([a-z]{2})/admin/verify/(.*)$ - [E=SANITIZED_URI:/$1/admin/verify/[TOKEN]]
 
-    RewriteCond %{REQUEST_URI} ^/superadmin/verify/[^/]+
-    RewriteRule ^/superadmin/verify/(.*)$ - [E=SANITIZED_URI:/superadmin/verify/[TOKEN]]
+    RewriteCond %{REQUEST_URI} ^/[a-z]{2}/superadmin/verify/[^/]+
+    RewriteRule ^/([a-z]{2})/superadmin/verify/(.*)$ - [E=SANITIZED_URI:/$1/superadmin/verify/[TOKEN]]
 
     # Format de log sécurisé
     LogFormat "%h %l %u %t \"%m %{SANITIZED_URI}e\" %>s %b" secretdrop_safe
@@ -262,31 +304,25 @@ Le projet utilise GitHub Actions pour l'intégration continue (`.github/workflow
 |-----|-------------|
 | **Pint** | Vérification du style de code PHP |
 | **Larastan** | Analyse statique (PHPStan niveau max) |
-| **Tests** | Suite complète PHPUnit (332 tests) |
+| **Tests** | Suite complète PHPUnit |
 
 Les checks sont exécutés sur chaque push et pull request vers `main`.
 
 ### Déploiement Continu (CD)
 
-Un workflow de déploiement est disponible mais désactivé par défaut (`.github/workflows/cd.yml.disabled`).
+Le workflow de déploiement (`.github/workflows/cd.yml`) se déclenche automatiquement après le succès du CI sur `main`, ou manuellement via `workflow_dispatch`.
 
-Pour l'activer :
+Il build les assets dans GitHub Actions puis les transfère sur le serveur via SSH/SCP.
 
-1. Renommer le fichier en `cd.yml`
-2. Configurer les secrets GitHub (Settings > Secrets and variables > Actions) :
+Secrets GitHub requis (Settings > Secrets and variables > Actions) :
 
 | Secret | Description |
 |--------|-------------|
 | `SSH_HOST` | Adresse IP ou domaine du serveur |
 | `SSH_USER` | Utilisateur SSH (ex: `deploy`) |
 | `SSH_KEY` | Clé privée SSH (contenu de `~/.ssh/id_ed25519`) |
+| `SSH_PORT` | Port SSH (si différent de 22) |
 | `SSH_PATH` | Chemin du projet (ex: `/var/www/secret-drop`) |
-
-Le workflow supporte plusieurs stratégies de déploiement :
-- **SSH classique** : git pull + composer/npm + migrations + caches
-- **rsync** : transfert des différences uniquement (plus rapide)
-- **Laravel Forge** : déclenchement via webhook
-- **Laravel Envoy** : orchestration avec Blade
 
 ## Licence
 

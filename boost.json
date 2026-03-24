@@ -1,15 +1,15 @@
 {
     "agents": [
         "claude_code",
-        "codex",
         "copilot",
-        "gemini"
+        "codex"
     ],
-    "editors": [
-        "claude_code",
-        "codex",
-        "gemini",
-        "vscode"
-    ],
-    "guidelines": []
+    "guidelines": true,
+    "herd_mcp": false,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "sail": false,
+    "skills": [
+        "tailwindcss-development"
+    ]
 }
