@@ -10,7 +10,7 @@
             x-data="secretViewer" data-token="{{ $token }}"
             class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
         >
-            <div class="p-8 lg:p-12">
+            <div class="p-5 sm:p-8 lg:p-12">
                 {{-- Loading state --}}
                 <div x-show="isLoading" class="text-center py-8" role="status">
                     <x-spinner class="h-10 w-10 mx-auto text-violet-500" />
@@ -62,8 +62,8 @@
                 {{-- Secret content --}}
                 <div x-show="!isLoading && !loadError" x-cloak>
                     {{-- Header --}}
-                    <div class="text-center mb-8">
-                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
+                    <div class="text-center mb-5 sm:mb-8">
+                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-4 sm:mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
                             <template x-if="type === 'text'">
                                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -230,7 +230,7 @@
                     </div>
 
                     {{-- Create new --}}
-                    <div class="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700/50 text-center transition-colors">
+                    <div class="mt-5 pt-4 sm:mt-8 sm:pt-6 border-t border-gray-200 dark:border-slate-700/50 text-center transition-colors">
                         <a
                             href="{{ route('home') }}"
                             class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition"
