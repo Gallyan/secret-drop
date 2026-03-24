@@ -2,12 +2,9 @@
 
 namespace App\Providers;
 
-use App\Listeners\SignEmailWithDkim;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
@@ -33,7 +30,5 @@ class AppServiceProvider extends ServiceProvider
 
         Vite::useCspNonce(csp_nonce());
         Blade::directive('nonce', fn () => '<?php echo csp_nonce(); ?>');
-
-        Event::listen(MessageSending::class, SignEmailWithDkim::class);
     }
 }
