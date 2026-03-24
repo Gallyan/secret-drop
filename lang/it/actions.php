@@ -60,7 +60,7 @@ return [
         'choose'    => 'Scegli :name',
         'create'    => 'Crea :name',
         'delete'    => 'Cancella :name',
-        'duplicate' => 'Duplica :name',
+        'duplicate' => 'Duplica: nome',
         'edit'      => 'Modifica :name',
         'export'    => 'Esporta :name',
         'hide'      => 'Nascondi :name',

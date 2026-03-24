@@ -60,7 +60,7 @@ return [
         'choose'    => 'Kies :name',
         'create'    => 'Creëer :name',
         'delete'    => 'Verwijder :name',
-        'duplicate' => 'Dupliceer :name',
+        'duplicate' => 'Dupliceer: naam',
         'edit'      => 'Bewerk :name',
         'export'    => 'Exporteer :name',
         'hide'      => 'Verberg :name',
@@ -104,7 +104,7 @@ return [
     'target_link'     => [
         'blank'  => 'Open in een nieuw venster',
         'parent' => 'Open in een bovenliggend frame',
-        'self'   => 'Open in een huidig ​​venster',
+        'self'   => 'Open in een huidig venster',
         'top'    => 'Open in het bovenste frame',
     ],
     'translate'       => 'Vertalen',
