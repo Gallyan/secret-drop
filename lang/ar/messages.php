@@ -441,6 +441,12 @@ return [
     'stat_page_superadmin_login' => 'المشرف العام - تسجيل الدخول',
     'stat_page_superadmin_dashboard' => 'المشرف العام - إحصائيات الاستخدام',
 
+    'stat_page_admin_verify' => 'المشرف - التحقق',
+    'stat_page_admin_access_sent' => 'المشرف - تم إرسال البريد',
+    'stat_page_superadmin_verify' => 'المشرف العام - التحقق',
+    'stat_page_superadmin_access_sent' => 'المشرف العام - تم إرسال البريد',
+    'stat_page_content' => 'صفحة محتوى',
+
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'طلبات كثيرة جداً. يرجى حل العملية الحسابية أدناه للمتابعة.',
     'captcha_label' => 'التحقق من الروبوت',

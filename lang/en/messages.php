@@ -440,6 +440,11 @@ return [
     'stat_page_admin_dashboard' => 'Admin - My secrets',
     'stat_page_superadmin_login' => 'Super Admin - Login',
     'stat_page_superadmin_dashboard' => 'Super Admin - Usage statistics',
+    'stat_page_admin_verify' => 'Admin - Verification',
+    'stat_page_admin_access_sent' => 'Admin - Email sent',
+    'stat_page_superadmin_verify' => 'Super Admin - Verification',
+    'stat_page_superadmin_access_sent' => 'Super Admin - Email sent',
+    'stat_page_content' => 'Content page',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Too many requests. Please solve the calculation below to continue.',

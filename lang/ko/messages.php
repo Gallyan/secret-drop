@@ -441,6 +441,12 @@ return [
     'stat_page_superadmin_login' => '슈퍼 관리자 - 로그인',
     'stat_page_superadmin_dashboard' => '슈퍼 관리자 - 사용 통계',
 
+    'stat_page_admin_verify' => '관리자 - 인증',
+    'stat_page_admin_access_sent' => '관리자 - 이메일 전송됨',
+    'stat_page_superadmin_verify' => '슈퍼 관리자 - 인증',
+    'stat_page_superadmin_access_sent' => '슈퍼 관리자 - 이메일 전송됨',
+    'stat_page_content' => '콘텐츠 페이지',
+
     // Rate limiting & Captcha
     'rate_limit_exceeded' => '요청이 너무 많습니다. 계속하려면 아래 계산을 풀어주세요.',
     'captcha_label' => '로봇 방지 확인',

@@ -441,6 +441,12 @@ return [
     'stat_page_superadmin_login' => 'Super Admin - Inloggen',
     'stat_page_superadmin_dashboard' => 'Super Admin - Gebruiksstatistieken',
 
+    'stat_page_admin_verify' => 'Admin - Verificatie',
+    'stat_page_admin_access_sent' => 'Admin - E-mail verzonden',
+    'stat_page_superadmin_verify' => 'Super Admin - Verificatie',
+    'stat_page_superadmin_access_sent' => 'Super Admin - E-mail verzonden',
+    'stat_page_content' => 'Inhoudspagina',
+
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Te veel verzoeken. Los de berekening hieronder op om door te gaan.',
     'captcha_label' => 'Anti-robot verificatie',

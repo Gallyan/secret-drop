@@ -448,6 +448,11 @@ return [
     'stat_page_admin_dashboard' => 'Admin - Mes secrets',
     'stat_page_superadmin_login' => 'Super Admin - Connexion',
     'stat_page_superadmin_dashboard' => 'Super Admin - Statistiques d\'utilisation',
+    'stat_page_admin_verify' => 'Admin - Vérification',
+    'stat_page_admin_access_sent' => 'Admin - Email envoyé',
+    'stat_page_superadmin_verify' => 'Super Admin - Vérification',
+    'stat_page_superadmin_access_sent' => 'Super Admin - Email envoyé',
+    'stat_page_content' => 'Page de contenu',
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Trop de requêtes. Veuillez résoudre le calcul ci-dessous pour continuer.',

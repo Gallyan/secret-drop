@@ -441,6 +441,12 @@ return [
     'stat_page_superadmin_login' => 'スーパー管理者 - ログイン',
     'stat_page_superadmin_dashboard' => 'スーパー管理者 - 利用統計',
 
+    'stat_page_admin_verify' => '管理者 - 認証',
+    'stat_page_admin_access_sent' => '管理者 - メール送信済み',
+    'stat_page_superadmin_verify' => 'スーパー管理者 - 認証',
+    'stat_page_superadmin_access_sent' => 'スーパー管理者 - メール送信済み',
+    'stat_page_content' => 'コンテンツページ',
+
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'リクエストが多すぎます。続行するには以下の計算を解いてください。',
     'captcha_label' => 'ロボット検証',

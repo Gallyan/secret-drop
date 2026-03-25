@@ -441,6 +441,12 @@ return [
     'stat_page_superadmin_login' => 'Super Admin - Logowanie',
     'stat_page_superadmin_dashboard' => 'Super Admin - Statystyki użytkowania',
 
+    'stat_page_admin_verify' => 'Admin - Weryfikacja',
+    'stat_page_admin_access_sent' => 'Admin - E-mail wysłany',
+    'stat_page_superadmin_verify' => 'Super Admin - Weryfikacja',
+    'stat_page_superadmin_access_sent' => 'Super Admin - E-mail wysłany',
+    'stat_page_content' => 'Strona treści',
+
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Zbyt wiele żądań. Rozwiąż poniższe działanie, aby kontynuować.',
     'captcha_label' => 'Weryfikacja anty-robot',
