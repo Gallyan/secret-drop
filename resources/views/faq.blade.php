@@ -34,7 +34,7 @@
             "name": "{{ __("messages.faq_q{$i}") }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __("messages.faq_a{$i}") }}"
+                "text": "{{ __("messages.faq_a{$i}", ['manage_link' => '« ' . __('messages.footer_manage') . ' »']) }}"
             }
         }@if($i < 12),@endif
         @endforeach
@@ -49,11 +49,17 @@
         <x-card class="p-8 lg:p-12">
             <x-page-header :title="__('messages.faq_title')" />
 
+            <p class="text-gray-600 dark:text-slate-400 mb-10 text-lg">
+                {{ __('messages.faq_intro') }}
+            </p>
+
             <dl class="space-y-4 mb-12">
                 @foreach(range(1, 12) as $i)
                 <div class="p-4 bg-gray-50 dark:bg-slate-700/30 border border-gray-200 dark:border-slate-600/30 rounded-xl">
                     <dt class="font-medium text-gray-900 dark:text-white mb-2">{{ __("messages.faq_q{$i}") }}</dt>
-                    <dd class="text-sm text-gray-600 dark:text-slate-400">{{ __("messages.faq_a{$i}") }}</dd>
+                    <dd class="text-sm text-gray-600 dark:text-slate-400">{!! __("messages.faq_a{$i}", [
+                        'manage_link' => '<a href="' . route('admin.index') . '" class="text-violet-600 dark:text-violet-400 hover:underline">« ' . e(__('messages.footer_manage')) . ' »</a>',
+                    ]) !!}</dd>
                 </div>
                 @endforeach
             </dl>
@@ -61,7 +67,7 @@
             {{-- CTA --}}
             <div class="text-center">
                 <x-btn-primary :href="route('home')">
-                    {{ __('messages.use_cases_cta') }}
+                    {{ __('messages.faq_cta') }}
                 </x-btn-primary>
             </div>
         </x-card>
