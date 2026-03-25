@@ -6,12 +6,17 @@
         'emerald' => '16, 185, 129',
         default => '139, 92, 246',
     };
+    $iconGradient = match($color) {
+        'amber' => 'from-amber-500/0 to-orange-600',
+        'emerald' => 'from-emerald-500/0 to-teal-600',
+        default => 'from-violet-500/0 to-indigo-600',
+    };
 @endphp
 
 <div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <x-card class="p-8 text-center">
-            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500/70 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 mb-4" aria-hidden="true">
+            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br {{ $iconGradient }} mb-4" aria-hidden="true">
                 <x-icon.mail class="w-7 h-7 text-white" />
             </div>
 

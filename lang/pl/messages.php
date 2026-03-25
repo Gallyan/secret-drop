@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => 'Zero wiedzy serwera',
     'email_feature_ephemeral' => 'Automatyczne wygasanie',
     'type_text' => 'Tekst',
+    'type_file' => 'Plik',
 
     // Footer
     'footer_manage' => 'Zarządzaj moimi sekretami',

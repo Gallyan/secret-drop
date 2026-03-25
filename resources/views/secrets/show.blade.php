@@ -63,7 +63,7 @@
                 <div x-show="!isLoading && !loadError" x-cloak>
                     {{-- Header --}}
                     <div class="text-center mb-5 sm:mb-8">
-                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-4 sm:mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
+                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500/0 to-indigo-600 mb-4 sm:mb-6" aria-hidden="true">
                             <template x-if="type === 'text'">
                                 <x-icon.eye class="w-7 h-7 text-white" />
                             </template>
@@ -199,7 +199,7 @@
                     {{-- Decrypted file content --}}
                     <div x-show="decrypted && type === 'file'" x-cloak class="space-y-6">
                         <div class="p-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-center transition-colors">
-                            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 mb-4" aria-hidden="true">
+                            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500/0 to-teal-600 mb-4" aria-hidden="true">
                                 <x-icon.check class="w-7 h-7 text-white" />
                             </div>
                             <p class="text-gray-900 dark:text-white font-medium mb-1">{{ __('messages.file_decrypted') }}</p>

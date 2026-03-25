@@ -14,7 +14,7 @@
                 {{-- Left: Branding & Value Proposition --}}
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center md:bg-linear-to-br md:from-violet-600/5 md:to-indigo-600/5 md:dark:from-violet-600/10 md:dark:to-indigo-600/10 md:border-b lg:border-b-0 lg:border-r md:border-gray-200 md:dark:border-slate-700/50 transition-colors">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="logo-icon flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0" aria-hidden="true">
+                        <div class="logo-icon flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500/0 to-indigo-600 shrink-0" aria-hidden="true">
                             <x-icon.lock class="w-7 h-7 text-white" />
                         </div>
                         <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">

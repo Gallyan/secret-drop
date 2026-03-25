@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => 'サーバー知識ゼロ',
     'email_feature_ephemeral' => '自動期限切れ',
     'type_text' => 'テキスト',
+    'type_file' => 'ファイル',
 
     // Footer
     'footer_manage' => 'シークレットを管理',

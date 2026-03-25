@@ -9,7 +9,7 @@
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0">
+                <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-violet-500/0 to-indigo-600 shrink-0">
                     <x-icon.settings class="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -134,7 +134,7 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="font-medium text-gray-900 dark:text-white">
-                                            {{ $secret->type === 'text' ? __('messages.type_text') : $secret->filename }}
+                                            {{ $secret->type === 'text' ? __('messages.type_text') : __('messages.type_file') }}
                                         </span>
                                         {{-- Status badge --}}
                                         @if($secret->isRevoked())

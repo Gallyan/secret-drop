@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => '서버 무지식',
     'email_feature_ephemeral' => '자동 만료',
     'type_text' => '텍스트',
+    'type_file' => '파일',
 
     // Footer
     'footer_manage' => '내 비밀 관리',

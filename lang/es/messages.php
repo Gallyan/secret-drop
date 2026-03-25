@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => 'Cero conocimiento del servidor',
     'email_feature_ephemeral' => 'Autoexpiración',
     'type_text' => 'Texto',
+    'type_file' => 'Archivo',
 
     // Footer
     'footer_manage' => 'Gestionar mis secretos',

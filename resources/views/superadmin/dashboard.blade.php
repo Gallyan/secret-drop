@@ -8,7 +8,11 @@
     <div class="max-w-7xl mx-auto">
         <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-3 sm:py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-                <div>
+                <div class="flex items-center gap-4">
+                    <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-amber-500/0 to-orange-600 shrink-0" style="--accent-rgb: 217, 119, 6">
+                        <x-icon.chart-bar class="w-6 h-6 text-white" />
+                    </div>
+                    <div>
                     <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white inline-flex items-center gap-2">
                         {{ __('messages.superadmin_dashboard_title') }}
                         <svg id="pollRing" class="shrink-0 -rotate-90" width="24" height="24" viewBox="0 0 28 28">
@@ -17,6 +21,7 @@
                         </svg>
                     </h1>
                     <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-4">
                     <form method="GET" class="flex items-center gap-2" x-data>

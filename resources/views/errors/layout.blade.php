@@ -3,11 +3,10 @@
 @section('content')
 @php
     $errColor = trim($__env->yieldContent('color', 'violet'));
-    $errTo = match($errColor) {
-        'red' => 'rose',
-        'amber' => 'orange',
-        'violet' => 'indigo',
-        default => 'slate',
+    $iconGradient = match($errColor) {
+        'red' => 'from-red-500/0 to-rose-600',
+        'amber' => 'from-amber-500/0 to-orange-600',
+        default => 'from-violet-500/0 to-indigo-600',
     };
     $accentRgb = match($errColor) {
         'amber' => '217, 119, 6',
@@ -20,7 +19,7 @@
     <div class="w-full max-w-md">
         <div class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors">
             <div class="p-8 lg:p-12 text-center">
-                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $errColor }}-500/70 to-{{ $errTo }}-600 mb-6 transition-colors" aria-hidden="true">
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br {{ $iconGradient }} mb-6 transition-colors" aria-hidden="true">
                     @yield('icon')
                 </div>
 

@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => 'صفر معرفة للخادم',
     'email_feature_ephemeral' => 'انتهاء تلقائي',
     'type_text' => 'نص',
+    'type_file' => 'ملف',
 
     // Footer
     'footer_manage' => 'إدارة أسراري',

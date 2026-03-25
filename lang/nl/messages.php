@@ -137,6 +137,7 @@ return [
     'email_feature_zero_knowledge' => 'Geen serverkennis',
     'email_feature_ephemeral' => 'Automatisch verlopend',
     'type_text' => 'Tekst',
+    'type_file' => 'Bestand',
 
     // Footer
     'footer_manage' => 'Mijn geheimen beheren',
