@@ -160,15 +160,11 @@
                 <x-btn-primary :href="route('home')">
                     {{ __('messages.how_cta') }}
                 </x-btn-primary>
-                <p class="mt-4 text-sm text-gray-600 dark:text-slate-400 flex items-center justify-center gap-4">
-                    <a href="{{ localized_route('use-cases') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                        {{ __('messages.how_see_use_cases') }}
+                <div class="mt-6">
+                    <a href="{{ localized_route('use-cases') }}" class="text-sm text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors">
+                        {{ __('messages.how_see_use_cases') }} &rarr;
                     </a>
-                    <span aria-hidden="true">·</span>
-                    <a href="{{ localized_route('faq') }}" class="hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                        {{ __('messages.faq_title') }}
-                    </a>
-                </p>
+                </div>
             </div>
         </x-card>
     </div>

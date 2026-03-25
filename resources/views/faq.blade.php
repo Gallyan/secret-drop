@@ -60,8 +60,8 @@
 
             {{-- CTA --}}
             <div class="text-center">
-                <x-btn-primary :href="localized_route('how-it-works')">
-                    {{ __('messages.faq_see_how') }}
+                <x-btn-primary :href="route('home')">
+                    {{ __('messages.use_cases_cta') }}
                 </x-btn-primary>
             </div>
         </x-card>
