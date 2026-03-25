@@ -18,7 +18,8 @@
         {
             "@@type": "ListItem",
             "position": 2,
-            "name": "{{ __('messages.faq_title') }}"
+            "name": "{{ __('messages.faq_title') }}",
+            "item": "{{ localized_route('faq') }}"
         }
     ]
 }

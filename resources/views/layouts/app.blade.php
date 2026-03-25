@@ -42,7 +42,7 @@
     <meta property="og:description" content="@yield('description', __('messages.app_description'))">
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:image" content="{{ url('/og-image.png') }}">
+    <meta property="og:image" content="{{ asset('og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="{{ __('messages.app_description') }}">
@@ -53,7 +53,7 @@
     <meta name="twitter:creator" content="@perceptron_sys">
     <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
     <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
-    <meta name="twitter:image" content="{{ url('/og-image.png') }}">
+    <meta name="twitter:image" content="{{ asset('og-image.png') }}">
     @endunless
 
     {{-- Schema.org JSON-LD (only on homepage) --}}
@@ -69,7 +69,8 @@
         "applicationSubCategory": "File Sharing, Encryption",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript, Web Crypto API",
-        "inLanguage": ["en", "fr", "de", "es", "it", "pt", "nl", "pl", "ja", "ko", "ar"],
+        "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+        "logo": "{{ asset('icon-512.png') }}",
         "isAccessibleForFree": true,
         "offers": {
             "@@type": "Offer",
@@ -96,6 +97,7 @@
         "@@type": "Organization",
         "name": "{{ config('legal.editor_name') }}",
         "url": "{{ url('/') }}",
+        "logo": "{{ asset('icon-512.png') }}",
         "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
         "email": "{{ config('legal.contact_email') }}"@endif,
         "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],

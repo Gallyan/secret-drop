@@ -18,7 +18,8 @@
         {
             "@@type": "ListItem",
             "position": 2,
-            "name": "{{ __('messages.use_cases_title') }}"
+            "name": "{{ __('messages.use_cases_title') }}",
+            "item": "{{ localized_route('use-cases') }}"
         }
     ]
 }
