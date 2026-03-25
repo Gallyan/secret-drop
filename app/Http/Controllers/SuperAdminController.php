@@ -36,7 +36,7 @@ class SuperAdminController extends Controller
         return view('superadmin.index');
     }
 
-    public function requestAccess(RequestSuperAdminAccessRequest $request): View
+    public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
         $email = strtolower(trim($request->validated('email')));
         $superAdminEmail = strtolower(trim(config('app.super_admin_email', '')));
@@ -58,7 +58,7 @@ class SuperAdminController extends Controller
             $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
         }
 
-        return view('superadmin.access-sent');
+        return redirect()->route('superadmin.accessSent');
     }
 
     public function verify(Request $request, string $locale, string $token): View|RedirectResponse

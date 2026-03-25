@@ -9,6 +9,6 @@
     :description="__('messages.superadmin_description') ?: null"
     :formAction="route('superadmin.requestAccess')"
     color="amber"
-    iconName="icon.chart-bar"
+    iconName="icon.shield-check"
 />
 @endsection

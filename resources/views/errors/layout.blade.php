@@ -1,11 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex-1 flex items-center justify-center p-4 transition-colors">
+@php
+    $errColor = trim($__env->yieldContent('color', 'violet'));
+    $errTo = match($errColor) {
+        'red' => 'rose',
+        'amber' => 'orange',
+        'violet' => 'indigo',
+        default => 'slate',
+    };
+    $accentRgb = match($errColor) {
+        'amber' => '217, 119, 6',
+        'red' => '239, 68, 68',
+        'emerald' => '16, 185, 129',
+        default => '139, 92, 246',
+    };
+@endphp
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <div class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors">
             <div class="p-8 lg:p-12 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-{{ $color ?? 'gray' }}-100 dark:bg-{{ $color ?? 'gray' }}-500/10 mb-6 transition-colors" aria-hidden="true">
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $errColor }}-500/70 to-{{ $errTo }}-600 mb-6 transition-colors" aria-hidden="true">
                     @yield('icon')
                 </div>
 

@@ -29,8 +29,7 @@ class AdminControllerTest extends TestCase
             'email' => 'nonexistent@example.com',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.access-sent');
+        $response->assertRedirect(route('admin.accessSent'));
         Mail::assertNothingSent();
     }
 
@@ -45,8 +44,7 @@ class AdminControllerTest extends TestCase
             'email' => 'test@example.com',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.access-sent');
+        $response->assertRedirect(route('admin.accessSent'));
 
         Mail::assertSent(MagicLinkMail::class, function ($mail) {
             return $mail->hasTo('test@example.com');

@@ -143,8 +143,8 @@ class ThrottleWithCaptchaTest extends TestCase
             'captcha_answer' => $expectedAnswer,
         ]);
 
-        // Should proceed (will show access-sent view)
-        $response->assertViewIs('admin.access-sent');
+        // Should proceed (will redirect to access-sent page)
+        $response->assertRedirect(route('admin.accessSent'));
     }
 
     /** Vérifie le rate limiting sur les magic links superadmin. */

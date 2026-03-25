@@ -8,6 +8,6 @@
     :formAction="route('superadmin.verify', ['token' => $token])"
     :token="$token"
     color="amber"
-    iconName="icon.chart-bar"
+    iconName="icon.shield-check"
 />
 @endsection

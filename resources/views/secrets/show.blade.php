@@ -199,8 +199,8 @@
                     {{-- Decrypted file content --}}
                     <div x-show="decrypted && type === 'file'" x-cloak class="space-y-6">
                         <div class="p-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-center transition-colors">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4" aria-hidden="true">
-                                <x-icon.check class="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
+                            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/25 mb-4" aria-hidden="true">
+                                <x-icon.check class="w-7 h-7 text-white" />
                             </div>
                             <p class="text-gray-900 dark:text-white font-medium mb-1">{{ __('messages.file_decrypted') }}</p>
                             <p class="text-sm text-gray-500 dark:text-slate-400" x-text="filename"></p>

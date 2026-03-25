@@ -1,10 +1,18 @@
 @props(['description', 'color' => 'violet'])
 
-<div class="flex-1 flex items-center justify-center p-4 transition-colors">
+@php
+    $accentRgb = match($color) {
+        'amber' => '217, 119, 6',
+        'emerald' => '16, 185, 129',
+        default => '139, 92, 246',
+    };
+@endphp
+
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <x-card class="p-8 text-center">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4" aria-hidden="true">
-                <x-icon.mail class="w-7 h-7 text-emerald-600 dark:text-emerald-300" />
+            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500/70 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 mb-4" aria-hidden="true">
+                <x-icon.mail class="w-7 h-7 text-white" />
             </div>
 
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_link_sent_title') }}</h1>
@@ -15,7 +23,7 @@
             </div>
 
             <div class="mt-6">
-                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-{{ $color }}-600 dark:hover:text-{{ $color }}-400 transition">
+                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition">
                     {{ __('messages.admin_back_home') }}
                 </a>
             </div>

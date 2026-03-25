@@ -44,8 +44,7 @@ class SuperAdminControllerTest extends TestCase
             'email' => 'random@example.com',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.access-sent');
+        $response->assertRedirect(route('superadmin.accessSent'));
     }
 
     /** Vérifie qu'un email avec magic link est envoyé quand l'email correspond au super admin. */
@@ -57,7 +56,7 @@ class SuperAdminControllerTest extends TestCase
             'email' => 'superadmin@example.com',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertRedirect(route('superadmin.accessSent'));
         Mail::assertSent(\App\Mail\SuperAdminMagicLinkMail::class);
 
         $this->assertDatabaseHas('magic_links', [
@@ -74,7 +73,7 @@ class SuperAdminControllerTest extends TestCase
             'email' => 'random@example.com',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertRedirect(route('superadmin.accessSent'));
         Mail::assertNothingSent();
     }
 

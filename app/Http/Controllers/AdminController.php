@@ -39,14 +39,14 @@ class AdminController extends Controller
         return view('admin.index');
     }
 
-    public function requestAccess(RequestAdminAccessRequest $request): View
+    public function requestAccess(RequestAdminAccessRequest $request): RedirectResponse
     {
         $emailHash = MagicLink::hashEmail($request->validated('email'));
 
         $hasSecrets = Secret::where('creator_email_hash', $emailHash)->exists();
 
         if (! $hasSecrets) {
-            return view('admin.access-sent');
+            return redirect()->route('admin.accessSent');
         }
 
         $tokenData = $this->tokenService->generateMagicLinkToken();
@@ -64,7 +64,7 @@ class AdminController extends Controller
 
         $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
 
-        return view('admin.access-sent');
+        return redirect()->route('admin.accessSent');
     }
 
     public function verify(Request $request, string $locale, string $token): View|RedirectResponse

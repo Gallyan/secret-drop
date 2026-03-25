@@ -13,7 +13,7 @@
     <div class="w-full max-w-md">
         <x-card class="p-8">
             <div class="text-center mb-8">
-                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 shadow-lg shadow-{{ $color }}-500/25 mb-4" aria-hidden="true">
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500/70 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 mb-4" aria-hidden="true">
                     <x-dynamic-component :component="$iconName" class="w-7 h-7 text-white" />
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
@@ -84,7 +84,7 @@
             </form>
 
             <div class="mt-6 text-center">
-                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-{{ $color }}-600 dark:hover:text-{{ $color }}-400 transition">
+                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition">
                     {{ __('messages.admin_back_home') }}
                 </a>
             </div>

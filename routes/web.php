@@ -40,6 +40,7 @@ Route::prefix('{locale}')
         Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
             ->middleware('throttle.captcha:3,10')
             ->name('admin.requestAccess');
+        Route::get('/admin/access-sent', fn () => view('admin.access-sent'))->name('admin.accessSent');
         Route::match(['GET', 'POST'], '/admin/verify/{token}', [AdminController::class, 'verify'])
             ->middleware('throttle:5,1')
             ->name('admin.verify');
@@ -53,6 +54,7 @@ Route::prefix('{locale}')
         Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
             ->middleware('throttle.captcha:3,10')
             ->name('superadmin.requestAccess');
+        Route::get('/superadmin/access-sent', fn () => view('superadmin.access-sent'))->name('superadmin.accessSent');
         Route::match(['GET', 'POST'], '/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
             ->middleware('throttle:5,1')
             ->name('superadmin.verify');

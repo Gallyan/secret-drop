@@ -34,13 +34,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 4rem;
-            height: 4rem;
+            width: 3.5rem;
+            height: 3.5rem;
             border-radius: 1rem;
-            background: rgba(239, 68, 68, 0.1);
+            background: linear-gradient(135deg, #ef4444, #e11d48);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25);
             margin-bottom: 1.5rem;
         }
-        .icon svg { width: 2rem; height: 2rem; color: #ef4444; }
+        .icon svg { width: 1.75rem; height: 1.75rem; color: #fff; }
         .code {
             font-size: 4.5rem;
             font-weight: 700;
