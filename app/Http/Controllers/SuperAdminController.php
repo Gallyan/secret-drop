@@ -84,7 +84,7 @@ class SuperAdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(15)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addHour()->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }
