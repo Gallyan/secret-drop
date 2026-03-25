@@ -159,6 +159,15 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie qu'un token invalide affiche la page d'erreur (POST). */
+    public function testVerifyPostWithInvalidTokenShowsError(): void
+    {
+        $response = $this->post('/fr/admin/verify/invalid-token');
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.invalid-link');
+    }
+
     /** Vérifie qu'un magic link expiré affiche la page d'erreur. */
     public function testVerifyExpiredMagicLinkShowsInvalidPage(): void
     {
