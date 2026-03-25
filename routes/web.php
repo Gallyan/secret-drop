@@ -17,6 +17,7 @@ Route::get('/', [RedirectController::class, 'root']);
 Route::get('/how-it-works', [RedirectController::class, 'howItWorks']);
 Route::get('/use-cases', [RedirectController::class, 'useCases']);
 Route::get('/legal', [RedirectController::class, 'legal']);
+Route::get('/faq', [RedirectController::class, 'faq']);
 
 // Non-localized admin/superadmin redirects
 Route::get('/admin', [RedirectController::class, 'admin']);
