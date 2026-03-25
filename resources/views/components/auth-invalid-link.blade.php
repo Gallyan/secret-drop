@@ -1,6 +1,14 @@
 @props(['retryRoute', 'retryLabel', 'color' => 'violet', 'iconColor' => 'amber', 'iconName' => 'icon.clock'])
 
-<div class="flex-1 flex items-center justify-center p-4 transition-colors">
+@php
+    $accentRgb = match($color) {
+        'amber' => '217, 119, 6',
+        'emerald' => '16, 185, 129',
+        default => '139, 92, 246',
+    };
+@endphp
+
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <x-card class="p-8 text-center">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-{{ $iconColor }}-100 dark:bg-{{ $iconColor }}-500/10 mb-4" aria-hidden="true">

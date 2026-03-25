@@ -79,6 +79,12 @@ class AdminController extends Controller
             return view('admin.invalid-link');
         }
 
+        if ($request->isMethod('GET')) {
+            return view('admin.verify-confirm', [
+                'token' => $token,
+            ]);
+        }
+
         $magicLink->markAsUsed();
         $this->stats->increment(StatsService::MAGIC_LINKS_USED);
 

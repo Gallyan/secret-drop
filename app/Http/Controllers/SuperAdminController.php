@@ -73,6 +73,12 @@ class SuperAdminController extends Controller
             return view('superadmin.invalid-link');
         }
 
+        if ($request->isMethod('GET')) {
+            return view('superadmin.verify-confirm', [
+                'token' => $token,
+            ]);
+        }
+
         $magicLink->markAsUsed();
         $this->stats->increment(StatsService::MAGIC_LINKS_USED);
 
