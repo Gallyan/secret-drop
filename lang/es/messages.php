@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Comparte contraseñas, claves API y archivos confidenciales con cifrado de extremo a extremo. El servidor nunca ve tus datos. Enlaces autodestructivos, conocimiento cero.',
-    'home_meta_description' => 'Comparte una contraseña, clave API o archivo confidencial mediante un enlace seguro y autodestructivo. Cifrado de extremo a extremo — el servidor nunca ve tus datos.',
+    'app_description' => 'Comparta contraseñas y archivos confidenciales sin exponerlos jamás. Cifrado de extremo a extremo. Autodestructivo. El servidor no ve nada.',
+    'home_hook' => 'Deje de enviar contraseñas en texto plano.',
+    'home_meta_description' => 'Comparta una contraseña, clave API o archivo confidencial mediante un enlace seguro y autodestructivo. Cifrado de extremo a extremo — el servidor nunca ve sus datos.',
+    'home_view_source' => 'Ver código fuente',
 
     // Features
-    'feature_encryption' => 'Cifrado de grado militar en tu navegador',
-    'feature_zero_knowledge' => 'El servidor nunca ve tus datos en texto plano',
-    'feature_auto_destroy' => 'Auto-destrucción después de la lectura',
-    'feature_expiration' => 'Expiración automática configurable',
+    'feature_encryption' => 'Cifrado en su navegador — antes de que salga nada',
+    'feature_zero_knowledge' => 'Seguro por diseño: ilegible, incluso para nosotros',
+    'feature_auto_destroy' => 'Usted decide cuándo se autodestruye',
+    'feature_expiration' => 'Sin cuenta, sin contraseña: nada que hackear',
 
     // Form labels
     'your_secret' => 'Tu secreto',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'La clave de descifrado se coloca en el fragmento de la URL (después de #). Esta parte nunca es enviada al servidor por el navegador.',
     'how_step5_title' => 'El destinatario descifra',
     'how_step5_desc' => 'Cuando el destinatario abre el enlace, su navegador obtiene los datos cifrados y usa la clave de la URL para descifrar localmente.',
+    'how_step6_title' => 'El secreto se destruye',
+    'how_step6_desc' => 'Una vez alcanzado el límite de lecturas o pasada la expiración, el contenido cifrado se elimina permanentemente del servidor. Solo queda un rastro de su existencia — no hay nada que descifrar.',
     'how_security_title' => '¿Qué es el cifrado zero-knowledge?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'El servidor nunca puede leer tus secretos. Incluso bajo presión legal, solo podemos proporcionar datos cifrados inútiles.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => '¿Necesito una cuenta para usar Secret Drop?',
     'faq_a3' => 'No. Sin registro, sin seguimiento. Sus secretos son anónimos y no pueden vincularse a usted.',
     'faq_q4' => '¿Qué sucede después de leer un secreto?',
-    'faq_a4' => 'Los secretos pueden configurarse para un solo uso, vistas limitadas o expiración automática. Los datos se eliminan permanentemente del servidor.',
+    'faq_a4' => 'Una vez alcanzado el límite de lecturas, el contenido cifrado se destruye permanentemente en el servidor. Solo se conservan los metadatos (fecha de creación, número de lecturas) como prueba de que el secreto existió y fue consumido. Así, aunque alguien intercepte el enlace y la clave, el secreto ya no existe — no queda nada que descifrar.',
     'faq_q5' => '¿Es gratuito Secret Drop?',
     'faq_a5' => 'Sí, Secret Drop es completamente gratuito. Sin cuenta, sin suscripción, sin costes ocultos. El servicio está disponible para todos sin ninguna limitación.',
     'faq_q6' => '¿Cuál es el tamaño máximo de archivo?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Sí, Secret Drop es de código abierto bajo la licencia GNU Affero General Public License v3 (AGPL-3.0). Puede inspeccionar la lógica de cifrado, verificar que no hay puertas traseras y confirmar que la arquitectura de conocimiento cero funciona como se describe.',
     'faq_q11' => '¿Cuál es la diferencia entre Secret Drop y un correo electrónico cifrado?',
     'faq_a11' => 'El correo cifrado (PGP, S/MIME) requiere que ambas partes configuren claves de antemano, lo cual es complejo. Secret Drop no exige nada al destinatario — solo un enlace. Además, el secreto se autodestruye tras la lectura y no deja rastro, a diferencia de un correo que permanece en ambas bandejas indefinidamente.',
+    'faq_q12' => '¿Cómo gestiono mis secretos después de crearlos?',
+    'faq_a12' => 'Si proporcionó su email al crear un secreto, puede gestionarlo después (revocar, extender) a través del enlace "Gestionar". Ingrese su email y recibirá un enlace de uso único válido por 10 minutos. Este magic link es una decisión de seguridad deliberada: sin contraseña significa nada que robar, filtrar o forzar. Su email se convierte en el único factor de autenticación — simple y seguro.',
+    'faq_meta_description' => 'Encuentre respuestas a preguntas frecuentes sobre Secret Drop: cifrado, conocimiento cero, privacidad, compartir archivos y más.',
+    'faq_see_how' => 'Descubra cómo funciona Secret Drop',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'La seguridad no es una función añadida — es la base de cada decisión arquitectónica.',
+    'sbd_zk_title' => 'Conocimiento cero: imposibilidad matemática, no una promesa',
+    'sbd_zk_desc' => 'El servidor nunca recibe la clave de cifrado. Incluso si la base de datos es comprometida, un atacante solo obtiene texto cifrado inútil. No es una política de privacidad — es una imposibilidad matemática.',
+    'sbd_ml_title' => 'Magic links: eliminar el vector de ataque de contraseñas',
+    'sbd_ml_desc' => 'Sin contraseña significa nada que robar, filtrar o forzar. Su email es el único factor de autenticación. Una base de datos comprometida no revela credenciales, porque no las hay.',
+    'sbd_fragment_title' => 'Fragmento URL: la clave nunca toca el servidor',
+    'sbd_fragment_desc' => 'La clave de descifrado vive en el fragmento de la URL (#). Por diseño del protocolo HTTP, esta parte nunca se envía al servidor — ni en solicitudes, ni en logs, en ningún lugar.',
+    'sbd_destroy_title' => 'Autodestrucción: minimizar la exposición',
+    'sbd_destroy_desc' => 'Un secreto leído deja de existir. La expiración configurable y la opción de uso único reducen la ventana de exposición al mínimo estricto.',
 
     // Use cases page
     'use_cases_title' => 'Casos de uso',

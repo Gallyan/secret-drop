@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'formAction', 'icon', 'color' => 'violet'])
+@props(['title', 'description' => null, 'formAction', 'iconName' => 'icon.lock', 'color' => 'violet'])
 
 @php
     $ringColor = "focus:ring-{$color}-500/50 focus:border-{$color}-500/50";
@@ -14,9 +14,7 @@
         <x-card class="p-8">
             <div class="text-center mb-8">
                 <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 shadow-lg shadow-{{ $color }}-500/25 mb-4" aria-hidden="true">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {!! $icon !!}
-                    </svg>
+                    <x-dynamic-component :component="$iconName" class="w-7 h-7 text-white" />
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
                 @if($description)

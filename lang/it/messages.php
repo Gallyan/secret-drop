@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Condividi password, chiavi API e file riservati con crittografia end-to-end. Il server non vede mai i tuoi dati. Link autodistruttivi, zero knowledge.',
+    'app_description' => 'Condividi password e file riservati senza mai esporli. Crittografia end-to-end. Autodistruttivo. Il server non vede nulla.',
+    'home_hook' => 'Basta inviare password in chiaro.',
     'home_meta_description' => 'Condividi una password, chiave API o file riservato tramite un link sicuro e autodistruttivo. Crittografia end-to-end — il server non vede mai i tuoi dati.',
+    'home_view_source' => 'Vedi codice sorgente',
 
     // Features
-    'feature_encryption' => 'Crittografia di livello militare nel tuo browser',
-    'feature_zero_knowledge' => 'Il server non vede mai i tuoi dati in chiaro',
-    'feature_auto_destroy' => 'Auto-distruzione dopo la lettura',
-    'feature_expiration' => 'Scadenza automatica configurabile',
+    'feature_encryption' => 'Crittografato nel browser — prima che qualsiasi dato esca',
+    'feature_zero_knowledge' => 'Sicuro per design: illeggibile, anche per noi',
+    'feature_auto_destroy' => 'Decidi tu quando si autodistrugge',
+    'feature_expiration' => 'Nessun account, nessuna password: niente da violare',
 
     // Form labels
     'your_secret' => 'Il tuo segreto',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'La chiave di decrittazione è posizionata nel frammento dell\'URL (dopo #). Questa parte non viene mai inviata al server dal browser.',
     'how_step5_title' => 'Il destinatario decritta',
     'how_step5_desc' => 'Quando il destinatario apre il link, il suo browser recupera i dati crittografati e usa la chiave dall\'URL per decrittare localmente.',
+    'how_step6_title' => 'Il segreto viene distrutto',
+    'how_step6_desc' => 'Una volta raggiunto il limite di letture o superata la scadenza, il contenuto crittografato viene eliminato permanentemente dal server. Resta solo una traccia della sua esistenza — non c\'è più nulla da decifrare.',
     'how_security_title' => 'Cos\'è la crittografia zero-knowledge?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'Il server non può mai leggere i tuoi segreti. Anche sotto pressione legale, possiamo fornire solo dati crittografati inutilizzabili.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Ho bisogno di un account per usare Secret Drop?',
     'faq_a3' => 'No. Nessuna registrazione, nessun tracciamento. I tuoi segreti sono anonimi e non possono essere collegati a te.',
     'faq_q4' => 'Cosa succede dopo la lettura di un segreto?',
-    'faq_a4' => 'I segreti possono essere configurati per uso singolo, visualizzazioni limitate o scadenza automatica. I dati vengono eliminati permanentemente dal server.',
+    'faq_a4' => 'Una volta raggiunto il limite di letture, il contenuto crittografato viene distrutto permanentemente sul server. Solo i metadati vengono conservati (data di creazione, conteggio letture) come prova che il segreto è esistito ed è stato consumato. Anche se qualcuno intercetta il link e la chiave, il segreto non esiste più — non c\'è più nulla da decifrare.',
     'faq_q5' => 'Secret Drop è gratuito?',
     'faq_a5' => 'Sì, Secret Drop è completamente gratuito. Nessun account, nessun abbonamento, nessun costo nascosto. Il servizio è accessibile a tutti senza alcuna limitazione.',
     'faq_q6' => 'Qual è la dimensione massima dei file?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Sì, Secret Drop è open source sotto licenza GNU Affero General Public License v3 (AGPL-3.0). Puoi ispezionare la logica di crittografia, verificare l\'assenza di backdoor e confermare che l\'architettura zero-knowledge funziona come descritto.',
     'faq_q11' => 'Qual è la differenza tra Secret Drop e un\'email crittografata?',
     'faq_a11' => 'L\'email crittografata (PGP, S/MIME) richiede che entrambe le parti configurino chiavi in anticipo, il che è complesso. Secret Drop non richiede nulla al destinatario — solo un link. Inoltre, il segreto si autodistrugge dopo la lettura e non lascia traccia, a differenza di un\'email che rimane in entrambe le caselle a tempo indeterminato.',
+    'faq_q12' => 'Come gestisco i miei segreti dopo averli creati?',
+    'faq_a12' => 'Se hai fornito la tua email durante la creazione, puoi gestire i tuoi segreti (revocare, estendere) tramite il link "Gestisci". Inserisci la tua email e riceverai un link monouso valido 10 minuti. Questo magic link è una scelta di sicurezza deliberata: nessuna password significa nulla da rubare, divulgare o forzare. La tua email diventa l\'unico fattore di autenticazione — semplice e sicuro.',
+    'faq_meta_description' => 'Trova risposte alle domande frequenti su Secret Drop: crittografia, zero-knowledge, privacy, condivisione file e altro.',
+    'faq_see_how' => 'Scopri come funziona Secret Drop',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'La sicurezza non è una funzionalità aggiunta — è il fondamento di ogni decisione architetturale.',
+    'sbd_zk_title' => 'Zero-knowledge: impossibilità matematica, non una promessa',
+    'sbd_zk_desc' => 'Il server non riceve mai la chiave di crittografia. Anche se il database viene compromesso, un attaccante ottiene solo testo cifrato inutile. Non è una politica sulla privacy — è un\'impossibilità matematica.',
+    'sbd_ml_title' => 'Magic link: eliminare il vettore di attacco delle password',
+    'sbd_ml_desc' => 'Nessuna password significa nulla da rubare, divulgare o forzare. La tua email è l\'unico fattore di autenticazione. Un database compromesso non rivela credenziali, perché non ce ne sono.',
+    'sbd_fragment_title' => 'Frammento URL: la chiave non tocca mai il server',
+    'sbd_fragment_desc' => 'La chiave di decrittazione vive nel frammento dell\'URL (#). Per design del protocollo HTTP, questa parte non viene mai inviata al server — né nelle richieste, né nei log, da nessuna parte.',
+    'sbd_destroy_title' => 'Autodistruzione: minimizzare l\'esposizione',
+    'sbd_destroy_desc' => 'Un segreto letto non esiste più. La scadenza configurabile e l\'opzione monouso riducono la finestra di esposizione al minimo indispensabile.',
 
     // Use cases page
     'use_cases_title' => 'Casi d\'uso',

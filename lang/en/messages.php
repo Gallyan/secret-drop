@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Securely share passwords, API keys and confidential files with end-to-end encryption. The server never sees your data. Self-destructing links, zero knowledge.',
+    'app_description' => 'Share passwords and confidential files without ever exposing them. End-to-end encrypted. Self-destructing. The server sees nothing.',
+    'home_hook' => 'Stop sending passwords in plain text.',
     'home_meta_description' => 'Share a password, API key or confidential file via a secure, self-destructing link. End-to-end encrypted — the server never sees your data.',
+    'home_view_source' => 'View source code',
 
     // Features
-    'feature_encryption' => 'Military-grade encryption in your browser',
-    'feature_zero_knowledge' => 'The server never sees your plaintext data',
-    'feature_auto_destroy' => 'Self-destruct after reading',
-    'feature_expiration' => 'Configurable automatic expiration',
+    'feature_encryption' => 'Encrypted in your browser — before anything leaves',
+    'feature_zero_knowledge' => 'Secure by design: unreadable, even to us',
+    'feature_auto_destroy' => 'You decide when it self-destructs',
+    'feature_expiration' => 'No account, no password: nothing to hack',
 
     // Form labels
     'your_secret' => 'Your secret',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'The decryption key is placed in the URL fragment (after #). This part is never sent to the server by the browser.',
     'how_step5_title' => 'Recipient decrypts',
     'how_step5_desc' => 'When the recipient opens the link, their browser fetches the encrypted data and uses the key from the URL to decrypt locally.',
+    'how_step6_title' => 'The secret is destroyed',
+    'how_step6_desc' => 'Once the read limit is reached or the expiration passes, the encrypted content is permanently deleted from the server. Only a trace of its existence remains — there is nothing left to decrypt.',
     'how_security_title' => 'What is zero-knowledge encryption?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'The server can never read your secrets. Even under legal pressure, we can only provide useless encrypted data.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Do I need an account to use Secret Drop?',
     'faq_a3' => 'No. No registration, no tracking. Your secrets are anonymous and cannot be linked to you.',
     'faq_q4' => 'What happens after a secret is read?',
-    'faq_a4' => 'Secrets can be configured for single-use, limited views, or automatic expiration. Once expired or consumed, the data is permanently deleted from the server.',
+    'faq_a4' => 'Once the read limit is reached, the encrypted content is permanently destroyed on the server. Only metadata is kept (creation date, read count) as proof that the secret existed and was consumed. This means that even if someone intercepts the link and key, the secret is already gone — there is nothing left to decrypt.',
     'faq_q5' => 'Is Secret Drop free?',
     'faq_a5' => 'Yes, Secret Drop is completely free. No account, no subscription, no hidden fees. The service is available to everyone without any limitations.',
     'faq_q6' => 'What is the maximum file size?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Yes, Secret Drop is open source under the GNU Affero General Public License v3 (AGPL-3.0). You can inspect the encryption logic, verify there are no backdoors, and confirm that the zero-knowledge architecture works as described.',
     'faq_q11' => 'What is the difference between Secret Drop and encrypted email?',
     'faq_a11' => 'Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand, which is complex. Secret Drop requires nothing from the recipient — just a link. Additionally, the secret self-destructs after reading and leaves no trace, unlike an email which remains in both inboxes indefinitely.',
+    'faq_q12' => 'How do I manage my secrets after creating them?',
+    'faq_a12' => 'If you provided your email when creating a secret, you can manage it later (revoke, extend expiration) via the "Manage" link. Enter your email and you will receive a single-use link valid for 10 minutes. This magic link approach is a deliberate security choice: no password means nothing to steal, leak or brute-force. Your email becomes the only authentication factor — simple and secure.',
+    'faq_meta_description' => 'Find answers to common questions about Secret Drop: encryption, zero-knowledge, privacy, file sharing, and more.',
+    'faq_see_how' => 'Learn how Secret Drop works',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'Security is not a feature we added — it is the foundation of every architectural decision.',
+    'sbd_zk_title' => 'Zero-knowledge: mathematical impossibility, not a promise',
+    'sbd_zk_desc' => 'The server never receives the encryption key. Even if the database is compromised, an attacker only gets useless ciphertext. This is not a privacy policy — it is a mathematical impossibility.',
+    'sbd_ml_title' => 'Magic links: eliminating the password attack vector',
+    'sbd_ml_desc' => 'No password means nothing to steal, leak or brute-force. Your email is the only authentication factor. A compromised database reveals no credentials, because there are none.',
+    'sbd_fragment_title' => 'URL fragment: the key never touches the server',
+    'sbd_fragment_desc' => 'The decryption key lives in the URL fragment (#). By HTTP protocol design, this part is never sent to the server — not in requests, not in logs, not anywhere.',
+    'sbd_destroy_title' => 'Auto-destruction: minimizing exposure',
+    'sbd_destroy_desc' => 'A secret that has been read no longer exists. Configurable expiration and single-use options reduce the window of exposure to the strict minimum.',
 
     // Use cases page
     'use_cases_title' => 'Use cases',

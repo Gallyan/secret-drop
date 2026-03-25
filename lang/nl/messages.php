@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Deel wachtwoorden, API-sleutels en vertrouwelijke bestanden veilig met end-to-end encryptie. De server ziet uw gegevens nooit. Zelfvernietigende links, zero knowledge.',
+    'app_description' => 'Deel wachtwoorden en vertrouwelijke bestanden zonder ze ooit bloot te stellen. End-to-end versleuteld. Zelfvernietigend. De server ziet niets.',
+    'home_hook' => 'Stop met wachtwoorden in platte tekst te versturen.',
     'home_meta_description' => 'Deel een wachtwoord, API-sleutel of vertrouwelijk bestand via een veilige, zelfvernietigende link. End-to-end versleuteld — de server ziet uw gegevens nooit.',
+    'home_view_source' => 'Broncode bekijken',
 
     // Features
-    'feature_encryption' => 'Militaire encryptie in uw browser',
-    'feature_zero_knowledge' => 'De server ziet nooit uw onversleutelde gegevens',
-    'feature_auto_destroy' => 'Automatisch vernietigen na lezen',
-    'feature_expiration' => 'Configureerbare automatische vervaldatum',
+    'feature_encryption' => 'Versleuteld in uw browser — voordat er iets verstuurd wordt',
+    'feature_zero_knowledge' => 'Veilig by design: onleesbaar, zelfs voor ons',
+    'feature_auto_destroy' => 'U bepaalt wanneer het zichzelf vernietigt',
+    'feature_expiration' => 'Geen account, geen wachtwoord: niets te hacken',
 
     // Form labels
     'your_secret' => 'Uw geheim',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'De ontsleutelingssleutel wordt in het URL-fragment geplaatst (na #). Dit deel wordt nooit door de browser naar de server verzonden.',
     'how_step5_title' => 'Ontvanger ontsleutelt',
     'how_step5_desc' => 'Wanneer de ontvanger de link opent, haalt zijn browser de versleutelde gegevens op en gebruikt de sleutel uit de URL om lokaal te ontsleutelen.',
+    'how_step6_title' => 'Het geheim wordt vernietigd',
+    'how_step6_desc' => 'Zodra het leeslimiet is bereikt of de vervaltijd is verstreken, wordt de versleutelde inhoud permanent van de server verwijderd. Alleen een spoor van het bestaan blijft over — er valt niets meer te ontsleutelen.',
     'how_security_title' => 'Wat is zero-knowledge-encryptie?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'De server kan uw geheimen nooit lezen. Zelfs onder juridische druk kunnen we alleen nutteloze versleutelde gegevens verstrekken.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Heb ik een account nodig om Secret Drop te gebruiken?',
     'faq_a3' => 'Nee. Geen registratie, geen tracking. Uw geheimen zijn anoniem en kunnen niet aan u worden gekoppeld.',
     'faq_q4' => 'Wat gebeurt er nadat een geheim is gelezen?',
-    'faq_a4' => 'Geheimen kunnen worden ingesteld voor eenmalig gebruik, beperkte weergaven of automatische vervaldatum. Na gebruik of verval worden de gegevens permanent van de server verwijderd.',
+    'faq_a4' => 'Zodra het leeslimiet is bereikt, wordt de versleutelde inhoud permanent vernietigd op de server. Alleen metadata blijft behouden (aanmaakdatum, leesaantal) als bewijs dat het geheim bestond en is verbruikt. Zelfs als iemand de link en sleutel onderschept — het geheim bestaat niet meer, er valt niets meer te ontsleutelen.',
     'faq_q5' => 'Is Secret Drop gratis?',
     'faq_a5' => 'Ja, Secret Drop is volledig gratis. Geen account, geen abonnement, geen verborgen kosten. De dienst is voor iedereen beschikbaar zonder beperkingen.',
     'faq_q6' => 'Wat is de maximale bestandsgrootte?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Ja, Secret Drop is open source onder de GNU Affero General Public License v3 (AGPL-3.0). U kunt de versleutelingslogica inspecteren, controleren of er geen achterdeurtjes zijn, en bevestigen dat de zero-knowledge-architectuur werkt zoals beschreven.',
     'faq_q11' => 'Wat is het verschil tussen Secret Drop en versleutelde e-mail?',
     'faq_a11' => 'Versleutelde e-mail (PGP, S/MIME) vereist dat beide partijen vooraf sleutels instellen, wat complex is. Secret Drop vraagt niets van de ontvanger — alleen een link. Bovendien vernietigt het geheim zichzelf na het lezen en laat geen spoor achter, in tegenstelling tot een e-mail die onbeperkt in beide inboxen blijft staan.',
+    'faq_q12' => 'Hoe beheer ik mijn geheimen na het aanmaken?',
+    'faq_a12' => 'Als u uw e-mail hebt opgegeven bij het aanmaken, kunt u uw geheimen later beheren (intrekken, verlengen) via de link "Beheren". Voer uw e-mail in en u ontvangt een eenmalige link die 10 minuten geldig is. Deze magic link is een bewuste beveiligingskeuze: geen wachtwoord betekent niets om te stelen, te lekken of te kraken. Uw e-mail wordt de enige authenticatiefactor — eenvoudig en veilig.',
+    'faq_meta_description' => 'Vind antwoorden op veelgestelde vragen over Secret Drop: versleuteling, zero-knowledge, privacy, bestandsdeling en meer.',
+    'faq_see_how' => 'Ontdek hoe Secret Drop werkt',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'Beveiliging is geen toegevoegde functie — het is de basis van elke architectuurbeslissing.',
+    'sbd_zk_title' => 'Zero-knowledge: wiskundige onmogelijkheid, geen belofte',
+    'sbd_zk_desc' => 'De server ontvangt nooit de encryptiesleutel. Zelfs bij een datalek krijgt een aanvaller alleen nutteloze versleutelde tekst. Dit is geen privacybeleid — het is een wiskundige onmogelijkheid.',
+    'sbd_ml_title' => 'Magic links: de wachtwoord-aanvalsvector elimineren',
+    'sbd_ml_desc' => 'Geen wachtwoord betekent niets om te stelen, te lekken of te kraken. Uw e-mail is de enige authenticatiefactor. Een gecompromitteerde database onthult geen inloggegevens, want die bestaan niet.',
+    'sbd_fragment_title' => 'URL-fragment: de sleutel raakt de server nooit',
+    'sbd_fragment_desc' => 'De decryptiesleutel leeft in het URL-fragment (#). Door het HTTP-protocol wordt dit deel nooit naar de server gestuurd — niet in verzoeken, niet in logs, nergens.',
+    'sbd_destroy_title' => 'Zelfvernietiging: blootstelling minimaliseren',
+    'sbd_destroy_desc' => 'Een gelezen geheim bestaat niet meer. Configureerbare vervaltijden en eenmalig gebruik beperken het blootstellingsvenster tot het absolute minimum.',
 
     // Use cases page
     'use_cases_title' => 'Toepassingen',

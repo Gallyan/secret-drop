@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Compartilhe senhas, chaves de API e arquivos confidenciais com criptografia de ponta a ponta. O servidor nunca vê seus dados. Links autodestrutivos, conhecimento zero.',
+    'app_description' => 'Compartilhe senhas e arquivos confidenciais sem nunca expô-los. Criptografia de ponta a ponta. Autodestrutivo. O servidor não vê nada.',
+    'home_hook' => 'Pare de enviar senhas em texto simples.',
     'home_meta_description' => 'Compartilhe uma senha, chave de API ou arquivo confidencial por meio de um link seguro e autodestrutivo. Criptografia de ponta a ponta — o servidor nunca vê seus dados.',
+    'home_view_source' => 'Ver código-fonte',
 
     // Features
-    'feature_encryption' => 'Criptografia de nível militar no seu navegador',
-    'feature_zero_knowledge' => 'O servidor nunca vê seus dados em texto claro',
-    'feature_auto_destroy' => 'Autodestruição após leitura',
-    'feature_expiration' => 'Expiração automática configurável',
+    'feature_encryption' => 'Criptografado no navegador — antes de qualquer envio',
+    'feature_zero_knowledge' => 'Seguro por design: ilegível, mesmo para nós',
+    'feature_auto_destroy' => 'Você decide quando ele se autodestrói',
+    'feature_expiration' => 'Sem conta, sem senha: nada para hackear',
 
     // Form labels
     'your_secret' => 'Seu segredo',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'A chave de descriptografia é colocada no fragmento da URL (após #). Esta parte nunca é enviada ao servidor pelo navegador.',
     'how_step5_title' => 'O destinatário descriptografa',
     'how_step5_desc' => 'Quando o destinatário abre o link, seu navegador busca os dados criptografados e usa a chave da URL para descriptografar localmente.',
+    'how_step6_title' => 'O segredo é destruído',
+    'how_step6_desc' => 'Quando o limite de leituras é atingido ou a expiração passa, o conteúdo criptografado é permanentemente excluído do servidor. Apenas um rastro de sua existência permanece — não há nada para descriptografar.',
     'how_security_title' => 'O que é criptografia zero-knowledge?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'O servidor nunca pode ler seus segredos. Mesmo sob pressão legal, só podemos fornecer dados criptografados inúteis.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Preciso de uma conta para usar o Secret Drop?',
     'faq_a3' => 'Não. Sem registro, sem rastreamento. Seus segredos são anônimos e não podem ser vinculados a você.',
     'faq_q4' => 'O que acontece depois que um segredo é lido?',
-    'faq_a4' => 'Os segredos podem ser configurados para uso único, visualizações limitadas ou expiração automática. Os dados são permanentemente excluídos do servidor.',
+    'faq_a4' => 'Quando o limite de leituras é atingido, o conteúdo criptografado é destruído permanentemente no servidor. Apenas os metadados são mantidos (data de criação, contagem de leituras) como prova de que o segredo existiu e foi consumido. Assim, mesmo que alguém intercepte o link e a chave, o segredo não existe mais — não há nada para descriptografar.',
     'faq_q5' => 'O Secret Drop é gratuito?',
     'faq_a5' => 'Sim, o Secret Drop é totalmente gratuito. Sem conta, sem assinatura, sem custos ocultos. O serviço está disponível para todos sem qualquer limitação.',
     'faq_q6' => 'Qual é o tamanho máximo dos arquivos?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Sim, o Secret Drop é open source sob a licença GNU Affero General Public License v3 (AGPL-3.0). Você pode inspecionar a lógica de criptografia, verificar a ausência de backdoors e confirmar que a arquitetura de conhecimento zero funciona como descrito.',
     'faq_q11' => 'Qual é a diferença entre o Secret Drop e um e-mail criptografado?',
     'faq_a11' => 'O e-mail criptografado (PGP, S/MIME) exige que ambas as partes configurem chaves previamente, o que é complexo. O Secret Drop não exige nada do destinatário — apenas um link. Além disso, o segredo se autodestrói após a leitura e não deixa rastros, diferente de um e-mail que permanece em ambas as caixas indefinidamente.',
+    'faq_q12' => 'Como gerencio meus segredos depois de criá-los?',
+    'faq_a12' => 'Se você forneceu seu e-mail ao criar um segredo, pode gerenciá-lo depois (revogar, estender) pelo link "Gerenciar". Insira seu e-mail e receberá um link de uso único válido por 10 minutos. Este magic link é uma escolha de segurança deliberada: sem senha significa nada para roubar, vazar ou forçar. Seu e-mail se torna o único fator de autenticação — simples e seguro.',
+    'faq_meta_description' => 'Encontre respostas para perguntas frequentes sobre o Secret Drop: criptografia, conhecimento zero, privacidade, compartilhamento de arquivos e mais.',
+    'faq_see_how' => 'Saiba como o Secret Drop funciona',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'A segurança não é uma funcionalidade adicionada — é a base de cada decisão arquitetural.',
+    'sbd_zk_title' => 'Conhecimento zero: impossibilidade matemática, não uma promessa',
+    'sbd_zk_desc' => 'O servidor nunca recebe a chave de criptografia. Mesmo com o banco de dados comprometido, um invasor obtém apenas texto cifrado inútil. Não é uma política de privacidade — é uma impossibilidade matemática.',
+    'sbd_ml_title' => 'Magic links: eliminar o vetor de ataque de senhas',
+    'sbd_ml_desc' => 'Sem senha significa nada para roubar, vazar ou forçar. Seu e-mail é o único fator de autenticação. Um banco de dados comprometido não revela credenciais, porque não existem.',
+    'sbd_fragment_title' => 'Fragmento URL: a chave nunca toca o servidor',
+    'sbd_fragment_desc' => 'A chave de descriptografia vive no fragmento da URL (#). Por design do protocolo HTTP, essa parte nunca é enviada ao servidor — nem em requisições, nem em logs, em lugar nenhum.',
+    'sbd_destroy_title' => 'Autodestruição: minimizar a exposição',
+    'sbd_destroy_desc' => 'Um segredo lido deixa de existir. A expiração configurável e a opção de uso único reduzem a janela de exposição ao mínimo estrito.',
 
     // Use cases page
     'use_cases_title' => 'Casos de uso',

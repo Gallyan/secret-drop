@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Teilen Sie Passwörter, API-Schlüssel und vertrauliche Dateien sicher mit Ende-zu-Ende-Verschlüsselung. Der Server sieht Ihre Daten nie. Selbstzerstörende Links, Zero Knowledge.',
+    'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Der Server sieht nichts.',
+    'home_hook' => 'Schluss mit Passwörtern im Klartext.',
     'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen sicheren, selbstzerstörenden Link. Ende-zu-Ende-verschlüsselt — der Server sieht Ihre Daten nie.',
+    'home_view_source' => 'Quellcode ansehen',
 
     // Features
-    'feature_encryption' => 'Militärische Verschlüsselung in Ihrem Browser',
-    'feature_zero_knowledge' => 'Der Server sieht niemals Ihre Klartextdaten',
-    'feature_auto_destroy' => 'Automatische Zerstörung nach dem Lesen',
-    'feature_expiration' => 'Konfigurierbare automatische Ablaufzeit',
+    'feature_encryption' => 'Verschlüsselt in Ihrem Browser — bevor irgendetwas gesendet wird',
+    'feature_zero_knowledge' => 'Sicher durch Design: selbst für uns unlesbar',
+    'feature_auto_destroy' => 'Sie bestimmen, wann es sich selbst zerstört',
+    'feature_expiration' => 'Kein Konto, kein Passwort: nichts zu hacken',
 
     // Form labels
     'your_secret' => 'Ihr Geheimnis',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'Der Entschlüsselungsschlüssel wird im URL-Fragment (nach #) platziert. Dieser Teil wird vom Browser niemals an den Server gesendet.',
     'how_step5_title' => 'Empfänger entschlüsselt',
     'how_step5_desc' => 'Wenn der Empfänger den Link öffnet, ruft sein Browser die verschlüsselten Daten ab und verwendet den Schlüssel aus der URL zur lokalen Entschlüsselung.',
+    'how_step6_title' => 'Das Geheimnis wird zerstört',
+    'how_step6_desc' => 'Sobald das Leselimit erreicht oder die Ablaufzeit überschritten ist, wird der verschlüsselte Inhalt dauerhaft vom Server gelöscht. Nur eine Spur seiner Existenz bleibt — es gibt nichts mehr zu entschlüsseln.',
     'how_security_title' => 'Was ist Zero-Knowledge-Verschlüsselung?',
     'how_feature1_title' => 'Zero-Knowledge',
     'how_feature1_desc' => 'Der Server kann Ihre Geheimnisse niemals lesen. Selbst unter rechtlichem Druck können wir nur nutzlose verschlüsselte Daten bereitstellen.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Brauche ich ein Konto, um Secret Drop zu nutzen?',
     'faq_a3' => 'Nein. Keine Registrierung, kein Tracking. Ihre Geheimnisse sind anonym und können nicht mit Ihnen verknüpft werden.',
     'faq_q4' => 'Was passiert, nachdem ein Geheimnis gelesen wurde?',
-    'faq_a4' => 'Geheimnisse können für einmalige Nutzung, begrenzte Ansichten oder automatisches Ablaufen konfiguriert werden. Nach Ablauf werden die Daten dauerhaft vom Server gelöscht.',
+    'faq_a4' => 'Sobald das Leselimit erreicht ist, wird der verschlüsselte Inhalt dauerhaft auf dem Server zerstört. Nur Metadaten bleiben erhalten (Erstellungsdatum, Leseanzahl) als Nachweis, dass das Geheimnis existierte und konsumiert wurde. Selbst wenn jemand den Link und Schlüssel abfängt — das Geheimnis existiert nicht mehr, es gibt nichts mehr zu entschlüsseln.',
     'faq_q5' => 'Ist Secret Drop kostenlos?',
     'faq_a5' => 'Ja, Secret Drop ist vollständig kostenlos. Kein Konto, kein Abonnement, keine versteckten Kosten. Der Dienst steht allen ohne Einschränkungen zur Verfügung.',
     'faq_q6' => 'Wie groß dürfen Dateien maximal sein?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Ja, Secret Drop ist Open Source unter der GNU Affero General Public License v3 (AGPL-3.0). Sie können die Verschlüsselungslogik überprüfen, sicherstellen, dass keine Hintertüren vorhanden sind, und bestätigen, dass die Zero-Knowledge-Architektur wie beschrieben funktioniert.',
     'faq_q11' => 'Was ist der Unterschied zwischen Secret Drop und verschlüsselter E-Mail?',
     'faq_a11' => 'Verschlüsselte E-Mail (PGP, S/MIME) erfordert, dass beide Parteien vorab Schlüssel einrichten — das ist aufwändig. Secret Drop verlangt vom Empfänger nichts — nur einen Link. Außerdem zerstört sich das Geheimnis nach dem Lesen selbst und hinterlässt keine Spuren, anders als eine E-Mail, die in beiden Postfächern unbegrenzt bestehen bleibt.',
+    'faq_q12' => 'Wie verwalte ich meine Geheimnisse nach der Erstellung?',
+    'faq_a12' => 'Wenn Sie bei der Erstellung Ihre E-Mail-Adresse angegeben haben, können Sie Ihre Geheimnisse später verwalten (widerrufen, verlängern) über den Link „Verwalten". Geben Sie Ihre E-Mail ein und Sie erhalten einen einmalig verwendbaren Link, der 10 Minuten gültig ist. Dieser Magic Link ist eine bewusste Sicherheitsentscheidung: Kein Passwort bedeutet nichts zu stehlen, zu leaken oder zu erzwingen. Ihre E-Mail wird zum einzigen Authentifizierungsfaktor — einfach und sicher.',
+    'faq_meta_description' => 'Antworten auf häufige Fragen zu Secret Drop: Verschlüsselung, Zero-Knowledge, Datenschutz, Dateifreigabe und mehr.',
+    'faq_see_how' => 'Erfahren Sie, wie Secret Drop funktioniert',
+    'secure_by_design_title' => 'Secure by Design',
+    'secure_by_design_intro' => 'Sicherheit ist keine hinzugefügte Funktion — sie ist das Fundament jeder Architekturentscheidung.',
+    'sbd_zk_title' => 'Zero-Knowledge: mathematische Unmöglichkeit, kein Versprechen',
+    'sbd_zk_desc' => 'Der Server erhält niemals den Verschlüsselungsschlüssel. Selbst bei einer Datenbankcompromittierung erhält ein Angreifer nur nutzlosen Chiffretext. Das ist keine Datenschutzrichtlinie — es ist eine mathematische Unmöglichkeit.',
+    'sbd_ml_title' => 'Magic Links: Den Passwort-Angriffsvektor eliminieren',
+    'sbd_ml_desc' => 'Kein Passwort bedeutet nichts zu stehlen, zu leaken oder zu erzwingen. Ihre E-Mail ist der einzige Authentifizierungsfaktor. Eine kompromittierte Datenbank enthüllt keine Anmeldedaten, weil es keine gibt.',
+    'sbd_fragment_title' => 'URL-Fragment: Der Schlüssel berührt nie den Server',
+    'sbd_fragment_desc' => 'Der Entschlüsselungsschlüssel lebt im URL-Fragment (#). Durch das HTTP-Protokoll wird dieser Teil nie an den Server gesendet — nicht in Anfragen, nicht in Logs, nirgendwo.',
+    'sbd_destroy_title' => 'Selbstzerstörung: Exposition minimieren',
+    'sbd_destroy_desc' => 'Ein gelesenes Geheimnis existiert nicht mehr. Konfigurierbare Ablaufzeiten und Einmalnutzung reduzieren das Expositionsfenster auf ein Minimum.',
 
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',

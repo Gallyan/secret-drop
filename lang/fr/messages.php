@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Partagez mots de passe, clés API et fichiers confidentiels avec un chiffrement de bout en bout. Le serveur ne voit jamais vos données. Liens autodestructibles, zéro connaissance.',
+    'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Le serveur ne voit rien.',
+    'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
     'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien sécurisé et autodestructible. Chiffrement de bout en bout — le serveur ne voit jamais vos données.',
+    'home_view_source' => 'Voir le code source',
 
     // Features
-    'feature_encryption' => 'Chiffrement de niveau militaire dans votre navigateur',
-    'feature_zero_knowledge' => 'Le serveur ne voit jamais vos données en clair',
-    'feature_auto_destroy' => 'Auto-destruction après lecture',
-    'feature_expiration' => 'Expiration automatique configurable',
+    'feature_encryption' => 'Chiffré dans votre navigateur avant tout envoi',
+    'feature_zero_knowledge' => 'Sécurisé par conception : illisible, même pour nous',
+    'feature_auto_destroy' => 'Vous décidez quand il s\'autodétruit',
+    'feature_expiration' => 'Ni compte, ni mot de passe : rien à pirater',
 
     // Form labels
     'your_secret' => 'Votre secret',
@@ -66,7 +68,7 @@ return [
     'share_link_instruction' => 'Partagez ce lien avec votre destinataire',
     'warning_link_contains_key' => 'Ce lien contient la clé de déchiffrement. Ne le partagez qu\'avec le destinataire.',
     'warning_passphrase_required' => 'Le destinataire devra entrer la phrase secrète pour déchiffrer le secret.',
-    'success_admin_hint' => 'Vous pourrez gérer ce secret (révoquer, prolonger) via le lien « :link » en bas de page.',
+    'success_admin_hint' => "Vous pourrez gérer ce secret (révoquer, prolonger) via le lien «\u{a0}:link\u{a0}» en bas de page.",
 
     // QR Code
     'show_qr_code' => 'Afficher le QR code',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'La clé de déchiffrement est placée dans le fragment de l\'URL (après #). Cette partie n\'est jamais envoyée au serveur par le navigateur.',
     'how_step5_title' => 'Le destinataire déchiffre',
     'how_step5_desc' => 'Quand le destinataire ouvre le lien, son navigateur récupère les données chiffrées et utilise la clé de l\'URL pour déchiffrer localement.',
+    'how_step6_title' => 'Le secret est détruit',
+    'how_step6_desc' => 'Dès que le nombre de lectures est atteint ou que l\'expiration est passée, le contenu chiffré est définitivement supprimé du serveur. Seule une trace de son existence subsiste — il n\'y a plus rien à déchiffrer.',
     'how_security_title' => 'Qu\'est-ce que le chiffrement zero-knowledge ?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'Le serveur ne peut jamais lire vos secrets. Même sous contrainte légale, nous ne pouvons fournir que des données chiffrées inutilisables.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Ai-je besoin d\'un compte pour utiliser Secret Drop ?',
     'faq_a3' => 'Non. Pas d\'inscription, pas de suivi. Vos secrets sont anonymes et ne peuvent pas être liés à vous.',
     'faq_q4' => 'Que se passe-t-il après la lecture d\'un secret ?',
-    'faq_a4' => 'Les secrets peuvent être configurés pour un usage unique, un nombre limité de vues ou une expiration automatique. Les données sont définitivement supprimées du serveur.',
+    'faq_a4' => 'Dès que le nombre de lectures est atteint, le contenu chiffré est définitivement détruit sur le serveur. Seules les métadonnées sont conservées (date de création, nombre de lectures) comme preuve que le secret a existé et a été consommé. Ainsi, même si quelqu\'un intercepte le lien et la clé, le secret n\'existe plus — il n\'y a plus rien à déchiffrer.',
     'faq_q5' => 'Secret Drop est-il gratuit ?',
     'faq_a5' => 'Oui, Secret Drop est entièrement gratuit. Pas de compte, pas d\'abonnement, pas de frais cachés. Le service est accessible à tous sans aucune limitation.',
     'faq_q6' => 'Quelle est la taille maximale des fichiers ?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Oui, Secret Drop est open source sous licence GNU Affero General Public License v3 (AGPL-3.0). Vous pouvez inspecter la logique de chiffrement, vérifier l\'absence de portes dérobées et confirmer que l\'architecture zero-knowledge fonctionne comme décrit.',
     'faq_q11' => 'Quelle est la différence entre Secret Drop et un email chiffré ?',
     'faq_a11' => 'L\'email chiffré (PGP, S/MIME) exige que les deux parties configurent des clés au préalable, ce qui est complexe. Secret Drop ne demande rien au destinataire — juste un lien. De plus, le secret s\'autodétruit après lecture et ne laisse aucune trace, contrairement à un email qui reste dans les deux boîtes indéfiniment.',
+    'faq_q12' => 'Comment gérer mes secrets après leur création ?',
+    'faq_a12' => 'Si vous avez fourni votre email lors de la création, vous pouvez gérer vos secrets (révoquer, prolonger) via le lien « Gérer ». Entrez votre email et vous recevrez un lien à usage unique valable 10 minutes. Ce magic link est un choix de sécurité délibéré : pas de mot de passe signifie rien à voler, à fuiter ou à forcer. Votre email devient le seul facteur d\'authentification — simple et sécurisé.',
+    'faq_meta_description' => 'Retrouvez les réponses aux questions fréquentes sur Secret Drop : chiffrement, zero-knowledge, confidentialité, partage de fichiers et plus.',
+    'faq_see_how' => 'Découvrez comment fonctionne Secret Drop',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'La sécurité n\'est pas une fonctionnalité ajoutée — c\'est le fondement de chaque décision architecturale.',
+    'sbd_zk_title' => 'Zero-knowledge : une impossibilité mathématique, pas une promesse',
+    'sbd_zk_desc' => 'Le serveur ne reçoit jamais la clé de chiffrement. Même si la base de données est compromise, un attaquant n\'obtient que du texte chiffré inutilisable. Ce n\'est pas une politique de confidentialité — c\'est une impossibilité mathématique.',
+    'sbd_ml_title' => 'Magic links : éliminer le vecteur d\'attaque des mots de passe',
+    'sbd_ml_desc' => 'Pas de mot de passe signifie rien à voler, fuiter ou forcer. Votre email est le seul facteur d\'authentification. Une base de données compromise ne révèle aucun identifiant, car il n\'y en a pas.',
+    'sbd_fragment_title' => 'Fragment URL : la clé ne touche jamais le serveur',
+    'sbd_fragment_desc' => 'La clé de déchiffrement vit dans le fragment de l\'URL (#). Par conception du protocole HTTP, cette partie n\'est jamais envoyée au serveur — ni dans les requêtes, ni dans les logs, nulle part.',
+    'sbd_destroy_title' => 'Auto-destruction : minimiser l\'exposition',
+    'sbd_destroy_desc' => 'Un secret lu n\'existe plus. L\'expiration configurable et l\'option usage unique réduisent la fenêtre d\'exposition au strict minimum.',
 
     // Use cases page
     'use_cases_title' => 'Cas d\'usage',

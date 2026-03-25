@@ -2,14 +2,16 @@
 
 return [
     // App
-    'app_description' => 'Bezpiecznie udostępniaj hasła, klucze API i poufne pliki z szyfrowaniem end-to-end. Serwer nigdy nie widzi Twoich danych. Samozniszczalne linki, zero knowledge.',
+    'app_description' => 'Udostępniaj hasła i poufne pliki bez ich ujawniania. Szyfrowanie end-to-end. Samozniszczalne. Serwer nie widzi niczego.',
+    'home_hook' => 'Przestań wysyłać hasła otwartym tekstem.',
     'home_meta_description' => 'Udostępnij hasło, klucz API lub poufny plik za pomocą bezpiecznego, samozniszczalnego linku. Szyfrowanie end-to-end — serwer nigdy nie widzi Twoich danych.',
+    'home_view_source' => 'Zobacz kod źródłowy',
 
     // Features
-    'feature_encryption' => 'Szyfrowanie klasy wojskowej w przeglądarce',
-    'feature_zero_knowledge' => 'Serwer nigdy nie widzi Twoich danych jawnych',
-    'feature_auto_destroy' => 'Autodestrukcja po odczytaniu',
-    'feature_expiration' => 'Konfigurowalny termin wygaśnięcia',
+    'feature_encryption' => 'Zaszyfrowane w przeglądarce — zanim cokolwiek zostanie wysłane',
+    'feature_zero_knowledge' => 'Bezpieczne z założenia: nieczytelne, nawet dla nas',
+    'feature_auto_destroy' => 'Ty decydujesz, kiedy ulega samozniszczeniu',
+    'feature_expiration' => 'Bez konta, bez hasła: nie ma czego hakować',
 
     // Form labels
     'your_secret' => 'Twój sekret',
@@ -157,6 +159,8 @@ return [
     'how_step4_desc' => 'Klucz deszyfrujący jest umieszczony we fragmencie URL (po #). Ta część nigdy nie jest wysyłana do serwera przez przeglądarkę.',
     'how_step5_title' => 'Odbiorca odszyfrowuje',
     'how_step5_desc' => 'Gdy odbiorca otwiera link, jego przeglądarka pobiera zaszyfrowane dane i używa klucza z URL do lokalnego odszyfrowania.',
+    'how_step6_title' => 'Sekret zostaje zniszczony',
+    'how_step6_desc' => 'Po osiągnięciu limitu odczytów lub upływie terminu ważności zaszyfrowana treść jest trwale usuwana z serwera. Pozostaje jedynie ślad jego istnienia — nie ma czego odszyfrować.',
     'how_security_title' => 'Czym jest szyfrowanie zero-knowledge?',
     'how_feature1_title' => 'Zero-knowledge',
     'how_feature1_desc' => 'Serwer nigdy nie może odczytać Twoich sekretów. Nawet pod presją prawną możemy dostarczyć tylko bezużyteczne zaszyfrowane dane.',
@@ -178,7 +182,7 @@ return [
     'faq_q3' => 'Czy potrzebuję konta, aby korzystać z Secret Drop?',
     'faq_a3' => 'Nie. Bez rejestracji, bez śledzenia. Twoje sekrety są anonimowe i nie mogą być z Tobą powiązane.',
     'faq_q4' => 'Co dzieje się po odczytaniu sekretu?',
-    'faq_a4' => 'Sekrety mogą być skonfigurowane do jednorazowego użycia, ograniczonej liczby wyświetleń lub automatycznego wygaśnięcia. Po wykorzystaniu lub wygaśnięciu dane są trwale usuwane z serwera.',
+    'faq_a4' => 'Po osiągnięciu limitu odczytów zaszyfrowana treść jest trwale niszczona na serwerze. Zachowywane są jedynie metadane (data utworzenia, liczba odczytów) jako dowód, że sekret istniał i został zużyty. Nawet jeśli ktoś przechwyci link i klucz — sekret już nie istnieje, nie ma czego odszyfrować.',
     'faq_q5' => 'Czy Secret Drop jest darmowy?',
     'faq_a5' => 'Tak, Secret Drop jest całkowicie bezpłatny. Bez konta, bez subskrypcji, bez ukrytych opłat. Usługa jest dostępna dla wszystkich bez żadnych ograniczeń.',
     'faq_q6' => 'Jaki jest maksymalny rozmiar pliku?',
@@ -193,6 +197,20 @@ return [
     'faq_a10' => 'Tak, Secret Drop jest open source na licencji GNU Affero General Public License v3 (AGPL-3.0). Możesz sprawdzić logikę szyfrowania, upewnić się, że nie ma żadnych tylnych drzwi, i potwierdzić, że architektura zero-knowledge działa zgodnie z opisem.',
     'faq_q11' => 'Jaka jest różnica między Secret Drop a szyfrowanym e-mailem?',
     'faq_a11' => 'Szyfrowany e-mail (PGP, S/MIME) wymaga, aby obie strony wcześniej skonfigurowały klucze, co jest skomplikowane. Secret Drop nie wymaga niczego od odbiorcy — wystarczy link. Ponadto sekret ulega samozniszczeniu po odczytaniu i nie pozostawia śladów, w przeciwieństwie do e-maila, który pozostaje w obu skrzynkach na czas nieokreślony.',
+    'faq_q12' => 'Jak zarządzać moimi sekretami po ich utworzeniu?',
+    'faq_a12' => 'Jeśli podałeś swój e-mail podczas tworzenia, możesz zarządzać swoimi sekretami (odwołać, przedłużyć) przez link „Zarządzaj". Wpisz swój e-mail, a otrzymasz jednorazowy link ważny 10 minut. Ten magic link to świadomy wybór bezpieczeństwa: brak hasła oznacza brak czegoś do kradzieży, wycieku lub złamania. Twój e-mail staje się jedynym czynnikiem uwierzytelniania — prosto i bezpiecznie.',
+    'faq_meta_description' => 'Znajdź odpowiedzi na najczęściej zadawane pytania o Secret Drop: szyfrowanie, zero-knowledge, prywatność, udostępnianie plików i więcej.',
+    'faq_see_how' => 'Dowiedz się, jak działa Secret Drop',
+    'secure_by_design_title' => 'Secure by design',
+    'secure_by_design_intro' => 'Bezpieczeństwo to nie dodana funkcja — to fundament każdej decyzji architekturalnej.',
+    'sbd_zk_title' => 'Zero-knowledge: niemożliwość matematyczna, nie obietnica',
+    'sbd_zk_desc' => 'Serwer nigdy nie otrzymuje klucza szyfrowania. Nawet jeśli baza danych zostanie skompromitowana, atakujący otrzyma jedynie bezużyteczny zaszyfrowany tekst. To nie polityka prywatności — to matematyczna niemożliwość.',
+    'sbd_ml_title' => 'Magic links: eliminacja wektora ataku haseł',
+    'sbd_ml_desc' => 'Brak hasła oznacza brak czegoś do kradzieży, wycieku lub złamania. Twój e-mail jest jedynym czynnikiem uwierzytelniania. Skompromitowana baza nie ujawnia danych logowania, bo ich nie ma.',
+    'sbd_fragment_title' => 'Fragment URL: klucz nigdy nie dotyka serwera',
+    'sbd_fragment_desc' => 'Klucz deszyfrujący znajduje się we fragmencie URL (#). Zgodnie z protokołem HTTP ta część nigdy nie jest wysyłana na serwer — ani w żądaniach, ani w logach, nigdzie.',
+    'sbd_destroy_title' => 'Samozniszczenie: minimalizacja ekspozycji',
+    'sbd_destroy_desc' => 'Odczytany sekret przestaje istnieć. Konfigurowalne wygaśnięcie i opcja jednorazowego użycia ograniczają okno ekspozycji do absolutnego minimum.',
 
     // Use cases page
     'use_cases_title' => 'Przypadki użycia',

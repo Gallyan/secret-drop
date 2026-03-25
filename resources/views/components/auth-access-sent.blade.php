@@ -4,9 +4,7 @@
     <div class="w-full max-w-md">
         <x-card class="p-8 text-center">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4" aria-hidden="true">
-                <svg class="w-7 h-7 text-emerald-600 dark:text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <x-icon.mail class="w-7 h-7 text-emerald-600 dark:text-emerald-300" />
             </div>
 
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_link_sent_title') }}</h1>

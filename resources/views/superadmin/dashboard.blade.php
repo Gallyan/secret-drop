@@ -195,6 +195,7 @@
                     'how-it-works' => 'messages.how_it_works_title',
                     'use-cases' => 'messages.use_cases_title',
                     'legal' => 'messages.legal_title',
+                    'faq' => 'messages.faq_title',
                 ];
                 foreach (\App\Support\LocaleConfig::SUPPORTED_LOCALES as $loc) {
                     foreach ($slugTitleKeys as $routeName => $titleKey) {
