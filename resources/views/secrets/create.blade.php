@@ -560,7 +560,7 @@
         </div>
 
         <p class="mt-4 text-center text-xs text-gray-400 dark:text-slate-500 tracking-wide">
-            Open source <span class="mx-1">·</span> Laravel <span class="mx-1">·</span> {{ __('messages.app_tagline') }} <span class="mx-1">·</span>
+            Open source <span class="mx-1">·</span> Laravel <span class="hidden sm:inline"><span class="mx-1">·</span> {{ __('messages.app_tagline') }}</span> <span class="mx-1">·</span>
             <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" class="hover:text-gray-600 dark:hover:text-slate-300 transition-colors">GitHub</a>
         </p>
     </div>
