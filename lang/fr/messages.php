@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Sécurisé par conception : illisible, même pour nous',
     'feature_auto_destroy' => 'Vous décidez quand il s\'autodétruit',
     'feature_expiration' => 'Ni compte, ni mot de passe : rien à pirater',
+    'feature_hosted_eu' => 'Hébergé en France, juridiction UE',
+    'feature_no_tracking' => 'Aucun cookie tiers, aucun service de tracking',
+    'feature_hosted_no_tracking' => 'Hébergé en France, aucun service de tracking',
 
     // Form labels
     'your_secret' => 'Votre secret',
@@ -222,6 +225,15 @@ return [
     'sbd_fragment_desc' => 'La clé de déchiffrement vit dans le fragment de l\'URL (après le #). Par conception du protocole HTTP, cette partie n\'est jamais envoyée au serveur — ni dans les requêtes, ni dans les logs, nulle part.',
     'sbd_destroy_title' => 'Destruction définitive',
     'sbd_destroy_desc' => 'Un secret lu n\'existe plus. Le contenu chiffré est supprimé du serveur — seule une trace de son existence subsiste. L\'expiration et la limite de lectures réduisent la fenêtre d\'exposition au strict minimum.',
+    'sbd_hosted_title' => 'Hébergé en France',
+    'sbd_hosted_desc' => 'Infrastructure hébergée en France, soumise au droit de l\'Union européenne. Vos données sont protégées par le RGPD et ne quittent jamais l\'UE. Aucun transfert vers des pays tiers, aucune exception.',
+    'sbd_notrack_title' => 'Aucun traceur',
+    'sbd_notrack_desc' => 'Aucun cookie tiers, aucun pixel de suivi, aucun service externe. Aucune donnée n\'est partagée avec des tiers. Votre activité sur ce site n\'est ni profilée, ni revendue, ni monétisée.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Hébergé en France',
+    'trust_no_tracking' => 'Aucun traceur',
+    'trust_client_encryption' => 'Chiffrement côté client',
 
     // Use cases page
     'use_cases_title' => 'Cas d\'usage',

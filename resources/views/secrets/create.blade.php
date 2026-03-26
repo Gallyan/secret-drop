@@ -46,6 +46,10 @@
                             <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
                             {{ __('messages.feature_expiration') }}
                         </li>
+                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
+                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
+                            {{ __('messages.feature_hosted_no_tracking') }}
+                        </li>
                     </ul>
 
                     <div class="mt-8 pt-6 border-t border-gray-200 dark:border-slate-700/50">

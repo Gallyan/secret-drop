@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Secure by design: unreadable, even to us',
     'feature_auto_destroy' => 'You decide when it self-destructs',
     'feature_expiration' => 'No account, no password: nothing to hack',
+    'feature_hosted_eu' => 'Hosted in France, EU jurisdiction',
+    'feature_no_tracking' => 'No third-party cookies, no tracking services',
+    'feature_hosted_no_tracking' => 'Hosted in France, no tracking services',
 
     // Form labels
     'your_secret' => 'Your secret',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => 'The decryption key lives in the URL fragment (after the #). By HTTP protocol design, this part is never sent to the server — not in requests, not in logs, not anywhere.',
     'sbd_destroy_title' => 'Permanent destruction',
     'sbd_destroy_desc' => 'A secret that has been read no longer exists. The encrypted content is deleted from the server — only a trace of its existence remains. Expiration and read limits reduce the window of exposure to the strict minimum.',
+    'sbd_hosted_title' => 'Hosted in France',
+    'sbd_hosted_desc' => 'Infrastructure hosted in France, under European Union jurisdiction. Your data is subject to GDPR and never leaves the EU. No transfer to third countries, no exception.',
+    'sbd_notrack_title' => 'No tracking',
+    'sbd_notrack_desc' => 'No third-party cookies, no tracking pixels, no external services. No data is shared with third parties. Your activity on this site is not profiled, sold or monetized.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Hosted in France',
+    'trust_no_tracking' => 'No trackers',
+    'trust_client_encryption' => 'Client-side encryption',
 
     // Use cases page
     'use_cases_title' => 'Use cases',

@@ -153,6 +153,8 @@
                     <x-feature-card :title="__('messages.sbd_ml_title')">{{ __('messages.sbd_ml_desc') }}</x-feature-card>
                     <x-feature-card :title="__('messages.sbd_fragment_title')">{{ __('messages.sbd_fragment_desc') }}</x-feature-card>
                     <x-feature-card :title="__('messages.sbd_destroy_title')">{{ __('messages.sbd_destroy_desc') }}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_hosted_title')">{{ __('messages.sbd_hosted_desc') }}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_notrack_title')">{{ __('messages.sbd_notrack_desc') }}</x-feature-card>
                 </div>
             </div>
 

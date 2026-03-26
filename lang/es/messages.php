@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Seguro por diseño: ilegible, incluso para nosotros',
     'feature_auto_destroy' => 'Usted decide cuándo se autodestruye',
     'feature_expiration' => 'Sin cuenta, sin contraseña: nada que hackear',
+    'feature_hosted_eu' => 'Alojado en Francia, jurisdicción de la UE',
+    'feature_no_tracking' => 'Sin cookies de terceros, sin servicios de rastreo',
+    'feature_hosted_no_tracking' => 'Alojado en Francia, sin servicios de rastreo',
 
     // Form labels
     'your_secret' => 'Tu secreto',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => 'La clave de descifrado vive en el fragmento de la URL (después del #). Por diseño del protocolo HTTP, esta parte nunca se envía al servidor — ni en solicitudes, ni en logs, en ningún lugar.',
     'sbd_destroy_title' => 'Destrucción definitiva',
     'sbd_destroy_desc' => 'Un secreto leído deja de existir. El contenido cifrado se elimina del servidor — solo queda un rastro de su existencia. La expiración y los límites de lectura reducen la ventana de exposición al mínimo estricto.',
+    'sbd_hosted_title' => 'Alojado en Francia',
+    'sbd_hosted_desc' => 'Infraestructura alojada en Francia, bajo jurisdicción de la Unión Europea. Sus datos están protegidos por el RGPD y nunca salen de la UE. Sin transferencia a terceros países, sin excepción.',
+    'sbd_notrack_title' => 'Sin rastreo',
+    'sbd_notrack_desc' => 'Sin cookies de terceros, sin píxeles de seguimiento, sin servicios externos. Ningún dato se comparte con terceros. Su actividad en este sitio no es perfilada, vendida ni monetizada.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Alojado en Francia',
+    'trust_no_tracking' => 'Sin rastreadores',
+    'trust_client_encryption' => 'Cifrado del lado del cliente',
 
     // Use cases page
     'use_cases_title' => 'Casos de uso',

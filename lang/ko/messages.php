@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => '설계 수준의 보안: 우리조차 읽을 수 없습니다',
     'feature_auto_destroy' => '자동 삭제 시점은 당신이 결정합니다',
     'feature_expiration' => '계정 없음, 비밀번호 없음: 해킹할 것이 없음',
+    'feature_hosted_eu' => '프랑스 호스팅, EU 관할권',
+    'feature_no_tracking' => '서드파티 쿠키 없음, 추적 서비스 없음',
+    'feature_hosted_no_tracking' => '프랑스 호스팅, 추적 서비스 없음',
 
     // Form labels
     'your_secret' => '비밀',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => '복호화 키는 URL 프래그먼트(# 뒤)에 있습니다. HTTP 프로토콜 설계상 이 부분은 서버로 전송되지 않습니다 — 요청에도, 로그에도, 어디에도.',
     'sbd_destroy_title' => '영구 파괴',
     'sbd_destroy_desc' => '읽힌 비밀은 더 이상 존재하지 않습니다. 암호화된 콘텐츠는 서버에서 삭제되며, 존재의 흔적만 남습니다. 만료와 조회 제한으로 노출 시간을 최소한으로 줄입니다.',
+    'sbd_hosted_title' => '프랑스 호스팅',
+    'sbd_hosted_desc' => '프랑스에 위치한 인프라로, 유럽연합 관할권이 적용됩니다. 데이터는 GDPR의 보호를 받으며 EU 밖으로 나가지 않습니다. 제3국으로의 이전은 없습니다.',
+    'sbd_notrack_title' => '추적 없음',
+    'sbd_notrack_desc' => '서드파티 쿠키, 추적 픽셀, 외부 서비스를 사용하지 않습니다. 어떤 데이터도 제3자와 공유하지 않습니다. 이 사이트에서의 활동은 프로파일링, 판매 또는 수익화되지 않습니다.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => '프랑스 호스팅',
+    'trust_no_tracking' => '추적기 없음',
+    'trust_client_encryption' => '클라이언트 측 암호화',
 
     // Use cases page
     'use_cases_title' => '사용 사례',

@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Bezpieczne z założenia: nieczytelne, nawet dla nas',
     'feature_auto_destroy' => 'Ty decydujesz, kiedy ulega samozniszczeniu',
     'feature_expiration' => 'Bez konta, bez hasła: nie ma czego hakować',
+    'feature_hosted_eu' => 'Hostowane we Francji, jurysdykcja UE',
+    'feature_no_tracking' => 'Bez ciasteczek stron trzecich, bez zewnętrznych trackerów',
+    'feature_hosted_no_tracking' => 'Hostowane we Francji, bez zewnętrznych trackerów',
 
     // Form labels
     'your_secret' => 'Twój sekret',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => 'Klucz deszyfrujący znajduje się we fragmencie URL (po #). Zgodnie z protokołem HTTP ta część nigdy nie jest wysyłana na serwer — ani w żądaniach, ani w logach, nigdzie.',
     'sbd_destroy_title' => 'Trwałe zniszczenie',
     'sbd_destroy_desc' => 'Odczytany sekret przestaje istnieć. Zaszyfrowana treść jest usuwana z serwera — pozostaje jedynie ślad jego istnienia. Wygaśnięcie i limity odczytów ograniczają okno ekspozycji do absolutnego minimum.',
+    'sbd_hosted_title' => 'Hostowane we Francji',
+    'sbd_hosted_desc' => 'Infrastruktura hostowana we Francji, pod jurysdykcją Unii Europejskiej. Twoje dane są chronione przez RODO i nigdy nie opuszczają UE. Brak transferu do państw trzecich, bez wyjątków.',
+    'sbd_notrack_title' => 'Brak śledzenia',
+    'sbd_notrack_desc' => 'Bez ciasteczek stron trzecich, bez pikseli śledzących, bez zewnętrznych serwisów. Żadne dane nie są udostępniane podmiotom trzecim. Twoja aktywność na tej stronie nie jest profilowana, sprzedawana ani monetyzowana.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Hostowane we Francji',
+    'trust_no_tracking' => 'Brak trackerów',
+    'trust_client_encryption' => 'Szyfrowanie po stronie klienta',
 
     // Use cases page
     'use_cases_title' => 'Przypadki użycia',

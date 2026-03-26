@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => '設計レベルで安全：私たちにも読めません',
     'feature_auto_destroy' => '自動削除のタイミングはあなた次第',
     'feature_expiration' => 'アカウント不要、パスワード不要：ハッキング対象なし',
+    'feature_hosted_eu' => 'フランス国内で運用、EU法管轄',
+    'feature_no_tracking' => 'サードパーティCookieなし、トラッキングサービスなし',
+    'feature_hosted_no_tracking' => 'フランス国内で運用、トラッキングサービスなし',
 
     // Form labels
     'your_secret' => 'シークレット',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => '復号キーはURLフラグメント（#の後）に存在します。HTTPプロトコルの設計上、この部分はサーバーに送信されません — リクエストにもログにもどこにも。',
     'sbd_destroy_title' => '完全な破棄',
     'sbd_destroy_desc' => '読まれたシークレットはもう存在しません。暗号化されたコンテンツはサーバーから削除され、存在の痕跡だけが残ります。有効期限と閲覧制限により、露出時間を最小限に抑えます。',
+    'sbd_hosted_title' => 'フランス国内で運用',
+    'sbd_hosted_desc' => 'インフラはフランス国内に設置され、欧州連合の法律が適用されます。データはGDPRにより保護され、EU域外に出ることはありません。第三国への移転は一切行いません。',
+    'sbd_notrack_title' => 'トラッキングなし',
+    'sbd_notrack_desc' => 'サードパーティCookie、トラッキングピクセル、外部サービスは一切使用していません。データが第三者に共有されることはありません。このサイトでの行動がプロファイリング、販売、収益化されることはありません。',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'フランス国内で運用',
+    'trust_no_tracking' => 'トラッカーなし',
+    'trust_client_encryption' => 'クライアント側で暗号化',
 
     // Use cases page
     'use_cases_title' => '使用例',

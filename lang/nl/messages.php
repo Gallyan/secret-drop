@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Veilig by design: onleesbaar, zelfs voor ons',
     'feature_auto_destroy' => 'U bepaalt wanneer het zichzelf vernietigt',
     'feature_expiration' => 'Geen account, geen wachtwoord: niets te hacken',
+    'feature_hosted_eu' => 'Gehost in Frankrijk, EU-jurisdictie',
+    'feature_no_tracking' => 'Geen cookies van derden, geen trackingdiensten',
+    'feature_hosted_no_tracking' => 'Gehost in Frankrijk, geen trackingdiensten',
 
     // Form labels
     'your_secret' => 'Uw geheim',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => 'De decryptiesleutel leeft in het URL-fragment (na de #). Door het HTTP-protocol wordt dit deel nooit naar de server gestuurd — niet in verzoeken, niet in logs, nergens.',
     'sbd_destroy_title' => 'Definitieve vernietiging',
     'sbd_destroy_desc' => 'Een gelezen geheim bestaat niet meer. De versleutelde inhoud wordt van de server verwijderd — alleen een spoor van het bestaan blijft over. Vervaltijden en leeslimieten beperken het blootstellingsvenster tot het absolute minimum.',
+    'sbd_hosted_title' => 'Gehost in Frankrijk',
+    'sbd_hosted_desc' => 'Infrastructuur gehost in Frankrijk, onder de jurisdictie van de Europese Unie. Uw gegevens vallen onder de AVG en verlaten de EU niet. Geen overdracht naar derde landen, geen uitzondering.',
+    'sbd_notrack_title' => 'Geen tracking',
+    'sbd_notrack_desc' => 'Geen cookies van derden, geen trackingpixels, geen externe diensten. Er worden geen gegevens gedeeld met derden. Uw activiteit op deze site wordt niet geprofileerd, verkocht of gemonetiseerd.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Gehost in Frankrijk',
+    'trust_no_tracking' => 'Geen trackers',
+    'trust_client_encryption' => 'Versleuteling aan clientzijde',
 
     // Use cases page
     'use_cases_title' => 'Toepassingen',

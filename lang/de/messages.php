@@ -12,6 +12,9 @@ return [
     'feature_zero_knowledge' => 'Sicher durch Design: selbst für uns unlesbar',
     'feature_auto_destroy' => 'Sie bestimmen, wann es sich selbst zerstört',
     'feature_expiration' => 'Kein Konto, kein Passwort: nichts zu hacken',
+    'feature_hosted_eu' => 'Gehostet in Frankreich, EU-Gerichtsbarkeit',
+    'feature_no_tracking' => 'Keine Drittanbieter-Cookies, keine Tracking-Dienste',
+    'feature_hosted_no_tracking' => 'Gehostet in Frankreich, keine Tracking-Dienste',
 
     // Form labels
     'your_secret' => 'Ihr Geheimnis',
@@ -214,6 +217,15 @@ return [
     'sbd_fragment_desc' => 'Der Entschlüsselungsschlüssel lebt im URL-Fragment (nach dem #). Durch das HTTP-Protokoll wird dieser Teil nie an den Server gesendet — nicht in Anfragen, nicht in Logs, nirgendwo.',
     'sbd_destroy_title' => 'Endgültige Vernichtung',
     'sbd_destroy_desc' => 'Ein gelesenes Geheimnis existiert nicht mehr. Der verschlüsselte Inhalt wird vom Server gelöscht — nur eine Spur seiner Existenz bleibt. Ablaufzeiten und Leselimits reduzieren das Expositionsfenster auf ein Minimum.',
+    'sbd_hosted_title' => 'Gehostet in Frankreich',
+    'sbd_hosted_desc' => 'Infrastruktur in Frankreich gehostet, unter der Gerichtsbarkeit der Europäischen Union. Ihre Daten unterliegen der DSGVO und verlassen niemals die EU. Kein Transfer in Drittstaaten, keine Ausnahme.',
+    'sbd_notrack_title' => 'Kein Tracking',
+    'sbd_notrack_desc' => 'Keine Drittanbieter-Cookies, keine Tracking-Pixel, keine externen Dienste. Keine Daten werden an Dritte weitergegeben. Ihre Aktivität auf dieser Seite wird weder profiliert, noch verkauft, noch monetarisiert.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Gehostet in Frankreich',
+    'trust_no_tracking' => 'Keine Tracker',
+    'trust_client_encryption' => 'Clientseitige Verschlüsselung',
 
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',
