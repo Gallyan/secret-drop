@@ -1,9 +1,7 @@
 <x-modal-overlay show="showRevokeModal" close="closeRevokeModal()" role="dialog" aria-modal="true" aria-labelledby="revoke-modal-title" aria-describedby="revoke-modal-description">
     <div class="flex items-center justify-center min-h-full p-4">
-        <x-card
-            @click.stop
-            class="max-w-md w-full p-8 text-center"
-        >
+        <div @click.stop>
+        <x-card class="max-w-md w-full p-8 text-center">
             <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-red-500/0 to-rose-600 mb-4" style="--accent-rgb: 239, 68, 68" aria-hidden="true">
                 <x-icon.warning class="w-7 h-7 text-white" />
             </div>
@@ -26,5 +24,6 @@
                 </button>
             </div>
         </x-card>
+        </div>
     </div>
 </x-modal-overlay>

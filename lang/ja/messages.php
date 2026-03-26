@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => '接続エラーが発生しました。もう一度お試しください。',
     'admin_error_not_found' => 'シークレットが見つかりません。',
     'admin_error_already_revoked' => 'このシークレットはすでに取り消されています。',
+    'admin_error_already_consumed' => 'このシークレットはすでに閲覧済みです。',
     'admin_error_revoked' => 'このシークレットは取り消されました。',
     'admin_error_revoke' => '取り消し中にエラーが発生しました。',
     'admin_error_extend' => '延長中にエラーが発生しました。',

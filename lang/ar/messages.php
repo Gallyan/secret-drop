@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'خطأ في الاتصال. يرجى المحاولة مرة أخرى.',
     'admin_error_not_found' => 'لم يتم العثور على السر.',
     'admin_error_already_revoked' => 'تم إلغاء هذا السر بالفعل.',
+    'admin_error_already_consumed' => 'تمت قراءة هذا السر بالفعل.',
     'admin_error_revoked' => 'تم إلغاء هذا السر.',
     'admin_error_revoke' => 'حدث خطأ أثناء الإلغاء.',
     'admin_error_extend' => 'حدث خطأ أثناء التمديد.',

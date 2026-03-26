@@ -179,6 +179,10 @@ class AdminController extends Controller
             return response()->json(['error' => 'already_revoked'], 409);
         }
 
+        if ($secret->hasReachedMaxViews()) {
+            return response()->json(['error' => 'already_consumed'], 409);
+        }
+
         if ($secret->type === 'file' && $secret->file_path) {
             $this->storage->delete($secret->file_path);
         }

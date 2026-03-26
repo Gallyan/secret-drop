@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'Connection error. Please try again.',
     'admin_error_not_found' => 'Secret not found.',
     'admin_error_already_revoked' => 'This secret has already been revoked.',
+    'admin_error_already_consumed' => 'This secret has already been consumed.',
     'admin_error_revoked' => 'This secret has been revoked.',
     'admin_error_revoke' => 'Error revoking secret.',
     'admin_error_extend' => 'Error extending secret.',

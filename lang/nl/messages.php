@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'Verbindingsfout. Probeer het opnieuw.',
     'admin_error_not_found' => 'Geheim niet gevonden.',
     'admin_error_already_revoked' => 'Dit geheim is al ingetrokken.',
+    'admin_error_already_consumed' => 'Dit geheim is al geraadpleegd.',
     'admin_error_revoked' => 'Dit geheim is ingetrokken.',
     'admin_error_revoke' => 'Fout bij het intrekken.',
     'admin_error_extend' => 'Fout bij het verlengen.',

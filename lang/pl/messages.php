@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'Błąd połączenia. Spróbuj ponownie.',
     'admin_error_not_found' => 'Nie znaleziono sekretu.',
     'admin_error_already_revoked' => 'Ten sekret został już unieważniony.',
+    'admin_error_already_consumed' => 'Ten sekret został już odczytany.',
     'admin_error_revoked' => 'Ten sekret został unieważniony.',
     'admin_error_revoke' => 'Błąd podczas unieważniania.',
     'admin_error_extend' => 'Błąd podczas przedłużania.',

@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'Errore di connessione. Riprova.',
     'admin_error_not_found' => 'Segreto non trovato.',
     'admin_error_already_revoked' => 'Questo segreto è già stato revocato.',
+    'admin_error_already_consumed' => 'Questo segreto è già stato consultato.',
     'admin_error_revoked' => 'Questo segreto è stato revocato.',
     'admin_error_revoke' => 'Errore durante la revoca.',
     'admin_error_extend' => 'Errore durante l\'estensione.',

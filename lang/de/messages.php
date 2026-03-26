@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => 'Verbindungsfehler. Bitte versuchen Sie es erneut.',
     'admin_error_not_found' => 'Geheimnis nicht gefunden.',
     'admin_error_already_revoked' => 'Dieses Geheimnis wurde bereits widerrufen.',
+    'admin_error_already_consumed' => 'Dieses Geheimnis wurde bereits abgerufen.',
     'admin_error_revoked' => 'Dieses Geheimnis wurde widerrufen.',
     'admin_error_revoke' => 'Fehler beim Widerrufen.',
     'admin_error_extend' => 'Fehler beim Verlängern.',

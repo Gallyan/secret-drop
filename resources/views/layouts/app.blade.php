@@ -154,6 +154,7 @@
             'admin_error_connection',
             'admin_error_not_found',
             'admin_error_already_revoked',
+            'admin_error_already_consumed',
             'admin_error_revoked',
             'admin_error_revoke',
             'admin_error_extend',

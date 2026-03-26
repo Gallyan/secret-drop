@@ -334,6 +334,7 @@ return [
     'admin_error_connection' => 'Erreur de connexion. Veuillez réessayer.',
     'admin_error_not_found' => 'Secret introuvable.',
     'admin_error_already_revoked' => 'Ce secret a déjà été révoqué.',
+    'admin_error_already_consumed' => 'Ce secret a déjà été consommé.',
     'admin_error_revoked' => 'Ce secret a été révoqué.',
     'admin_error_revoke' => 'Erreur lors de la révocation.',
     'admin_error_extend' => 'Erreur lors de la prolongation.',

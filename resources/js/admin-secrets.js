@@ -5,6 +5,7 @@ const POLL_INTERVAL = 30000;
 
 const ERROR_MAP = {
     already_revoked: 'admin_error_already_revoked',
+    already_consumed: 'admin_error_already_consumed',
     revoked: 'admin_error_revoked',
 };
 
@@ -346,6 +347,7 @@ export default () => ({
             } else {
                 const result = await response.json().catch(() => ({}));
                 this.showError(t(ERROR_MAP[result.error] || 'admin_error_revoke'));
+                await this.poll();
             }
         } catch {
             this.showError(t('admin_error_connection'));

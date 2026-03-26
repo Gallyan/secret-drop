@@ -326,6 +326,7 @@ return [
     'admin_error_connection' => '연결 오류가 발생했습니다. 다시 시도해 주세요.',
     'admin_error_not_found' => '비밀을 찾을 수 없습니다.',
     'admin_error_already_revoked' => '이 비밀은 이미 취소되었습니다.',
+    'admin_error_already_consumed' => '이 비밀은 이미 조회되었습니다.',
     'admin_error_revoked' => '이 비밀은 취소되었습니다.',
     'admin_error_revoke' => '취소 중 오류가 발생했습니다.',
     'admin_error_extend' => '연장 중 오류가 발생했습니다.',

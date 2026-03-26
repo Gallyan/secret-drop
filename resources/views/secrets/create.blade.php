@@ -243,7 +243,7 @@
                                             id="passphrase"
                                             :type="showPassphrase ? 'text' : 'password'"
                                             x-model="passphrase"
-                                            autocomplete="off"
+                                            autocomplete="one-time-code"
                                             placeholder="{{ __('messages.passphrase_placeholder') }}"
                                             class="w-full px-4 py-2.5 pe-12 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                         >
@@ -413,8 +413,8 @@
                     {{-- Success state --}}
                     <div x-show="shareUrl" x-cloak class="space-y-6">
                         <div class="text-center">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4 transition-colors" aria-hidden="true">
-                                <x-icon.check class="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
+                            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500/0 to-emerald-600 mb-4 transition-colors" style="--accent-rgb: 16, 185, 129" aria-hidden="true">
+                                <x-icon.check class="w-7 h-7 text-white" />
                             </div>
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white transition-colors">{{ __('messages.secret_created') }}</h2>
                             <p class="mt-1 text-sm text-gray-500 dark:text-slate-400 transition-colors">{{ __('messages.share_link_instruction') }}</p>
