@@ -340,6 +340,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Dati di utilizzo anonimi per la tua istanza di Secret Drop.',
 
     // Periods
+    'period_today' => 'Oggi',
     'period_7d' => 'Ultimi 7 giorni',
     'period_30d' => 'Ultimi 30 giorni',
     'period_90d' => 'Ultimi 90 giorni',

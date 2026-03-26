@@ -340,6 +340,7 @@ return [
     'superadmin_dashboard_subtitle' => 'بيانات استخدام مجهولة الهوية لنسختك من Secret Drop.',
 
     // Periods
+    'period_today' => 'اليوم',
     'period_7d' => 'آخر 7 أيام',
     'period_30d' => 'آخر 30 يوماً',
     'period_90d' => 'آخر 90 يوماً',

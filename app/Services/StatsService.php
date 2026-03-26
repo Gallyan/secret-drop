@@ -66,6 +66,7 @@ class StatsService
     public function getStats(string $period = '30d'): array
     {
         $days = match ($period) {
+            'today' => 0,
             '7d' => 7,
             '30d' => 30,
             '90d' => 90,
@@ -74,7 +75,7 @@ class StatsService
             default => 30,
         };
 
-        $startDate = $days ? now()->subDays($days)->toDateString() : null;
+        $startDate = $days !== null ? now()->subDays($days)->toDateString() : null;
 
         $query = DB::table('stats_daily')
             ->select('metric', 'date', 'count')

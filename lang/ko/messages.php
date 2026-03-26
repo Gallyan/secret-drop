@@ -340,6 +340,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Secret Drop 인스턴스의 익명 사용 데이터.',
 
     // Periods
+    'period_today' => '오늘',
     'period_7d' => '최근 7일',
     'period_30d' => '최근 30일',
     'period_90d' => '최근 90일',

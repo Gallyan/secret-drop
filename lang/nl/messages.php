@@ -340,6 +340,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Anonieme gebruiksgegevens voor uw Secret Drop-instantie.',
 
     // Periods
+    'period_today' => 'Vandaag',
     'period_7d' => 'Laatste 7 dagen',
     'period_30d' => 'Laatste 30 dagen',
     'period_90d' => 'Laatste 90 dagen',

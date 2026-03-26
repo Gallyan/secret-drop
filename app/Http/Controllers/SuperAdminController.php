@@ -19,7 +19,7 @@ class SuperAdminController extends Controller
 
     protected const SESSION_KEY = 'super_admin_verified';
     protected const SESSION_EXPIRES_KEY = 'super_admin_expires_at';
-    private const VALID_PERIODS = ['7d', '30d', '90d', '1y', 'all'];
+    private const VALID_PERIODS = ['today', '7d', '30d', '90d', '1y', 'all'];
 
     public function __construct(
         private TokenService $tokenService,

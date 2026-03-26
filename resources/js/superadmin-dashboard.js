@@ -501,7 +501,29 @@ function initDashboard() {
         });
     }
 
+    initPeriodSelector();
     startPolling();
+}
+
+// ── Period selector (no page reload) ────────────────────────────────────
+
+function initPeriodSelector() {
+    const select = document.getElementById('periodSelector');
+    if (!select) {
+        return;
+    }
+
+    select.addEventListener('change', function () {
+        const data = window.superAdminData;
+        data.period = this.value;
+
+        const url = new URL(window.location);
+        url.searchParams.set('period', this.value);
+        history.replaceState(null, '', url);
+
+        poll();
+        startPolling();
+    });
 }
 
 // ── Progress ring ────────────────────────────────────────────────────────
