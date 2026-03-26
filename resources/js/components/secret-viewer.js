@@ -88,7 +88,6 @@ export default () => ({
 
                 this.parseFragment();
             } catch (e) {
-                console.error('Load error');
                 this.loadError = {
                     type: 'error',
                     message: t('error_connection'),
@@ -192,8 +191,6 @@ export default () => ({
                     }
                 });
             } catch (e) {
-                console.error('Decryption error');
-
                 if (e.name === 'OperationError') {
                     this.error = this.needsPassphrase
                         ? t('crypto_passphrase_incorrect')
@@ -286,8 +283,8 @@ export default () => ({
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                     },
                 });
-            } catch (e) {
-                console.error('Failed to confirm read');
+            } catch {
+                // Network error — silent, secret was already decrypted
             }
         },
 
@@ -326,6 +323,7 @@ export default () => ({
         loadErrorMessage() {
             return this.loadError ? this.loadError.message : '';
         },
+
 
         clearRetryError() {
             this.error = null;
