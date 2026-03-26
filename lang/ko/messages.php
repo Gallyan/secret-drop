@@ -317,6 +317,7 @@ return [
     'admin_mode' => '모드',
     'admin_limited_views' => '최대 :count회 조회',
     'admin_unlimited' => '무제한',
+    'admin_hour' => '시간',
     'admin_day' => '일',
     'admin_days' => '일',
     'admin_extend' => '연장',

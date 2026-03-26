@@ -325,6 +325,7 @@ return [
     'admin_mode' => 'Mode',
     'admin_limited_views' => '{1} :count lecture max|[2,*] :count lectures max',
     'admin_unlimited' => 'Illimité',
+    'admin_hour' => 'heure',
     'admin_day' => 'jour',
     'admin_days' => 'jours',
     'admin_extend' => 'Prolonger',

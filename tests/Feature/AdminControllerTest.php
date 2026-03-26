@@ -277,7 +277,7 @@ class AdminControllerTest extends TestCase
         $secret = $this->createSecretWithEmail('test@example.com');
 
         $response = $this->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-            'days' => 7,
+            'hours' => 168,
         ]);
 
         $response->assertStatus(403);
@@ -294,7 +294,7 @@ class AdminControllerTest extends TestCase
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
             ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-                'days' => 7,
+                'hours' => 168,
             ]);
 
         $response->assertStatus(200);

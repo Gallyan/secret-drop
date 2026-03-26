@@ -212,7 +212,7 @@ class AdminController extends Controller
         }
 
         $baseDate = $secret->expire_at->isPast() ? now() : $secret->expire_at;
-        $secret->expire_at = $baseDate->addDays($request->validated('days'));
+        $secret->expire_at = $baseDate->addHours($request->validated('hours'));
         $secret->save();
 
         $this->stats->increment(StatsService::SECRETS_EXTENDED);

@@ -73,7 +73,7 @@
                                 aria-controls="tabpanel-text"
                                 @click="setModeText()"
                                 :class="mode === 'text' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
-                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition cursor-pointer"
                             >
                                 <x-icon.document class="w-4 h-4" />
                                 {{ __('messages.tab_text') }}
@@ -86,7 +86,7 @@
                                 aria-controls="tabpanel-file"
                                 @click="setModeFile()"
                                 :class="mode === 'file' ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'"
-                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-medium transition cursor-pointer"
+                                class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-sm font-medium transition cursor-pointer"
                             >
                                 <x-icon.file class="w-4 h-4" />
                                 {{ __('messages.tab_file') }}
@@ -145,7 +145,7 @@
                                 x-show="file"
                                 class="flex items-center gap-4 p-4 h-28 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl"
                             >
-                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-500/10 shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-500/10 shrink-0">
                                     <x-icon.file class="w-6 h-6 text-violet-600 dark:text-violet-400" />
                                 </div>
                                 <div class="flex-1 min-w-0">
@@ -222,7 +222,7 @@
                             <button
                                 type="button"
                                 @click="applyMaxSecurity()"
-                                class="flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
+                                class="flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
                             >
                                 <x-icon.shield-check />
                                 {{ __('messages.max_security') }}
@@ -364,7 +364,7 @@
                                 {{ __('messages.captcha_label') }}
                             </label>
                             <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg font-mono text-lg text-gray-900 dark:text-white">
+                                <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl font-mono text-lg text-gray-900 dark:text-white">
                                     <span x-text="captchaChallenge"></span> = ?
                                 </div>
                                 <input
@@ -372,7 +372,7 @@
                                     type="number"
                                     x-model="captchaAnswer"
                                     placeholder="{{ __('messages.captcha_placeholder') }}"
-                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
+                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                     @keydown.enter.prevent="submitWithCaptcha()"
                                 >
                             </div>
@@ -435,7 +435,7 @@
                                     type="button"
                                     @click="copyToClipboard()"
                                     :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                    class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
+                                    class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-xl transition cursor-pointer"
                                 >
                                     <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                     <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -471,7 +471,7 @@
                                         type="button"
                                         @click="copyToClipboard()"
                                         :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-xl transition cursor-pointer"
                                     >
                                         <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="copied">{{ __('messages.btn_copied') }}</span>
@@ -496,7 +496,7 @@
                                         type="button"
                                         @click="copyKeyToClipboard()"
                                         :aria-label="keyCopied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition cursor-pointer"
+                                        class="absolute end-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-xl transition cursor-pointer"
                                     >
                                         <span x-show="!keyCopied">{{ __('messages.btn_copy') }}</span>
                                         <span x-show="keyCopied">{{ __('messages.btn_copied') }}</span>

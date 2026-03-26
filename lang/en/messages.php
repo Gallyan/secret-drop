@@ -317,6 +317,7 @@ return [
     'admin_mode' => 'Mode',
     'admin_limited_views' => '{1} :count view max|[2,*] :count views max',
     'admin_unlimited' => 'Unlimited',
+    'admin_hour' => 'hour',
     'admin_day' => 'day',
     'admin_days' => 'days',
     'admin_extend' => 'Extend',

@@ -317,6 +317,7 @@ return [
     'admin_mode' => 'モード',
     'admin_limited_views' => '最大:count回閲覧',
     'admin_unlimited' => '無制限',
+    'admin_hour' => '時間',
     'admin_day' => '日',
     'admin_days' => '日',
     'admin_extend' => '延長',

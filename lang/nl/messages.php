@@ -317,6 +317,7 @@ return [
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count weergave max|[2,*] :count weergaven max',
     'admin_unlimited' => 'Onbeperkt',
+    'admin_hour' => 'uur',
     'admin_day' => 'dag',
     'admin_days' => 'dagen',
     'admin_extend' => 'Verlengen',

@@ -317,6 +317,7 @@ return [
     'admin_mode' => 'الوضع',
     'admin_limited_views' => '{1} قراءة واحدة كحد أقصى|[2,*] :count قراءات كحد أقصى',
     'admin_unlimited' => 'غير محدود',
+    'admin_hour' => 'ساعة',
     'admin_day' => 'يوم',
     'admin_days' => 'أيام',
     'admin_extend' => 'تمديد',

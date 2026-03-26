@@ -317,6 +317,7 @@ return [
     'admin_mode' => 'Tryb',
     'admin_limited_views' => '{1} :count wyświetlenie maks.|[2,*] :count wyświetleń maks.',
     'admin_unlimited' => 'Bez limitu',
+    'admin_hour' => 'godzina',
     'admin_day' => 'dzień',
     'admin_days' => 'dni',
     'admin_extend' => 'Przedłuż',

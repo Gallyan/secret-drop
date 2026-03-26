@@ -65,13 +65,22 @@ function formatUtcElements(container) {
 }
 
 export default () => ({
-    extendDays: '7',
     showRevokeModal: false,
     pendingRevokeId: null,
     errorMessage: '',
     pollTimer: null,
+    extendUrlTemplate: '',
+    revokeUrlTemplate: '',
+    pollUrl: '',
+    currentPage: '',
+    rootEl: null,
 
     init() {
+        this.rootEl = this.$el;
+        this.extendUrlTemplate = this.$el.dataset.extendUrl;
+        this.revokeUrlTemplate = this.$el.dataset.revokeUrl;
+        this.pollUrl = this.$el.dataset.pollUrl;
+        this.currentPage = this.$el.dataset.currentPage;
         formatUtcElements(this.$el);
         this.startPolling();
     },
@@ -84,7 +93,7 @@ export default () => ({
     },
 
     startPolling() {
-        const pollUrl = this.$el.dataset.pollUrl;
+        const pollUrl = this.pollUrl;
         if (!pollUrl) {
             return;
         }
@@ -98,19 +107,17 @@ export default () => ({
     },
 
     getKnownIds() {
-        return Array.from(this.$el.querySelectorAll(':scope > [data-secret-id]'))
+        return Array.from(this.rootEl.querySelectorAll(':scope > [data-secret-id]'))
             .map(el => el.dataset.secretId);
     },
 
     async poll() {
-        const pollUrl = this.$el.dataset.pollUrl;
-        const page = this.$el.dataset.currentPage;
-        if (!pollUrl) {
+        if (!this.pollUrl) {
             return;
         }
 
-        const url = new URL(pollUrl, window.location.origin);
-        url.searchParams.set('page', page);
+        const url = new URL(this.pollUrl, window.location.origin);
+        url.searchParams.set('page', this.currentPage);
         url.searchParams.set('known', this.getKnownIds().join(','));
 
         try {
@@ -129,18 +136,17 @@ export default () => ({
                 return;
             }
 
-            if (!response.ok) {
-                return;
+            if (response.ok) {
+                const data = await response.json();
+                this.insertNewCards(data.new_cards_html);
+                this.updateSecrets(data.secrets);
+                this.rootEl.dataset.total = data.total;
             }
-
-            const data = await response.json();
-            this.insertNewCards(data.new_cards_html);
-            this.updateSecrets(data.secrets);
-            this.$el.dataset.total = data.total;
-            startRing(POLL_INTERVAL);
         } catch {
             // Network error — skip this cycle
         }
+
+        startRing(POLL_INTERVAL);
     },
 
     insertNewCards(newCardsHtml) {
@@ -148,7 +154,7 @@ export default () => ({
             return;
         }
 
-        const firstCard = this.$el.querySelector('[data-secret-id]');
+        const firstCard = this.rootEl.querySelector('[data-secret-id]');
         for (const [, html] of Object.entries(newCardsHtml)) {
             const template = document.createElement('template');
             template.innerHTML = html.trim();
@@ -159,7 +165,7 @@ export default () => ({
             if (firstCard) {
                 firstCard.before(newCard);
             } else {
-                this.$el.append(newCard);
+                this.rootEl.append(newCard);
             }
 
             Alpine.initTree(newCard);
@@ -173,7 +179,7 @@ export default () => ({
         }
 
         const PAGE_SIZE = 5;
-        const allCards = this.$el.querySelectorAll(':scope > [data-secret-id]');
+        const allCards = this.rootEl.querySelectorAll(':scope > [data-secret-id]');
         for (let i = PAGE_SIZE; i < allCards.length; i++) {
             allCards[i].remove();
         }
@@ -181,14 +187,14 @@ export default () => ({
 
     updateSecrets(secrets) {
         const labels = {
-            labelActive: this.$el.dataset.labelActive,
-            labelExpired: this.$el.dataset.labelExpired,
-            labelRevoked: this.$el.dataset.labelRevoked,
-            labelConsumed: this.$el.dataset.labelConsumed,
+            labelActive: this.rootEl.dataset.labelActive,
+            labelExpired: this.rootEl.dataset.labelExpired,
+            labelRevoked: this.rootEl.dataset.labelRevoked,
+            labelConsumed: this.rootEl.dataset.labelConsumed,
         };
 
         secrets.forEach((secret) => {
-            const card = this.$el.querySelector(`[data-secret-id="${secret.id}"]`);
+            const card = this.rootEl.querySelector(`[data-secret-id="${secret.id}"]`);
             if (!card) {
                 return;
             }
@@ -241,8 +247,12 @@ export default () => ({
         });
     },
 
-    buildUrl(template, secretId) {
-        return this.$el.dataset[template].replace('__ID__', secretId);
+    buildExtendUrl(secretId) {
+        return this.extendUrlTemplate.replace('__ID__', secretId);
+    },
+
+    buildRevokeUrl(secretId) {
+        return this.revokeUrlTemplate.replace('__ID__', secretId);
     },
 
     openRevokeModal(buttonEl) {
@@ -276,13 +286,15 @@ export default () => ({
         const secretId = buttonEl.dataset.secretId;
         const card = buttonEl.closest('[x-data]');
         const data = Alpine.$data(card);
+        const select = card.querySelector('[data-extend-select]');
+        const hours = parseInt(select.value);
         data.extending = true;
 
         try {
-            const response = await fetch(this.buildUrl('extendUrl', secretId), {
+            const response = await fetch(this.buildExtendUrl(secretId), {
                 method: 'POST',
                 headers: fetchHeaders(),
-                body: JSON.stringify({ days: parseInt(this.extendDays) }),
+                body: JSON.stringify({ hours }),
             });
 
             if (response.ok) {
@@ -306,7 +318,7 @@ export default () => ({
     },
 
     async revoke(secretId) {
-        const card = this.$el.querySelector(`:scope > [data-secret-id="${secretId}"]`);
+        const card = this.rootEl.querySelector(`:scope > [data-secret-id="${secretId}"]`);
         if (!card) {
             return;
         }
@@ -315,7 +327,7 @@ export default () => ({
         data.revoking = true;
 
         try {
-            const response = await fetch(this.buildUrl('revokeUrl', secretId), {
+            const response = await fetch(this.buildRevokeUrl(secretId), {
                 method: 'POST',
                 headers: fetchHeaders(),
             });
@@ -324,7 +336,7 @@ export default () => ({
                 const badgeEl = card.querySelector('[data-poll-badge]');
                 if (badgeEl) {
                     const config = BADGE_CONFIG.revoked;
-                    badgeEl.innerHTML = `<span class="${config.class}">${esc(this.$el.dataset.labelRevoked)}</span>`;
+                    badgeEl.innerHTML = `<span class="${config.class}">${esc(this.rootEl.dataset.labelRevoked)}</span>`;
                 }
 
                 const actionsEl = card.querySelector('[data-poll-actions]');
