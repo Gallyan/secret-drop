@@ -9,8 +9,8 @@
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-violet-500/0 to-indigo-600 shrink-0">
-                    <x-icon.settings class="w-6 h-6 text-white" />
+                <div class="logo-icon flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500/0 to-indigo-600 shrink-0">
+                    <x-icon.settings class="w-7 h-7 text-white" />
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white inline-flex items-center gap-2">
