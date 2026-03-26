@@ -248,7 +248,7 @@ class AdminControllerTest extends TestCase
 
         $response = $this->postJson("/fr/admin/secrets/{$secret->id}/revoke");
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
 
         $secret->delete();
     }
@@ -280,7 +280,7 @@ class AdminControllerTest extends TestCase
             'hours' => 168,
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
 
         $secret->delete();
     }

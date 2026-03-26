@@ -164,7 +164,7 @@ class AdminController extends Controller
         $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
-            return response()->json(['error' => 'unauthorized'], 403);
+            return response()->json(['error' => 'unauthenticated'], 401);
         }
 
         $secret = Secret::where('id', $id)
@@ -200,7 +200,7 @@ class AdminController extends Controller
         $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
-            return response()->json(['error' => 'unauthorized'], 403);
+            return response()->json(['error' => 'unauthenticated'], 401);
         }
 
         $secret = Secret::where('id', $id)
