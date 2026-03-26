@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'Secret not found',
     'error_unavailable' => 'Secret unavailable',
     'error_generic' => 'Error',
-    'secret_not_exist' => 'This secret does not exist or may have been deleted.',
+    'secret_not_exist' => 'This secret could not be found or is no longer available.',
     'secret_expired' => 'This secret has expired and is no longer accessible.',
     'secret_revoked' => 'This secret was revoked by its creator.',
     'secret_max_views' => 'This secret has reached its maximum number of views and is no longer accessible.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'Extend',
     'admin_revoke' => 'Revoke',
     'admin_revoke_confirm' => 'Are you sure you want to revoke this secret? This action is irreversible.',
+    'admin_error_connection' => 'Connection error. Please try again.',
+    'admin_error_not_found' => 'Secret not found.',
+    'admin_error_already_revoked' => 'This secret has already been revoked.',
+    'admin_error_revoked' => 'This secret has been revoked.',
+    'admin_error_revoke' => 'Error revoking secret.',
+    'admin_error_extend' => 'Error extending secret.',
 
     // Magic link email
     'email_magic_link_subject' => 'Your access link to Secret Drop',

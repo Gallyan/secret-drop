@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'Geheim niet gevonden',
     'error_unavailable' => 'Geheim niet beschikbaar',
     'error_generic' => 'Fout',
-    'secret_not_exist' => 'Dit geheim bestaat niet of is verwijderd.',
+    'secret_not_exist' => 'Dit geheim is niet gevonden of is niet meer beschikbaar.',
     'secret_expired' => 'Dit geheim is verlopen en niet meer toegankelijk.',
     'secret_revoked' => 'Dit geheim is ingetrokken door de maker.',
     'secret_max_views' => 'Dit geheim heeft het maximale aantal weergaven bereikt en is niet meer toegankelijk.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'Verlengen',
     'admin_revoke' => 'Intrekken',
     'admin_revoke_confirm' => 'Weet u zeker dat u dit geheim wilt intrekken? Deze actie is onomkeerbaar.',
+    'admin_error_connection' => 'Verbindingsfout. Probeer het opnieuw.',
+    'admin_error_not_found' => 'Geheim niet gevonden.',
+    'admin_error_already_revoked' => 'Dit geheim is al ingetrokken.',
+    'admin_error_revoked' => 'Dit geheim is ingetrokken.',
+    'admin_error_revoke' => 'Fout bij het intrekken.',
+    'admin_error_extend' => 'Fout bij het verlengen.',
 
     // Magic link email
     'email_magic_link_subject' => 'Uw toegangslink voor Secret Drop',

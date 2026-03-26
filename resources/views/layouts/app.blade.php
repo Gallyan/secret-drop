@@ -151,6 +151,12 @@
             'unit_megabytes',
             'a11y_show_passphrase',
             'a11y_hide_passphrase',
+            'admin_error_connection',
+            'admin_error_not_found',
+            'admin_error_already_revoked',
+            'admin_error_revoked',
+            'admin_error_revoke',
+            'admin_error_extend',
         ]));
     @endphp
     <style nonce="@nonce">[x-cloak]{display:none!important}html{background:#e5e7eb}html.dark{background:#0f172a}</style>

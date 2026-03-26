@@ -104,7 +104,7 @@ return [
     'error_not_found' => '비밀을 찾을 수 없습니다',
     'error_unavailable' => '비밀을 사용할 수 없습니다',
     'error_generic' => '오류',
-    'secret_not_exist' => '이 비밀은 존재하지 않거나 삭제되었을 수 있습니다.',
+    'secret_not_exist' => '이 비밀을 찾을 수 없거나 더 이상 이용할 수 없습니다.',
     'secret_expired' => '이 비밀은 만료되어 더 이상 접근할 수 없습니다.',
     'secret_revoked' => '이 비밀은 작성자에 의해 취소되었습니다.',
     'secret_max_views' => '이 비밀은 최대 조회 수에 도달하여 더 이상 접근할 수 없습니다.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => '연장',
     'admin_revoke' => '취소',
     'admin_revoke_confirm' => '이 비밀을 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+    'admin_error_connection' => '연결 오류가 발생했습니다. 다시 시도해 주세요.',
+    'admin_error_not_found' => '비밀을 찾을 수 없습니다.',
+    'admin_error_already_revoked' => '이 비밀은 이미 취소되었습니다.',
+    'admin_error_revoked' => '이 비밀은 취소되었습니다.',
+    'admin_error_revoke' => '취소 중 오류가 발생했습니다.',
+    'admin_error_extend' => '연장 중 오류가 발생했습니다.',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Drop 접근 링크',

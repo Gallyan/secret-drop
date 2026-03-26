@@ -112,6 +112,45 @@ class AdminController extends Controller
         return view('admin.dashboard', ['secrets' => $secrets]);
     }
 
+    public function poll(Request $request): JsonResponse
+    {
+        $emailHash = $this->getSessionAuth($request);
+
+        if (! $emailHash) {
+            return response()->json(['error' => 'unauthenticated'], 401);
+        }
+
+        $page = (int) $request->input('page', 1);
+        $knownIds = array_filter(explode(',', $request->input('known', '')));
+
+        $secrets = Secret::where('creator_email_hash', $emailHash)
+            ->orderByDesc('created_at')
+            ->paginate(5, ['*'], 'page', $page);
+
+        $newCardsHtml = [];
+        foreach ($secrets as $secret) {
+            if (! empty($knownIds) && ! in_array($secret->id, $knownIds, true)) {
+                $newCardsHtml[$secret->id] = view('admin.secret-card', ['secret' => $secret])->render();
+            }
+        }
+
+        return response()->json([
+            'total' => $secrets->total(),
+            'secrets' => $secrets->map(fn (Secret $secret) => [
+                'id' => $secret->id,
+                'read_count' => $secret->read_count,
+                'max_views' => $secret->max_views,
+                'first_read_at' => $secret->first_read_at?->toIso8601String(),
+                'expire_at' => $secret->expire_at->toIso8601String(),
+                'is_revoked' => $secret->isRevoked(),
+                'is_expired' => $secret->isExpired(),
+                'has_reached_max_views' => $secret->hasReachedMaxViews(),
+                'is_accessible' => $secret->isAccessible(),
+            ]),
+            'new_cards_html' => $newCardsHtml,
+        ]);
+    }
+
     public function logout(Request $request): RedirectResponse
     {
         $request->session()->invalidate();

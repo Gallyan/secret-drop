@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'Geheimnis nicht gefunden',
     'error_unavailable' => 'Geheimnis nicht verfügbar',
     'error_generic' => 'Fehler',
-    'secret_not_exist' => 'Dieses Geheimnis existiert nicht oder wurde möglicherweise gelöscht.',
+    'secret_not_exist' => 'Dieses Geheimnis wurde nicht gefunden oder ist nicht mehr verfügbar.',
     'secret_expired' => 'Dieses Geheimnis ist abgelaufen und nicht mehr zugänglich.',
     'secret_revoked' => 'Dieses Geheimnis wurde von seinem Ersteller widerrufen.',
     'secret_max_views' => 'Dieses Geheimnis hat die maximale Anzahl von Aufrufen erreicht und ist nicht mehr zugänglich.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'Verlängern',
     'admin_revoke' => 'Widerrufen',
     'admin_revoke_confirm' => 'Sind Sie sicher, dass Sie dieses Geheimnis widerrufen möchten? Diese Aktion ist unwiderruflich.',
+    'admin_error_connection' => 'Verbindungsfehler. Bitte versuchen Sie es erneut.',
+    'admin_error_not_found' => 'Geheimnis nicht gefunden.',
+    'admin_error_already_revoked' => 'Dieses Geheimnis wurde bereits widerrufen.',
+    'admin_error_revoked' => 'Dieses Geheimnis wurde widerrufen.',
+    'admin_error_revoke' => 'Fehler beim Widerrufen.',
+    'admin_error_extend' => 'Fehler beim Verlängern.',
 
     // Magic link email
     'email_magic_link_subject' => 'Ihr Zugangslink zu Secret Drop',

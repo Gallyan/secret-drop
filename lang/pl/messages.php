@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'Nie znaleziono sekretu',
     'error_unavailable' => 'Sekret jest niedostępny',
     'error_generic' => 'Błąd',
-    'secret_not_exist' => 'Ten sekret nie istnieje lub został usunięty.',
+    'secret_not_exist' => 'Ten sekret nie został znaleziony lub nie jest już dostępny.',
     'secret_expired' => 'Ten sekret wygasł i nie jest już dostępny.',
     'secret_revoked' => 'Ten sekret został unieważniony przez twórcę.',
     'secret_max_views' => 'Ten sekret osiągnął maksymalną liczbę wyświetleń i nie jest już dostępny.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'Przedłuż',
     'admin_revoke' => 'Unieważnij',
     'admin_revoke_confirm' => 'Czy na pewno chcesz unieważnić ten sekret? Ta akcja jest nieodwracalna.',
+    'admin_error_connection' => 'Błąd połączenia. Spróbuj ponownie.',
+    'admin_error_not_found' => 'Nie znaleziono sekretu.',
+    'admin_error_already_revoked' => 'Ten sekret został już unieważniony.',
+    'admin_error_revoked' => 'Ten sekret został unieważniony.',
+    'admin_error_revoke' => 'Błąd podczas unieważniania.',
+    'admin_error_extend' => 'Błąd podczas przedłużania.',
 
     // Magic link email
     'email_magic_link_subject' => 'Twój link dostępu do Secret Drop',

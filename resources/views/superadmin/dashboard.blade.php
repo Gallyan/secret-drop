@@ -15,10 +15,7 @@
                     <div>
                     <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white inline-flex items-center gap-2">
                         {{ __('messages.superadmin_dashboard_title') }}
-                        <svg id="pollRing" class="shrink-0 -rotate-90" width="24" height="24" viewBox="0 0 28 28">
-                            <circle cx="14" cy="14" r="12" fill="none" stroke="currentColor" class="text-gray-200 dark:text-slate-700" stroke-width="2.5" />
-                            <circle id="pollRingProgress" cx="14" cy="14" r="12" fill="none" stroke="currentColor" class="text-amber-500" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="75.4" stroke-dashoffset="75.4" />
-                        </svg>
+                        <x-poll-ring color="text-amber-500" />
                     </h1>
                     <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
                     </div>

@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'シークレットが見つかりません',
     'error_unavailable' => 'シークレットは利用できません',
     'error_generic' => 'エラー',
-    'secret_not_exist' => 'このシークレットは存在しないか、削除された可能性があります。',
+    'secret_not_exist' => 'このシークレットは見つからないか、すでに利用できません。',
     'secret_expired' => 'このシークレットは期限切れで、もうアクセスできません。',
     'secret_revoked' => 'このシークレットは作成者によって取り消されました。',
     'secret_max_views' => 'このシークレットは最大閲覧数に達し、もうアクセスできません。',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => '延長',
     'admin_revoke' => '取り消し',
     'admin_revoke_confirm' => 'このシークレットを取り消しますか？この操作は元に戻せません。',
+    'admin_error_connection' => '接続エラーが発生しました。もう一度お試しください。',
+    'admin_error_not_found' => 'シークレットが見つかりません。',
+    'admin_error_already_revoked' => 'このシークレットはすでに取り消されています。',
+    'admin_error_revoked' => 'このシークレットは取り消されました。',
+    'admin_error_revoke' => '取り消し中にエラーが発生しました。',
+    'admin_error_extend' => '延長中にエラーが発生しました。',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Dropアクセスリンク',

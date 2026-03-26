@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'Segredo não encontrado',
     'error_unavailable' => 'Segredo indisponível',
     'error_generic' => 'Erro',
-    'secret_not_exist' => 'Este segredo não existe ou pode ter sido excluído.',
+    'secret_not_exist' => 'Este segredo não foi encontrado ou não está mais disponível.',
     'secret_expired' => 'Este segredo expirou e não está mais acessível.',
     'secret_revoked' => 'Este segredo foi revogado pelo seu criador.',
     'secret_max_views' => 'Este segredo atingiu o número máximo de visualizações e não está mais acessível.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'Estender',
     'admin_revoke' => 'Revogar',
     'admin_revoke_confirm' => 'Tem certeza que deseja revogar este segredo? Esta ação é irreversível.',
+    'admin_error_connection' => 'Erro de conexão. Tente novamente.',
+    'admin_error_not_found' => 'Segredo não encontrado.',
+    'admin_error_already_revoked' => 'Este segredo já foi revogado.',
+    'admin_error_revoked' => 'Este segredo foi revogado.',
+    'admin_error_revoke' => 'Erro ao revogar o segredo.',
+    'admin_error_extend' => 'Erro ao estender o segredo.',
 
     // Magic link email
     'email_magic_link_subject' => 'Seu link de acesso ao Secret Drop',

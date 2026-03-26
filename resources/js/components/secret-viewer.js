@@ -57,15 +57,10 @@ export default () => ({
 
                 if (!response.ok) {
                     if (response.status === 404) {
+                        const hasKey = !!location.hash && location.hash.length > 1;
                         this.loadError = {
-                            type: 'not_found',
-                            message: t('secret_not_exist'),
-                        };
-                    } else if (response.status === 410) {
-                        this.loadError = {
-                            type: 'unavailable',
-                            reason: data.reason || 'unknown',
-                            message: this.getUnavailableMessage(data.reason),
+                            type: hasKey ? 'unavailable' : 'not_found',
+                            message: hasKey ? t('secret_unavailable_generic') : t('secret_not_exist'),
                         };
                     } else {
                         this.loadError = {

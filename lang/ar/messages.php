@@ -104,7 +104,7 @@ return [
     'error_not_found' => 'السر غير موجود',
     'error_unavailable' => 'السر غير متاح',
     'error_generic' => 'خطأ',
-    'secret_not_exist' => 'هذا السر غير موجود أو ربما تم حذفه.',
+    'secret_not_exist' => 'لم يتم العثور على هذا السر أو لم يعد متاحاً.',
     'secret_expired' => 'انتهت صلاحية هذا السر ولم يعد متاحاً.',
     'secret_revoked' => 'تم إلغاء هذا السر من قبل منشئه.',
     'secret_max_views' => 'وصل هذا السر إلى الحد الأقصى لعدد القراءات ولم يعد متاحاً.',
@@ -322,6 +322,12 @@ return [
     'admin_extend' => 'تمديد',
     'admin_revoke' => 'إلغاء',
     'admin_revoke_confirm' => 'هل أنت متأكد أنك تريد إلغاء هذا السر؟ هذا الإجراء لا يمكن التراجع عنه.',
+    'admin_error_connection' => 'خطأ في الاتصال. يرجى المحاولة مرة أخرى.',
+    'admin_error_not_found' => 'لم يتم العثور على السر.',
+    'admin_error_already_revoked' => 'تم إلغاء هذا السر بالفعل.',
+    'admin_error_revoked' => 'تم إلغاء هذا السر.',
+    'admin_error_revoke' => 'حدث خطأ أثناء الإلغاء.',
+    'admin_error_extend' => 'حدث خطأ أثناء التمديد.',
 
     // Magic link email
     'email_magic_link_subject' => 'رابط الوصول إلى Secret Drop',
