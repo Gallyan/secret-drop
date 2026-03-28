@@ -192,7 +192,7 @@
         {{-- Desktop: links + switchers --}}
         <div class="hidden sm:flex items-center justify-center gap-x-2 gap-y-1 px-4">
             <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <span>&copy; {{ date('Y') }} <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>
@@ -231,7 +231,7 @@
         {{-- Mobile: copyright + icon buttons --}}
         <div class="sm:hidden flex flex-col items-center gap-2">
             <div class="flex items-center gap-1.5">
-                <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <span>&copy; {{ date('Y') }} <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>
