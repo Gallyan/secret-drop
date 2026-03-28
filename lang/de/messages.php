@@ -531,6 +531,7 @@ return [
     'chart_error_trends' => 'Fehlertrends',
     'chart_error_breakdown' => 'Fehleraufschlüsselung',
     'stat_total_errors' => 'Gesamt',
+    'no_errors' => 'Keine Fehler in diesem Zeitraum',
     'hint_errors_4xx' => 'Gesamtzahl der Clientfehler (400-499). Umfasst nicht gefundene Seiten, Validierungsfehler und Ratenlimitierung. Eine hohe Anzahl kann auf Scanning oder fehlerhafte Links hinweisen.',
     'hint_errors_5xx' => 'Gesamtzahl der Serverfehler (500-599). Jeder Wert über 0 bedeutet einen Bug oder ein Infrastrukturproblem — prüfen Sie sofort die Logs.',
     'hint_errors_422' => 'Anfragen, die von der Validierung abgelehnt wurden (ungültiges Payload-Format, falsche Krypto-Feldgrößen). Ein Anstieg kann auf API-Missbrauch oder Angriffe mit fehlerhaften Daten hinweisen.',

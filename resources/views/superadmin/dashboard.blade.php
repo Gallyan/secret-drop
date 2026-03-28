@@ -146,14 +146,14 @@
                 </div>
             </x-card>
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['total_422']) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['by_code'][422] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
                     <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
                 </div>
             </x-card>
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['total_429']) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['by_code'][429] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
                     <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
@@ -169,43 +169,30 @@
                 </div>
             </x-card>
             <x-card class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.chart_error_breakdown') }}</h2>
-                    <div class="text-right">
-                        <div class="text-2xl font-bold text-gray-900 dark:text-white" data-kpi="errors_total">{{ number_format($errorStats['total_4xx'] + $errorStats['total_5xx']) }}</div>
-                        <div class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.stat_total_errors') }}</div>
-                    </div>
-                </div>
-                <div id="pollErrorCodes" class="space-y-2 mb-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_error_breakdown') }}</h2>
+                <div id="pollErrorCodes" class="space-y-2">
                     @php
-                        $errorCodes = [
-                            '404' => $errorStats['total_404'],
-                            '422' => $errorStats['total_422'],
-                            '429' => $errorStats['total_429'],
-                            '500' => $errorStats['total_500'],
-                        ];
-                        $maxError = max(1, max($errorCodes));
-                        $errorColors = [
-                            '404' => 'bg-gray-500',
-                            '422' => 'bg-amber-500',
-                            '429' => 'bg-orange-500',
-                            '500' => 'bg-red-500',
-                        ];
+                        $byCode = $errorStats['by_code'] ?? [];
+                        $maxError = max(1, count($byCode) > 0 ? max($byCode) : 1);
                     @endphp
-                    @foreach($errorCodes as $code => $count)
-                        @php $pct = ($count / $maxError) * 100; @endphp
+                    @forelse($byCode as $code => $count)
+                        @php
+                            $pct = ($count / $maxError) * 100;
+                            $color = $code >= 500 ? 'bg-red-500' : ($code >= 429 ? 'bg-orange-500' : ($code >= 422 ? 'bg-amber-500' : 'bg-gray-500'));
+                        @endphp
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">{{ $code }}</span>
                             <div class="flex items-center gap-2 flex-1 ml-3">
                                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                    <div class="h-full {{ $errorColors[$code] }} rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                    <div class="h-full {{ $color }} rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
                                 <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($count) }}</span>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
                 </div>
-                <canvas id="errorBreakdownChart" height="120" role="img" aria-label="{{ __('messages.chart_error_breakdown') }}"></canvas>
             </x-card>
         </div>
 
@@ -579,10 +566,7 @@
         errorTranslations: {
             errors_4xx: '{{ __('messages.stat_errors_4xx') }}',
             errors_5xx: '{{ __('messages.stat_errors_5xx') }}',
-            errors_404: '404',
-            errors_422: '422',
-            errors_429: '429',
-            errors_500: '500'
+            no_errors: '{{ __('messages.no_errors') }}'
         }
     };
 </script>

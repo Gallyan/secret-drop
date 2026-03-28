@@ -36,12 +36,6 @@ class TrackHttpErrors
             $this->stats->increment(StatsService::HTTP_ERRORS_4XX);
         }
 
-        match ($status) {
-            404 => $this->stats->increment(StatsService::HTTP_ERRORS_404),
-            422 => $this->stats->increment(StatsService::HTTP_ERRORS_422),
-            429 => $this->stats->increment(StatsService::HTTP_ERRORS_429),
-            500 => $this->stats->increment(StatsService::HTTP_ERRORS_500),
-            default => null,
-        };
+        $this->stats->increment("http_errors_{$status}");
     }
 }

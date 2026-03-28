@@ -93,10 +93,11 @@ function updateKpis(data) {
     kpi('health', `${h.active_secrets} / ${h.pending_cleanup}`);
 
     const err = data.errorStats || {};
+    const byCode = err.by_code || {};
     kpi('errors_4xx', fmt(err.total_4xx || 0));
     kpi('errors_5xx', fmt(err.total_5xx || 0));
-    kpi('errors_422', fmt(err.total_422 || 0));
-    kpi('errors_429', fmt(err.total_429 || 0));
+    kpi('errors_422', fmt(byCode[422] || 0));
+    kpi('errors_429', fmt(byCode[429] || 0));
     kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
 
     const pv = data.pageviews;
@@ -191,14 +192,6 @@ function updateCharts(data) {
     updateLineChart('errors', labels, [
         metricData(m, 'http_errors_4xx', labels),
         metricData(m, 'http_errors_5xx', labels),
-    ]);
-
-    const errTotals = data.errorStats || {};
-    updateBarChart('errorBreakdown', [
-        errTotals.total_404 || 0,
-        errTotals.total_422 || 0,
-        errTotals.total_429 || 0,
-        errTotals.total_500 || 0,
     ]);
 
     // Pageviews daily
@@ -386,29 +379,33 @@ function updateLists(data) {
         }
     }
 
-    // Error codes (progress bar list)
+    // Error codes (list only received codes)
     const elErr = document.getElementById('pollErrorCodes');
     if (elErr) {
-        const err = data.errorStats || {};
-        const codes = [
-            { code: '404', count: err.total_404 || 0, color: 'bg-gray-500' },
-            { code: '422', count: err.total_422 || 0, color: 'bg-amber-500' },
-            { code: '429', count: err.total_429 || 0, color: 'bg-orange-500' },
-            { code: '500', count: err.total_500 || 0, color: 'bg-red-500' },
-        ];
-        const maxErr = Math.max(1, ...codes.map(c => c.count));
-        elErr.innerHTML = codes.map(({ code, count, color }) => {
-            const pct = Math.min((count / maxErr) * 100, 100);
-            return `<div class="flex items-center justify-between text-sm">
-                <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">${code}</span>
-                <div class="flex items-center gap-2 flex-1 ml-3">
-                    <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div class="h-full ${color} rounded-full" style="width: ${pct}%"></div>
+        const byCode = (data.errorStats || {}).by_code || {};
+        const entries = Object.entries(byCode)
+            .map(([code, count]) => ({ code, count }))
+            .sort((a, b) => b.count - a.count);
+
+        if (entries.length === 0) {
+            const et = window.superAdminData?.errorTranslations || {};
+            elErr.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
+        } else {
+            const maxErr = Math.max(1, ...entries.map(e => e.count));
+            elErr.innerHTML = entries.map(({ code, count }) => {
+                const pct = Math.min((count / maxErr) * 100, 100);
+                const color = code >= 500 ? 'bg-red-500' : (code >= 429 ? 'bg-orange-500' : (code >= 422 ? 'bg-amber-500' : 'bg-gray-500'));
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">${code}</span>
+                    <div class="flex items-center gap-2 flex-1 ml-3">
+                        <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full ${color} rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                        <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(count)}</span>
                     </div>
-                    <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(count)}</span>
-                </div>
-            </div>`;
-        }).join('');
+                </div>`;
+            }).join('');
+        }
     }
 }
 
@@ -592,22 +589,6 @@ function initDashboard() {
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
-        });
-    }
-
-    // Error breakdown chart
-    const errStats = data.errorStats || {};
-    if (document.getElementById('errorBreakdownChart')) {
-        charts.errorBreakdown = new Chart(document.getElementById('errorBreakdownChart'), {
-            type: 'bar',
-            data: {
-                labels: [et.errors_404 || '404', et.errors_422 || '422', et.errors_429 || '429', et.errors_500 || '500'],
-                datasets: [{
-                    data: [errStats.total_404 || 0, errStats.total_422 || 0, errStats.total_429 || 0, errStats.total_500 || 0],
-                    backgroundColor: ['#6b7280', '#f59e0b', '#f97316', '#ef4444']
-                }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: scales.y } }
         });
     }
 

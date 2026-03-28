@@ -164,17 +164,39 @@ class StatsSeeder extends Seeder
         }
 
         // HTTP error metrics
-        $errors404 = (int) (rand(2, 15) * $multiplier);
-        $errors422 = (int) (rand(0, 5) * $multiplier);
-        $errors429 = (int) (rand(0, 3) * $multiplier);
-        $errors500 = rand(0, 100) <= 15 ? rand(1, 3) : 0;
+        $errorCodes = [
+            400 => (int) (rand(0, 2) * $multiplier),
+            401 => (int) (rand(0, 3) * $multiplier),
+            403 => (int) (rand(0, 4) * $multiplier),
+            404 => (int) (rand(2, 15) * $multiplier),
+            405 => rand(0, 100) <= 10 ? rand(1, 2) : 0,
+            408 => rand(0, 100) <= 5 ? 1 : 0,
+            422 => (int) (rand(0, 5) * $multiplier),
+            429 => (int) (rand(0, 3) * $multiplier),
+            500 => rand(0, 100) <= 15 ? rand(1, 3) : 0,
+            502 => rand(0, 100) <= 5 ? 1 : 0,
+            503 => rand(0, 100) <= 5 ? 1 : 0,
+        ];
 
-        $metrics['http_errors_4xx'] = $errors404 + $errors422 + $errors429;
-        $metrics['http_errors_5xx'] = $errors500;
-        $metrics['http_errors_404'] = $errors404;
-        $metrics['http_errors_422'] = $errors422;
-        $metrics['http_errors_429'] = $errors429;
-        $metrics['http_errors_500'] = $errors500;
+        $total4xx = 0;
+        $total5xx = 0;
+
+        foreach ($errorCodes as $code => $count) {
+            if ($count <= 0) {
+                continue;
+            }
+
+            $metrics["http_errors_{$code}"] = $count;
+
+            if ($code >= 500) {
+                $total5xx += $count;
+            } else {
+                $total4xx += $count;
+            }
+        }
+
+        $metrics['http_errors_4xx'] = $total4xx;
+        $metrics['http_errors_5xx'] = $total5xx;
 
         foreach ($metrics as $metric => $count) {
             if ($count <= 0) {

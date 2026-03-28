@@ -531,6 +531,7 @@ return [
     'chart_error_trends' => 'Tendenza degli errori',
     'chart_error_breakdown' => 'Dettaglio degli errori',
     'stat_total_errors' => 'totale',
+    'no_errors' => 'Nessun errore in questo periodo',
     'hint_errors_4xx' => 'Totale errori client (400-499). Include pagine non trovate, errori di validazione e limitazione delle richieste. Un numero elevato può indicare scansioni o link configurati in modo errato.',
     'hint_errors_5xx' => 'Totale errori server (500-599). Qualsiasi valore superiore a 0 indica un bug o un problema infrastrutturale — controllare i log immediatamente.',
     'hint_errors_422' => 'Richieste rifiutate dalla validazione (formato del payload non valido, dimensioni errate dei campi crittografici). Un picco può indicare un uso improprio dell\'API o attacchi con dati malformati.',

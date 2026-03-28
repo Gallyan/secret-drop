@@ -530,6 +530,7 @@ return [
     'chart_error_trends' => 'Error trends',
     'chart_error_breakdown' => 'Error breakdown',
     'stat_total_errors' => 'total',
+    'no_errors' => 'No errors in this period',
     'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
     'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
     'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',

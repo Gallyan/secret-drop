@@ -189,6 +189,32 @@ class StatsService
         return $heatmap;
     }
 
+    /**
+     * @return array<int, int>
+     */
+    public function getErrorCodeBreakdown(?string $startDate = null): array
+    {
+        $query = DB::table('stats_daily')
+            ->select('metric', DB::raw('SUM(count) as total'))
+            ->where('metric', 'like', 'http_errors_%')
+            ->whereNotIn('metric', [self::HTTP_ERRORS_4XX, self::HTTP_ERRORS_5XX])
+            ->groupBy('metric')
+            ->orderByDesc('total');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $result = [];
+
+        foreach ($query->get() as $row) {
+            $code = (int) str_replace('http_errors_', '', $row->metric);
+            $result[$code] = (int) $row->total;
+        }
+
+        return $result;
+    }
+
     public function trackFirstReadDelay(int $delaySeconds): void
     {
         $this->increment(self::FIRST_READ_DELAY_TOTAL, $delaySeconds);
