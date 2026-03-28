@@ -524,21 +524,21 @@ return [
 
     // Monitoring
     'monitoring_title' => 'Monitoring',
-    'stat_errors_4xx' => 'Client errors (4xx)',
-    'stat_errors_5xx' => 'Server errors (5xx)',
-    'stat_errors_422' => 'Validation (422)',
-    'stat_errors_429' => 'Rate limited (429)',
-    'chart_error_trends' => 'Error trends',
-    'chart_error_breakdown' => 'Error breakdown',
-    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
-    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
-    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
-    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'stat_errors_4xx' => '클라이언트 오류 (4xx)',
+    'stat_errors_5xx' => '서버 오류 (5xx)',
+    'stat_errors_422' => '유효성 검사 (422)',
+    'stat_errors_429' => '속도 제한 (429)',
+    'chart_error_trends' => '오류 추세',
+    'chart_error_breakdown' => '오류 세부 분석',
+    'hint_errors_4xx' => '총 클라이언트 오류(400-499). 페이지 미발견, 유효성 검사 실패, 속도 제한을 포함합니다. 높은 수치는 스캐닝이나 잘못 구성된 링크를 나타낼 수 있습니다.',
+    'hint_errors_5xx' => '총 서버 오류(500-599). 0보다 큰 값은 버그 또는 인프라 문제를 의미합니다 — 즉시 로그를 확인하세요.',
+    'hint_errors_422' => '유효성 검사에 의해 거부된 요청(잘못된 페이로드 형식, 잘못된 암호화 필드 크기). 급증은 API 오용이나 잘못된 데이터로의 공격을 나타낼 수 있습니다.',
+    'hint_errors_429' => '속도 제한에 의해 차단된 요청. 급증은 서비스에 대한 남용 또는 자동화된 공격을 나타냅니다.',
 
-    // Structural cipher validation
-    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
-    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
-    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
-    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
-    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
+    // 구조적 암호화 유효성 검사
+    'val_invalid_base64url' => '값은 유효한 Base64URL 인코딩 문자열이어야 합니다.',
+    'val_invalid_byte_length' => '잘못된 바이트 길이: :expected 바이트가 예상되었으나 :actual을(를) 수신했습니다.',
+    'val_min_byte_length' => '최소 바이트 길이는 :min이며, :actual을(를) 수신했습니다.',
+    'val_salt_iv2_consistency' => 'Salt와 IV2는 둘 다 있거나 둘 다 없어야 합니다.',
+    'val_passphrase_requires_salt' => '패스프레이즈 플래그는 Salt와 IV2가 존재해야 합니다.',
 ];

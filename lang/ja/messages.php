@@ -524,21 +524,21 @@ return [
 
     // Monitoring
     'monitoring_title' => 'Monitoring',
-    'stat_errors_4xx' => 'Client errors (4xx)',
-    'stat_errors_5xx' => 'Server errors (5xx)',
-    'stat_errors_422' => 'Validation (422)',
-    'stat_errors_429' => 'Rate limited (429)',
-    'chart_error_trends' => 'Error trends',
-    'chart_error_breakdown' => 'Error breakdown',
-    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
-    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
-    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
-    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'stat_errors_4xx' => 'クライアントエラー (4xx)',
+    'stat_errors_5xx' => 'サーバーエラー (5xx)',
+    'stat_errors_422' => 'バリデーション (422)',
+    'stat_errors_429' => 'レート制限 (429)',
+    'chart_error_trends' => 'エラー傾向',
+    'chart_error_breakdown' => 'エラー内訳',
+    'hint_errors_4xx' => 'クライアントエラーの合計（400-499）。ページ未検出、バリデーションエラー、レート制限を含みます。高い数値はスキャンや設定ミスのリンクを示す可能性があります。',
+    'hint_errors_5xx' => 'サーバーエラーの合計（500-599）。0を超える値はバグまたはインフラの問題を意味します — すぐにログを確認してください。',
+    'hint_errors_422' => 'バリデーションにより拒否されたリクエスト（無効なペイロード形式、暗号フィールドサイズの誤り）。急増はAPIの不正使用や不正データによる攻撃を示す可能性があります。',
+    'hint_errors_429' => 'レート制限によりブロックされたリクエスト。急増はサービスへの悪用や自動化された攻撃を示します。',
 
-    // Structural cipher validation
-    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
-    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
-    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
-    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
-    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
+    // 構造的暗号バリデーション
+    'val_invalid_base64url' => '値は有効なBase64URLエンコード文字列である必要があります。',
+    'val_invalid_byte_length' => '無効なバイト長: :expected バイトが必要ですが、:actual を受信しました。',
+    'val_min_byte_length' => '最小バイト長は :min ですが、:actual を受信しました。',
+    'val_salt_iv2_consistency' => 'SaltとIV2は両方存在するか、両方存在しない必要があります。',
+    'val_passphrase_requires_salt' => 'パスフレーズフラグにはSaltとIV2の存在が必要です。',
 ];

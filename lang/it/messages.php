@@ -524,21 +524,21 @@ return [
 
     // Monitoring
     'monitoring_title' => 'Monitoring',
-    'stat_errors_4xx' => 'Client errors (4xx)',
-    'stat_errors_5xx' => 'Server errors (5xx)',
-    'stat_errors_422' => 'Validation (422)',
-    'stat_errors_429' => 'Rate limited (429)',
-    'chart_error_trends' => 'Error trends',
-    'chart_error_breakdown' => 'Error breakdown',
-    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
-    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
-    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
-    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'stat_errors_4xx' => 'Errori client (4xx)',
+    'stat_errors_5xx' => 'Errori server (5xx)',
+    'stat_errors_422' => 'Validazione (422)',
+    'stat_errors_429' => 'Limite di richieste (429)',
+    'chart_error_trends' => 'Tendenza degli errori',
+    'chart_error_breakdown' => 'Dettaglio degli errori',
+    'hint_errors_4xx' => 'Totale errori client (400-499). Include pagine non trovate, errori di validazione e limitazione delle richieste. Un numero elevato può indicare scansioni o link configurati in modo errato.',
+    'hint_errors_5xx' => 'Totale errori server (500-599). Qualsiasi valore superiore a 0 indica un bug o un problema infrastrutturale — controllare i log immediatamente.',
+    'hint_errors_422' => 'Richieste rifiutate dalla validazione (formato del payload non valido, dimensioni errate dei campi crittografici). Un picco può indicare un uso improprio dell\'API o attacchi con dati malformati.',
+    'hint_errors_429' => 'Richieste bloccate dalla limitazione delle richieste. Un picco indica abuso o attacchi automatizzati contro il servizio.',
 
-    // Structural cipher validation
-    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
-    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
-    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
-    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
-    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
+    // Validazione strutturale della cifratura
+    'val_invalid_base64url' => 'Il valore deve essere una stringa codificata Base64URL valida.',
+    'val_invalid_byte_length' => 'Lunghezza in byte non valida: previsti :expected byte, ricevuti :actual.',
+    'val_min_byte_length' => 'La lunghezza minima in byte è :min, ricevuti :actual.',
+    'val_salt_iv2_consistency' => 'Salt e IV2 devono essere entrambi presenti o entrambi assenti.',
+    'val_passphrase_requires_salt' => 'Il flag passphrase richiede la presenza di salt e IV2.',
 ];

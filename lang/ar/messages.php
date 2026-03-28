@@ -524,21 +524,21 @@ return [
 
     // Monitoring
     'monitoring_title' => 'Monitoring',
-    'stat_errors_4xx' => 'Client errors (4xx)',
-    'stat_errors_5xx' => 'Server errors (5xx)',
-    'stat_errors_422' => 'Validation (422)',
-    'stat_errors_429' => 'Rate limited (429)',
-    'chart_error_trends' => 'Error trends',
-    'chart_error_breakdown' => 'Error breakdown',
-    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
-    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
-    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
-    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'stat_errors_4xx' => 'أخطاء العميل (4xx)',
+    'stat_errors_5xx' => 'أخطاء الخادم (5xx)',
+    'stat_errors_422' => 'التحقق (422)',
+    'stat_errors_429' => 'تحديد المعدل (429)',
+    'chart_error_trends' => 'اتجاهات الأخطاء',
+    'chart_error_breakdown' => 'تفصيل الأخطاء',
+    'hint_errors_4xx' => 'إجمالي أخطاء العميل (400-499). يشمل الصفحات غير الموجودة وأخطاء التحقق وتحديد المعدل. قد يشير العدد المرتفع إلى عمليات مسح أو روابط خاطئة.',
+    'hint_errors_5xx' => 'إجمالي أخطاء الخادم (500-599). أي قيمة أعلى من 0 تعني وجود خلل أو مشكلة في البنية التحتية — تحقق من السجلات فوراً.',
+    'hint_errors_422' => 'الطلبات المرفوضة بواسطة التحقق (تنسيق حمولة غير صالح، أحجام حقول تشفير خاطئة). قد تشير الزيادة المفاجئة إلى إساءة استخدام واجهة البرمجة أو هجمات ببيانات مشوهة.',
+    'hint_errors_429' => 'الطلبات المحظورة بسبب تحديد المعدل. تشير الزيادة المفاجئة إلى إساءة الاستخدام أو هجمات آلية ضد الخدمة.',
 
-    // Structural cipher validation
-    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
-    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
-    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
-    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
-    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
+    // التحقق الهيكلي للتشفير
+    'val_invalid_base64url' => 'يجب أن تكون القيمة سلسلة مشفرة بـ Base64URL صالحة.',
+    'val_invalid_byte_length' => 'طول البايت غير صالح: المتوقع :expected بايت، تم استلام :actual.',
+    'val_min_byte_length' => 'الحد الأدنى لطول البايت هو :min، تم استلام :actual.',
+    'val_salt_iv2_consistency' => 'يجب أن يكون Salt وIV2 موجودين معاً أو غائبين معاً.',
+    'val_passphrase_requires_salt' => 'يتطلب مؤشر عبارة المرور وجود Salt وIV2.',
 ];

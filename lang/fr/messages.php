@@ -534,7 +534,7 @@ return [
     'stat_errors_4xx' => 'Erreurs client (4xx)',
     'stat_errors_5xx' => 'Erreurs serveur (5xx)',
     'stat_errors_422' => 'Validation (422)',
-    'stat_errors_429' => 'Rate limited (429)',
+    'stat_errors_429' => 'Trop de requêtes (429)',
     'chart_error_trends' => 'Tendance des erreurs',
     'chart_error_breakdown' => 'Détail des erreurs',
     'hint_errors_4xx' => 'Total des erreurs client (400-499). Inclut les pages introuvables, les rejets de validation et le rate limiting. Un nombre élevé peut indiquer du scan ou des liens cassés.',
