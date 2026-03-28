@@ -184,7 +184,7 @@ class SecretsController extends Controller
 
     public function revoke(string $adminToken): JsonResponse
     {
-        $secret = Secret::where('admin_token_hash', $this->tokenService->hashToken($adminToken))->first();
+        $secret = Secret::findByAdminToken($adminToken);
 
         if (! $secret) {
             return response()->json(['error' => 'not_found'], 404);
