@@ -278,34 +278,31 @@ class StatsService
      */
     public function getSystemHealth(): array
     {
-        $activeSecrets = $this->getActiveSecretsCount();
+        $now = now();
 
-        $totalFiles = count(Storage::disk('secrets')->allFiles());
+        $result = Secret::query()
+            ->selectRaw('
+                SUM(CASE WHEN revoked_at IS NULL
+                    AND (expire_at IS NULL OR expire_at > ?)
+                    AND (max_views IS NULL OR read_count < max_views)
+                    THEN 1 ELSE 0 END) as active_secrets,
+                SUM(CASE WHEN (revoked_at IS NOT NULL
+                    OR (expire_at IS NOT NULL AND expire_at <= ?)
+                    OR (max_views IS NOT NULL AND read_count >= max_views))
+                    AND (ciphertext IS NOT NULL OR file_path IS NOT NULL)
+                    THEN 1 ELSE 0 END) as pending_cleanup
+            ', [$now, $now])
+            ->first();
 
-        $pendingCleanup = Secret::query()
-            ->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->whereNotNull('revoked_at');
-                })
-                ->orWhere(function ($q2) {
-                    $q2->whereNotNull('expire_at')
-                        ->where('expire_at', '<=', now());
-                })
-                ->orWhere(function ($q2) {
-                    $q2->whereNotNull('max_views')
-                        ->whereColumn('read_count', '>=', 'max_views');
-                });
-            })
-            ->where(function ($q) {
-                $q->whereNotNull('ciphertext')
-                    ->orWhereNotNull('file_path');
-            })
-            ->count();
+        $path = Storage::disk('secrets')->path('');
+        $totalFiles = is_dir($path)
+            ? count(Storage::disk('secrets')->allFiles())
+            : 0;
 
         return [
-            'active_secrets' => $activeSecrets,
+            'active_secrets' => (int) $result->active_secrets,
             'total_files' => $totalFiles,
-            'pending_cleanup' => $pendingCleanup,
+            'pending_cleanup' => (int) $result->pending_cleanup,
         ];
     }
 

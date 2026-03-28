@@ -71,7 +71,7 @@
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <x-stat-card kpi="secrets_created" :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
             <x-stat-card kpi="secrets_read" :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
-            <x-stat-card kpi="active_secrets" :value="number_format($activeSecrets)" :label="__('messages.stat_active_secrets')" />
+            <x-stat-card kpi="active_secrets" :value="number_format($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
             <x-stat-card kpi="read_rate" :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
             <x-stat-card kpi="avg_first_read" :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
             <x-stat-card kpi="files_shared" :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
@@ -497,7 +497,7 @@
         pageviewsDaily: @json($pageviews['daily']),
         avgFirstReadDelay: @json($avgFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
-        activeSecrets: @json($activeSecrets),
+        activeSecrets: @json($systemHealth['active_secrets']),
         readRate: @json($readRate),
         creatorConcentration: @json($creatorConcentration),
         systemHealth: @json($systemHealth),
