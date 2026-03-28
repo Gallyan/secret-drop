@@ -47,7 +47,7 @@ class SuperAdminController extends Controller
             MagicLink::create([
                 'email_hash' => 'superadmin',
                 'token_hash' => $tokenData['hash'],
-                'expire_at' => now()->addMinutes(10),
+                'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
             ]);
 
             $url = route('superadmin.verify', ['token' => $tokenData['token']]);
@@ -84,7 +84,7 @@ class SuperAdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addHour()->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }
@@ -95,7 +95,7 @@ class SuperAdminController extends Controller
             return redirect()->route('superadmin.index');
         }
 
-        $this->renewSessionAuth($request);
+        $this->renewSessionExpiry($request);
 
         $data = $this->collectStats($request);
 

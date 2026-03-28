@@ -54,7 +54,7 @@ class AdminController extends Controller
         MagicLink::create([
             'email_hash' => $emailHash,
             'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(10),
+            'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
@@ -90,7 +90,7 @@ class AdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(30)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
 
         return redirect()->route('admin.dashboard');
     }
@@ -103,7 +103,7 @@ class AdminController extends Controller
             return redirect()->route('admin.index');
         }
 
-        $this->renewSessionAuth($request);
+        $this->renewSessionExpiry($request);
 
         $secrets = Secret::where('creator_email_hash', $emailHash)
             ->orderByDesc('created_at')
