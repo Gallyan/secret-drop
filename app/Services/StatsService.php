@@ -43,6 +43,18 @@ class StatsService
 
     public const HEATMAP_SECRETS_READ = 'secrets_read';
 
+    public const HTTP_ERRORS_4XX = 'http_errors_4xx';
+
+    public const HTTP_ERRORS_5XX = 'http_errors_5xx';
+
+    public const HTTP_ERRORS_404 = 'http_errors_404';
+
+    public const HTTP_ERRORS_422 = 'http_errors_422';
+
+    public const HTTP_ERRORS_429 = 'http_errors_429';
+
+    public const HTTP_ERRORS_500 = 'http_errors_500';
+
     public function increment(string $metric, int $amount = 1): void
     {
         $date = now()->toDateString();

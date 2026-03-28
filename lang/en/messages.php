@@ -521,6 +521,15 @@ return [
     'val_days_min' => 'The number of days must be at least 1.',
     'val_days_max' => 'The number of days cannot exceed 30.',
 
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Client errors (4xx)',
+    'stat_errors_5xx' => 'Server errors (5xx)',
+    'stat_errors_422' => 'Validation (422)',
+    'stat_errors_429' => 'Rate limited (429)',
+    'chart_error_trends' => 'Error trends',
+    'chart_error_breakdown' => 'Error breakdown',
+
     // Structural cipher validation
     'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
     'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',

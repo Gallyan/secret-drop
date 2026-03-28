@@ -127,6 +127,29 @@
             </div>
         </x-card>
 
+        {{-- Monitoring section --}}
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.monitoring_title') }}</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <x-stat-card kpi="errors_4xx" :value="number_format($errorStats['total_4xx'])" :label="__('messages.stat_errors_4xx')" />
+            <x-stat-card kpi="errors_5xx" :value="number_format($errorStats['total_5xx'])" :label="__('messages.stat_errors_5xx')" />
+            <x-stat-card kpi="errors_422" :value="number_format($errorStats['total_422'])" :label="__('messages.stat_errors_422')" />
+            <x-stat-card kpi="errors_429" :value="number_format($errorStats['total_429'])" :label="__('messages.stat_errors_429')" />
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <x-card class="p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_error_trends') }}</h2>
+                <div class="h-56">
+                    <canvas id="errorTrendsChart" role="img" aria-label="{{ __('messages.chart_error_trends') }}"></canvas>
+                </div>
+            </x-card>
+            <x-card class="p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_error_breakdown') }}</h2>
+                <canvas id="errorBreakdownChart" height="200" role="img" aria-label="{{ __('messages.chart_error_breakdown') }}"></canvas>
+            </x-card>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_created') }}</h2>
@@ -492,6 +515,15 @@
             desktop: '{{ __('messages.stat_device_desktop') }}',
             mobile: '{{ __('messages.stat_device_mobile') }}',
             tablet: '{{ __('messages.stat_device_tablet') }}'
+        },
+        errorStats: @json($errorStats),
+        errorTranslations: {
+            errors_4xx: '{{ __('messages.stat_errors_4xx') }}',
+            errors_5xx: '{{ __('messages.stat_errors_5xx') }}',
+            errors_404: '404',
+            errors_422: '422',
+            errors_429: '429',
+            errors_500: '500'
         }
     };
 </script>

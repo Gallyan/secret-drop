@@ -529,6 +529,15 @@ return [
     'val_days_min' => 'Le nombre de jours doit être au moins 1.',
     'val_days_max' => 'Le nombre de jours ne peut pas dépasser 30.',
 
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Erreurs client (4xx)',
+    'stat_errors_5xx' => 'Erreurs serveur (5xx)',
+    'stat_errors_422' => 'Validation (422)',
+    'stat_errors_429' => 'Rate limited (429)',
+    'chart_error_trends' => 'Tendance des erreurs',
+    'chart_error_breakdown' => 'Détail des erreurs',
+
     // Validation structurelle du chiffrement
     'val_invalid_base64url' => 'La valeur doit être une chaîne Base64URL valide.',
     'val_invalid_byte_length' => 'Taille en octets invalide : :expected attendus, :actual reçus.',

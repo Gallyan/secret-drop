@@ -148,6 +148,14 @@ class SuperAdminController extends Controller
             'referrers' => $this->stats->getReferrers($startDate),
             'botStats' => $this->stats->getBotStats($startDate),
             'deviceStats' => $this->stats->getDeviceStats($startDate),
+            'errorStats' => [
+                'total_4xx' => $stats['totals'][StatsService::HTTP_ERRORS_4XX] ?? 0,
+                'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
+                'total_422' => $stats['totals'][StatsService::HTTP_ERRORS_422] ?? 0,
+                'total_429' => $stats['totals'][StatsService::HTTP_ERRORS_429] ?? 0,
+                'total_404' => $stats['totals'][StatsService::HTTP_ERRORS_404] ?? 0,
+                'total_500' => $stats['totals'][StatsService::HTTP_ERRORS_500] ?? 0,
+            ],
         ];
     }
 }

@@ -163,6 +163,19 @@ class StatsSeeder extends Seeder
             $metrics['first_read_delay_count'] = $read;
         }
 
+        // HTTP error metrics
+        $errors404 = (int) (rand(2, 15) * $multiplier);
+        $errors422 = (int) (rand(0, 5) * $multiplier);
+        $errors429 = (int) (rand(0, 3) * $multiplier);
+        $errors500 = rand(0, 100) <= 15 ? rand(1, 3) : 0;
+
+        $metrics['http_errors_4xx'] = $errors404 + $errors422 + $errors429;
+        $metrics['http_errors_5xx'] = $errors500;
+        $metrics['http_errors_404'] = $errors404;
+        $metrics['http_errors_422'] = $errors422;
+        $metrics['http_errors_429'] = $errors429;
+        $metrics['http_errors_500'] = $errors500;
+
         foreach ($metrics as $metric => $count) {
             if ($count <= 0) {
                 continue;

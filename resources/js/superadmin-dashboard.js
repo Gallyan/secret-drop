@@ -92,6 +92,12 @@ function updateKpis(data) {
     const h = data.systemHealth;
     kpi('health', `${h.active_secrets} / ${h.pending_cleanup}`);
 
+    const err = data.errorStats || {};
+    kpi('errors_4xx', fmt(err.total_4xx || 0));
+    kpi('errors_5xx', fmt(err.total_5xx || 0));
+    kpi('errors_422', fmt(err.total_422 || 0));
+    kpi('errors_429', fmt(err.total_429 || 0));
+
     const pv = data.pageviews;
     kpi('pv_visitors', fmt(pv.total_human));
     kpi('pv_bots', fmt(pv.total_bot));
@@ -178,6 +184,20 @@ function updateCharts(data) {
         metricData(m, 'magic_links_requested', labels),
         metricData(m, 'magic_links_used', labels),
         metricData(m, 'secrets_extended', labels),
+    ]);
+
+    // Error trends
+    updateLineChart('errors', labels, [
+        metricData(m, 'http_errors_4xx', labels),
+        metricData(m, 'http_errors_5xx', labels),
+    ]);
+
+    const errTotals = data.errorStats || {};
+    updateBarChart('errorBreakdown', [
+        errTotals.total_404 || 0,
+        errTotals.total_422 || 0,
+        errTotals.total_429 || 0,
+        errTotals.total_500 || 0,
     ]);
 
     // Pageviews daily
@@ -533,6 +553,38 @@ function initDashboard() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
     });
 
+    // Error trends chart
+    const et = data.errorTranslations || {};
+    if (document.getElementById('errorTrendsChart')) {
+        charts.errors = new Chart(document.getElementById('errorTrendsChart'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: et.errors_4xx || '4xx', data: metricData(m, 'http_errors_4xx', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 },
+                    { label: et.errors_5xx || '5xx', data: metricData(m, 'http_errors_5xx', labels), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.3 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
+        });
+    }
+
+    // Error breakdown chart
+    const errStats = data.errorStats || {};
+    if (document.getElementById('errorBreakdownChart')) {
+        charts.errorBreakdown = new Chart(document.getElementById('errorBreakdownChart'), {
+            type: 'bar',
+            data: {
+                labels: [et.errors_404 || '404', et.errors_422 || '422', et.errors_429 || '429', et.errors_500 || '500'],
+                datasets: [{
+                    data: [errStats.total_404 || 0, errStats.total_422 || 0, errStats.total_429 || 0, errStats.total_500 || 0],
+                    backgroundColor: ['#6b7280', '#f59e0b', '#f97316', '#ef4444']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: scales.y } }
+        });
+    }
+
     if (heatmapCreated) {
         renderHeatmap('heatmapCreated', heatmapCreated, 'violet', translations);
     }
@@ -644,6 +696,7 @@ async function poll() {
         data.pageviews = newData.pageviews;
         data.botStats = newData.botStats;
         data.deviceStats = newData.deviceStats;
+        data.errorStats = newData.errorStats;
 
         // In-place updates (no scroll jump)
         updateKpis(newData);
