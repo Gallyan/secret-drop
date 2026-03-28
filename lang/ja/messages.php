@@ -521,4 +521,11 @@ return [
     'val_days_integer' => '日数は整数でなければなりません。',
     'val_days_min' => '日数は1以上でなければなりません。',
     'val_days_max' => '日数は30を超えてはなりません。',
+
+    // Structural cipher validation
+    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
+    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
+    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
+    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
+    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
 ];

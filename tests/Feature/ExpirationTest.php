@@ -207,10 +207,10 @@ class ExpirationTest extends TestCase
     {
         return [
             'type' => 'text',
-            'ciphertext' => 'test_content_'.uniqid(),
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ', // 32 bytes
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => 'YWFhYWFhYWFhYWFh', // 12 bytes
                 'version' => 1,
             ],
             'expiration' => $expiration,

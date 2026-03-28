@@ -520,4 +520,11 @@ return [
     'val_days_integer' => 'The number of days must be an integer.',
     'val_days_min' => 'The number of days must be at least 1.',
     'val_days_max' => 'The number of days cannot exceed 30.',
+
+    // Structural cipher validation
+    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
+    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
+    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
+    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
+    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
 ];

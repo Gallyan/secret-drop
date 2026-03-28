@@ -521,4 +521,11 @@ return [
     'val_days_integer' => 'Liczba dni musi być liczbą całkowitą.',
     'val_days_min' => 'Liczba dni musi wynosić co najmniej 1.',
     'val_days_max' => 'Liczba dni nie może przekraczać 30.',
+
+    // Structural cipher validation
+    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
+    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
+    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
+    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
+    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
 ];

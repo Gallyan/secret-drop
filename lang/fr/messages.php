@@ -528,4 +528,11 @@ return [
     'val_days_integer' => 'Le nombre de jours doit être un entier.',
     'val_days_min' => 'Le nombre de jours doit être au moins 1.',
     'val_days_max' => 'Le nombre de jours ne peut pas dépasser 30.',
+
+    // Validation structurelle du chiffrement
+    'val_invalid_base64url' => 'La valeur doit être une chaîne Base64URL valide.',
+    'val_invalid_byte_length' => 'Taille en octets invalide : :expected attendus, :actual reçus.',
+    'val_min_byte_length' => 'Taille minimale requise : :min octets, :actual reçus.',
+    'val_salt_iv2_consistency' => 'Salt et IV2 doivent être présents ensemble ou absents ensemble.',
+    'val_passphrase_requires_salt' => 'Le flag passphrase nécessite la présence de salt et IV2.',
 ];
