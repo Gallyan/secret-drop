@@ -691,7 +691,6 @@ async function poll() {
         data.systemHealth = newData.systemHealth;
         data.readRate = newData.readRate;
         data.creatorConcentration = newData.creatorConcentration;
-        data.systemHealth = newData.systemHealth;
         data.referrers = newData.referrers;
         data.pageviews = newData.pageviews;
         data.botStats = newData.botStats;
