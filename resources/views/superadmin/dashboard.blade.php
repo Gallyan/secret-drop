@@ -131,10 +131,34 @@
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.monitoring_title') }}</h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <x-stat-card kpi="errors_4xx" :value="number_format($errorStats['total_4xx'])" :label="__('messages.stat_errors_4xx')" />
-            <x-stat-card kpi="errors_5xx" :value="number_format($errorStats['total_5xx'])" :label="__('messages.stat_errors_5xx')" />
-            <x-stat-card kpi="errors_422" :value="number_format($errorStats['total_422'])" :label="__('messages.stat_errors_422')" />
-            <x-stat-card kpi="errors_429" :value="number_format($errorStats['total_429'])" :label="__('messages.stat_errors_429')" />
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ number_format($errorStats['total_4xx']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_4xx') }}</span>
+                    <x-hint-tooltip id="hint4xx" :text="__('messages.hint_errors_4xx')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ number_format($errorStats['total_5xx']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_5xx') }}</span>
+                    <x-hint-tooltip id="hint5xx" :text="__('messages.hint_errors_5xx')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['total_422']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
+                    <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['total_429']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
+                    <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
+                </div>
+            </x-card>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

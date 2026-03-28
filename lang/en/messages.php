@@ -529,6 +529,10 @@ return [
     'stat_errors_429' => 'Rate limited (429)',
     'chart_error_trends' => 'Error trends',
     'chart_error_breakdown' => 'Error breakdown',
+    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
+    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
+    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
+    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
 
     // Structural cipher validation
     'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
