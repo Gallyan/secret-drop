@@ -318,7 +318,7 @@ class StatsService
                 return 0;
             }
 
-            $output = @exec("du -sb " . escapeshellarg(rtrim($path, '/')) . " 2>/dev/null");
+            $output = @exec('du -sb '.escapeshellarg(rtrim($path, '/')).' 2>/dev/null');
 
             if ($output && preg_match('/^(\d+)/', $output, $matches)) {
                 return (int) $matches[1];
