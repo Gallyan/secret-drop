@@ -537,6 +537,7 @@ return [
     'stat_errors_429' => 'Trop de requêtes (429)',
     'chart_error_trends' => 'Tendance des erreurs',
     'chart_error_breakdown' => 'Détail des erreurs',
+    'stat_total_errors' => 'total',
     'hint_errors_4xx' => 'Total des erreurs client (400-499). Inclut les pages introuvables, les rejets de validation et le rate limiting. Un nombre élevé peut indiquer du scan ou des liens cassés.',
     'hint_errors_5xx' => 'Total des erreurs serveur (500-599). Toute valeur supérieure à 0 signifie un bug ou un problème d\'infrastructure — consultez les logs immédiatement.',
     'hint_errors_422' => 'Requêtes rejetées par la validation (format de payload invalide, tailles de champs crypto incorrectes). Un pic peut indiquer un usage abusif de l\'API ou des attaques avec des données malformées.',

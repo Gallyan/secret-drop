@@ -530,6 +530,7 @@ return [
     'stat_errors_429' => 'Limit zapytań (429)',
     'chart_error_trends' => 'Trendy błędów',
     'chart_error_breakdown' => 'Podział błędów',
+    'stat_total_errors' => 'łącznie',
     'hint_errors_4xx' => 'Łączna liczba błędów klienta (400-499). Obejmuje strony nieznalezione, błędy walidacji i ograniczenia częstotliwości. Wysoka liczba może wskazywać na skanowanie lub błędne linki.',
     'hint_errors_5xx' => 'Łączna liczba błędów serwera (500-599). Każda wartość powyżej 0 oznacza błąd lub problem z infrastrukturą — sprawdź logi natychmiast.',
     'hint_errors_422' => 'Żądania odrzucone przez walidację (nieprawidłowy format danych, niepoprawne rozmiary pól kryptograficznych). Nagły wzrost może wskazywać na niewłaściwe użycie API lub ataki z uszkodzonymi danymi.',

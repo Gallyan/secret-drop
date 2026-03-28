@@ -530,6 +530,7 @@ return [
     'stat_errors_429' => 'Límite de peticiones (429)',
     'chart_error_trends' => 'Tendencia de errores',
     'chart_error_breakdown' => 'Desglose de errores',
+    'stat_total_errors' => 'total',
     'hint_errors_4xx' => 'Total de errores de cliente (400-499). Incluye páginas no encontradas, fallos de validación y limitación de peticiones. Un número alto puede indicar escaneo o enlaces mal configurados.',
     'hint_errors_5xx' => 'Total de errores de servidor (500-599). Cualquier valor superior a 0 indica un bug o problema de infraestructura — revise los logs inmediatamente.',
     'hint_errors_422' => 'Solicitudes rechazadas por validación (formato de payload inválido, tamaños de campos criptográficos incorrectos). Un pico puede indicar uso indebido de la API o ataques con datos malformados.',

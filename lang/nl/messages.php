@@ -530,6 +530,7 @@ return [
     'stat_errors_429' => 'Snelheidslimiet (429)',
     'chart_error_trends' => 'Foutentrends',
     'chart_error_breakdown' => 'Foutenanalyse',
+    'stat_total_errors' => 'totaal',
     'hint_errors_4xx' => 'Totaal clientfouten (400-499). Omvat niet-gevonden pagina\'s, validatiefouten en snelheidslimitering. Een hoog aantal kan duiden op scanning of foutieve links.',
     'hint_errors_5xx' => 'Totaal serverfouten (500-599). Elke waarde boven 0 betekent een bug of infrastructuurprobleem — controleer de logs onmiddellijk.',
     'hint_errors_422' => 'Verzoeken afgewezen door validatie (ongeldig payloadformaat, verkeerde cryptografische veldgroottes). Een piek kan duiden op API-misbruik of aanvallen met onjuiste gegevens.',

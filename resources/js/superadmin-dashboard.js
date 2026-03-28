@@ -97,6 +97,7 @@ function updateKpis(data) {
     kpi('errors_5xx', fmt(err.total_5xx || 0));
     kpi('errors_422', fmt(err.total_422 || 0));
     kpi('errors_429', fmt(err.total_429 || 0));
+    kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
 
     const pv = data.pageviews;
     kpi('pv_visitors', fmt(pv.total_human));
@@ -383,6 +384,31 @@ function updateLists(data) {
                 </div>`;
             }).join('') + '</div>';
         }
+    }
+
+    // Error codes (progress bar list)
+    const elErr = document.getElementById('pollErrorCodes');
+    if (elErr) {
+        const err = data.errorStats || {};
+        const codes = [
+            { code: '404', count: err.total_404 || 0, color: 'bg-gray-500' },
+            { code: '422', count: err.total_422 || 0, color: 'bg-amber-500' },
+            { code: '429', count: err.total_429 || 0, color: 'bg-orange-500' },
+            { code: '500', count: err.total_500 || 0, color: 'bg-red-500' },
+        ];
+        const maxErr = Math.max(1, ...codes.map(c => c.count));
+        elErr.innerHTML = codes.map(({ code, count, color }) => {
+            const pct = Math.min((count / maxErr) * 100, 100);
+            return `<div class="flex items-center justify-between text-sm">
+                <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">${code}</span>
+                <div class="flex items-center gap-2 flex-1 ml-3">
+                    <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div class="h-full ${color} rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                    <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(count)}</span>
+                </div>
+            </div>`;
+        }).join('');
     }
 }
 
