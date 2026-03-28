@@ -225,7 +225,7 @@ class StatsService
 
     public function getReadRate(?string $startDate = null): ?float
     {
-        $query = Secret::query()
+        $query = DB::table('secrets')
             ->selectRaw('COUNT(*) as total, COUNT(first_read_at) as read_count');
 
         if ($startDate) {
@@ -233,12 +233,13 @@ class StatsService
         }
 
         $result = $query->first();
+        $total = $result ? (int) $result->total : 0;
 
-        if ($result->total === 0) {
+        if ($total === 0) {
             return null;
         }
 
-        return ($result->read_count / $result->total) * 100;
+        return ((int) $result->read_count / $total) * 100;
     }
 
     /**
@@ -280,7 +281,7 @@ class StatsService
     {
         $now = now();
 
-        $result = Secret::query()
+        $result = DB::table('secrets')
             ->selectRaw('
                 SUM(CASE WHEN revoked_at IS NULL
                     AND (expire_at IS NULL OR expire_at > ?)
@@ -300,9 +301,9 @@ class StatsService
             : 0;
 
         return [
-            'active_secrets' => (int) $result->active_secrets,
+            'active_secrets' => (int) ($result->active_secrets ?? 0),
             'total_files' => $totalFiles,
-            'pending_cleanup' => (int) $result->pending_cleanup,
+            'pending_cleanup' => (int) ($result->pending_cleanup ?? 0),
         ];
     }
 
