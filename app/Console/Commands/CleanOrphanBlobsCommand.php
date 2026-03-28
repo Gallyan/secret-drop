@@ -57,7 +57,7 @@ class CleanOrphanBlobsCommand extends Command
         $prefix = $dryRun ? '[DRY RUN] Would delete' : 'Deleted';
         $this->info("{$prefix} {$deleted} orphan blobs.");
 
-        if (! $dryRun && $deleted > 0) {
+        if (! $dryRun) {
             Cache::forget('disk_usage_secrets');
         }
 
