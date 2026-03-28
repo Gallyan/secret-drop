@@ -315,15 +315,19 @@ class StatsService
     public function getCurrentDiskUsage(): int
     {
         return Cache::remember('disk_usage_secrets', 3600, function () {
-            $disk = Storage::disk('secrets');
-            $files = $disk->allFiles();
-            $totalSize = 0;
+            $path = Storage::disk('secrets')->path('');
 
-            foreach ($files as $file) {
-                $totalSize += $disk->size($file);
+            if (! is_dir($path)) {
+                return 0;
             }
 
-            return $totalSize;
+            $output = @exec("du -sb " . escapeshellarg(rtrim($path, '/')) . " 2>/dev/null");
+
+            if ($output && preg_match('/^(\d+)/', $output, $matches)) {
+                return (int) $matches[1];
+            }
+
+            return 0;
         });
     }
 
