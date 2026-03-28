@@ -89,4 +89,4 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr)
+Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr) · © 2026
