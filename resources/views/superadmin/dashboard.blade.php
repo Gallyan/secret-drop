@@ -482,6 +482,12 @@
             ],
             stat_visitors: '{{ __('messages.stat_visitors') }}',
             stat_bots: '{{ __('messages.stat_bots') }}'
+        },
+        deviceIcons: { desktop: '🖥️', mobile: '📱', tablet: '📟' },
+        deviceLabels: {
+            desktop: '{{ __('messages.stat_device_desktop') }}',
+            mobile: '{{ __('messages.stat_device_mobile') }}',
+            tablet: '{{ __('messages.stat_device_tablet') }}'
         }
     };
 </script>

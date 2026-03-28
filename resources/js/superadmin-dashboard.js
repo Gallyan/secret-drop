@@ -284,6 +284,58 @@ function updateLists(data) {
     renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80');
     renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80');
 
+    // By device
+    const elD = document.getElementById('pollByDevice');
+    if (elD) {
+        const devices = data.deviceStats;
+        const entries = Object.entries(devices).sort((a, b) => b[1] - a[1]);
+        if (entries.length === 0) {
+            elD.innerHTML = `<p class="text-sm text-gray-500 dark:text-slate-500">${esc(sd.noDataText || '')}</p>`;
+        } else {
+            const totalDevices = Math.max(1, entries.reduce((s, e) => s + e[1], 0));
+            const icons = sd.deviceIcons || {};
+            const labels = sd.deviceLabels || {};
+            elD.innerHTML = '<div class="space-y-3">' + entries.map(([device, count]) => {
+                const pct = (count / totalDevices) * 100;
+                const icon = icons[device] || '❓';
+                const label = labels[device] || device;
+                return `<div>
+                    <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-700 dark:text-slate-300 font-medium">${icon} ${esc(label)}</span>
+                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${pct.toFixed(1)}%)</span></span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-500 rounded-full" style="width: ${Math.min(pct, 100)}%"></div>
+                    </div>
+                </div>`;
+            }).join('') + '</div>';
+        }
+    }
+
+    // By bot
+    const elB = document.getElementById('pollByBot');
+    if (elB) {
+        const bots = data.botStats;
+        const entries = Object.entries(bots).sort((a, b) => b[1] - a[1]).slice(0, 20);
+        if (entries.length === 0) {
+            elB.innerHTML = `<p class="text-sm text-gray-500 dark:text-slate-500">${esc(sd.noDataText || '')}</p>`;
+        } else {
+            const maxBot = Math.max(1, Math.max(...entries.map(e => e[1])));
+            elB.innerHTML = '<div class="space-y-2">' + entries.map(([botName, count]) => {
+                const pct = Math.min((count / maxBot) * 100, 100);
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-medium">${esc(botName)}</span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-sky-500 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                        <span class="text-gray-900 dark:text-white font-medium w-10 text-right">${fmt(count)}</span>
+                    </div>
+                </div>`;
+            }).join('') + '</div>';
+        }
+    }
+
     // Referrers
     const elR = document.getElementById('pollByReferrer');
     if (elR) {
@@ -586,6 +638,8 @@ async function poll() {
         data.systemHealth = newData.systemHealth;
         data.referrers = newData.referrers;
         data.pageviews = newData.pageviews;
+        data.botStats = newData.botStats;
+        data.deviceStats = newData.deviceStats;
 
         // In-place updates (no scroll jump)
         updateKpis(newData);
