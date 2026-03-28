@@ -457,9 +457,9 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = uso distribuído, 1 = um único criador domina',
     'stat_page_home' => 'Início',
     'stat_page_download' => 'Download',
-    'stat_page_admin_login' => 'Admin - Login',
+    'stat_page_admin_login' => 'Admin - Acesso',
     'stat_page_admin_dashboard' => 'Admin - Meus segredos',
-    'stat_page_superadmin_login' => 'Super Admin - Login',
+    'stat_page_superadmin_login' => 'Super Admin - Acesso',
     'stat_page_superadmin_dashboard' => 'Super Admin - Estatísticas de uso',
 
     'stat_page_admin_verify' => 'Admin - Verificação',

@@ -523,7 +523,7 @@ return [
     'val_days_max' => 'لا يمكن أن يتجاوز عدد الأيام 30.',
 
     // Monitoring
-    'monitoring_title' => 'Monitoring',
+    'monitoring_title' => 'المراقبة',
     'stat_errors_4xx' => 'أخطاء العميل (4xx)',
     'stat_errors_5xx' => 'أخطاء الخادم (5xx)',
     'stat_errors_422' => 'التحقق (422)',

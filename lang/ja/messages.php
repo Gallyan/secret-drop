@@ -523,7 +523,7 @@ return [
     'val_days_max' => '日数は30を超えてはなりません。',
 
     // Monitoring
-    'monitoring_title' => 'Monitoring',
+    'monitoring_title' => 'モニタリング',
     'stat_errors_4xx' => 'クライアントエラー (4xx)',
     'stat_errors_5xx' => 'サーバーエラー (5xx)',
     'stat_errors_422' => 'バリデーション (422)',
