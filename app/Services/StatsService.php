@@ -225,21 +225,20 @@ class StatsService
 
     public function getReadRate(?string $startDate = null): ?float
     {
-        $query = Secret::query();
+        $query = Secret::query()
+            ->selectRaw('COUNT(*) as total, COUNT(first_read_at) as read_count');
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);
         }
 
-        $total = $query->count();
+        $result = $query->first();
 
-        if ($total === 0) {
+        if ($result->total === 0) {
             return null;
         }
 
-        $read = (clone $query)->whereNotNull('first_read_at')->count();
-
-        return ($read / $total) * 100;
+        return ($result->read_count / $result->total) * 100;
     }
 
     /**
