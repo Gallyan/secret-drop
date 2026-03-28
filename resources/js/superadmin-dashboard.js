@@ -293,15 +293,19 @@ function updateLists(data) {
             elD.innerHTML = `<p class="text-sm text-gray-500 dark:text-slate-500">${esc(sd.noDataText || '')}</p>`;
         } else {
             const totalDevices = Math.max(1, entries.reduce((s, e) => s + e[1], 0));
-            const icons = sd.deviceIcons || {};
             const labels = sd.deviceLabels || {};
+            const svgIcons = {
+                desktop: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>',
+                mobile: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>',
+                tablet: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>',
+            };
             elD.innerHTML = '<div class="space-y-3">' + entries.map(([device, count]) => {
                 const pct = (count / totalDevices) * 100;
-                const icon = icons[device] || '❓';
+                const icon = svgIcons[device] || '';
                 const label = labels[device] || device;
                 return `<div>
                     <div class="flex items-center justify-between text-sm mb-1">
-                        <span class="text-gray-700 dark:text-slate-300 font-medium">${icon} ${esc(label)}</span>
+                        <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">${icon} ${esc(label)}</span>
                         <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${pct.toFixed(1)}%)</span></span>
                     </div>
                     <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">

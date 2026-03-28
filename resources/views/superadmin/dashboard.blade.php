@@ -347,7 +347,7 @@
                 @if(count($deviceStats) > 0)
                     @php
                         $totalDevices = max(1, array_sum($deviceStats));
-                        $deviceIcons = ['desktop' => '🖥️', 'mobile' => '📱', 'tablet' => '📟'];
+                        $deviceIconComponents = ['desktop' => 'icon.desktop', 'mobile' => 'icon.mobile', 'tablet' => 'icon.tablet'];
                         $deviceLabels = ['desktop' => __('messages.stat_device_desktop'), 'mobile' => __('messages.stat_device_mobile'), 'tablet' => __('messages.stat_device_tablet')];
                     @endphp
                     <div class="space-y-3">
@@ -355,7 +355,12 @@
                             @php $pct = ($count / $totalDevices) * 100; @endphp
                             <div>
                                 <div class="flex items-center justify-between text-sm mb-1">
-                                    <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $deviceIcons[$device] ?? '❓' }} {{ $deviceLabels[$device] ?? $device }}</span>
+                                    <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                        @if(isset($deviceIconComponents[$device]))
+                                            <x-dynamic-component :component="$deviceIconComponents[$device]" class="w-4 h-4" />
+                                        @endif
+                                        {{ $deviceLabels[$device] ?? $device }}
+                                    </span>
                                     <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
                                 </div>
                                 <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -483,7 +488,6 @@
             stat_visitors: '{{ __('messages.stat_visitors') }}',
             stat_bots: '{{ __('messages.stat_bots') }}'
         },
-        deviceIcons: { desktop: '🖥️', mobile: '📱', tablet: '📟' },
         deviceLabels: {
             desktop: '{{ __('messages.stat_device_desktop') }}',
             mobile: '{{ __('messages.stat_device_mobile') }}',
