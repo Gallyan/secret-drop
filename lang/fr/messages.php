@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Comment ça marche',
     'how_it_works_meta_title' => 'Comment fonctionne le chiffrement zero-knowledge',
-    'how_it_works_meta_description' => 'Découvrez comment Secret Drop garantit un échange sécurisé de données confidentielles grâce au chiffrement de bout en bout. Le serveur ne voit jamais vos secrets en clair.',
+    'how_it_works_meta_description' => 'Comment Secret Drop chiffre vos données de bout en bout. Chiffrement zero-knowledge AES-256-GCM : le serveur ne voit jamais vos secrets.',
     'how_it_works_intro' => 'Quand vous partagez un mot de passe par email ou Slack, il reste lisible par tous les intermédiaires. Secret Drop garantit un échange sécurisé de vos données confidentielles : tout est chiffré dans votre navigateur avant de quitter votre écran. Le serveur ne reçoit que du bruit.',
     'how_it_works_diagram_title' => 'Comment votre secret est protégé',
     'how_step1_title' => 'Vous écrivez votre secret',
