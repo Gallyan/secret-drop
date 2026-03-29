@@ -7,6 +7,12 @@ Zero-knowledge secret sharing — end-to-end encrypted, self-destructing, open s
 
 **[Live demo](https://secret.orsal.fr)** · **[How it works](https://secret.orsal.fr/en/how-it-works)**
 
+## Screenshots
+
+| Create a secret | Admin dashboard |
+|:---:|:---:|
+| ![Create a secret](screenshots/home.png) | ![Admin dashboard](screenshots/admin-dashboard.png) |
+
 ## Why
 
 Passwords sent over email or Slack remain readable by every intermediary — indefinitely. Secret Drop encrypts everything in the browser before it ever leaves your screen. The server only ever sees noise.
