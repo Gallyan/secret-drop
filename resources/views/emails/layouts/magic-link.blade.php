@@ -257,7 +257,7 @@
 
         <div class="footer">
             <p>{{ __('messages.email_footer', ['app' => config('app.name')]) }}</p>
-            <p class="footer-brand">&copy; {{ date('Y') }} <a href="{{ url('/') }}">Perceptron Systems</a></p>
+            <p class="footer-brand">&copy; {{ date('Y') }} <a href="{{ url('/') }}">Guillaume Orsal</a></p>
         </div>
     </div>
 </body>

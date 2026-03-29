@@ -120,6 +120,24 @@
         }
     }
     </script>
+    <script type="application/ld+json" nonce="@nonce">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Person",
+        "name": "{{ config('legal.editor_name') }}",
+        "url": "https://www.orsal.fr",
+        "jobTitle": "Software Engineer",
+        "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
+        @if(collect(config('legal.social'))->filter()->isNotEmpty())
+        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+        @endif
+        "makesOffer": {
+            "@@type": "WebApplication",
+            "name": "{{ config('app.name') }}",
+            "url": "{{ url('/') }}"
+        }
+    }
+    </script>
     @endif
 
     @stack('schema')
@@ -226,7 +244,7 @@
                 </a>
             </nav>
             <div class="flex items-center gap-2">
-                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Guillaume Orsal</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>
@@ -244,7 +262,7 @@
                 <x-theme-toggle />
             </div>
             <div class="flex items-center gap-1.5">
-                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Guillaume Orsal</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>
