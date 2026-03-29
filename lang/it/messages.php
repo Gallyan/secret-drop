@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => 'Dati NON memorizzati:',
     'legal_data_not_item_plaintext' => 'Contenuto in chiaro dei segreti',
     'legal_data_not_item_key' => 'Chiavi di crittografia (trasmesse solo tramite la parte privata del link)',
-    'legal_data_not_item_file_meta' => 'Nome, tipo e dimensione del file (crittografati con il contenuto)',
+    'legal_data_not_item_file_meta' => 'Nome e tipo del file (crittografati con il contenuto)',
     'legal_cookies_title' => 'Cookie',
     'legal_cookies_text' => 'Questo sito web utilizza solo cookie tecnici essenziali (sessione, preferenza tema). Non vengono utilizzati cookie di tracciamento o pubblicitari.',
     'legal_cookies_cnil' => 'In conformità con le raccomandazioni della CNIL (autorità francese per la protezione dei dati), questi cookie strettamente necessari sono esenti dai requisiti di consenso.',

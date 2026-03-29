@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => '保存されないデータ：',
     'legal_data_not_item_plaintext' => 'シークレットの平文',
     'legal_data_not_item_key' => '暗号化キー（リンクのプライベート部分でのみ送信）',
-    'legal_data_not_item_file_meta' => 'ファイル名、タイプ、サイズ（コンテンツと共に暗号化）',
+    'legal_data_not_item_file_meta' => 'ファイル名とタイプ（コンテンツと共に暗号化）',
     'legal_cookies_title' => 'Cookie',
     'legal_cookies_text' => 'このサイトは必須の技術的Cookieのみを使用しています（セッション、テーマ設定）。トラッキングや広告Cookieは使用していません。',
     'legal_cookies_cnil' => 'CNIL（フランスのデータ保護機関）勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',

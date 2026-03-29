@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => 'NICHT gespeicherte Daten:',
     'legal_data_not_item_plaintext' => 'Klartext-Inhalt der Geheimnisse',
     'legal_data_not_item_key' => 'Verschlüsselungsschlüssel (nur über den privaten Teil des Links übertragen)',
-    'legal_data_not_item_file_meta' => 'Dateiname, -typ und -größe (mit Inhalt verschlüsselt)',
+    'legal_data_not_item_file_meta' => 'Dateiname und -typ (mit Inhalt verschlüsselt)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Diese Website verwendet nur essentielle technische Cookies (Sitzung, Theme-Präferenz). Es werden keine Tracking- oder Werbe-Cookies verwendet.',
     'legal_cookies_cnil' => 'Gemäß den CNIL-Empfehlungen (französische Datenschutzbehörde) sind diese streng notwendigen Cookies von der Einwilligungspflicht ausgenommen.',

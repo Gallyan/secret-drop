@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => 'NIET opgeslagen gegevens:',
     'legal_data_not_item_plaintext' => 'Onversleutelde inhoud van geheimen',
     'legal_data_not_item_key' => 'Encryptiesleutels (alleen verzonden via het privédeel van de link)',
-    'legal_data_not_item_file_meta' => 'Bestandsnaam, -type en -grootte (versleuteld met inhoud)',
+    'legal_data_not_item_file_meta' => 'Bestandsnaam en -type (versleuteld met inhoud)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Deze website gebruikt alleen essentiële technische cookies (sessie, themavoorkeur). Er worden geen tracking- of advertentiecookies gebruikt.',
     'legal_cookies_cnil' => 'In overeenstemming met de CNIL-aanbevelingen (Franse gegevensbeschermingsautoriteit) zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',

@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => 'Dane NIE przechowywane:',
     'legal_data_not_item_plaintext' => 'Jawna treść sekretów',
     'legal_data_not_item_key' => 'Klucze szyfrujące (przesyłane tylko przez prywatną część linku)',
-    'legal_data_not_item_file_meta' => 'Nazwa, typ i rozmiar pliku (zaszyfrowane z zawartością)',
+    'legal_data_not_item_file_meta' => 'Nazwa i typ pliku (zaszyfrowane z zawartością)',
     'legal_cookies_title' => 'Pliki cookie',
     'legal_cookies_text' => 'Ta strona używa tylko niezbędnych technicznych plików cookie (sesja, preferencje motywu). Nie używamy plików cookie śledzących ani reklamowych.',
     'legal_cookies_cnil' => 'Zgodnie z zaleceniami CNIL (francuskiego organu ochrony danych), te ściśle niezbędne pliki cookie są zwolnione z wymogów zgody.',

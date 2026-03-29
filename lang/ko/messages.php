@@ -282,7 +282,7 @@ return [
     'legal_data_not_stored' => '저장되지 않는 데이터:',
     'legal_data_not_item_plaintext' => '비밀의 평문 내용',
     'legal_data_not_item_key' => '암호화 키 (링크의 개인 부분을 통해서만 전송)',
-    'legal_data_not_item_file_meta' => '파일 이름, 유형 및 크기 (콘텐츠와 함께 암호화)',
+    'legal_data_not_item_file_meta' => '파일 이름 및 유형 (콘텐츠와 함께 암호화)',
     'legal_cookies_title' => '쿠키',
     'legal_cookies_text' => '이 웹사이트는 필수 기술 쿠키만 사용합니다 (세션, 테마 설정). 추적이나 광고 쿠키는 사용하지 않습니다.',
     'legal_cookies_cnil' => 'CNIL(프랑스 개인정보 보호 기관) 권고에 따라 이러한 필수 쿠키는 동의 요건에서 면제됩니다.',
