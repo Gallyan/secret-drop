@@ -7,11 +7,9 @@ Zero-knowledge secret sharing — end-to-end encrypted, self-destructing, open s
 
 **[Live demo](https://secret.orsal.fr)** · **[How it works](https://secret.orsal.fr/en/how-it-works)**
 
-## Screenshots
+## Screenshot
 
-| Create a secret | Admin dashboard |
-|:---:|:---:|
-| ![Create a secret](screenshots/home.png) | ![Admin dashboard](screenshots/admin-dashboard.png) |
+![Secret Drop — Create a secret](screenshots/home.png)
 
 ## Why
 
