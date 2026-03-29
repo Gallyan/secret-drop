@@ -189,14 +189,9 @@
     </main>
 
     <footer class="relative z-10 py-4 sm:py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors border-t border-transparent" style="border-image: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent) 1;">
-        {{-- Desktop: links + switchers --}}
-        <div class="hidden sm:flex items-center justify-center gap-x-2 gap-y-1 px-4">
+        {{-- Desktop: links top, copyright + github + switchers bottom --}}
+        <div class="hidden sm:flex flex-col items-center gap-2 px-4">
             <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
-                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                    <x-icon.github class="w-4 h-4" />
-                </a>
-                <span aria-hidden="true">·</span>
                 <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     {{ config('app.name') }}
                 </a>
@@ -221,25 +216,29 @@
                     {{ __('messages.footer_legal') }}
                 </a>
             </nav>
-            <span aria-hidden="true">·</span>
             <div class="flex items-center gap-2">
+                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
+                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    <x-icon.github class="w-4 h-4" />
+                </a>
+                <span aria-hidden="true">·</span>
                 <x-language-switcher />
                 <x-theme-toggle />
             </div>
         </div>
 
-        {{-- Mobile: copyright + icon buttons --}}
-        <div class="sm:hidden flex flex-col items-center gap-2">
+        {{-- Mobile: icons top, copyright bottom --}}
+        <div class="sm:hidden flex flex-col items-center gap-3">
+            <div class="flex items-center gap-3">
+                <x-footer-menu />
+                <x-language-switcher />
+                <x-theme-toggle />
+            </div>
             <div class="flex items-center gap-1.5">
                 <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>
-            </div>
-            <div class="flex items-center gap-3">
-                <x-footer-menu />
-                <x-language-switcher />
-                <x-theme-toggle />
             </div>
         </div>
     </footer>
