@@ -531,7 +531,7 @@
                             <div id="qr-code-panel" x-show="showQrCode" x-collapse class="mt-4">
                                 <div class="flex flex-col items-center gap-4">
                                     <div class="p-4 bg-white rounded-xl shadow-sm">
-                                        <img :src="qrCodeDataUrl" :alt="'{{ __('messages.qr_code_alt') }}'" class="w-64 h-64">
+                                        <img :src="qrCodeDataUrl" :alt="'{{ __('messages.qr_code_alt') }}'" width="256" height="256" class="w-64 h-64">
                                     </div>
                                     <button
                                         type="button"
