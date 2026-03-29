@@ -181,7 +181,7 @@
                                 x-text="plaintext"
                                 role="region"
                                 aria-label="{{ __('messages.a11y_decrypted_content') }}"
-                                class="w-full p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono whitespace-pre-wrap break-words max-h-96 overflow-auto transition-colors"
+                                class="w-full p-4 pr-20 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono whitespace-pre-wrap break-words max-h-96 overflow-auto transition-colors"
                             ></pre>
                             <button
                                 type="button"
