@@ -66,11 +66,10 @@
         "description": "{{ __('messages.app_description') }}",
         "url": "{{ url('/') }}",
         "applicationCategory": "SecurityApplication",
-        "applicationSubCategory": "File Sharing, Encryption",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript, Web Crypto API",
         "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-        "logo": "{{ asset('icon-512.png') }}",
+        "image": "{{ asset('icon-512.png') }}",
         "isAccessibleForFree": true,
         "offers": {
             "@@type": "Offer",
@@ -84,10 +83,8 @@
             "{{ __('messages.feature_expiration') }}"
         ],
         "author": {
-            "@@type": "Organization",
-            "name": "{{ config('legal.editor_name') }}",
-            "url": "{{ url('/') }}"@if(config('legal.contact_email')),
-            "email": "{{ config('legal.contact_email') }}"@endif
+            "@@type": "Person",
+            "name": "{{ config('legal.editor_name') }}"
         }
     }
     </script>
@@ -95,12 +92,24 @@
     {
         "@@context": "https://schema.org",
         "@@type": "Organization",
-        "name": "{{ config('legal.editor_name') }}",
+        "name": "{{ config('legal.organization_name', config('app.name')) }}",
         "url": "{{ url('/') }}",
-        "logo": "{{ asset('icon-512.png') }}",
+        "logo": {
+            "@@type": "ImageObject",
+            "url": "{{ asset('icon-512.png') }}",
+            "width": 512,
+            "height": 512
+        },
         "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
         "email": "{{ config('legal.contact_email') }}"@endif,
         "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
+        "founder": {
+            "@@type": "Person",
+            "name": "{{ config('legal.editor_name') }}"
+        },
+        @if(collect(config('legal.social'))->filter()->isNotEmpty())
+        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+        @endif
         "makesOffer": {
             "@@type": "Offer",
             "itemOffered": {
