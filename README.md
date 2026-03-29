@@ -49,7 +49,7 @@ composer dev      # start dev server
 ## Tests
 
 ```bash
-composer test                          # full suite (340+ tests)
+composer test                          # full suite (370+ tests)
 php artisan test --filter=SecretTest   # run a single test
 ```
 
