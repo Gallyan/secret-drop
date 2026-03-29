@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Condividi password e file riservati senza mai esporli. Crittografia end-to-end. Autodistruttivo. Il server non vede nulla.',
+    'home_title' => 'Condividi segreti in sicurezza con crittografia zero-knowledge',
     'home_hook' => 'Basta inviare password in chiaro.',
     'home_meta_description' => 'Condividi una password, chiave API o file riservato tramite un link sicuro e autodistruttivo. Crittografia end-to-end — il server non vede mai i tuoi dati.',
     'home_view_source' => 'Vedi codice sorgente',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Come funziona',
+    'how_it_works_meta_title' => 'Come la crittografia zero-knowledge protegge i tuoi dati',
     'how_it_works_meta_description' => 'Scopri come Secret Drop protegge i tuoi dati con crittografia end-to-end. Il server non vede mai i tuoi segreti in chiaro.',
     'how_it_works_intro' => 'Quando condividi una password via email o Slack, resta leggibile da tutti gli intermediari. Secret Drop fa il contrario: il tuo segreto viene crittografato nel browser prima di lasciare lo schermo. Il server riceve solo rumore.',
     'how_it_works_diagram_title' => 'Come viene protetto il tuo segreto',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Domande frequenti',
+    'faq_meta_title' => 'FAQ — Condivisione crittografata di segreti e file',
     'faq_intro' => 'Tutto quello che devi sapere prima di affidarci un segreto.',
     'faq_cta' => 'Crea un segreto',
     'faq_q1' => 'Secret Drop è gratuito?',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Casi d\'uso',
+    'use_cases_meta_title' => 'Casi d\'uso: password, file, chiavi API e altro',
     'use_cases_meta_description' => 'Scopri come usare Secret Drop: condivisione password, documenti riservati, chiavi API e altro.',
     'use_cases_intro' => 'Ogni giorno, password viaggiano in chiaro via email, Slack o SMS. Ecco come Secret Drop sostituisce queste abitudini rischiose.',
     'usecase1_title' => 'Password e credenziali',

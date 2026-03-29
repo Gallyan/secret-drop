@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', __('messages.home_title'))
 @section('description', __('messages.home_meta_description'))
 
 @section('content')

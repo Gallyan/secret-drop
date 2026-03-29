@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Comparta contraseñas y archivos confidenciales sin exponerlos jamás. Cifrado de extremo a extremo. Autodestructivo. El servidor no ve nada.',
+    'home_title' => 'Comparta secretos de forma segura con cifrado zero-knowledge',
     'home_hook' => 'Deje de enviar contraseñas en texto plano.',
     'home_meta_description' => 'Comparta una contraseña, clave API o archivo confidencial mediante un enlace seguro y autodestructivo. Cifrado de extremo a extremo — el servidor nunca ve sus datos.',
     'home_view_source' => 'Ver código fuente',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Cómo funciona',
+    'how_it_works_meta_title' => 'Cómo el cifrado zero-knowledge protege sus datos',
     'how_it_works_meta_description' => 'Descubre cómo Secret Drop protege tus datos con cifrado de extremo a extremo. El servidor nunca ve tus secretos en texto plano.',
     'how_it_works_intro' => 'Cuando comparte una contraseña por email o Slack, permanece legible para todos los intermediarios. Secret Drop hace lo contrario: su secreto se cifra en su navegador antes de salir de su pantalla. El servidor solo recibe ruido.',
     'how_it_works_diagram_title' => 'Cómo se protege su secreto',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Preguntas frecuentes',
+    'faq_meta_title' => 'FAQ — Intercambio cifrado de secretos y archivos',
     'faq_intro' => 'Todo lo que necesita saber antes de confiarnos un secreto.',
     'faq_cta' => 'Crear un secreto',
     'faq_q1' => '¿Es Secret Drop gratuito?',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Casos de uso',
+    'use_cases_meta_title' => 'Casos de uso: contraseñas, archivos, claves API y más',
     'use_cases_meta_description' => 'Descubre cómo usar Secret Drop: compartir contraseñas, documentos confidenciales, claves API y más.',
     'use_cases_intro' => 'Cada día, contraseñas viajan en texto plano por email, Slack o SMS. Así es como Secret Drop reemplaza estos hábitos arriesgados.',
     'usecase1_title' => 'Contraseñas y credenciales',

@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Udostępniaj hasła i poufne pliki bez ich ujawniania. Szyfrowanie end-to-end. Samozniszczalne. Serwer nie widzi niczego.',
+    'home_title' => 'Bezpieczne udostępnianie sekretów z szyfrowaniem zero-knowledge',
     'home_hook' => 'Przestań wysyłać hasła otwartym tekstem.',
     'home_meta_description' => 'Udostępnij hasło, klucz API lub poufny plik za pomocą bezpiecznego, samozniszczalnego linku. Szyfrowanie end-to-end — serwer nigdy nie widzi Twoich danych.',
     'home_view_source' => 'Zobacz kod źródłowy',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Jak to działa',
+    'how_it_works_meta_title' => 'Jak szyfrowanie zero-knowledge chroni Twoje dane',
     'how_it_works_meta_description' => 'Dowiedz się, jak Secret Drop chroni Twoje dane dzięki szyfrowaniu end-to-end. Serwer nigdy nie widzi Twoich sekretów w postaci jawnej.',
     'how_it_works_intro' => 'Gdy udostępniasz hasło przez e-mail lub Slack, pozostaje ono czytelne dla każdego pośrednika. Secret Drop działa odwrotnie: Twój sekret jest szyfrowany w przeglądarce, zanim opuści ekran. Serwer otrzymuje tylko szum.',
     'how_it_works_diagram_title' => 'Jak Twój sekret jest chroniony',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Często zadawane pytania',
+    'faq_meta_title' => 'FAQ — Szyfrowane udostępnianie sekretów i plików',
     'faq_intro' => 'Wszystko, co musisz wiedzieć, zanim powierzysz nam sekret.',
     'faq_cta' => 'Utwórz sekret',
     'faq_q1' => 'Czy Secret Drop jest darmowy?',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Przypadki użycia',
+    'use_cases_meta_title' => 'Zastosowania: hasła, pliki, klucze API i więcej',
     'use_cases_meta_description' => 'Odkryj, jak używać Secret Drop: udostępnianie haseł, poufne dokumenty, klucze API i więcej.',
     'use_cases_intro' => 'Każdego dnia hasła wędrują otwartym tekstem przez e-mail, Slack lub SMS. Oto jak Secret Drop zastępuje te ryzykowne nawyki.',
     'usecase1_title' => 'Hasła i dane logowania',

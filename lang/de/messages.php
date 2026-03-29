@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Der Server sieht nichts.',
+    'home_title' => 'Geheimnisse sicher teilen mit Zero-Knowledge-Verschlüsselung',
     'home_hook' => 'Schluss mit Passwörtern im Klartext.',
     'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen sicheren, selbstzerstörenden Link. Ende-zu-Ende-verschlüsselt — der Server sieht Ihre Daten nie.',
     'home_view_source' => 'Quellcode ansehen',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => 'So funktioniert es',
+    'how_it_works_meta_title' => 'So schützt Zero-Knowledge-Verschlüsselung Ihre Daten',
     'how_it_works_meta_description' => 'Erfahren Sie, wie Secret Drop Ihre Daten mit Ende-zu-Ende-Verschlüsselung schützt. Der Server sieht niemals Ihre Geheimnisse im Klartext.',
     'how_it_works_intro' => 'Wenn Sie ein Passwort per E-Mail oder Slack teilen, bleibt es für jeden Vermittler lesbar. Secret Drop macht das Gegenteil: Ihr Geheimnis wird in Ihrem Browser verschlüsselt, bevor es Ihren Bildschirm verlässt. Der Server empfängt nur Rauschen.',
     'how_it_works_diagram_title' => 'Wie Ihr Geheimnis geschützt wird',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Häufig gestellte Fragen',
+    'faq_meta_title' => 'FAQ — Verschlüsselter Austausch von Geheimnissen und Dateien',
     'faq_intro' => 'Alles, was Sie wissen müssen, bevor Sie uns ein Geheimnis anvertrauen.',
     'faq_cta' => 'Geheimnis erstellen',
     'faq_q1' => 'Ist Secret Drop kostenlos?',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',
+    'use_cases_meta_title' => 'Anwendungsfälle: Passwörter, Dateien, API-Schlüssel & mehr',
     'use_cases_meta_description' => 'Entdecken Sie, wie Sie Secret Drop nutzen können: Passwortweitergabe, vertrauliche Dokumente, API-Schlüssel und mehr.',
     'use_cases_intro' => 'Jeden Tag werden Passwörter im Klartext per E-Mail, Slack oder SMS verschickt. So ersetzt Secret Drop diese riskanten Gewohnheiten.',
     'usecase1_title' => 'Passwörter und Zugangsdaten',

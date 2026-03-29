@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'パスワードや機密ファイルを安全に共有。エンドツーエンド暗号化。自動削除。サーバーは何も見えません。',
+    'home_title' => 'ゼロ知識暗号化で秘密を安全に共有',
     'home_hook' => 'パスワードを平文で送るのはもうやめましょう。',
     'home_meta_description' => 'パスワード、APIキー、機密ファイルを安全な自動削除リンクで共有。エンドツーエンド暗号化 — サーバーはデータを見ることができません。',
     'home_view_source' => 'ソースコードを見る',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => '仕組み',
+    'how_it_works_meta_title' => 'ゼロ知識暗号化がデータを守る仕組み',
     'how_it_works_meta_description' => 'Secret Dropがエンドツーエンド暗号化でデータを保護する方法をご覧ください。サーバーは秘密を平文で見ることはありません。',
     'how_it_works_intro' => 'メールやSlackでパスワードを共有すると、すべての中継者が読める状態のままです。Secret Dropは逆のアプローチ：秘密はブラウザで暗号化されてから画面を離れます。サーバーが受け取るのはノイズだけです。',
     'how_it_works_diagram_title' => 'あなたの秘密がどう守られるか',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'よくある質問',
+    'faq_meta_title' => 'FAQ — 暗号化された秘密・ファイル共有について',
     'faq_intro' => '秘密を預ける前に知っておくべきこと。',
     'faq_cta' => 'シークレットを作成',
     'faq_q1' => 'Secret Dropは無料ですか？',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => '使用例',
+    'use_cases_meta_title' => '活用例：パスワード、ファイル、APIキーほか',
     'use_cases_meta_description' => 'Secret Dropの使い方：パスワード共有、機密文書、APIキーなど。',
     'use_cases_intro' => '毎日、パスワードがメール、Slack、SMSで平文のまま送信されています。Secret Dropがこれらの危険な習慣をどう置き換えるか紹介します。',
     'usecase1_title' => 'パスワードと認証情報',

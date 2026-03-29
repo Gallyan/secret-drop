@@ -3,6 +3,7 @@
 return [
     // App
     'app_description' => 'Share passwords and confidential files without ever exposing them. End-to-end encrypted. Self-destructing. The server sees nothing.',
+    'home_title' => 'Share secrets securely with zero-knowledge encryption',
     'home_hook' => 'Stop sending passwords in plain text.',
     'home_meta_description' => 'Share a password, API key or confidential file via a secure, self-destructing link. End-to-end encrypted — the server never sees your data.',
     'home_view_source' => 'View source code',
@@ -150,6 +151,7 @@ return [
 
     // How it works page
     'how_it_works_title' => 'How it works',
+    'how_it_works_meta_title' => 'How zero-knowledge encryption protects your data',
     'how_it_works_meta_description' => 'Learn how Secret Drop protects your data with end-to-end encryption. The server never sees your secrets in plaintext.',
     'how_it_works_intro' => 'When you share a password by email or Slack, it remains readable by every intermediary. Secret Drop does the opposite: your secret is encrypted in your browser before it leaves your screen. The server only receives noise.',
     'how_it_works_diagram_title' => 'How your secret is protected',
@@ -179,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Frequently asked questions',
+    'faq_meta_title' => 'FAQ — Encrypted secret & file sharing explained',
     'faq_intro' => 'Everything you need to know before trusting us with a secret.',
     'faq_cta' => 'Create a secret',
     'faq_q1' => 'Is Secret Drop free?',
@@ -229,6 +232,7 @@ return [
 
     // Use cases page
     'use_cases_title' => 'Use cases',
+    'use_cases_meta_title' => 'Use cases: passwords, files, API keys & more',
     'use_cases_meta_description' => 'Discover how to use Secret Drop: password sharing, confidential documents, API keys, and more.',
     'use_cases_intro' => 'Every day, passwords travel in plaintext through email, Slack or SMS. Here is how Secret Drop replaces these risky habits.',
     'usecase1_title' => 'Passwords and credentials',
