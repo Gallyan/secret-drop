@@ -215,7 +215,7 @@
         <div class="accent-line"></div>
 
         <div class="header">
-            <img src="{{ asset('icon-192.png') }}" alt="" width="56" height="56" class="logo-icon" style="width:56px;height:56px;border-radius:16px;">
+            <img src="{{ asset($__env->yieldContent('logo', 'icon-192.png')) }}" alt="" width="56" height="56" class="logo-icon" style="width:56px;height:56px;border-radius:16px;">
             <h1>{{ config('app.name') }}</h1>
             <p class="header-sub">@yield('header-sub', __('messages.app_tagline'))</p>
             @yield('badge')
