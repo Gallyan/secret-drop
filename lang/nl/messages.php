@@ -5,7 +5,7 @@ return [
     'app_description' => 'Deel wachtwoorden en vertrouwelijke bestanden zonder ze ooit bloot te stellen. End-to-end versleuteld. Zelfvernietigend. De server ziet niets.',
     'home_title' => 'Deel geheimen veilig met zero-knowledge-encryptie',
     'home_hook' => 'Stop met wachtwoorden in platte tekst te versturen.',
-    'home_meta_description' => 'Deel een wachtwoord, API-sleutel of vertrouwelijk bestand via een veilige, zelfvernietigende link. End-to-end versleuteld — de server ziet uw gegevens nooit.',
+    'home_meta_description' => 'Veilige uitwisseling van vertrouwelijke gegevens via een zelfvernietigende link. Wachtwoorden, API-sleutels, bestanden — end-to-end versleuteld, de server ziet niets.',
     'home_view_source' => 'Broncode bekijken',
 
     // Features
@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Hoe het werkt',
     'how_it_works_meta_title' => 'Hoe zero-knowledge-encryptie uw gegevens beschermt',
-    'how_it_works_meta_description' => 'Ontdek hoe Secret Drop uw gegevens beschermt met end-to-end encryptie. De server ziet nooit uw geheimen in platte tekst.',
+    'how_it_works_meta_description' => 'Ontdek hoe Secret Drop een veilige uitwisseling van vertrouwelijke gegevens garandeert dankzij end-to-end encryptie. De server ziet nooit uw geheimen in platte tekst.',
     'how_it_works_intro' => 'Wanneer u een wachtwoord deelt via e-mail of Slack, blijft het leesbaar voor elke tussenpersoon. Secret Drop doet het omgekeerde: uw geheim wordt in uw browser versleuteld voordat het uw scherm verlaat. De server ontvangt alleen ruis.',
     'how_it_works_diagram_title' => 'Hoe uw geheim beschermd wordt',
     'how_step1_title' => 'U schrijft uw geheim',
@@ -233,7 +233,7 @@ return [
     // Use cases page
     'use_cases_title' => 'Toepassingen',
     'use_cases_meta_title' => 'Toepassingen: wachtwoorden, bestanden, API-sleutels & meer',
-    'use_cases_meta_description' => 'Ontdek hoe u Secret Drop kunt gebruiken: wachtwoorden delen, vertrouwelijke documenten, API-sleutels en meer.',
+    'use_cases_meta_description' => 'Veilige uitwisseling van vertrouwelijke gegevens voor elke situatie: wachtwoorden, gevoelige documenten, API-sleutels en meer.',
     'use_cases_intro' => 'Elke dag reizen wachtwoorden in platte tekst via e-mail, Slack of SMS. Zo vervangt Secret Drop deze riskante gewoonten.',
     'usecase1_title' => 'Wachtwoorden en inloggegevens',
     'usecase1_desc' => 'Een nieuw teamlid heeft toegang nodig. Stuur in plaats van een e-mail die iedereen kan lezen, een link die zichzelf vernietigt na het lezen.',

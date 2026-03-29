@@ -5,7 +5,7 @@ return [
     'app_description' => 'Condividi password e file riservati senza mai esporli. Crittografia end-to-end. Autodistruttivo. Il server non vede nulla.',
     'home_title' => 'Condividi segreti in sicurezza con crittografia zero-knowledge',
     'home_hook' => 'Basta inviare password in chiaro.',
-    'home_meta_description' => 'Condividi una password, chiave API o file riservato tramite un link sicuro e autodistruttivo. Crittografia end-to-end — il server non vede mai i tuoi dati.',
+    'home_meta_description' => 'Scambio sicuro di dati riservati tramite un link autodistruttivo. Password, chiavi API, file — crittografia end-to-end, il server non vede nulla.',
     'home_view_source' => 'Vedi codice sorgente',
 
     // Features
@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Come funziona',
     'how_it_works_meta_title' => 'Come la crittografia zero-knowledge protegge i tuoi dati',
-    'how_it_works_meta_description' => 'Scopri come Secret Drop protegge i tuoi dati con crittografia end-to-end. Il server non vede mai i tuoi segreti in chiaro.',
+    'how_it_works_meta_description' => 'Scopri come Secret Drop garantisce uno scambio sicuro di dati riservati grazie alla crittografia end-to-end. Il server non vede mai i tuoi segreti in chiaro.',
     'how_it_works_intro' => 'Quando condividi una password via email o Slack, resta leggibile da tutti gli intermediari. Secret Drop fa il contrario: il tuo segreto viene crittografato nel browser prima di lasciare lo schermo. Il server riceve solo rumore.',
     'how_it_works_diagram_title' => 'Come viene protetto il tuo segreto',
     'how_step1_title' => 'Scrivi il tuo segreto',
@@ -233,7 +233,7 @@ return [
     // Use cases page
     'use_cases_title' => 'Casi d\'uso',
     'use_cases_meta_title' => 'Casi d\'uso: password, file, chiavi API e altro',
-    'use_cases_meta_description' => 'Scopri come usare Secret Drop: condivisione password, documenti riservati, chiavi API e altro.',
+    'use_cases_meta_description' => 'Scambio sicuro di dati riservati per ogni situazione: password, documenti sensibili, chiavi API e altro.',
     'use_cases_intro' => 'Ogni giorno, password viaggiano in chiaro via email, Slack o SMS. Ecco come Secret Drop sostituisce queste abitudini rischiose.',
     'usecase1_title' => 'Password e credenziali',
     'usecase1_desc' => 'Un nuovo membro del team ha bisogno di accesso. Invece di un\'email che chiunque può leggere, invia un link che si autodistrugge dopo la lettura.',

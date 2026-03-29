@@ -5,7 +5,7 @@ return [
     'app_description' => 'Compartilhe senhas e arquivos confidenciais sem nunca expô-los. Criptografia de ponta a ponta. Autodestrutivo. O servidor não vê nada.',
     'home_title' => 'Compartilhe segredos com segurança e criptografia zero-knowledge',
     'home_hook' => 'Pare de enviar senhas em texto simples.',
-    'home_meta_description' => 'Compartilhe uma senha, chave de API ou arquivo confidencial por meio de um link seguro e autodestrutivo. Criptografia de ponta a ponta — o servidor nunca vê seus dados.',
+    'home_meta_description' => 'Troca segura de dados confidenciais por meio de um link autodestrutivo. Senhas, chaves de API, arquivos — criptografia de ponta a ponta, o servidor não vê nada.',
     'home_view_source' => 'Ver código-fonte',
 
     // Features
@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Como funciona',
     'how_it_works_meta_title' => 'Como a criptografia zero-knowledge protege seus dados',
-    'how_it_works_meta_description' => 'Descubra como o Secret Drop protege seus dados com criptografia de ponta a ponta. O servidor nunca vê seus segredos em texto simples.',
+    'how_it_works_meta_description' => 'Descubra como o Secret Drop garante uma troca segura de dados confidenciais com criptografia de ponta a ponta. O servidor nunca vê seus segredos em texto simples.',
     'how_it_works_intro' => 'Quando você compartilha uma senha por e-mail ou Slack, ela permanece legível por todos os intermediários. O Secret Drop faz o contrário: seu segredo é criptografado no navegador antes de sair da tela. O servidor recebe apenas ruído.',
     'how_it_works_diagram_title' => 'Como seu segredo é protegido',
     'how_step1_title' => 'Você escreve seu segredo',
@@ -233,7 +233,7 @@ return [
     // Use cases page
     'use_cases_title' => 'Casos de uso',
     'use_cases_meta_title' => 'Casos de uso: senhas, arquivos, chaves de API e mais',
-    'use_cases_meta_description' => 'Descubra como usar o Secret Drop: compartilhamento de senhas, documentos confidenciais, chaves de API e mais.',
+    'use_cases_meta_description' => 'Troca segura de dados confidenciais para cada situação: senhas, documentos sensíveis, chaves de API e mais.',
     'use_cases_intro' => 'Todos os dias, senhas trafegam em texto simples por e-mail, Slack ou SMS. Veja como o Secret Drop substitui esses hábitos arriscados.',
     'usecase1_title' => 'Senhas e credenciais',
     'usecase1_desc' => 'Um novo membro da equipe precisa de acesso. Em vez de um e-mail que qualquer um pode ler, envie um link que se autodestrói após a leitura.',

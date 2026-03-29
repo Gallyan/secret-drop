@@ -5,7 +5,7 @@ return [
     'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Le serveur ne voit rien.',
     'home_title' => 'Partagez vos secrets en toute sécurité',
     'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
-    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien sécurisé et autodestructible. Chiffrement de bout en bout — le serveur ne voit jamais vos données.',
+    'home_meta_description' => 'Échange sécurisé de données confidentielles via un lien autodestructible. Mot de passe, clé API, fichier — chiffré de bout en bout, le serveur ne voit rien.',
     'home_view_source' => 'Voir le code source',
 
     // Features
@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Comment ça marche',
     'how_it_works_meta_title' => 'Comment fonctionne le chiffrement zero-knowledge',
-    'how_it_works_meta_description' => 'Découvrez comment Secret Drop protège vos données avec un chiffrement de bout en bout. Le serveur ne voit jamais vos secrets en clair.',
+    'how_it_works_meta_description' => 'Découvrez comment Secret Drop garantit un échange sécurisé de données confidentielles grâce au chiffrement de bout en bout. Le serveur ne voit jamais vos secrets en clair.',
     'how_it_works_intro' => 'Quand vous partagez un mot de passe par email ou Slack, il reste lisible par tous les intermédiaires. Secret Drop fait l\'inverse : votre secret est chiffré dans votre navigateur avant de quitter votre écran. Le serveur ne reçoit que du bruit.',
     'how_it_works_diagram_title' => 'Comment votre secret est protégé',
     'how_step1_title' => 'Vous écrivez votre secret',
@@ -241,7 +241,7 @@ return [
     // Use cases page
     'use_cases_title' => 'Cas d\'usage',
     'use_cases_meta_title' => 'Cas d\'usage : mots de passe, fichiers, clés API',
-    'use_cases_meta_description' => 'Découvrez comment utiliser Secret Drop : partage de mots de passe, documents confidentiels, clés API, et plus encore.',
+    'use_cases_meta_description' => 'Échange sécurisé de données confidentielles pour chaque situation : mots de passe, documents sensibles, clés API, et plus encore.',
     'use_cases_intro' => 'Chaque jour, des mots de passe transitent en clair par email, Slack ou SMS. Voici comment Secret Drop remplace ces habitudes risquées.',
     'usecase1_title' => 'Mots de passe et identifiants',
     'usecase1_desc' => 'Un nouveau collaborateur a besoin des accès. Au lieu d\'un email que tout le monde peut lire, envoyez un lien qui s\'autodétruit après lecture.',

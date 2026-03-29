@@ -5,7 +5,7 @@ return [
     'app_description' => '비밀번호와 기밀 파일을 노출 없이 공유하세요. 종단간 암호화. 자동 삭제. 서버는 아무것도 볼 수 없습니다.',
     'home_title' => '제로 지식 암호화로 비밀을 안전하게 공유',
     'home_hook' => '비밀번호를 평문으로 보내지 마세요.',
-    'home_meta_description' => '비밀번호, API 키 또는 기밀 파일을 안전한 자동 삭제 링크로 공유하세요. 종단간 암호화 — 서버는 데이터를 볼 수 없습니다.',
+    'home_meta_description' => '자동 삭제 링크를 통한 기밀 데이터의 안전한 교환. 비밀번호, API 키, 파일 — 종단간 암호화, 서버는 아무것도 볼 수 없습니다.',
     'home_view_source' => '소스 코드 보기',
 
     // Features
@@ -152,7 +152,7 @@ return [
     // How it works page
     'how_it_works_title' => '작동 방식',
     'how_it_works_meta_title' => '제로 지식 암호화가 데이터를 보호하는 방법',
-    'how_it_works_meta_description' => 'Secret Drop이 종단 간 암호화로 데이터를 보호하는 방법을 알아보세요. 서버는 비밀을 평문으로 볼 수 없습니다.',
+    'how_it_works_meta_description' => 'Secret Drop이 종단간 암호화를 통해 기밀 데이터의 안전한 교환을 보장하는 방법을 알아보세요. 서버는 비밀을 평문으로 볼 수 없습니다.',
     'how_it_works_intro' => '이메일이나 Slack으로 비밀번호를 공유하면 모든 중간자가 읽을 수 있습니다. Secret Drop은 반대로 작동합니다: 비밀은 화면을 떠나기 전에 브라우저에서 암호화됩니다. 서버가 받는 것은 노이즈뿐입니다.',
     'how_it_works_diagram_title' => '당신의 비밀이 보호되는 방법',
     'how_step1_title' => '비밀 작성',
@@ -233,7 +233,7 @@ return [
     // Use cases page
     'use_cases_title' => '사용 사례',
     'use_cases_meta_title' => '활용 사례: 비밀번호, 파일, API 키 등',
-    'use_cases_meta_description' => 'Secret Drop 사용 방법: 비밀번호 공유, 기밀 문서, API 키 등.',
+    'use_cases_meta_description' => '모든 상황에서 기밀 데이터를 안전하게 교환: 비밀번호, 민감한 문서, API 키 등.',
     'use_cases_intro' => '매일 비밀번호가 이메일, Slack, SMS를 통해 평문으로 전송됩니다. Secret Drop이 이러한 위험한 습관을 어떻게 대체하는지 소개합니다.',
     'usecase1_title' => '비밀번호와 자격 증명',
     'usecase1_desc' => '새 팀원에게 액세스가 필요합니다. 누구나 읽을 수 있는 이메일 대신, 열람 후 자동 삭제되는 링크를 보내세요.',
