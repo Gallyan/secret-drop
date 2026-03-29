@@ -110,13 +110,10 @@
         @if(collect(config('legal.social'))->filter()->isNotEmpty())
         "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
         @endif
-        "makesOffer": {
-            "@@type": "Offer",
-            "itemOffered": {
-                "@@type": "WebApplication",
-                "name": "{{ config('app.name') }}",
-                "url": "{{ url('/') }}"
-            }
+        "owns": {
+            "@@type": "WebApplication",
+            "name": "{{ config('app.name') }}",
+            "url": "{{ url('/') }}"
         }
     }
     </script>
@@ -131,7 +128,7 @@
         @if(collect(config('legal.social'))->filter()->isNotEmpty())
         "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
         @endif
-        "makesOffer": {
+        "owns": {
             "@@type": "WebApplication",
             "name": "{{ config('app.name') }}",
             "url": "{{ url('/') }}"
