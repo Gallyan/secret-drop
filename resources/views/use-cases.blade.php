@@ -81,7 +81,8 @@
                         <div>
                             <h2 class="font-semibold text-gray-900 dark:text-white mb-1">{{ __("messages.{$uc['key']}_title") }}</h2>
                             <p class="text-sm text-gray-600 dark:text-slate-400 mb-2">{{ __("messages.{$uc['key']}_desc") }}</p>
-                            <p class="text-xs text-gray-600 dark:text-slate-400 italic">{{ __("messages.{$uc['key']}_example") }}</p>
+                            <p class="text-xs text-gray-600 dark:text-slate-400 italic mb-2">{{ __("messages.{$uc['key']}_example") }}</p>
+                            <p class="text-xs text-violet-600 dark:text-violet-400">{{ __("messages.{$uc['key']}_tip") }}</p>
                         </div>
                     </div>
                 </div>
