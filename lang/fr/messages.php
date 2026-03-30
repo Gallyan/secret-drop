@@ -158,7 +158,7 @@ return [
     'how_step1_title' => 'Vous écrivez votre secret',
     'how_step1_desc' => 'Vous entrez votre message ou sélectionnez un fichier dans votre navigateur.',
     'how_step2_title' => 'Chiffrement dans votre navigateur',
-    'how_step2_desc' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec AES-256-GCM. Le serveur ne reçoit que les données chiffrées.',
+    'how_step2_desc' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec <a href="https://csrc.nist.gov/pubs/sp/800/38d/final" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">AES-256-GCM</a> via la <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">Web Crypto API</a>. Le serveur ne reçoit que les données chiffrées.',
     'how_step3_title' => 'Le serveur stocke le contenu chiffré',
     'how_step3_desc' => 'Le serveur enregistre uniquement les données chiffrées. Il ne peut pas les déchiffrer car il n\'a jamais accès à la clé.',
     'how_step4_title' => 'La clé reste dans l\'URL',
@@ -197,7 +197,7 @@ return [
 
     // Sécurité
     'faq_q5' => 'Comment mes données sont-elles chiffrées ?',
-    'faq_a5' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement (AES-256-GCM via Web Crypto API). Le serveur ne reçoit que des données chiffrées — il ne voit jamais le contenu en clair.',
+    'faq_a5' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec <a href="https://csrc.nist.gov/pubs/sp/800/38d/final" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">AES-256-GCM</a>, l\'algorithme recommandé par le NIST, via la <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">Web Crypto API</a> du W3C. Le serveur ne reçoit que des données chiffrées — il ne voit jamais le contenu en clair.',
     'faq_q6' => 'Le serveur peut-il lire mes secrets ?',
     'faq_a6' => 'Non. La clé de déchiffrement reste dans le fragment de l\'URL (après le #), qui n\'est jamais envoyé au serveur. C\'est une impossibilité technique, pas une promesse.',
     'faq_q7' => 'Que se passe-t-il après la lecture ?',
@@ -221,7 +221,7 @@ return [
     'secure_by_design_title' => 'Secure by design',
     'secure_by_design_intro' => 'La sécurité n\'est pas une fonctionnalité ajoutée — c\'est le fondement de chaque décision architecturale.',
     'sbd_zk_title' => 'Zero-knowledge',
-    'sbd_zk_desc' => 'Le serveur ne reçoit jamais la clé de chiffrement. Même si la base de données est compromise, un attaquant n\'obtient que du bruit inutilisable. Ce n\'est pas une promesse — c\'est une impossibilité mathématique.',
+    'sbd_zk_desc' => 'Le serveur ne reçoit jamais la clé de chiffrement — conformément aux principes de <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">stockage cryptographique OWASP</a>. Même si la base de données est compromise, un attaquant n\'obtient que du bruit inutilisable. Ce n\'est pas une promesse — c\'est une impossibilité mathématique.',
     'sbd_ml_title' => 'Authentification sans mot de passe',
     'sbd_ml_desc' => 'Un magic link à usage unique remplace le mot de passe. Rien à voler, fuiter ou forcer. Une base de données compromise ne révèle aucun identifiant, car il n\'y en a pas.',
     'sbd_fragment_title' => 'La clé ne transite pas',

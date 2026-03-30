@@ -41,7 +41,7 @@
             "@@type": "HowToStep",
             "position": 2,
             "name": "{{ __('messages.how_step2_title') }}",
-            "text": "{{ __('messages.how_step2_desc') }}"
+            "text": "{{ strip_tags(__('messages.how_step2_desc')) }}"
         },
         {
             "@@type": "HowToStep",
@@ -135,7 +135,7 @@
                             </div>
                             <div class="flex-1 pt-1">
                                 <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __("messages.{$step['key']}_title") }}</h3>
-                                <p class="text-gray-600 dark:text-slate-400 text-sm">{{ __("messages.{$step['key']}_desc") }}</p>
+                                <p class="text-gray-600 dark:text-slate-400 text-sm">{!! __("messages.{$step['key']}_desc") !!}</p>
                             </div>
                             <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-500/10 shrink-0" aria-hidden="true">
                                 <x-dynamic-component :component="$step['iconName']" class="w-6 h-6 text-violet-500 dark:text-violet-400" />
@@ -155,12 +155,12 @@
                 </p>
 
                 <div class="grid md:grid-cols-2 gap-4">
-                    <x-feature-card :title="__('messages.sbd_zk_title')">{{ __('messages.sbd_zk_desc') }}</x-feature-card>
-                    <x-feature-card :title="__('messages.sbd_ml_title')">{{ __('messages.sbd_ml_desc') }}</x-feature-card>
-                    <x-feature-card :title="__('messages.sbd_fragment_title')">{{ __('messages.sbd_fragment_desc') }}</x-feature-card>
-                    <x-feature-card :title="__('messages.sbd_destroy_title')">{{ __('messages.sbd_destroy_desc') }}</x-feature-card>
-                    <x-feature-card :title="__('messages.sbd_hosted_title')">{{ __('messages.sbd_hosted_desc') }}</x-feature-card>
-                    <x-feature-card :title="__('messages.sbd_notrack_title')">{{ __('messages.sbd_notrack_desc') }}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_zk_title')">{!! __('messages.sbd_zk_desc') !!}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_ml_title')">{!! __('messages.sbd_ml_desc') !!}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_fragment_title')">{!! __('messages.sbd_fragment_desc') !!}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_destroy_title')">{!! __('messages.sbd_destroy_desc') !!}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_hosted_title')">{!! __('messages.sbd_hosted_desc') !!}</x-feature-card>
+                    <x-feature-card :title="__('messages.sbd_notrack_title')">{!! __('messages.sbd_notrack_desc') !!}</x-feature-card>
                 </div>
             </div>
 
