@@ -205,7 +205,7 @@ return [
     'faq_q11' => 'Che differenza c\'è con l\'email crittografata?',
     'faq_a11' => 'L\'email crittografata (PGP, S/MIME) richiede che entrambe le parti configurino chiavi in anticipo. Secret Drop non chiede nulla al destinatario — solo un link. E il segreto si autodistrugge, a differenza di un\'email che resta in entrambe le caselle.',
     'faq_q12' => 'Come gestisco i miei segreti dopo averli creati?',
-    'faq_a12' => 'Se hai fornito la tua email, puoi revocare o estendere i tuoi segreti tramite il link :manage_link in fondo a ogni pagina. Riceverai un link monouso valido 10 minuti — un magic link, senza password. Niente da rubare, niente da violare.',
+    'faq_a12' => 'Se hai fornito la tua email, puoi revocare o estendere i tuoi segreti tramite il link :manage_link in fondo a ogni pagina. Riceverai un link monouso valido :minutes minuti — un magic link, senza password. Niente da rubare, niente da violare.',
     'faq_meta_description' => 'Trova risposte alle domande frequenti su Secret Drop: crittografia, zero-knowledge, privacy, condivisione file e altro.',
     'faq_see_how' => 'Scopri come funziona Secret Drop',
     'secure_by_design_title' => 'Secure by design',
@@ -301,7 +301,7 @@ return [
     'admin_back_home' => 'Torna alla home',
     'admin_link_sent_title' => 'Controlla la tua posta',
     'admin_link_sent_description' => 'Se esistono segreti per questa email, è stato inviato un link magico.',
-    'admin_link_sent_warning' => 'Il link è valido per 10 minuti e può essere usato una sola volta.',
+    'admin_link_sent_warning' => 'Il link è valido per :minutes minuti e può essere usato una sola volta.',
     'admin_invalid_link_title' => 'Link non valido o scaduto',
     'admin_invalid_link_description' => 'Questo link magico non è valido o è già stato usato. Per favore richiedine uno nuovo.',
     'verify_confirm_title' => 'Conferma il tuo accesso',
@@ -343,7 +343,7 @@ return [
     'email_magic_link_subject' => 'Il tuo link di accesso a Secret Drop',
     'email_magic_link_intro' => 'Hai richiesto l\'accesso per gestire i tuoi segreti. Clicca il pulsante qui sotto per accedere.',
     'email_magic_link_button' => 'Accedi ai miei segreti',
-    'email_magic_link_warning' => 'Questo link scade in 10 minuti e può essere usato una sola volta.',
+    'email_magic_link_warning' => 'Questo link scade in :minutes minuti e può essere usato una sola volta.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',

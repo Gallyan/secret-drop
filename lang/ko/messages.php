@@ -205,7 +205,7 @@ return [
     'faq_q11' => '암호화 이메일과의 차이점은?',
     'faq_a11' => '암호화 이메일(PGP, S/MIME)은 양측이 사전에 키를 설정해야 합니다. Secret Drop은 수신자에게 아무것도 요구하지 않습니다 — 링크만 있으면 됩니다. 그리고 이메일과 달리 비밀은 자동 삭제됩니다.',
     'faq_q12' => '생성 후 비밀을 어떻게 관리하나요?',
-    'faq_a12' => '이메일을 입력했다면 각 페이지 하단의 :manage_link 링크에서 비밀을 취소하거나 연장할 수 있습니다. 10분간 유효한 일회용 링크(매직 링크)를 받게 됩니다. 비밀번호 없음. 훔칠 것도, 해킹할 것도 없습니다.',
+    'faq_a12' => '이메일을 입력했다면 각 페이지 하단의 :manage_link 링크에서 비밀을 취소하거나 연장할 수 있습니다. :minutes분간 유효한 일회용 링크(매직 링크)를 받게 됩니다. 비밀번호 없음. 훔칠 것도, 해킹할 것도 없습니다.',
     'faq_meta_description' => 'Secret Drop에 대한 자주 묻는 질문 답변: 암호화, 제로 지식, 개인정보 보호, 파일 공유 등.',
     'faq_see_how' => 'Secret Drop 작동 방식 알아보기',
     'secure_by_design_title' => 'Secure by design',
@@ -301,7 +301,7 @@ return [
     'admin_back_home' => '홈으로 돌아가기',
     'admin_link_sent_title' => '받은편지함 확인',
     'admin_link_sent_description' => '이 이메일로 만든 비밀이 있으면 매직 링크가 전송되었습니다.',
-    'admin_link_sent_warning' => '링크는 10분간 유효하며 한 번만 사용할 수 있습니다.',
+    'admin_link_sent_warning' => '링크는 :minutes분간 유효하며 한 번만 사용할 수 있습니다.',
     'admin_invalid_link_title' => '유효하지 않거나 만료된 링크',
     'admin_invalid_link_description' => '이 매직 링크는 유효하지 않거나 이미 사용되었습니다. 새로 요청하세요.',
     'verify_confirm_title' => '액세스 확인',
@@ -343,7 +343,7 @@ return [
     'email_magic_link_subject' => 'Secret Drop 접근 링크',
     'email_magic_link_intro' => '비밀 관리 접근을 요청했습니다. 아래 버튼을 클릭하여 로그인하세요.',
     'email_magic_link_button' => '내 비밀 접근',
-    'email_magic_link_warning' => '이 링크는 10분 후 만료되며 한 번만 사용할 수 있습니다.',
+    'email_magic_link_warning' => '이 링크는 :minutes분 후 만료되며 한 번만 사용할 수 있습니다.',
 
     // Super Admin
     'superadmin_title' => '슈퍼 관리자',

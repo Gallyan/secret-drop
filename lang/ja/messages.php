@@ -205,7 +205,7 @@ return [
     'faq_q11' => '暗号化メールとの違いは？',
     'faq_a11' => '暗号化メール（PGP、S/MIME）は双方が事前に鍵を設定する必要があります。Secret Dropは受信者に何も要求しません — リンクだけです。そしてメールとは違い、秘密は自動消滅します。',
     'faq_q12' => '作成後にシークレットを管理するには？',
-    'faq_a12' => 'メールアドレスを入力した場合、各ページ下部の:manage_linkリンクからシークレットの取り消しや延長ができます。10分間有効な使い捨てリンク（マジックリンク）が届きます。パスワード不要。盗むものも、ハッキングするものもありません。',
+    'faq_a12' => 'メールアドレスを入力した場合、各ページ下部の:manage_linkリンクからシークレットの取り消しや延長ができます。:minutes分間有効な使い捨てリンク（マジックリンク）が届きます。パスワード不要。盗むものも、ハッキングするものもありません。',
     'faq_meta_description' => 'Secret Dropに関するよくある質問の回答：暗号化、ゼロナレッジ、プライバシー、ファイル共有など。',
     'faq_see_how' => 'Secret Dropの仕組みを見る',
     'secure_by_design_title' => 'Secure by design',
@@ -301,7 +301,7 @@ return [
     'admin_back_home' => 'ホームに戻る',
     'admin_link_sent_title' => '受信トレイを確認',
     'admin_link_sent_description' => 'このメールアドレスにシークレットが存在する場合、マジックリンクが送信されました。',
-    'admin_link_sent_warning' => 'リンクは10分間有効で、1回のみ使用できます。',
+    'admin_link_sent_warning' => 'リンクは:minutes分間有効で、1回のみ使用できます。',
     'admin_invalid_link_title' => '無効または期限切れのリンク',
     'admin_invalid_link_description' => 'このマジックリンクは無効か、すでに使用されています。新しいものをリクエストしてください。',
     'verify_confirm_title' => 'アクセスを確認する',
@@ -343,7 +343,7 @@ return [
     'email_magic_link_subject' => 'Secret Dropアクセスリンク',
     'email_magic_link_intro' => 'シークレット管理へのアクセスをリクエストしました。以下のボタンをクリックしてログインしてください。',
     'email_magic_link_button' => 'シークレットにアクセス',
-    'email_magic_link_warning' => 'このリンクは10分で期限切れになり、1回のみ使用できます。',
+    'email_magic_link_warning' => 'このリンクは:minutes分で期限切れになり、1回のみ使用できます。',
 
     // Super Admin
     'superadmin_title' => 'スーパー管理者',

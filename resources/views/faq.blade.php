@@ -79,6 +79,7 @@
                     <dt class="font-medium text-gray-900 dark:text-white mb-2">{{ __("messages.faq_q{$i}") }}</dt>
                     <dd class="text-sm text-gray-600 dark:text-slate-400">{!! __("messages.faq_a{$i}", [
                         'manage_link' => '<a href="' . route('admin.index') . '" class="text-violet-600 dark:text-violet-400 hover:underline">« ' . e(__('messages.footer_manage')) . ' »</a>',
+                        'minutes' => config('secrets.magic_link_ttl'),
                     ]) !!}</dd>
                 </div>
                 @endforeach

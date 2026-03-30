@@ -205,7 +205,7 @@ return [
     'faq_q11' => 'Czym różni się od zaszyfrowanego e-maila?',
     'faq_a11' => 'Zaszyfrowany e-mail (PGP, S/MIME) wymaga, aby obie strony wcześniej skonfigurowały klucze. Secret Drop nie wymaga niczego od odbiorcy — wystarczy link. A sekret ulega samozniszczeniu, w przeciwieństwie do e-maila, który zostaje w obu skrzynkach.',
     'faq_q12' => 'Jak zarządzać sekretami po ich utworzeniu?',
-    'faq_a12' => 'Jeśli podałeś swój e-mail, możesz odwołać lub przedłużyć swoje sekrety przez link :manage_link na dole każdej strony. Otrzymasz jednorazowy link ważny 10 minut — magic link, bez hasła. Nie ma czego kraść, nie ma czego hakować.',
+    'faq_a12' => 'Jeśli podałeś swój e-mail, możesz odwołać lub przedłużyć swoje sekrety przez link :manage_link na dole każdej strony. Otrzymasz jednorazowy link ważny :minutes minut — magic link, bez hasła. Nie ma czego kraść, nie ma czego hakować.',
     'faq_meta_description' => 'Znajdź odpowiedzi na najczęściej zadawane pytania o Secret Drop: szyfrowanie, zero-knowledge, prywatność, udostępnianie plików i więcej.',
     'faq_see_how' => 'Dowiedz się, jak działa Secret Drop',
     'secure_by_design_title' => 'Secure by design',
@@ -301,7 +301,7 @@ return [
     'admin_back_home' => 'Powrót na stronę główną',
     'admin_link_sent_title' => 'Sprawdź swoją skrzynkę',
     'admin_link_sent_description' => 'Jeśli istnieją sekrety dla tego e-maila, wysłano magiczny link.',
-    'admin_link_sent_warning' => 'Link jest ważny przez 10 minut i może być użyty tylko raz.',
+    'admin_link_sent_warning' => 'Link jest ważny przez :minutes minut i może być użyty tylko raz.',
     'admin_invalid_link_title' => 'Nieprawidłowy lub wygasły link',
     'admin_invalid_link_description' => 'Ten magiczny link jest nieprawidłowy lub już został użyty. Poproś o nowy.',
     'verify_confirm_title' => 'Potwierdź swój dostęp',
@@ -343,7 +343,7 @@ return [
     'email_magic_link_subject' => 'Twój link dostępu do Secret Drop',
     'email_magic_link_intro' => 'Poprosiłeś o dostęp do zarządzania sekretami. Kliknij poniższy przycisk, aby się zalogować.',
     'email_magic_link_button' => 'Otwórz moje sekrety',
-    'email_magic_link_warning' => 'Ten link wygasa za 10 minut i może być użyty tylko raz.',
+    'email_magic_link_warning' => 'Ten link wygasa za :minutes minut i może być użyty tylko raz.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',

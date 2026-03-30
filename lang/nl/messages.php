@@ -205,7 +205,7 @@ return [
     'faq_q11' => 'Wat is het verschil met versleutelde e-mail?',
     'faq_a11' => 'Versleutelde e-mail (PGP, S/MIME) vereist dat beide partijen vooraf sleutels instellen. Secret Drop vraagt niets van de ontvanger — alleen een link. En het geheim vernietigt zichzelf, in tegenstelling tot een e-mail die in beide inboxen blijft.',
     'faq_q12' => 'Hoe beheer ik mijn geheimen na het aanmaken?',
-    'faq_a12' => 'Als u uw e-mail hebt opgegeven, kunt u uw geheimen intrekken of verlengen via de link :manage_link onderaan elke pagina. U ontvangt een eenmalige link die 10 minuten geldig is — een magic link, zonder wachtwoord. Niets om te stelen, niets om te hacken.',
+    'faq_a12' => 'Als u uw e-mail hebt opgegeven, kunt u uw geheimen intrekken of verlengen via de link :manage_link onderaan elke pagina. U ontvangt een eenmalige link die :minutes minuten geldig is — een magic link, zonder wachtwoord. Niets om te stelen, niets om te hacken.',
     'faq_meta_description' => 'Vind antwoorden op veelgestelde vragen over Secret Drop: versleuteling, zero-knowledge, privacy, bestandsdeling en meer.',
     'faq_see_how' => 'Ontdek hoe Secret Drop werkt',
     'secure_by_design_title' => 'Secure by design',
@@ -301,7 +301,7 @@ return [
     'admin_back_home' => 'Terug naar home',
     'admin_link_sent_title' => 'Controleer uw inbox',
     'admin_link_sent_description' => 'Als er geheimen bestaan voor dit e-mailadres, is er een magische link verzonden.',
-    'admin_link_sent_warning' => 'De link is 10 minuten geldig en kan slechts één keer worden gebruikt.',
+    'admin_link_sent_warning' => 'De link is :minutes minuten geldig en kan slechts één keer worden gebruikt.',
     'admin_invalid_link_title' => 'Ongeldige of verlopen link',
     'admin_invalid_link_description' => 'Deze magische link is ongeldig of al gebruikt. Vraag een nieuwe aan.',
     'verify_confirm_title' => 'Bevestig uw toegang',
@@ -343,7 +343,7 @@ return [
     'email_magic_link_subject' => 'Uw toegangslink voor Secret Drop',
     'email_magic_link_intro' => 'U heeft toegang aangevraagd om uw geheimen te beheren. Klik op de onderstaande knop om in te loggen.',
     'email_magic_link_button' => 'Mijn geheimen openen',
-    'email_magic_link_warning' => 'Deze link verloopt over 10 minuten en kan slechts één keer worden gebruikt.',
+    'email_magic_link_warning' => 'Deze link verloopt over :minutes minuten en kan slechts één keer worden gebruikt.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',
