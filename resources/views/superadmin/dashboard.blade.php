@@ -108,15 +108,21 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_types') }}</h2>
-                <canvas id="secretTypesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretTypesChart" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
+                </div>
             </x-card>
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_options') }}</h2>
-                <canvas id="secretOptionsChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretOptionsChart" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
+                </div>
             </x-card>
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_outcomes') }}</h2>
-                <canvas id="secretOutcomesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretOutcomesChart" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
+                </div>
             </x-card>
         </div>
 

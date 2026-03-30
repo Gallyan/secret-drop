@@ -542,7 +542,7 @@ function initDashboard() {
             labels: [translations.stat_text, translations.stat_file],
             datasets: [{ data: [t.secrets_created_text || 0, t.secrets_created_file || 0], backgroundColor: ['#8b5cf6', '#f59e0b'] }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
     charts.options = new Chart(document.getElementById('secretOptionsChart'), {
@@ -551,7 +551,7 @@ function initDashboard() {
             labels: [translations.stat_passphrase, translations.stat_max_views, translations.stat_split_mode],
             datasets: [{ data: [t.secrets_with_passphrase || 0, t.secrets_with_max_views || 0, t.secrets_split_mode || 0], backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: scales.y } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: scales.y } }
     });
 
     charts.outcomes = new Chart(document.getElementById('secretOutcomesChart'), {
@@ -560,7 +560,7 @@ function initDashboard() {
             labels: [translations.stat_read, translations.stat_expired_unread, translations.stat_revoked, translations.stat_max_reached],
             datasets: [{ data: [t.secrets_read || 0, t.secrets_expired_unread || 0, t.secrets_revoked || 0, t.secrets_max_views_reached || 0], backgroundColor: ['#10b981', '#6b7280', '#ef4444', '#f59e0b'] }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
     charts.admin = new Chart(document.getElementById('adminActivityChart'), {
