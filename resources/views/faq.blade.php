@@ -42,6 +42,25 @@
     ]
 }
 </script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebPage",
+    "name": "{{ __('messages.faq_title') }}",
+    "description": "{{ __('messages.faq_meta_description') }}",
+    "datePublished": "2026-03-01",
+    "dateModified": "{{ date('Y-m-d', filemtime(resource_path('views/faq.blade.php'))) }}",
+    "isPartOf": {
+        "@@type": "WebSite",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}"
+    },
+    "speakable": {
+        "@@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "dt", "dd"]
+    }
+}
+</script>
 @endpush
 
 @section('content')
@@ -71,6 +90,7 @@
                     {{ __('messages.faq_cta') }}
                 </x-btn-primary>
             </div>
+
         </x-card>
     </div>
 </div>

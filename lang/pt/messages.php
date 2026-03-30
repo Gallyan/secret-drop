@@ -547,4 +547,7 @@ return [
     'val_min_byte_length' => 'O comprimento mínimo de bytes é :min, recebidos :actual.',
     'val_salt_iv2_consistency' => 'Salt e IV2 devem estar ambos presentes ou ambos ausentes.',
     'val_passphrase_requires_salt' => 'O indicador de frase-senha requer a presença de salt e IV2.',
+
+    // Content dates
+    'last_updated' => 'Última atualização: :date',
 ];

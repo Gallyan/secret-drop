@@ -135,6 +135,20 @@
         }
     }
     </script>
+    <script type="application/ld+json" nonce="@nonce">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebSite",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}",
+        "description": "{{ __('messages.app_description') }}",
+        "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+        "publisher": {
+            "@@type": "Person",
+            "name": "{{ config('legal.editor_name') }}"
+        }
+    }
+    </script>
     @endif
 
     @stack('schema')

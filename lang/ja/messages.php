@@ -547,4 +547,7 @@ return [
     'val_min_byte_length' => '最小バイト長は :min ですが、:actual を受信しました。',
     'val_salt_iv2_consistency' => 'SaltとIV2は両方存在するか、両方存在しない必要があります。',
     'val_passphrase_requires_salt' => 'パスフレーズフラグにはSaltとIV2の存在が必要です。',
+
+    // Content dates
+    'last_updated' => '最終更新日: :date',
 ];

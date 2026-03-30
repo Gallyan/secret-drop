@@ -547,4 +547,7 @@ return [
     'val_min_byte_length' => 'Minimale bytelengte is :min, :actual ontvangen.',
     'val_salt_iv2_consistency' => 'Salt en IV2 moeten beide aanwezig of beide afwezig zijn.',
     'val_passphrase_requires_salt' => 'De passphrase-vlag vereist de aanwezigheid van salt en IV2.',
+
+    // Content dates
+    'last_updated' => 'Laatst bijgewerkt: :date',
 ];

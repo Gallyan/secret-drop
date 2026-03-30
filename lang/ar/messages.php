@@ -547,4 +547,7 @@ return [
     'val_min_byte_length' => 'الحد الأدنى لطول البايت هو :min، تم استلام :actual.',
     'val_salt_iv2_consistency' => 'يجب أن يكون Salt وIV2 موجودين معاً أو غائبين معاً.',
     'val_passphrase_requires_salt' => 'يتطلب مؤشر عبارة المرور وجود Salt وIV2.',
+
+    // Content dates
+    'last_updated' => 'آخر تحديث: :date',
 ];

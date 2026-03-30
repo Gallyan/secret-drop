@@ -138,4 +138,4 @@ Secret Drop is free to use, requires no account, and is available in 11 language
 
 ## Contact
 
-See the legal notice page at /legal for contact information.
+See the legal notice page at LEGAL_URL for contact information.

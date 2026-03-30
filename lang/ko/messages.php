@@ -547,4 +547,7 @@ return [
     'val_min_byte_length' => '최소 바이트 길이는 :min이며, :actual을(를) 수신했습니다.',
     'val_salt_iv2_consistency' => 'Salt와 IV2는 둘 다 있거나 둘 다 없어야 합니다.',
     'val_passphrase_requires_salt' => '패스프레이즈 플래그는 Salt와 IV2가 존재해야 합니다.',
+
+    // Content dates
+    'last_updated' => '마지막 업데이트: :date',
 ];

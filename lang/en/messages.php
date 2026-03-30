@@ -546,4 +546,7 @@ return [
     'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
     'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
     'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
+
+    // Content dates
+    'last_updated' => 'Last updated: :date',
 ];

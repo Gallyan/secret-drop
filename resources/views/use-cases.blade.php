@@ -30,6 +30,8 @@
     "@@type": "WebPage",
     "name": "{{ __('messages.use_cases_title') }}",
     "description": "{{ __('messages.use_cases_meta_description') }}",
+    "datePublished": "2026-03-01",
+    "dateModified": "{{ date('Y-m-d', filemtime(resource_path('views/use-cases.blade.php'))) }}",
     "about": {
         "@@type": "WebApplication",
         "name": "{{ config('app.name') }}"
@@ -38,6 +40,10 @@
         "@@type": "WebSite",
         "name": "{{ config('app.name') }}",
         "url": "{{ url('/') }}"
+    },
+    "speakable": {
+        "@@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "h2", ".text-lg"]
     }
 }
 </script>
@@ -93,6 +99,7 @@
                     </a>
                 </div>
             </div>
+
         </x-card>
     </div>
 </div>
