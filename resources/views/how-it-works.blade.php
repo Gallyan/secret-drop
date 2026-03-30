@@ -124,23 +124,25 @@
                 @endphp
                 <ol class="space-y-4 list-none">
                     @foreach($steps as $i => $step)
-                        @if($i > 0)
-                        <div class="flex justify-center" aria-hidden="true">
-                            <x-icon.arrow-down class="w-5 h-5 text-gray-300 dark:text-slate-600" />
-                        </div>
-                        @endif
-                        <div class="flex items-start gap-4">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 font-bold shrink-0">
-                                {{ $i + 1 }}
+                        <li>
+                            @if($i > 0)
+                            <div class="flex justify-center mb-4" aria-hidden="true">
+                                <x-icon.arrow-down class="w-5 h-5 text-gray-300 dark:text-slate-600" />
                             </div>
-                            <div class="flex-1 pt-1">
-                                <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __("messages.{$step['key']}_title") }}</h3>
-                                <p class="text-gray-600 dark:text-slate-400 text-sm">{!! __("messages.{$step['key']}_desc") !!}</p>
+                            @endif
+                            <div class="flex items-start gap-4">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 font-bold shrink-0" aria-hidden="true">
+                                    {{ $i + 1 }}
+                                </div>
+                                <div class="flex-1 pt-1">
+                                    <h3 class="font-medium text-gray-900 dark:text-white mb-1">{{ __("messages.{$step['key']}_title") }}</h3>
+                                    <p class="text-gray-600 dark:text-slate-400 text-sm">{!! __("messages.{$step['key']}_desc") !!}</p>
+                                </div>
+                                <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-500/10 shrink-0" aria-hidden="true">
+                                    <x-dynamic-component :component="$step['iconName']" class="w-6 h-6 text-violet-500 dark:text-violet-400" />
+                                </div>
                             </div>
-                            <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-500/10 shrink-0" aria-hidden="true">
-                                <x-dynamic-component :component="$step['iconName']" class="w-6 h-6 text-violet-500 dark:text-violet-400" />
-                            </div>
-                        </div>
+                        </li>
                     @endforeach
                 </ol>
             </div>
