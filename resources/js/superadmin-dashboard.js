@@ -468,7 +468,7 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
     let html = '<div class="overflow-x-auto"><table class="w-full border-collapse text-xs">';
     html += '<tr><td class="w-8"></td>';
     for (let i = 0; i < 7; i++) {
-        html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${esc(days[i])}</td>`;
+        html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-1 font-medium">${esc(days[i])}</td>`;
     }
     html += '</tr>';
 
@@ -478,7 +478,7 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
             const di = dayOrder[i];
             const val = heatmapData[di]?.[hour] || 0;
             const title = `${esc(days[i])} ${hour}h: ${val}`;
-            html += `<td class="p-0.5"><div class="h-5 rounded-sm flex items-center justify-center text-[10px] ${cls(val, maxValue, color)}" title="${title}">${val > 0 ? val : ''}</div></td>`;
+            html += `<td class="p-px"><div class="h-3 rounded-sm flex items-center justify-center text-[8px] leading-none ${cls(val, maxValue, color)}" title="${title}">${val > 0 ? val : ''}</div></td>`;
         }
         html += '</tr>';
     }
