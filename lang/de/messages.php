@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Der Server sieht nichts.',
+    'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Kostenlos und Open Source.',
     'home_title' => 'Geheimnisse sicher teilen mit Zero-Knowledge-Verschlüsselung',
     'home_hook' => 'Schluss mit Passwörtern im Klartext.',
-    'home_meta_description' => 'Sicherer Austausch vertraulicher Daten über einen selbstzerstörenden Link. Passwörter, API-Schlüssel, Dateien — Ende-zu-Ende-verschlüsselt, der Server sieht nichts.',
+    'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen selbstzerstörenden Link. In Ihrem Browser verschlüsselt — der Server sieht den Inhalt nie.',
+    'home_answer_target' => 'Secret Drop verschlüsselt Ihre Passwörter und vertraulichen Dateien in Ihrem Browser, bevor irgendetwas gesendet wird. Der Server speichert nur unlesbare Daten und kann niemals auf den Inhalt zugreifen. Geheimnisse zerstören sich nach dem Lesen selbst. Kostenlos, ohne Konto, ohne Tracker.',
     'home_view_source' => 'Quellcode ansehen',
 
-    // Features
-    'feature_encryption' => 'Verschlüsselt in Ihrem Browser — bevor irgendetwas gesendet wird',
-    'feature_zero_knowledge' => 'Sicher durch Design: selbst für uns unlesbar',
-    'feature_auto_destroy' => 'Sie bestimmen, wann es sich selbst zerstört',
-    'feature_expiration' => 'Kein Konto, kein Passwort: nichts zu hacken',
-    'feature_hosted_eu' => 'Gehostet in Frankreich, EU-Gerichtsbarkeit',
-    'feature_no_tracking' => 'Keine Drittanbieter-Cookies, keine Tracking-Dienste',
-    'feature_hosted_no_tracking' => 'Gehostet in Frankreich, keine Tracking-Dienste',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Sicher durch Design',
+    'feature_no_account' => 'Ohne Konto oder Registrierung',
+    'feature_hosted_france' => 'Gehostet in Frankreich, kein Tracking',
+    'feature_open_source' => 'Open Source: der Code ist öffentlich und überprüfbar',
 
     // Form labels
     'your_secret' => 'Ihr Geheimnis',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'So funktioniert es',
     'how_it_works_meta_title' => 'So schützt Zero-Knowledge-Verschlüsselung Ihre Daten',
-    'how_it_works_meta_description' => 'Erfahren Sie, wie Secret Drop einen sicheren Austausch vertraulicher Daten durch Ende-zu-Ende-Verschlüsselung gewährleistet. Der Server sieht niemals Ihre Geheimnisse im Klartext.',
+    'how_it_works_meta_description' => 'So verschlüsselt Secret Drop Ihre Daten Ende-zu-Ende. AES-256-GCM-Verschlüsselung: der Server sieht Ihre Geheimnisse nie.',
     'how_it_works_intro' => 'Wenn Sie ein Passwort per E-Mail oder Slack teilen, bleibt es für jeden Vermittler lesbar. Secret Drop gewährleistet einen sicheren Austausch Ihrer vertraulichen Daten: Alles wird in Ihrem Browser verschlüsselt, bevor es Ihren Bildschirm verlässt. Der Server empfängt nur Rauschen.',
     'how_it_works_diagram_title' => 'Wie Ihr Geheimnis geschützt wird',
     'how_step1_title' => 'Sie schreiben Ihr Geheimnis',

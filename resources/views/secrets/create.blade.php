@@ -27,29 +27,25 @@
                         {{ __('messages.home_hook') }}
                     </p>
                     <p class="text-gray-600 dark:text-slate-400 mb-8 transition-colors">
-                        {{ __('messages.app_description') }}
+                        {{ __('messages.home_answer_target') }}
                     </p>
 
                     <ul class="space-y-3 text-sm">
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
-                            {{ __('messages.feature_encryption') }}
+                            {{ __('messages.feature_secure_by_design') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
-                            {{ __('messages.feature_zero_knowledge') }}
+                            {{ __('messages.feature_no_account') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
-                            {{ __('messages.feature_auto_destroy') }}
+                            {{ __('messages.feature_hosted_france') }}
                         </li>
                         <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
                             <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
-                            {{ __('messages.feature_expiration') }}
-                        </li>
-                        <li class="flex items-center gap-3 text-gray-700 dark:text-slate-300 transition-colors">
-                            <x-icon.check class="w-5 h-5 text-emerald-500 dark:text-emerald-300 shrink-0" />
-                            {{ __('messages.feature_hosted_no_tracking') }}
+                            {{ __('messages.feature_open_source') }}
                         </li>
                     </ul>
 
@@ -564,10 +560,6 @@
             </div>
         </div>
 
-        <p class="mt-4 text-center text-xs text-gray-400 dark:text-slate-500 tracking-wide">
-            Open source <span class="mx-1">·</span> Laravel <span class="hidden sm:inline"><span class="mx-1">·</span> {{ __('messages.app_tagline') }}</span> <span class="mx-1">·</span>
-            <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" class="hover:text-gray-600 dark:hover:text-slate-300 transition-colors">GitHub</a>
-        </p>
     </div>
 </div>
 @endsection

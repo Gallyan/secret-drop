@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Condividi password e file riservati senza mai esporli. Crittografia end-to-end. Autodistruttivo. Il server non vede nulla.',
+    'app_description' => 'Condividi password e file riservati senza mai esporli. Crittografia end-to-end. Autodistruttivo. Gratuito e open source.',
     'home_title' => 'Condividi segreti in sicurezza con crittografia zero-knowledge',
     'home_hook' => 'Basta inviare password in chiaro.',
-    'home_meta_description' => 'Scambio sicuro di dati riservati tramite un link autodistruttivo. Password, chiavi API, file — crittografia end-to-end, il server non vede nulla.',
+    'home_meta_description' => 'Condividi una password, una chiave API o un file riservato tramite un link che si autodistrugge. Crittografato nel browser, il server non vede mai il contenuto.',
+    'home_answer_target' => 'Secret Drop crittografa le tue password e i tuoi file riservati nel browser prima di qualsiasi invio. Il server conserva solo dati illeggibili e non può mai accedere al contenuto. I segreti si autodistruggono dopo la lettura. Gratuito, senza account, senza tracciamento.',
     'home_view_source' => 'Vedi codice sorgente',
 
-    // Features
-    'feature_encryption' => 'Crittografato nel browser — prima che qualsiasi dato esca',
-    'feature_zero_knowledge' => 'Sicuro per design: illeggibile, anche per noi',
-    'feature_auto_destroy' => 'Decidi tu quando si autodistrugge',
-    'feature_expiration' => 'Nessun account, nessuna password: niente da violare',
-    'feature_hosted_eu' => 'Ospitato in Francia, giurisdizione UE',
-    'feature_no_tracking' => 'Nessun cookie di terze parti, nessun servizio di tracciamento',
-    'feature_hosted_no_tracking' => 'Ospitato in Francia, nessun servizio di tracciamento',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Sicuro per progettazione',
+    'feature_no_account' => 'Senza account né registrazione',
+    'feature_hosted_france' => 'Ospitato in Francia, nessun tracciamento',
+    'feature_open_source' => 'Open source: il codice è pubblico e verificabile',
 
     // Form labels
     'your_secret' => 'Il tuo segreto',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Come funziona',
     'how_it_works_meta_title' => 'Come la crittografia zero-knowledge protegge i tuoi dati',
-    'how_it_works_meta_description' => 'Scopri come Secret Drop garantisce uno scambio sicuro di dati riservati grazie alla crittografia end-to-end. Il server non vede mai i tuoi segreti in chiaro.',
+    'how_it_works_meta_description' => 'Come Secret Drop crittografa i tuoi dati end-to-end. Crittografia AES-256-GCM: il server non vede mai i tuoi segreti.',
     'how_it_works_intro' => 'Quando condividi una password via email o Slack, resta leggibile da tutti gli intermediari. Secret Drop garantisce uno scambio sicuro dei tuoi dati riservati: tutto viene crittografato nel browser prima di lasciare lo schermo. Il server riceve solo rumore.',
     'how_it_works_diagram_title' => 'Come viene protetto il tuo segreto',
     'how_step1_title' => 'Scrivi il tuo segreto',

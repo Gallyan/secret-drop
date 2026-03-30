@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Deel wachtwoorden en vertrouwelijke bestanden zonder ze ooit bloot te stellen. End-to-end versleuteld. Zelfvernietigend. De server ziet niets.',
+    'app_description' => 'Deel wachtwoorden en vertrouwelijke bestanden zonder ze ooit bloot te stellen. End-to-end versleuteld. Zelfvernietigend. Gratis en open source.',
     'home_title' => 'Deel geheimen veilig met zero-knowledge-encryptie',
     'home_hook' => 'Stop met wachtwoorden in platte tekst te versturen.',
-    'home_meta_description' => 'Veilige uitwisseling van vertrouwelijke gegevens via een zelfvernietigende link. Wachtwoorden, API-sleutels, bestanden — end-to-end versleuteld, de server ziet niets.',
+    'home_meta_description' => 'Deel een wachtwoord, API-sleutel of vertrouwelijk bestand via een zelfvernietigende link. Versleuteld in uw browser — de server ziet de inhoud nooit.',
+    'home_answer_target' => 'Secret Drop versleutelt uw wachtwoorden en vertrouwelijke bestanden in uw browser voordat er iets verstuurd wordt. De server slaat alleen onleesbare gegevens op en kan nooit bij de inhoud. Geheimen vernietigen zichzelf na het lezen. Gratis, zonder account, zonder tracking.',
     'home_view_source' => 'Broncode bekijken',
 
-    // Features
-    'feature_encryption' => 'Versleuteld in uw browser — voordat er iets verstuurd wordt',
-    'feature_zero_knowledge' => 'Veilig by design: onleesbaar, zelfs voor ons',
-    'feature_auto_destroy' => 'U bepaalt wanneer het zichzelf vernietigt',
-    'feature_expiration' => 'Geen account, geen wachtwoord: niets te hacken',
-    'feature_hosted_eu' => 'Gehost in Frankrijk, EU-jurisdictie',
-    'feature_no_tracking' => 'Geen cookies van derden, geen trackingdiensten',
-    'feature_hosted_no_tracking' => 'Gehost in Frankrijk, geen trackingdiensten',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Veilig door ontwerp',
+    'feature_no_account' => 'Zonder account of registratie',
+    'feature_hosted_france' => 'Gehost in Frankrijk, geen tracking',
+    'feature_open_source' => 'Open source: de code is openbaar en controleerbaar',
 
     // Form labels
     'your_secret' => 'Uw geheim',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Hoe het werkt',
     'how_it_works_meta_title' => 'Hoe zero-knowledge-encryptie uw gegevens beschermt',
-    'how_it_works_meta_description' => 'Ontdek hoe Secret Drop een veilige uitwisseling van vertrouwelijke gegevens garandeert dankzij end-to-end encryptie. De server ziet nooit uw geheimen in platte tekst.',
+    'how_it_works_meta_description' => 'Hoe Secret Drop uw gegevens end-to-end versleutelt. AES-256-GCM-encryptie: de server ziet uw geheimen nooit.',
     'how_it_works_intro' => 'Wanneer u een wachtwoord deelt via e-mail of Slack, blijft het leesbaar voor elke tussenpersoon. Secret Drop garandeert een veilige uitwisseling van uw vertrouwelijke gegevens: alles wordt in uw browser versleuteld voordat het uw scherm verlaat. De server ontvangt alleen ruis.',
     'how_it_works_diagram_title' => 'Hoe uw geheim beschermd wordt',
     'how_step1_title' => 'U schrijft uw geheim',

@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Udostępniaj hasła i poufne pliki bez ich ujawniania. Szyfrowanie end-to-end. Samozniszczalne. Serwer nie widzi niczego.',
+    'app_description' => 'Udostępniaj hasła i poufne pliki bez ich ujawniania. Szyfrowanie end-to-end. Samozniszczalne. Bezpłatne i open source.',
     'home_title' => 'Bezpieczne udostępnianie sekretów z szyfrowaniem zero-knowledge',
     'home_hook' => 'Przestań wysyłać hasła otwartym tekstem.',
-    'home_meta_description' => 'Bezpieczna wymiana poufnych danych przez samozniszczalny link. Hasła, klucze API, pliki — szyfrowanie end-to-end, serwer nie widzi niczego.',
+    'home_meta_description' => 'Udostępnij hasło, klucz API lub poufny plik przez samozniszczalny link. Zaszyfrowane w przeglądarce — serwer nigdy nie widzi treści.',
+    'home_answer_target' => 'Secret Drop szyfruje Twoje hasła i poufne pliki w przeglądarce przed wysłaniem czegokolwiek. Serwer przechowuje wyłącznie nieczytelne dane i nigdy nie ma dostępu do treści. Sekrety ulegają samozniszczeniu po odczytaniu. Bezpłatne, bez konta, bez śledzenia.',
     'home_view_source' => 'Zobacz kod źródłowy',
 
-    // Features
-    'feature_encryption' => 'Zaszyfrowane w przeglądarce — zanim cokolwiek zostanie wysłane',
-    'feature_zero_knowledge' => 'Bezpieczne z założenia: nieczytelne, nawet dla nas',
-    'feature_auto_destroy' => 'Ty decydujesz, kiedy ulega samozniszczeniu',
-    'feature_expiration' => 'Bez konta, bez hasła: nie ma czego hakować',
-    'feature_hosted_eu' => 'Hostowane we Francji, jurysdykcja UE',
-    'feature_no_tracking' => 'Bez ciasteczek stron trzecich, bez zewnętrznych trackerów',
-    'feature_hosted_no_tracking' => 'Hostowane we Francji, bez zewnętrznych trackerów',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Bezpieczne z założenia',
+    'feature_no_account' => 'Bez konta i rejestracji',
+    'feature_hosted_france' => 'Hostowane we Francji, bez śledzenia',
+    'feature_open_source' => 'Open source: kod jest publiczny i weryfikowalny',
 
     // Form labels
     'your_secret' => 'Twój sekret',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Jak to działa',
     'how_it_works_meta_title' => 'Jak szyfrowanie zero-knowledge chroni Twoje dane',
-    'how_it_works_meta_description' => 'Dowiedz się, jak Secret Drop zapewnia bezpieczną wymianę poufnych danych dzięki szyfrowaniu end-to-end. Serwer nigdy nie widzi Twoich sekretów w postaci jawnej.',
+    'how_it_works_meta_description' => 'Jak Secret Drop szyfruje dane end-to-end. Szyfrowanie AES-256-GCM: serwer nigdy nie widzi Twoich sekretów.',
     'how_it_works_intro' => 'Gdy udostępniasz hasło przez e-mail lub Slack, pozostaje ono czytelne dla każdego pośrednika. Secret Drop zapewnia bezpieczną wymianę Twoich poufnych danych: wszystko jest szyfrowane w przeglądarce, zanim opuści ekran. Serwer otrzymuje tylko szum.',
     'how_it_works_diagram_title' => 'Jak Twój sekret jest chroniony',
     'how_step1_title' => 'Piszesz swój sekret',

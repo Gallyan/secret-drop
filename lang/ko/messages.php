@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => '비밀번호와 기밀 파일을 노출 없이 공유하세요. 종단간 암호화. 자동 삭제. 서버는 아무것도 볼 수 없습니다.',
+    'app_description' => '비밀번호와 기밀 파일을 노출 없이 공유하세요. 종단간 암호화. 자동 삭제. 무료 오픈소스.',
     'home_title' => '제로 지식 암호화로 비밀을 안전하게 공유',
     'home_hook' => '비밀번호를 평문으로 보내지 마세요.',
-    'home_meta_description' => '자동 삭제 링크를 통한 기밀 데이터의 안전한 교환. 비밀번호, API 키, 파일 — 종단간 암호화, 서버는 아무것도 볼 수 없습니다.',
+    'home_meta_description' => '비밀번호, API 키 또는 기밀 파일을 자동 삭제 링크로 공유하세요. 브라우저에서 암호화되어 서버는 내용을 절대 볼 수 없습니다.',
+    'home_answer_target' => 'Secret Drop은 비밀번호와 기밀 파일을 전송 전에 브라우저에서 암호화합니다. 서버는 해독 불가능한 데이터만 저장하며 내용에 접근할 수 없습니다. 비밀은 열람 후 자동 삭제됩니다. 무료, 계정 불필요, 추적 없음.',
     'home_view_source' => '소스 코드 보기',
 
-    // Features
-    'feature_encryption' => '브라우저에서 암호화 — 전송 전에 완료',
-    'feature_zero_knowledge' => '설계 수준의 보안: 우리조차 읽을 수 없습니다',
-    'feature_auto_destroy' => '자동 삭제 시점은 당신이 결정합니다',
-    'feature_expiration' => '계정 없음, 비밀번호 없음: 해킹할 것이 없음',
-    'feature_hosted_eu' => '프랑스 호스팅, EU 관할권',
-    'feature_no_tracking' => '서드파티 쿠키 없음, 추적 서비스 없음',
-    'feature_hosted_no_tracking' => '프랑스 호스팅, 추적 서비스 없음',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => '설계 수준의 보안',
+    'feature_no_account' => '계정이나 가입 불필요',
+    'feature_hosted_france' => '프랑스 호스팅, 추적 없음',
+    'feature_open_source' => '오픈소스: 코드가 공개되어 검증 가능',
 
     // Form labels
     'your_secret' => '비밀',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => '작동 방식',
     'how_it_works_meta_title' => '제로 지식 암호화가 데이터를 보호하는 방법',
-    'how_it_works_meta_description' => 'Secret Drop이 종단간 암호화를 통해 기밀 데이터의 안전한 교환을 보장하는 방법을 알아보세요. 서버는 비밀을 평문으로 볼 수 없습니다.',
+    'how_it_works_meta_description' => 'Secret Drop의 종단간 암호화 방식. AES-256-GCM 암호화: 서버는 비밀을 절대 볼 수 없습니다.',
     'how_it_works_intro' => '이메일이나 Slack으로 비밀번호를 공유하면 모든 중간자가 읽을 수 있습니다. Secret Drop은 기밀 데이터의 안전한 교환을 보장합니다: 모든 것이 화면을 떠나기 전에 브라우저에서 암호화됩니다. 서버가 받는 것은 노이즈뿐입니다.',
     'how_it_works_diagram_title' => '당신의 비밀이 보호되는 방법',
     'how_step1_title' => '비밀 작성',

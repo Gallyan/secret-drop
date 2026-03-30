@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Comparta contraseñas y archivos confidenciales sin exponerlos jamás. Cifrado de extremo a extremo. Autodestructivo. El servidor no ve nada.',
+    'app_description' => 'Comparta contraseñas y archivos confidenciales sin exponerlos jamás. Cifrado de extremo a extremo. Autodestructivo. Gratuito y de código abierto.',
     'home_title' => 'Comparta secretos de forma segura con cifrado zero-knowledge',
     'home_hook' => 'Deje de enviar contraseñas en texto plano.',
-    'home_meta_description' => 'Intercambio seguro de datos confidenciales a través de un enlace autodestructivo. Contraseñas, claves API, archivos — cifrado de extremo a extremo, el servidor no ve nada.',
+    'home_meta_description' => 'Comparta una contraseña, una clave API o un archivo confidencial con un enlace que se autodestruye. Cifrado en su navegador, el servidor nunca ve el contenido.',
+    'home_answer_target' => 'Secret Drop cifra sus contraseñas y archivos confidenciales en su navegador antes de enviar nada. El servidor solo almacena datos ilegibles y nunca puede acceder al contenido. Los secretos se autodestruyen después de la lectura. Gratuito, sin cuenta, sin rastreo.',
     'home_view_source' => 'Ver código fuente',
 
-    // Features
-    'feature_encryption' => 'Cifrado en su navegador — antes de que salga nada',
-    'feature_zero_knowledge' => 'Seguro por diseño: ilegible, incluso para nosotros',
-    'feature_auto_destroy' => 'Usted decide cuándo se autodestruye',
-    'feature_expiration' => 'Sin cuenta, sin contraseña: nada que hackear',
-    'feature_hosted_eu' => 'Alojado en Francia, jurisdicción de la UE',
-    'feature_no_tracking' => 'Sin cookies de terceros, sin servicios de rastreo',
-    'feature_hosted_no_tracking' => 'Alojado en Francia, sin servicios de rastreo',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Seguro por diseño',
+    'feature_no_account' => 'Sin cuenta ni registro',
+    'feature_hosted_france' => 'Alojado en Francia, sin rastreo',
+    'feature_open_source' => 'Código abierto: el código es público y verificable',
 
     // Form labels
     'your_secret' => 'Tu secreto',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Cómo funciona',
     'how_it_works_meta_title' => 'Cómo el cifrado zero-knowledge protege sus datos',
-    'how_it_works_meta_description' => 'Descubre cómo Secret Drop garantiza un intercambio seguro de datos confidenciales mediante cifrado de extremo a extremo. El servidor nunca ve tus secretos en texto plano.',
+    'how_it_works_meta_description' => 'Cómo Secret Drop cifra sus datos de extremo a extremo. Cifrado AES-256-GCM: el servidor nunca ve sus secretos.',
     'how_it_works_intro' => 'Cuando comparte una contraseña por email o Slack, permanece legible para todos los intermediarios. Secret Drop garantiza un intercambio seguro de sus datos confidenciales: todo se cifra en su navegador antes de salir de su pantalla. El servidor solo recibe ruido.',
     'how_it_works_diagram_title' => 'Cómo se protege su secreto',
     'how_step1_title' => 'Escribes tu secreto',

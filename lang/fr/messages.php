@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Le serveur ne voit rien.',
+    'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Gratuit et open source.',
     'home_title' => 'Partagez vos secrets en toute sécurité',
     'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
-    'home_meta_description' => 'Échange sécurisé de données confidentielles via un lien autodestructible. Mot de passe, clé API, fichier — chiffré de bout en bout, le serveur ne voit rien.',
+    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien qui s\'autodétruit. Chiffré dans votre navigateur, le serveur ne voit jamais le contenu.',
+    'home_answer_target' => 'Secret Drop chiffre vos mots de passe et fichiers confidentiels dans votre navigateur avant tout envoi. Le serveur ne stocke que des données illisibles et ne peut jamais accéder au contenu. Les secrets s\'autodétruisent après lecture. Gratuit, sans compte, sans traceur.',
     'home_view_source' => 'Voir le code source',
 
-    // Features
-    'feature_encryption' => 'Chiffré dans votre navigateur avant tout envoi',
-    'feature_zero_knowledge' => 'Sécurisé par conception : illisible, même pour nous',
-    'feature_auto_destroy' => 'Vous décidez quand il s\'autodétruit',
-    'feature_expiration' => 'Ni compte, ni mot de passe : rien à pirater',
-    'feature_hosted_eu' => 'Hébergé en France, juridiction UE',
-    'feature_no_tracking' => 'Aucun cookie tiers, aucun service de tracking',
-    'feature_hosted_no_tracking' => 'Hébergé en France, aucun service de tracking',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Sécurisé par conception',
+    'feature_no_account' => 'Sans compte ni inscription',
+    'feature_hosted_france' => 'Hébergé en France, aucun traceur',
+    'feature_open_source' => 'Open source : le code est public et vérifiable',
 
     // Form labels
     'your_secret' => 'Votre secret',

@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'パスワードや機密ファイルを安全に共有。エンドツーエンド暗号化。自動削除。サーバーは何も見えません。',
+    'app_description' => 'パスワードや機密ファイルを安全に共有。エンドツーエンド暗号化。自動削除。無料でオープンソース。',
     'home_title' => 'ゼロ知識暗号化で秘密を安全に共有',
     'home_hook' => 'パスワードを平文で送るのはもうやめましょう。',
-    'home_meta_description' => '機密データの安全な受け渡し — 自動削除リンクで。パスワード、APIキー、ファイル — エンドツーエンド暗号化、サーバーは何も見えません。',
+    'home_meta_description' => 'パスワード、APIキー、機密ファイルを自動削除リンクで共有。ブラウザで暗号化、サーバーは内容を見ることができません。',
+    'home_answer_target' => 'Secret Dropはパスワードや機密ファイルを送信前にブラウザで暗号化します。サーバーには解読不能なデータのみが保存され、内容にアクセスすることはできません。秘密は閲覧後に自動削除されます。無料、アカウント不要、トラッキングなし。',
     'home_view_source' => 'ソースコードを見る',
 
-    // Features
-    'feature_encryption' => 'ブラウザで暗号化 — 送信前に完了',
-    'feature_zero_knowledge' => '設計レベルで安全：私たちにも読めません',
-    'feature_auto_destroy' => '自動削除のタイミングはあなた次第',
-    'feature_expiration' => 'アカウント不要、パスワード不要：ハッキング対象なし',
-    'feature_hosted_eu' => 'フランス国内で運用、EU法管轄',
-    'feature_no_tracking' => 'サードパーティCookieなし、トラッキングサービスなし',
-    'feature_hosted_no_tracking' => 'フランス国内で運用、トラッキングサービスなし',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => '設計レベルで安全',
+    'feature_no_account' => 'アカウント登録不要',
+    'feature_hosted_france' => 'フランス国内で運用、トラッキングなし',
+    'feature_open_source' => 'オープンソース：コードは公開済みで検証可能',
 
     // Form labels
     'your_secret' => 'シークレット',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => '仕組み',
     'how_it_works_meta_title' => 'ゼロ知識暗号化がデータを守る仕組み',
-    'how_it_works_meta_description' => 'Secret Dropがエンドツーエンド暗号化で機密データの安全な受け渡しを実現する仕組みをご覧ください。サーバーは秘密を平文で見ることはありません。',
+    'how_it_works_meta_description' => 'Secret Dropのエンドツーエンド暗号化の仕組み。AES-256-GCM暗号化：サーバーは秘密を見ることができません。',
     'how_it_works_intro' => 'メールやSlackでパスワードを共有すると、すべての中継者が読める状態のままです。Secret Dropは機密データの安全な受け渡しを実現します：すべてがブラウザで暗号化されてから画面を離れます。サーバーが受け取るのはノイズだけです。',
     'how_it_works_diagram_title' => 'あなたの秘密がどう守られるか',
     'how_step1_title' => '秘密を書く',

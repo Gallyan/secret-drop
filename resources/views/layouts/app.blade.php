@@ -77,10 +77,10 @@
             "priceCurrency": "EUR"
         },
         "featureList": [
-            "{{ __('messages.feature_encryption') }}",
-            "{{ __('messages.feature_zero_knowledge') }}",
-            "{{ __('messages.feature_auto_destroy') }}",
-            "{{ __('messages.feature_expiration') }}"
+            "{{ __('messages.feature_secure_by_design') }}",
+            "{{ __('messages.feature_no_account') }}",
+            "{{ __('messages.feature_hosted_france') }}",
+            "{{ __('messages.feature_open_source') }}"
         ],
         "author": {
             "@@type": "Person",

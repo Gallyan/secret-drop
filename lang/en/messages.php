@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Share passwords and confidential files without ever exposing them. End-to-end encrypted. Self-destructing. The server sees nothing.',
+    'app_description' => 'Share passwords and confidential files without ever exposing them. End-to-end encrypted. Self-destructing. Free and open source.',
     'home_title' => 'Share secrets securely with zero-knowledge encryption',
     'home_hook' => 'Stop sending passwords in plain text.',
-    'home_meta_description' => 'Secure exchange of confidential data via a self-destructing link. Passwords, API keys, files — end-to-end encrypted, the server sees nothing.',
+    'home_meta_description' => 'Share a password, API key or confidential file via a self-destructing link. Encrypted in your browser — the server never sees the content.',
+    'home_answer_target' => 'Secret Drop encrypts your passwords and confidential files in your browser before anything is sent. The server only stores unreadable data and can never access the content. Secrets self-destruct after reading. Free, no account, no tracking.',
     'home_view_source' => 'View source code',
 
-    // Features
-    'feature_encryption' => 'Encrypted in your browser — before anything leaves',
-    'feature_zero_knowledge' => 'Secure by design: unreadable, even to us',
-    'feature_auto_destroy' => 'You decide when it self-destructs',
-    'feature_expiration' => 'No account, no password: nothing to hack',
-    'feature_hosted_eu' => 'Hosted in France, EU jurisdiction',
-    'feature_no_tracking' => 'No third-party cookies, no tracking services',
-    'feature_hosted_no_tracking' => 'Hosted in France, no tracking services',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Secure by design',
+    'feature_no_account' => 'No account or sign-up required',
+    'feature_hosted_france' => 'Hosted in France, no tracking',
+    'feature_open_source' => 'Open source: the code is public and auditable',
 
     // Form labels
     'your_secret' => 'Your secret',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'How it works',
     'how_it_works_meta_title' => 'How zero-knowledge encryption protects your data',
-    'how_it_works_meta_description' => 'Learn how Secret Drop ensures a secure exchange of confidential data through end-to-end encryption. The server never sees your secrets in plaintext.',
+    'how_it_works_meta_description' => 'How Secret Drop encrypts your data end-to-end. AES-256-GCM encryption: the server never sees your secrets.',
     'how_it_works_intro' => 'When you share a password by email or Slack, it remains readable by every intermediary. Secret Drop ensures a secure exchange of your confidential data: everything is encrypted in your browser before it leaves your screen. The server only receives noise.',
     'how_it_works_diagram_title' => 'How your secret is protected',
     'how_step1_title' => 'You write your secret',

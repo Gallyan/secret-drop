@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Compartilhe senhas e arquivos confidenciais sem nunca expô-los. Criptografia de ponta a ponta. Autodestrutivo. O servidor não vê nada.',
+    'app_description' => 'Compartilhe senhas e arquivos confidenciais sem nunca expô-los. Criptografia de ponta a ponta. Autodestrutivo. Gratuito e de código aberto.',
     'home_title' => 'Compartilhe segredos com segurança e criptografia zero-knowledge',
     'home_hook' => 'Pare de enviar senhas em texto simples.',
-    'home_meta_description' => 'Troca segura de dados confidenciais por meio de um link autodestrutivo. Senhas, chaves de API, arquivos — criptografia de ponta a ponta, o servidor não vê nada.',
+    'home_meta_description' => 'Compartilhe uma senha, chave de API ou arquivo confidencial por um link que se autodestrói. Criptografado no navegador, o servidor nunca vê o conteúdo.',
+    'home_answer_target' => 'Secret Drop criptografa suas senhas e arquivos confidenciais no navegador antes de qualquer envio. O servidor armazena apenas dados ilegíveis e nunca pode acessar o conteúdo. Os segredos se autodestroem após a leitura. Gratuito, sem conta, sem rastreamento.',
     'home_view_source' => 'Ver código-fonte',
 
-    // Features
-    'feature_encryption' => 'Criptografado no navegador — antes de qualquer envio',
-    'feature_zero_knowledge' => 'Seguro por design: ilegível, mesmo para nós',
-    'feature_auto_destroy' => 'Você decide quando ele se autodestrói',
-    'feature_expiration' => 'Sem conta, sem senha: nada para hackear',
-    'feature_hosted_eu' => 'Hospedado na França, jurisdição da UE',
-    'feature_no_tracking' => 'Sem cookies de terceiros, sem serviços de rastreamento',
-    'feature_hosted_no_tracking' => 'Hospedado na França, sem serviços de rastreamento',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Seguro por design',
+    'feature_no_account' => 'Sem conta nem cadastro',
+    'feature_hosted_france' => 'Hospedado na França, sem rastreamento',
+    'feature_open_source' => 'Código aberto: o código é público e verificável',
 
     // Form labels
     'your_secret' => 'Seu segredo',
@@ -152,7 +150,7 @@ return [
     // How it works page
     'how_it_works_title' => 'Como funciona',
     'how_it_works_meta_title' => 'Como a criptografia zero-knowledge protege seus dados',
-    'how_it_works_meta_description' => 'Descubra como o Secret Drop garante uma troca segura de dados confidenciais com criptografia de ponta a ponta. O servidor nunca vê seus segredos em texto simples.',
+    'how_it_works_meta_description' => 'Como o Secret Drop criptografa seus dados de ponta a ponta. Criptografia AES-256-GCM: o servidor nunca vê seus segredos.',
     'how_it_works_intro' => 'Quando você compartilha uma senha por e-mail ou Slack, ela permanece legível por todos os intermediários. O Secret Drop garante uma troca segura dos seus dados confidenciais: tudo é criptografado no navegador antes de sair da tela. O servidor recebe apenas ruído.',
     'how_it_works_diagram_title' => 'Como seu segredo é protegido',
     'how_step1_title' => 'Você escreve seu segredo',
