@@ -1,6 +1,11 @@
 import './bootstrap';
 import './console-banner';
 
+// Handle Vite preload errors gracefully (e.g. after a deploy with new asset hashes)
+window.addEventListener('vite:preloadError', (event) => {
+    event.preventDefault();
+});
+
 import Alpine from '@alpinejs/csp';
 import collapse from '@alpinejs/collapse';
 import focus from '@alpinejs/focus';
