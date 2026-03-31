@@ -55,11 +55,11 @@ function kpiHtml(name, html) {
 
 function dateRange(start, end) {
     const labels = [];
-    const d = new Date(start);
-    const e = new Date(end);
+    const d = new Date(start + 'T00:00:00Z');
+    const e = new Date(end + 'T00:00:00Z');
     while (d <= e) {
         labels.push(d.toISOString().split('T')[0]);
-        d.setDate(d.getDate() + 1);
+        d.setUTCDate(d.getUTCDate() + 1);
     }
     return labels;
 }
