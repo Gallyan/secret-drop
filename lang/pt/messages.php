@@ -23,7 +23,7 @@ return [
     'max_reads' => 'Máximo de leituras',
     'max_reads_hint' => 'Limita quantas vezes o segredo pode ser visualizado. Ao atingir, é automaticamente excluído.',
     'advanced_options' => 'Opções avançadas',
-    'max_security' => 'Segurança máx.',
+    'max_security' => "Ativar segurança\u{00A0}máx.",
     'passphrase' => 'Frase secreta',
     'passphrase_hint' => 'Proteção adicional. O destinatário deve conhecê-la. Nunca é enviada ao servidor.',
     'passphrase_placeholder' => 'Proteção adicional',

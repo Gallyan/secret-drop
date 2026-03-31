@@ -23,7 +23,7 @@ return [
     'max_reads' => 'Maks. odczytów',
     'max_reads_hint' => 'Ogranicza ile razy sekret może być przeglądany. Po osiągnięciu limitu jest automatycznie usuwany.',
     'advanced_options' => 'Opcje zaawansowane',
-    'max_security' => 'Maks. bezpieczeństwo',
+    'max_security' => "Włącz maks.\u{00A0}bezpieczeństwo",
     'passphrase' => 'Hasło',
     'passphrase_hint' => 'Dodatkowa ochrona. Odbiorca musi je znać. Nigdy nie jest wysyłane na serwer.',
     'passphrase_placeholder' => 'Dodatkowa ochrona',

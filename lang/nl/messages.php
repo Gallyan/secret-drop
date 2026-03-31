@@ -23,7 +23,7 @@ return [
     'max_reads' => 'Max. leesbeurten',
     'max_reads_hint' => 'Beperkt hoe vaak het geheim bekeken kan worden. Bij bereiken wordt het automatisch verwijderd.',
     'advanced_options' => 'Geavanceerde opties',
-    'max_security' => 'Max. beveiliging activeren',
+    'max_security' => "Max.\u{00A0}beveiliging activeren",
     'passphrase' => 'Wachtwoordzin',
     'passphrase_hint' => 'Extra bescherming. De ontvanger moet deze kennen. Wordt nooit naar de server gestuurd.',
     'passphrase_placeholder' => 'Extra bescherming',
