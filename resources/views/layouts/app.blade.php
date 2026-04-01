@@ -35,24 +35,35 @@
     {{-- Alternate languages --}}
     {!! hreflang_tags() !!}
 
-    {{-- Open Graph --}}
+    {{-- Open Graph / Twitter: decode HTML entities from @section for crawler compatibility --}}
+    @php
+        $rawTitle = html_entity_decode(trim($__env->yieldContent('title')), ENT_QUOTES, 'UTF-8');
+        $ogTitle = $rawTitle
+            ? htmlspecialchars($rawTitle . ' - ' . config('app.name'), ENT_COMPAT, 'UTF-8')
+            : htmlspecialchars(config('app.name'), ENT_COMPAT, 'UTF-8');
+        $ogDescription = htmlspecialchars(
+            html_entity_decode($__env->yieldContent('description', __('messages.app_description')), ENT_QUOTES, 'UTF-8'),
+            ENT_COMPAT,
+            'UTF-8'
+        );
+    @endphp
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
-    <meta property="og:description" content="@yield('description', __('messages.app_description'))">
+    <meta property="og:title" content="{!! $ogTitle !!}">
+    <meta property="og:description" content="{!! $ogDescription !!}">
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:site_name" content="{!! htmlspecialchars(config('app.name'), ENT_COMPAT, 'UTF-8') !!}">
     <meta property="og:image" content="{{ asset('og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="{{ __('messages.app_description') }}">
+    <meta property="og:image:alt" content="{!! htmlspecialchars(__('messages.app_description'), ENT_COMPAT, 'UTF-8') !!}">
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@perceptron_sys">
     <meta name="twitter:creator" content="@perceptron_sys">
-    <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
-    <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
+    <meta name="twitter:title" content="{!! $ogTitle !!}">
+    <meta name="twitter:description" content="{!! $ogDescription !!}">
     <meta name="twitter:image" content="{{ asset('og-image.png') }}">
     @endunless
 
