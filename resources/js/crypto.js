@@ -20,7 +20,11 @@ const META_HEADER_LENGTH_BYTES = 4; // Uint32 for metadata length
  * @returns {string}
  */
 export function bytesToBase64Url(bytes) {
-    const base64 = btoa(String.fromCharCode(...bytes));
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    const base64 = btoa(binary);
     return base64
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
