@@ -67,97 +67,96 @@
     <meta name="twitter:image" content="{{ asset('og-image.png') }}">
     @endunless
 
-    {{-- Schema.org JSON-LD (only on homepage) --}}
+    {{-- Schema.org JSON-LD @graph (only on homepage) --}}
     @if(request()->routeIs('home'))
     <script type="application/ld+json" nonce="@nonce">
     {
         "@@context": "https://schema.org",
-        "@@type": "WebApplication",
-        "name": "{{ config('app.name') }}",
-        "description": "{{ __('messages.app_description') }}",
-        "url": "{{ url('/') }}",
-        "applicationCategory": "SecurityApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript, Web Crypto API",
-        "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-        "image": "{{ asset('icon-512.png') }}",
-        "isAccessibleForFree": true,
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "EUR"
-        },
-        "featureList": [
-            "{{ __('messages.feature_secure_by_design') }}",
-            "{{ __('messages.feature_no_account') }}",
-            "{{ __('messages.feature_hosted_france') }}",
-            "{{ __('messages.feature_open_source') }}"
-        ],
-        "author": {
-            "@@type": "Person",
-            "name": "{{ config('legal.editor_name') }}"
-        }
-    }
-    </script>
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "Organization",
-        "name": "{{ config('legal.organization_name', config('app.name')) }}",
-        "url": "{{ url('/') }}",
-        "logo": {
-            "@@type": "ImageObject",
-            "url": "{{ asset('icon-512.png') }}",
-            "width": 512,
-            "height": 512
-        },
-        "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
-        "email": "{{ config('legal.contact_email') }}"@endif,
-        "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
-        "founder": {
-            "@@type": "Person",
-            "name": "{{ config('legal.editor_name') }}"
-        },
-        @if(collect(config('legal.social'))->filter()->isNotEmpty())
-        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-        @endif
-        "owns": {
-            "@@type": "WebApplication",
-            "name": "{{ config('app.name') }}",
-            "url": "{{ url('/') }}"
-        }
-    }
-    </script>
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "Person",
-        "name": "{{ config('legal.editor_name') }}",
-        "url": "https://www.orsal.fr",
-        "jobTitle": "Software Engineer",
-        "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
-        @if(collect(config('legal.social'))->filter()->isNotEmpty())
-        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-        @endif
-        "owns": {
-            "@@type": "WebApplication",
-            "name": "{{ config('app.name') }}",
-            "url": "{{ url('/') }}"
-        }
-    }
-    </script>
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "WebSite",
-        "name": "{{ config('app.name') }}",
-        "url": "{{ url('/') }}",
-        "description": "{{ __('messages.app_description') }}",
-        "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-        "publisher": {
-            "@@type": "Person",
-            "name": "{{ config('legal.editor_name') }}"
-        }
+        "@@graph": [
+            {
+                "@@type": "WebSite",
+                "@@id": "{{ url('/') }}/#website",
+                "name": "{{ config('app.name') }}",
+                "url": "{{ url('/') }}",
+                "description": "{{ __('messages.app_description') }}",
+                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+                "publisher": {
+                    "@@id": "{{ url('/') }}/#person"
+                }
+            },
+            {
+                "@@type": "Organization",
+                "@@id": "{{ url('/') }}/#organization",
+                "name": "{{ config('legal.organization_name', config('app.name')) }}",
+                "url": "{{ url('/') }}",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "{{ asset('icon-512.png') }}",
+                    "width": 512,
+                    "height": 512
+                },
+                "description": "{{ __('messages.legal_about_text') }}",
+                "foundingDate": "2026"@if(config('legal.contact_email')),
+                "email": "{{ config('legal.contact_email') }}",
+                "contactPoint": {
+                    "@@type": "ContactPoint",
+                    "contactType": "customer service",
+                    "email": "{{ config('legal.contact_email') }}",
+                    "url": "{{ url('/contact') }}"
+                }@endif,
+                "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
+                "founder": {
+                    "@@id": "{{ url('/') }}/#person"
+                },
+                @if(collect(config('legal.social'))->filter()->isNotEmpty())
+                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+                @endif
+                "owns": {
+                    "@@id": "{{ url('/') }}/#application"
+                }
+            },
+            {
+                "@@type": "Person",
+                "@@id": "{{ url('/') }}/#person",
+                "name": "{{ config('legal.editor_name') }}",
+                "url": "{{ config('legal.social.website', 'https://www.orsal.fr') }}",
+                "jobTitle": "Software Engineer",
+                "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
+                @if(collect(config('legal.social'))->filter()->isNotEmpty())
+                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+                @endif
+                "worksFor": {
+                    "@@id": "{{ url('/') }}/#organization"
+                }
+            },
+            {
+                "@@type": "WebApplication",
+                "@@id": "{{ url('/') }}/#application",
+                "name": "{{ config('app.name') }}",
+                "description": "{{ __('messages.app_description') }}",
+                "url": "{{ url('/') }}",
+                "applicationCategory": "SecurityApplication",
+                "operatingSystem": "Any",
+                "browserRequirements": "Requires JavaScript, Web Crypto API",
+                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+                "image": "{{ asset('icon-512.png') }}",
+                "isAccessibleForFree": true,
+                "offers": {
+                    "@@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                },
+                "featureList": [
+                    "{{ __('messages.feature_secure_by_design') }}",
+                    "{{ __('messages.feature_no_account') }}",
+                    "{{ __('messages.feature_hosted_france') }}",
+                    "{{ __('messages.feature_open_source') }}"
+                ],
+                "author": {
+                    "@@id": "{{ url('/') }}/#person"
+                }
+            }
+        ]
     }
     </script>
     @endif

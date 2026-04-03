@@ -35,7 +35,7 @@
             "name": "{{ __("messages.faq_q{$i}") }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __("messages.faq_a{$i}", ['manage_link' => '« ' . __('messages.footer_manage') . ' »']) }}"
+                "text": "{{ strip_tags(__("messages.faq_a{$i}", ['manage_link' => '« ' . __('messages.footer_manage') . ' »'])) }}"
             }
         }@if($i < 12),@endif
         @endforeach
