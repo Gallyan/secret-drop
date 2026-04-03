@@ -265,8 +265,8 @@ export function parseKeyFragment(fragment) {
         throw new Error('Format de fragment invalide');
     }
 
-    if (!rest) {
-        throw new Error('Clé manquante dans le fragment');
+    if (!rest || rest.length !== 43) {
+        throw new Error('Clé manquante ou invalide dans le fragment');
     }
 
     return { keyMaterial: rest, version: 1 };
