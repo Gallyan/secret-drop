@@ -328,10 +328,18 @@ function packFileWithMeta(fileBytes, filename, mime, size) {
  * @returns {{data: ArrayBuffer, filename: string, mime: string, size: number}}
  */
 function unpackFileWithMeta(decryptedBytes) {
+    if (decryptedBytes.byteLength < META_HEADER_LENGTH_BYTES) {
+        throw new Error('Decrypted data too short for metadata header');
+    }
+
     const view = new DataView(decryptedBytes.buffer, decryptedBytes.byteOffset, decryptedBytes.byteLength);
 
     // Read metadata length (4 bytes, big-endian)
     const metaLength = view.getUint32(0, false);
+
+    if (metaLength > decryptedBytes.byteLength - META_HEADER_LENGTH_BYTES) {
+        throw new Error('Invalid metadata length');
+    }
 
     // Extract and parse metadata JSON
     const metaStart = META_HEADER_LENGTH_BYTES;
