@@ -10,6 +10,9 @@ use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+
+use function Illuminate\Support\defer;
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -55,7 +58,7 @@ class SuperAdminController extends Controller
                 ->locale(app()->getLocale())
                 ->send(new SuperAdminMagicLinkMail($url));
 
-            $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
+            defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
         }
 
         return redirect()->route('superadmin.accessSent');
@@ -80,7 +83,7 @@ class SuperAdminController extends Controller
         }
 
         $magicLink->markAsUsed();
-        $this->stats->increment(StatsService::MAGIC_LINKS_USED);
+        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
