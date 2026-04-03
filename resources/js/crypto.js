@@ -119,6 +119,21 @@ async function importKey(rawKey) {
 }
 
 /**
+ * Validate decoded IV and salt lengths
+ * @param {Uint8Array} ivBytes
+ * @param {Uint8Array|null} saltBytes
+ */
+function validateCryptoParams(ivBytes, saltBytes = null) {
+    if (ivBytes.length !== IV_LENGTH) {
+        throw new Error(`Invalid IV length: expected ${IV_LENGTH}, got ${ivBytes.length}`);
+    }
+
+    if (saltBytes !== null && saltBytes.length !== SALT_LENGTH) {
+        throw new Error(`Invalid salt length: expected ${SALT_LENGTH}, got ${saltBytes.length}`);
+    }
+}
+
+/**
  * Encrypt plaintext using AES-256-GCM
  * If passphrase is provided, applies double encryption:
  * 1. First layer: random 256-bit key (transmitted in URL fragment)
@@ -201,6 +216,7 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
     if (salt && iv2 && passphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
+        validateCryptoParams(iv2Bytes, saltBytes);
         const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
@@ -212,6 +228,7 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
 
     // Then: decrypt with random key
     const ivBytes = base64UrlToBytes(iv);
+    validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
 
@@ -425,6 +442,7 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
     if (salt && iv2 && passphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
+        validateCryptoParams(iv2Bytes, saltBytes);
         const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
@@ -436,6 +454,7 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
 
     // Then: decrypt with random key
     const ivBytes = base64UrlToBytes(iv);
+    validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
 
