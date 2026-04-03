@@ -47,6 +47,24 @@ class SeoController extends Controller
             User-agent: bingbot
             Allow: /
 
+            User-agent: GoogleOther
+            Allow: /
+
+            User-agent: Applebot-Extended
+            Allow: /
+
+            User-agent: Amazonbot
+            Allow: /
+
+            User-agent: FacebookBot
+            Allow: /
+
+            User-agent: Bytespider
+            Disallow: /
+
+            User-agent: CCBot
+            Disallow: /
+
             Sitemap: {$sitemap}
             TXT;
 
