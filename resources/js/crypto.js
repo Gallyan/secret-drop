@@ -155,6 +155,7 @@ export async function encryptSecret(plaintext, passphrase = null) {
     const randomKey = await generateKey();
     const rawKey = await exportKey(randomKey);
     const keyMaterial = bytesToBase64Url(rawKey);
+    rawKey.fill(0);
 
     // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
@@ -235,6 +236,7 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
     validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
+    rawKey.fill(0);
 
     const plaintextBytes = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
@@ -388,6 +390,7 @@ export async function encryptFile(file, passphrase = null) {
     const randomKey = await generateKey();
     const rawKey = await exportKey(randomKey);
     const keyMaterial = bytesToBase64Url(rawKey);
+    rawKey.fill(0);
 
     // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
@@ -469,6 +472,7 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
     validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
+    rawKey.fill(0);
 
     const decryptedBytes = new Uint8Array(await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
