@@ -88,7 +88,7 @@ async function deriveKeyFromPassphrase(passphrase, salt) {
         },
         keyMaterial,
         { name: 'AES-GCM', length: AES_KEY_LENGTH },
-        true, // extractable
+        false, // not extractable — only used for encrypt/decrypt
         ['encrypt', 'decrypt']
     );
 }
