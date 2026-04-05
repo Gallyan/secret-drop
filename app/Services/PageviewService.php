@@ -131,20 +131,22 @@ class PageviewService
 
         $domain = $this->extractReferrerDomain($referrer);
 
-        if ($domain !== '') {
-            DB::table('stats_referrers')->upsert(
-                [
-                    'date' => $now->toDateString(),
-                    'referrer_domain' => $domain,
-                    'is_bot' => $isBot,
-                    'count' => 1,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ],
-                ['date', 'referrer_domain', 'is_bot'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
-            );
+        if ($domain === '') {
+            $domain = '(direct)';
         }
+
+        DB::table('stats_referrers')->upsert(
+            [
+                'date' => $now->toDateString(),
+                'referrer_domain' => $domain,
+                'is_bot' => $isBot,
+                'count' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['date', 'referrer_domain', 'is_bot'],
+            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+        );
     }
 
     public function isBot(string $userAgent): bool
