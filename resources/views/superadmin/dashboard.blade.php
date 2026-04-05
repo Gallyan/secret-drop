@@ -259,16 +259,37 @@
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_5xx_by_route') }}</h3>
                 <div id="pollErrorRoutes" class="space-y-2">
-                    @php $byRoute = $errorStats['by_route'] ?? []; @endphp
+                    @php
+                        $byRoute = $errorStats['by_route'] ?? [];
+                        $routeLabels = [
+                            'home' => __('messages.stat_page_home'),
+                            'secrets.store' => __('messages.stat_route_create'),
+                            'secrets.show' => __('messages.stat_route_read'),
+                            'secrets.fetch' => __('messages.stat_route_read') . ' (API)',
+                            'secrets.confirmRead' => __('messages.stat_route_confirm_read'),
+                            'secrets.download' => __('messages.stat_route_download'),
+                            'admin.index' => 'Admin',
+                            'admin.dashboard' => 'Admin dashboard',
+                            'admin.poll' => 'Admin poll',
+                            'admin.requestAccess' => 'Admin login',
+                            'admin.verify' => 'Admin verify',
+                            'admin.extend' => 'Admin extend',
+                            'admin.revoke' => 'Admin revoke',
+                            'superadmin.index' => 'Superadmin',
+                            'superadmin.dashboard' => 'Superadmin dashboard',
+                            'superadmin.poll' => 'Superadmin poll',
+                            'superadmin.requestAccess' => 'Superadmin login',
+                            'superadmin.verify' => 'Superadmin verify',
+                        ];
+                    @endphp
                     @forelse($byRoute as $route => $statuses)
-                        @php $total = array_sum($statuses); @endphp
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">{{ $route }}</span>
+                            <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">{{ $routeLabels[$route] ?? $route }}</span>
                             <div class="flex items-center gap-2">
                                 @foreach($statuses as $code => $count)
-                                    <span class="text-xs font-mono text-red-500">{{ $code }}:{{ nfmt($count) }}</span>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-mono font-medium">{{ $code }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($count) }}</span>
                                 @endforeach
-                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ nfmt($total) }}</span>
                             </div>
                         </div>
                     @empty
@@ -630,6 +651,7 @@
         deviceStats: @json($deviceStats),
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
+        routeLabels: @json($routeLabels),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),
         localeNames: @json(\App\Support\LocaleConfig::NATIVE_NAMES),
         noDataText: '{{ __('messages.stat_no_data') }}',

@@ -452,16 +452,16 @@ function updateLists(data) {
             const et = window.superAdminData?.errorTranslations || {};
             elRoutes.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
         } else {
+            const rl = window.superAdminData?.routeLabels || {};
             elRoutes.innerHTML = entries.map(([route, statuses]) => {
-                const total = Object.values(statuses).reduce((s, v) => s + v, 0);
+                const label = rl[route] || route;
                 const codes = Object.entries(statuses).map(([code, count]) =>
-                    `<span class="text-xs font-mono text-red-500">${code}:${fmt(count)}</span>`
+                    `<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-mono font-medium">${code}</span>
+                     <span class="text-gray-900 dark:text-white font-medium">${fmt(count)}</span>`
                 ).join(' ');
                 return `<div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">${esc(route)}</span>
-                    <div class="flex items-center gap-2">${codes}
-                        <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(total)}</span>
-                    </div>
+                    <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">${esc(label)}</span>
+                    <div class="flex items-center gap-2">${codes}</div>
                 </div>`;
             }).join('');
         }
