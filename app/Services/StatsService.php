@@ -589,6 +589,7 @@ class StatsService
         ];
     }
 
+    /** @param array<int, int> $buckets */
     private function percentileFromBuckets(array $buckets, int $percentile): ?float
     {
         if (empty($buckets)) {
