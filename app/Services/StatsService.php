@@ -531,4 +531,112 @@ class StatsService
 
         return $hours;
     }
+
+    /**
+     * @return array<string, array<int, int>>
+     */
+    public function getErrorRoutes(?string $startDate = null): array
+    {
+        $query = DB::table('stats_error_routes')
+            ->select('route', 'status', DB::raw('SUM(count) as total'))
+            ->groupBy('route', 'status')
+            ->orderByDesc('total');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $result = [];
+
+        foreach ($query->get() as $row) {
+            $result[$row->route] ??= [];
+            $result[$row->route][$row->status] = (int) $row->total;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array{p95: float|null, by_group: array<string, float|null>}
+     */
+    public function getResponseTimeP95(?string $startDate = null): array
+    {
+        $query = DB::table('stats_response_times')
+            ->select('route_group', 'bucket', DB::raw('SUM(count) as total'))
+            ->groupBy('route_group', 'bucket');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $grouped = [];
+        $global = [];
+
+        foreach ($query->get() as $row) {
+            $grouped[$row->route_group][$row->bucket] = (int) $row->total;
+            $global[$row->bucket] = ($global[$row->bucket] ?? 0) + (int) $row->total;
+        }
+
+        $byGroup = [];
+
+        foreach ($grouped as $group => $buckets) {
+            $byGroup[$group] = $this->percentileFromBuckets($buckets, 95);
+        }
+
+        return [
+            'p95' => $this->percentileFromBuckets($global, 95),
+            'by_group' => $byGroup,
+        ];
+    }
+
+    private function percentileFromBuckets(array $buckets, int $percentile): ?float
+    {
+        if (empty($buckets)) {
+            return null;
+        }
+
+        ksort($buckets);
+        $total = array_sum($buckets);
+        $threshold = $total * $percentile / 100;
+        $cumulative = 0;
+
+        foreach ($buckets as $bucket => $count) {
+            $cumulative += $count;
+
+            if ($cumulative >= $threshold) {
+                return (float) $bucket;
+            }
+        }
+
+        return (float) array_key_last($buckets);
+    }
+
+    /**
+     * @return array{text: float|null, file: float|null}
+     */
+    public function getAverageSecretSize(?string $startDate = null): array
+    {
+        $textQuery = Secret::query()
+            ->where('type', 'text')
+            ->whereNotNull('ciphertext');
+
+        $fileTotal = $this->getTotals($startDate);
+        $fileCount = $fileTotal[self::SECRETS_CREATED_FILE] ?? 0;
+        $fileBytes = $fileTotal[self::TOTAL_FILE_SIZE_BYTES] ?? 0;
+
+        if ($startDate) {
+            $textQuery->where('created_at', '>=', $startDate);
+        }
+
+        $textAvg = $textQuery->count() > 0
+            ? (float) $textQuery->selectRaw('AVG(LENGTH(ciphertext)) as avg_size')->value('avg_size')
+            : null;
+
+        $fileAvg = $fileCount > 0 ? $fileBytes / $fileCount : null;
+
+        return [
+            'text' => $textAvg,
+            'file' => $fileAvg,
+        ];
+    }
 }

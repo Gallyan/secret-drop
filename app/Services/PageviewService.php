@@ -246,7 +246,9 @@ class PageviewService
                 $appHost = substr($appHost, 4);
             }
 
-            if ($host === $appHost) {
+            $local = ['localhost', '127.0.0.1', '[::1]'];
+
+            if ($host === $appHost || (in_array($host, $local, true) && in_array($appHost, $local, true))) {
                 return '';
             }
         }

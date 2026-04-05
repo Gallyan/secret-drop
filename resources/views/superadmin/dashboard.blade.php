@@ -71,7 +71,7 @@
                 if ($bytes >= 1024) {
                     return number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
                 }
-                return $bytes . ' ' . __('messages.unit_bytes');
+                return number_format($bytes, 0) . ' ' . __('messages.unit_bytes');
             };
 
         @endphp
@@ -156,7 +156,18 @@
         {{-- Monitoring section --}}
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.monitoring_title') }}</h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        @php
+            $fmtP95 = function (?float $ms): string {
+                if ($ms === null) {
+                    return '-';
+                }
+                if ($ms < 1000) {
+                    return number_format($ms, 0) . ' ms';
+                }
+                return number_format($ms / 1000, 1) . ' s';
+            };
+        @endphp
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <x-card class="p-6 overflow-visible relative z-10">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ number_format($errorStats['total_4xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
@@ -183,6 +194,27 @@
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
                     <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="response_p95">{{ $fmtP95($responseTime['p95']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_response_p95') }}</span>
+                    <x-hint-tooltip id="hintP95" :text="__('messages.hint_response_p95')" direction="below" position="end" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="avg_size_text">{{ $avgSecretSize['text'] !== null ? $formatBytes($avgSecretSize['text']) : '-' }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_text') }}</span>
+                </div>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_size_file">{{ $avgSecretSize['file'] !== null ? $formatBytes($avgSecretSize['file']) : '-' }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_file') }}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_avg_secret_size') }}</span>
+                    <x-hint-tooltip id="hintSize" :text="__('messages.hint_avg_secret_size')" direction="below" position="end" />
                 </div>
             </x-card>
         </div>
@@ -217,6 +249,48 @@
                         </div>
                     @empty
                         <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
+                </div>
+            </x-card>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {{-- 5xx by route --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_5xx_by_route') }}</h3>
+                <div id="pollErrorRoutes" class="space-y-2">
+                    @php $byRoute = $errorStats['by_route'] ?? []; @endphp
+                    @forelse($byRoute as $route => $statuses)
+                        @php $total = array_sum($statuses); @endphp
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">{{ $route }}</span>
+                            <div class="flex items-center gap-2">
+                                @foreach($statuses as $code => $count)
+                                    <span class="text-xs font-mono text-red-500">{{ $code }}:{{ number_format($count) }}</span>
+                                @endforeach
+                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($total) }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
+                </div>
+            </x-card>
+
+            {{-- P95 by route group --}}
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="flex items-center gap-1 mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.stat_p95_by_group') }}</h3>
+                    <x-hint-tooltip id="hintP95Group" :text="__('messages.hint_p95_by_group')" direction="below" position="end" />
+                </div>
+                <div id="pollP95Groups" class="space-y-2">
+                    @forelse($responseTime['by_group'] as $group => $p95)
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-mono">{{ $group }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ $fmtP95($p95) }}</span>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">-</p>
                     @endforelse
                 </div>
             </x-card>
@@ -590,6 +664,8 @@
             tablet: '{{ __('messages.stat_device_tablet') }}'
         },
         errorStats: @json($errorStats),
+        responseTime: @json($responseTime),
+        avgSecretSize: @json($avgSecretSize),
         errorTranslations: {
             errors_4xx: '{{ __('messages.stat_errors_4xx') }}',
             errors_5xx: '{{ __('messages.stat_errors_5xx') }}',

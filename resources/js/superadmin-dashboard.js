@@ -20,7 +20,7 @@ function fmtBytes(bytes) {
     if (bytes >= 1024) {
         return (bytes / 1024).toFixed(1) + ' KB';
     }
-    return bytes + ' B';
+    return Math.round(bytes) + ' B';
 }
 
 function fmtDelay(s) {
@@ -37,6 +37,16 @@ function fmtDelay(s) {
         return (s / 3600).toFixed(1) + 'h';
     }
     return (s / 86400).toFixed(1) + 'j';
+}
+
+function fmtMs(ms) {
+    if (ms === null || ms === undefined) {
+        return '-';
+    }
+    if (ms < 1000) {
+        return Math.round(ms) + ' ms';
+    }
+    return (ms / 1000).toFixed(1) + ' s';
 }
 
 function kpi(name, value) {
@@ -112,6 +122,10 @@ function updateKpis(data) {
     kpi('errors_422', fmt(byCode[422] || 0));
     kpi('errors_429', fmt(byCode[429] || 0));
     kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
+
+    kpi('response_p95', fmtMs(data.responseTime?.p95));
+    kpi('avg_size_text', data.avgSecretSize?.text !== null ? fmtBytes(data.avgSecretSize.text) : '-');
+    kpi('avg_size_file', data.avgSecretSize?.file !== null ? fmtBytes(data.avgSecretSize.file) : '-');
 
     const pv = data.pageviews;
     kpi('pv_visitors', fmt(pv.total_human));
@@ -416,6 +430,51 @@ function updateLists(data) {
             }).join('');
         }
     }
+
+    // 5xx by route
+    const elRoutes = document.getElementById('pollErrorRoutes');
+    if (elRoutes) {
+        const byRoute = (data.errorStats || {}).by_route || {};
+        const entries = Object.entries(byRoute).sort((a, b) => {
+            const totalA = Object.values(a[1]).reduce((s, v) => s + v, 0);
+            const totalB = Object.values(b[1]).reduce((s, v) => s + v, 0);
+            return totalB - totalA;
+        });
+        if (entries.length === 0) {
+            const et = window.superAdminData?.errorTranslations || {};
+            elRoutes.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
+        } else {
+            elRoutes.innerHTML = entries.map(([route, statuses]) => {
+                const total = Object.values(statuses).reduce((s, v) => s + v, 0);
+                const codes = Object.entries(statuses).map(([code, count]) =>
+                    `<span class="text-xs font-mono text-red-500">${code}:${fmt(count)}</span>`
+                ).join(' ');
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">${esc(route)}</span>
+                    <div class="flex items-center gap-2">${codes}
+                        <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(total)}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // P95 by route group
+    const elP95 = document.getElementById('pollP95Groups');
+    if (elP95) {
+        const byGroup = (data.responseTime || {}).by_group || {};
+        const entries = Object.entries(byGroup);
+        if (entries.length === 0) {
+            elP95.innerHTML = '<p class="text-sm text-gray-400 dark:text-slate-500">-</p>';
+        } else {
+            elP95.innerHTML = entries.map(([group, p95]) =>
+                `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-mono">${esc(group)}</span>
+                    <span class="text-gray-900 dark:text-white font-medium">${fmtMs(p95)}</span>
+                </div>`
+            ).join('');
+        }
+    }
 }
 
 function renderBarList(id, hourData, barClass) {
@@ -714,6 +773,8 @@ async function poll() {
         data.botStats = newData.botStats;
         data.deviceStats = newData.deviceStats;
         data.errorStats = newData.errorStats;
+        data.responseTime = newData.responseTime;
+        data.avgSecretSize = newData.avgSecretSize;
 
         // In-place updates (no scroll jump)
         updateKpis(newData);

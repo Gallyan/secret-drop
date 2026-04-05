@@ -155,7 +155,10 @@ class SuperAdminController extends Controller
                 'total_4xx' => $stats['totals'][StatsService::HTTP_ERRORS_4XX] ?? 0,
                 'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
                 'by_code' => $this->stats->getErrorCodeBreakdown($startDate),
+                'by_route' => $this->stats->getErrorRoutes($startDate),
             ],
+            'responseTime' => $this->stats->getResponseTimeP95($startDate),
+            'avgSecretSize' => $this->stats->getAverageSecretSize($startDate),
         ];
     }
 }

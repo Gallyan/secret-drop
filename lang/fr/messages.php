@@ -426,7 +426,7 @@ return [
     'day_saturday' => 'Sam',
 
     // File size units
-    'unit_bytes' => 'octets',
+    'unit_bytes' => 'o',
     'unit_kilobytes' => 'Ko',
     'unit_megabytes' => 'Mo',
     'unit_gigabytes' => 'Go',
@@ -474,6 +474,13 @@ return [
     'stat_no_data' => 'Aucune donnée pour le moment.',
     'stat_gini_tooltip' => 'Gini : 0 = usage réparti également, 1 = un seul créateur domine',
     'hint_first_read_delay' => 'Temps entre la création et la première lecture. La médiane est plus représentative car elle est insensible aux valeurs extrêmes. Si la moyenne est bien supérieure à la médiane, quelques secrets sont lus très tardivement.',
+    'stat_5xx_by_route' => 'Erreurs 5xx par route',
+    'stat_p95_by_group' => 'P95 par groupe',
+    'stat_response_p95' => 'P95 temps de réponse',
+    'hint_response_p95' => '95 % des requêtes répondent en dessous de ce seuil. Un P95 élevé signifie que certaines requêtes sont lentes.',
+    'hint_p95_by_group' => "P95 par type de route :\ncreate = création de secret\nread = lecture / téléchargement\nadmin = espace admin\nsuperadmin = tableau de bord\npages = accueil, FAQ, mentions légales…",
+    'stat_avg_secret_size' => 'Taille moy. secrets',
+    'hint_avg_secret_size' => 'Taille moyenne du chiffré stocké. Texte : taille du ciphertext en base de données. Fichier : taille moyenne des fichiers chiffrés sur disque.',
     'stat_page_home' => 'Accueil',
     'stat_page_download' => 'Téléchargement',
     'stat_page_admin_login' => 'Admin - Connexion',
