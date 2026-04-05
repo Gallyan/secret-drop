@@ -6780,16 +6780,16 @@
         },
         {
             "name": "laravel-lang/actions",
-            "version": "1.12.1",
+            "version": "1.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/actions.git",
-                "reference": "af2750ace5fd7655b696c39f3f6d0da9ce852d16"
+                "reference": "ef8847493e1c6a15e87667d64430e5312527b5e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/actions/zipball/af2750ace5fd7655b696c39f3f6d0da9ce852d16",
-                "reference": "af2750ace5fd7655b696c39f3f6d0da9ce852d16",
+                "url": "https://api.github.com/repos/Laravel-Lang/actions/zipball/ef8847493e1c6a15e87667d64430e5312527b5e7",
+                "reference": "ef8847493e1c6a15e87667d64430e5312527b5e7",
                 "shasum": ""
             },
             "require": {
@@ -6841,7 +6841,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/actions/issues",
-                "source": "https://github.com/Laravel-Lang/actions/tree/1.12.1"
+                "source": "https://github.com/Laravel-Lang/actions/tree/1.12.2"
             },
             "funding": [
                 {
@@ -6853,7 +6853,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-03-17T21:27:37+00:00"
+            "time": "2026-04-05T13:52:03+00:00"
         },
         {
             "name": "laravel-lang/attributes",
@@ -8065,16 +8065,16 @@
         },
         {
             "name": "laravel-lang/starter-kits",
-            "version": "1.10.3",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/starter-kits.git",
-                "reference": "cc460c8295568a73a6525de624e09d5976d24fe8"
+                "reference": "7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/cc460c8295568a73a6525de624e09d5976d24fe8",
-                "reference": "cc460c8295568a73a6525de624e09d5976d24fe8",
+                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974",
+                "reference": "7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974",
                 "shasum": ""
             },
             "require": {
@@ -8126,7 +8126,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/starter-kits/issues",
-                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.10.3"
+                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.11.0"
             },
             "funding": [
                 {
@@ -8138,7 +8138,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-03-29T11:52:22+00:00"
+            "time": "2026-04-05T13:56:06+00:00"
         },
         {
             "name": "laravel/boost",
