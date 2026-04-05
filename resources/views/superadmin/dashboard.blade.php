@@ -80,7 +80,7 @@
             <x-stat-card kpi="secrets_read" :value="nfmt($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
             <x-stat-card kpi="active_secrets" :value="nfmt($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
             <x-stat-card kpi="read_rate" :value="$readRate !== null ? nfmt($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="flex items-baseline gap-2">
                     <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="median_first_read">{{ $formattedMedianDelay }}</span>
                     <span class="text-sm text-gray-500 dark:text-slate-400">{{ __('messages.stat_median_abbr') }}</span>
@@ -97,7 +97,7 @@
             <x-stat-card kpi="files_shared" :value="nfmt($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
             <x-stat-card kpi="volume" :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
             <x-stat-card kpi="disk_usage" :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="creators">{{ nfmt($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ nfmt($creatorConcentration['gini'], 2) }}</span></div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_unique_creators') }}</span>
@@ -168,42 +168,42 @@
             };
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ nfmt($errorStats['total_4xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_4xx') }}</span>
                     <x-hint-tooltip id="hint4xx" :text="__('messages.hint_errors_4xx')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ nfmt($errorStats['total_5xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_5xx') }}</span>
                     <x-hint-tooltip id="hint5xx" :text="__('messages.hint_errors_5xx')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ nfmt($errorStats['by_code'][422] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
                     <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ nfmt($errorStats['by_code'][429] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
                     <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="response_p95">{{ $fmtP95($responseTime['p95']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_response_p95') }}</span>
                     <x-hint-tooltip id="hintP95" :text="__('messages.hint_response_p95')" direction="below" position="end" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="flex items-baseline gap-2">
                     <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="avg_size_text">{{ $avgSecretSize['text'] !== null ? $formatBytes($avgSecretSize['text']) : '-' }}</span>
                     <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_text') }}</span>
@@ -299,7 +299,7 @@
             </x-card>
 
             {{-- P95 by route group --}}
-            <x-card class="p-6 overflow-visible relative z-10">
+            <x-card class="p-6">
                 <div class="flex items-center gap-1 mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.stat_p95_by_group') }}</h3>
                     <x-hint-tooltip id="hintP95Group" :text="__('messages.hint_p95_by_group')" direction="below" position="end" />

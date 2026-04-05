@@ -17,6 +17,7 @@ import themeToggle from './components/theme-toggle.js';
 import languageSwitcher from './components/language-switcher.js';
 import adminSecrets from './admin-secrets.js';
 import footerMenu from './components/footer-menu.js';
+import hintTooltip from './components/hint-tooltip.js';
 
 Alpine.plugin(collapse);
 Alpine.plugin(focus);
@@ -26,6 +27,7 @@ Alpine.data('themeToggle', themeToggle);
 Alpine.data('languageSwitcher', languageSwitcher);
 Alpine.data('adminSecrets', adminSecrets);
 Alpine.data('footerMenu', footerMenu);
+Alpine.data('hintTooltip', hintTooltip);
 
 window.Alpine = Alpine;
 window.SecretCrypto = SecretCrypto;
