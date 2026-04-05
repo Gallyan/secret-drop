@@ -503,6 +503,8 @@ return [
     'captcha_label' => 'Vérification anti-robot',
     'captcha_placeholder' => 'Votre réponse',
     'captcha_invalid' => 'Réponse incorrecte. Veuillez réessayer.',
+    'daily_limit_exceeded' => 'Limite quotidienne atteinte. Veuillez réessayer demain.',
+    'storage_quota_exceeded' => 'Le service de partage de fichiers est temporairement indisponible. Veuillez réessayer plus tard.',
 
     // Labels
     'label_important' => 'Important :',

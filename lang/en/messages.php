@@ -495,6 +495,8 @@ return [
     'captcha_label' => 'Anti-robot verification',
     'captcha_placeholder' => 'Your answer',
     'captcha_invalid' => 'Incorrect answer. Please try again.',
+    'daily_limit_exceeded' => 'Daily limit reached. Please try again tomorrow.',
+    'storage_quota_exceeded' => 'File sharing service is temporarily unavailable. Please try again later.',
 
     // Labels
     'label_important' => 'Important:',

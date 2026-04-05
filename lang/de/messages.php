@@ -496,6 +496,8 @@ return [
     'captcha_label' => 'Anti-Roboter-Verifizierung',
     'captcha_placeholder' => 'Ihre Antwort',
     'captcha_invalid' => 'Falsche Antwort. Bitte versuchen Sie es erneut.',
+    'daily_limit_exceeded' => 'Tageslimit erreicht. Bitte versuchen Sie es morgen erneut.',
+    'storage_quota_exceeded' => 'Der Dateifreigabedienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.',
 
     // Labels
     'label_important' => 'Wichtig:',

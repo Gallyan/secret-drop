@@ -496,6 +496,8 @@ return [
     'captcha_label' => 'Verificação anti-robô',
     'captcha_placeholder' => 'Sua resposta',
     'captcha_invalid' => 'Resposta incorreta. Por favor, tente novamente.',
+    'daily_limit_exceeded' => 'Limite diário atingido. Por favor, tente novamente amanhã.',
+    'storage_quota_exceeded' => 'O serviço de partilha de ficheiros está temporariamente indisponível. Por favor, tente mais tarde.',
 
     // Labels
     'label_important' => 'Importante:',

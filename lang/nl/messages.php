@@ -496,6 +496,8 @@ return [
     'captcha_label' => 'Anti-robot verificatie',
     'captcha_placeholder' => 'Uw antwoord',
     'captcha_invalid' => 'Onjuist antwoord. Probeer het opnieuw.',
+    'daily_limit_exceeded' => 'Dagelijkse limiet bereikt. Probeer het morgen opnieuw.',
+    'storage_quota_exceeded' => 'De bestandsdeelservice is tijdelijk niet beschikbaar. Probeer het later opnieuw.',
 
     // Labels
     'label_important' => 'Belangrijk:',

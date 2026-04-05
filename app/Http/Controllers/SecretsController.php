@@ -32,7 +32,23 @@ class SecretsController extends Controller
 
     public function store(StoreSecretRequest $request): JsonResponse
     {
+        // Honeypot: bots fill hidden fields, humans don't — return fake success to avoid retries
+        if ($request->filled('website')) {
+            return response()->json([
+                'token' => bin2hex(random_bytes(16)),
+                'expire_at' => now()->addDays(7)->toIso8601String(),
+            ], 201);
+        }
+
         $validated = $request->validated();
+
+        // Check file storage quota before accepting uploads
+        if ($validated['type'] === 'file' && $this->storage->isQuotaExceeded()) {
+            return response()->json([
+                'error' => 'service_unavailable',
+                'message' => __('messages.storage_quota_exceeded'),
+            ], 503);
+        }
 
         $expireAt = $this->calculateExpireAt($validated['expiration']);
         $token = $this->tokenService->generatePublicToken();

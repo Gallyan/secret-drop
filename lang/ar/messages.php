@@ -496,6 +496,8 @@ return [
     'captcha_label' => 'التحقق من الروبوت',
     'captcha_placeholder' => 'إجابتك',
     'captcha_invalid' => 'إجابة غير صحيحة. يرجى المحاولة مرة أخرى.',
+    'daily_limit_exceeded' => 'تم الوصول إلى الحد اليومي. يرجى المحاولة مرة أخرى غداً.',
+    'storage_quota_exceeded' => 'خدمة مشاركة الملفات غير متاحة مؤقتاً. يرجى المحاولة لاحقاً.',
 
     // Labels
     'label_important' => 'مهم:',

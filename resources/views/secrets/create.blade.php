@@ -60,6 +60,12 @@
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center">
                     {{-- Form --}}
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" @keydown.ctrl.enter.prevent="handleSubmit()" @keydown.meta.enter.prevent="handleSubmit()" class="space-y-5" autocomplete="off">
+                        {{-- Honeypot: invisible to users, bots fill it --}}
+                        <div class="absolute -left-[9999px]" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+                        </div>
+
                         {{-- Mode tabs --}}
                         <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button

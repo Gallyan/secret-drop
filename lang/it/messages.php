@@ -496,6 +496,8 @@ return [
     'captcha_label' => 'Verifica anti-robot',
     'captcha_placeholder' => 'La tua risposta',
     'captcha_invalid' => 'Risposta errata. Per favore riprova.',
+    'daily_limit_exceeded' => 'Limite giornaliero raggiunto. Riprova domani.',
+    'storage_quota_exceeded' => 'Il servizio di condivisione file è temporaneamente non disponibile. Riprova più tardi.',
 
     // Labels
     'label_important' => 'Importante:',

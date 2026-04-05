@@ -496,6 +496,8 @@ return [
     'captcha_label' => '로봇 방지 확인',
     'captcha_placeholder' => '답변',
     'captcha_invalid' => '답이 틀렸습니다. 다시 시도하세요.',
+    'daily_limit_exceeded' => '일일 한도에 도달했습니다. 내일 다시 시도하세요.',
+    'storage_quota_exceeded' => '파일 공유 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요.',
 
     // Labels
     'label_important' => '중요:',
