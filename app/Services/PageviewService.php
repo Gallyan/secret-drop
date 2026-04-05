@@ -194,6 +194,38 @@ class PageviewService
         return 'Other';
     }
 
+    private const LANG_TO_COUNTRY = [
+        'en' => 'US',
+        'fr' => 'FR',
+        'de' => 'DE',
+        'es' => 'ES',
+        'it' => 'IT',
+        'pt' => 'PT',
+        'nl' => 'NL',
+        'pl' => 'PL',
+        'ja' => 'JP',
+        'ko' => 'KR',
+        'ar' => 'SA',
+        'zh' => 'CN',
+        'ru' => 'RU',
+        'sv' => 'SE',
+        'da' => 'DK',
+        'fi' => 'FI',
+        'nb' => 'NO',
+        'uk' => 'UA',
+        'cs' => 'CZ',
+        'el' => 'GR',
+        'he' => 'IL',
+        'hi' => 'IN',
+        'th' => 'TH',
+        'vi' => 'VN',
+        'tr' => 'TR',
+        'id' => 'ID',
+        'ms' => 'MY',
+        'ro' => 'RO',
+        'hu' => 'HU',
+    ];
+
     private function detectCountry(string $acceptLanguage): string
     {
         if (empty($acceptLanguage)) {
@@ -209,7 +241,9 @@ class PageviewService
             return strtoupper($parts[1]);
         }
 
-        return strtoupper(substr($locale, 0, 2));
+        $lang = strtolower(substr($locale, 0, 2));
+
+        return self::LANG_TO_COUNTRY[$lang] ?? 'XX';
     }
 
     private function getLocalHour(Carbon $now, int $tzOffset): int
