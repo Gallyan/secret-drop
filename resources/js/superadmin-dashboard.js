@@ -69,6 +69,18 @@ function metricData(metrics, metric, labels) {
     return labels.map(d => m[d] || 0);
 }
 
+function toOptionPct(t) {
+    const total = (t.secrets_created_text || 0) + (t.secrets_created_file || 0);
+    if (total === 0) {
+        return [0, 0, 0];
+    }
+    return [
+        +((t.secrets_with_passphrase || 0) / total * 100).toFixed(1),
+        +((t.secrets_with_max_views || 0) / total * 100).toFixed(1),
+        +((t.secrets_split_mode || 0) / total * 100).toFixed(1),
+    ];
+}
+
 // ── KPI update ───────────────────────────────────────────────────────────
 
 function updateKpis(data) {
@@ -170,11 +182,7 @@ function updateCharts(data) {
 
     updateDoughnutChart('types', [t.secrets_created_text || 0, t.secrets_created_file || 0]);
 
-    updateBarChart('options', [
-        t.secrets_with_passphrase || 0,
-        t.secrets_with_max_views || 0,
-        t.secrets_split_mode || 0,
-    ]);
+    updateBarChart('options', toOptionPct(t));
 
     updateDoughnutChart('outcomes', [
         t.secrets_read || 0,
@@ -546,13 +554,14 @@ function initDashboard() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
+    const optPct = toOptionPct(t);
     charts.options = new Chart(document.getElementById('secretOptionsChart'), {
         type: 'bar',
         data: {
             labels: [translations.stat_passphrase, translations.stat_max_views, translations.stat_split_mode],
-            datasets: [{ data: [t.secrets_with_passphrase || 0, t.secrets_with_max_views || 0, t.secrets_split_mode || 0], backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
+            datasets: [{ data: optPct, backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: scales.y } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ctx.parsed.y + ' %' } } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + ' %' } } } }
     });
 
     charts.outcomes = new Chart(document.getElementById('secretOutcomesChart'), {
