@@ -47,15 +47,15 @@
                     return '-';
                 }
                 if ($seconds < 60) {
-                    return number_format($seconds, 0) . 's';
+                    return nfmt($seconds) . 's';
                 }
                 if ($seconds < 3600) {
-                    return number_format($seconds / 60, 1) . 'm';
+                    return nfmt($seconds / 60, 1) . 'm';
                 }
                 if ($seconds < 86400) {
-                    return number_format($seconds / 3600, 1) . 'h';
+                    return nfmt($seconds / 3600, 1) . 'h';
                 }
-                return number_format($seconds / 86400, 1) . 'j';
+                return nfmt($seconds / 86400, 1) . 'j';
             };
 
             $formattedAvgDelay = $formatDelay($avgFirstReadDelay);
@@ -63,23 +63,23 @@
 
             $formatBytes = function (int|float $bytes) {
                 if ($bytes >= 1073741824) {
-                    return number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
+                    return nfmt($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
                 }
                 if ($bytes >= 1048576) {
-                    return number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
+                    return nfmt($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
                 }
                 if ($bytes >= 1024) {
-                    return number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
+                    return nfmt($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
                 }
-                return number_format($bytes, 0) . ' ' . __('messages.unit_bytes');
+                return nfmt($bytes) . ' ' . __('messages.unit_bytes');
             };
 
         @endphp
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <x-stat-card kpi="secrets_created" :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
-            <x-stat-card kpi="secrets_read" :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
-            <x-stat-card kpi="active_secrets" :value="number_format($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
-            <x-stat-card kpi="read_rate" :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
+            <x-stat-card kpi="secrets_created" :value="nfmt(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
+            <x-stat-card kpi="secrets_read" :value="nfmt($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
+            <x-stat-card kpi="active_secrets" :value="nfmt($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
+            <x-stat-card kpi="read_rate" :value="$readRate !== null ? nfmt($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
             <x-card class="p-6 overflow-visible relative z-10">
                 <div class="flex items-baseline gap-2">
                     <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="median_first_read">{{ $formattedMedianDelay }}</span>
@@ -94,11 +94,11 @@
                     <x-hint-tooltip id="hintFirstReadDelay" :text="__('messages.hint_first_read_delay')" direction="below" />
                 </div>
             </x-card>
-            <x-stat-card kpi="files_shared" :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
+            <x-stat-card kpi="files_shared" :value="nfmt($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
             <x-stat-card kpi="volume" :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
             <x-stat-card kpi="disk_usage" :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="creators">{{ number_format($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ number_format($creatorConcentration['gini'], 2) }}</span></div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="creators">{{ nfmt($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ nfmt($creatorConcentration['gini'], 2) }}</span></div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_unique_creators') }}</span>
                     <x-hint-tooltip id="giniHint" :text="__('messages.stat_gini_tooltip')" direction="below" />
@@ -162,35 +162,35 @@
                     return '-';
                 }
                 if ($ms < 1000) {
-                    return number_format($ms, 0) . ' ms';
+                    return nfmt($ms) . ' ms';
                 }
-                return number_format($ms / 1000, 1) . ' s';
+                return nfmt($ms / 1000, 1) . ' s';
             };
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ number_format($errorStats['total_4xx']) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ nfmt($errorStats['total_4xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_4xx') }}</span>
                     <x-hint-tooltip id="hint4xx" :text="__('messages.hint_errors_4xx')" direction="below" />
                 </div>
             </x-card>
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ number_format($errorStats['total_5xx']) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ nfmt($errorStats['total_5xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_5xx') }}</span>
                     <x-hint-tooltip id="hint5xx" :text="__('messages.hint_errors_5xx')" direction="below" />
                 </div>
             </x-card>
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['by_code'][422] ?? 0) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ nfmt($errorStats['by_code'][422] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
                     <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
                 </div>
             </x-card>
             <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['by_code'][429] ?? 0) }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ nfmt($errorStats['by_code'][429] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
                     <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
@@ -244,7 +244,7 @@
                                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full {{ $color }} rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @empty
@@ -266,9 +266,9 @@
                             <span class="text-gray-700 dark:text-slate-300 font-mono truncate max-w-xs">{{ $route }}</span>
                             <div class="flex items-center gap-2">
                                 @foreach($statuses as $code => $count)
-                                    <span class="text-xs font-mono text-red-500">{{ $code }}:{{ number_format($count) }}</span>
+                                    <span class="text-xs font-mono text-red-500">{{ $code }}:{{ nfmt($count) }}</span>
                                 @endforeach
-                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($total) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ nfmt($total) }}</span>
                             </div>
                         </div>
                     @empty
@@ -325,10 +325,10 @@
             $conversionRate = $totalViews > 0 ? ($createdInPeriod / $totalViews) * 100 : 0;
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <x-stat-card kpi="pv_visitors" :value="number_format($pageviews['total_human'])" :label="__('messages.stat_visitors')" />
-            <x-stat-card kpi="pv_bots" :value="number_format($pageviews['total_bot'])" :label="__('messages.stat_bots')" />
+            <x-stat-card kpi="pv_visitors" :value="nfmt($pageviews['total_human'])" :label="__('messages.stat_visitors')" />
+            <x-stat-card kpi="pv_bots" :value="nfmt($pageviews['total_bot'])" :label="__('messages.stat_bots')" />
             <x-stat-card kpi="pv_countries" :value="count($pageviews['by_country'])" :label="__('messages.stat_countries')" />
-            <x-stat-card kpi="pv_conversion" :value="$totalViews > 0 ? number_format($conversionRate, 1) . '%' : '-'" :label="__('messages.stat_conversion')" />
+            <x-stat-card kpi="pv_conversion" :value="$totalViews > 0 ? nfmt($conversionRate, 1) . '%' : '-'" :label="__('messages.stat_conversion')" />
         </div>
 
         {{-- Daily visits chart --}}
@@ -399,8 +399,8 @@
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-slate-300">{{ $title }}</span>
                             <div class="flex items-center gap-3">
-                                <span class="text-gray-900 dark:text-white font-medium">{{ number_format($counts['human']) }}</span>
-                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ number_format($counts['bot']) }} bot</span>
+                                <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($counts['human']) }}</span>
+                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ nfmt($counts['bot']) }} bot</span>
                             </div>
                         </div>
                     @endforeach
@@ -421,7 +421,7 @@
                                 <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-violet-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -502,7 +502,7 @@
                                 <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-amber-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -530,7 +530,7 @@
                                         @endif
                                         {{ $deviceLabels[$device] ?? $device }}
                                     </span>
-                                    <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ nfmt($pct, 1) }}%)</span></span>
                                 </div>
                                 <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-indigo-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
@@ -563,7 +563,7 @@
                                     <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-sky-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                     </div>
-                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -593,8 +593,8 @@
                                     <div class="w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-emerald-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                     </div>
-                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($counts['human']) }}</span>
-                                    <span class="text-gray-400 dark:text-slate-500 text-xs w-14 text-right">{{ number_format($counts['bot']) }} bot</span>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($counts['human']) }}</span>
+                                    <span class="text-gray-400 dark:text-slate-500 text-xs w-14 text-right">{{ nfmt($counts['bot']) }} bot</span>
                                 </div>
                             </div>
                         @endforeach
@@ -612,6 +612,7 @@
     window.superAdminData = {
         pollUrl: '{{ route('superadmin.poll', ['locale' => app()->getLocale()]) }}',
         pollInterval: 30000,
+        locale: '{{ app()->getLocale() }}',
         period: '{{ $period }}',
         stats: @json($stats),
         heatmapCreated: @json($heatmapCreated),

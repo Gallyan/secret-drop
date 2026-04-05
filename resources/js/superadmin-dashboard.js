@@ -6,21 +6,29 @@ let pollTimer = null;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
+function getLocale() {
+    return window.superAdminData?.locale || 'en';
+}
+
 function fmt(n) {
-    return new Intl.NumberFormat().format(n);
+    return new Intl.NumberFormat(getLocale()).format(n);
+}
+
+function fmtDec(n, decimals = 1) {
+    return new Intl.NumberFormat(getLocale(), { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
 }
 
 function fmtBytes(bytes) {
     if (bytes >= 1073741824) {
-        return (bytes / 1073741824).toFixed(1) + ' GB';
+        return fmtDec(bytes / 1073741824) + ' GB';
     }
     if (bytes >= 1048576) {
-        return (bytes / 1048576).toFixed(1) + ' MB';
+        return fmtDec(bytes / 1048576) + ' MB';
     }
     if (bytes >= 1024) {
-        return (bytes / 1024).toFixed(1) + ' KB';
+        return fmtDec(bytes / 1024) + ' KB';
     }
-    return Math.round(bytes) + ' B';
+    return fmt(Math.round(bytes)) + ' B';
 }
 
 function fmtDelay(s) {
@@ -28,15 +36,15 @@ function fmtDelay(s) {
         return '-';
     }
     if (s < 60) {
-        return Math.round(s) + 's';
+        return fmt(Math.round(s)) + 's';
     }
     if (s < 3600) {
-        return (s / 60).toFixed(1) + 'm';
+        return fmtDec(s / 60) + 'm';
     }
     if (s < 86400) {
-        return (s / 3600).toFixed(1) + 'h';
+        return fmtDec(s / 3600) + 'h';
     }
-    return (s / 86400).toFixed(1) + 'j';
+    return fmtDec(s / 86400) + 'j';
 }
 
 function fmtMs(ms) {
@@ -44,9 +52,9 @@ function fmtMs(ms) {
         return '-';
     }
     if (ms < 1000) {
-        return Math.round(ms) + ' ms';
+        return fmt(Math.round(ms)) + ' ms';
     }
-    return (ms / 1000).toFixed(1) + ' s';
+    return fmtDec(ms / 1000) + ' s';
 }
 
 function kpi(name, value) {
@@ -100,7 +108,7 @@ function updateKpis(data) {
     kpi('secrets_created', fmt(created));
     kpi('secrets_read', fmt(t.secrets_read || 0));
     kpi('active_secrets', fmt(data.systemHealth?.active_secrets ?? 0));
-    kpi('read_rate', data.readRate !== null ? data.readRate.toFixed(1) + '%' : '-');
+    kpi('read_rate', data.readRate !== null ? fmtDec(data.readRate) + '%' : '-');
     kpi('avg_first_read', fmtDelay(data.avgFirstReadDelay));
     kpi('median_first_read', fmtDelay(data.medianFirstReadDelay));
     kpi('files_shared', fmt(t.secrets_created_file || 0));
@@ -109,7 +117,7 @@ function updateKpis(data) {
 
     const cc = data.creatorConcentration;
     kpiHtml('creators',
-        `${fmt(cc.unique_creators)} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G=${cc.gini.toFixed(2)}</span>`
+        `${fmt(cc.unique_creators)} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G=${fmtDec(cc.gini, 2)}</span>`
     );
 
     const h = data.systemHealth;
@@ -140,7 +148,7 @@ function updateKpis(data) {
             + (metrics.secrets_created_file?.[date] || 0);
     });
     const conv = pv.total_human > 0 ? (createdInPeriod / pv.total_human) * 100 : 0;
-    kpi('pv_conversion', pv.total_human > 0 ? conv.toFixed(1) + '%' : '-');
+    kpi('pv_conversion', pv.total_human > 0 ? fmtDec(conv) + '%' : '-');
 }
 
 // ── Chart helpers ────────────────────────────────────────────────────────
@@ -343,7 +351,7 @@ function updateLists(data) {
                 return `<div>
                     <div class="flex items-center justify-between text-sm mb-1">
                         <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">${icon} ${esc(label)}</span>
-                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${pct.toFixed(1)}%)</span></span>
+                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${fmtDec(pct)}%)</span></span>
                     </div>
                     <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                         <div class="h-full bg-indigo-500 rounded-full" style="width: ${Math.min(pct, 100)}%"></div>
@@ -620,7 +628,7 @@ function initDashboard() {
             labels: [translations.stat_passphrase, translations.stat_max_views, translations.stat_split_mode],
             datasets: [{ data: optPct, backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ctx.parsed.y + ' %' } } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + ' %' } } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => fmtDec(ctx.parsed.y) + ' %' } } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (v) => fmtDec(v) + ' %' } } } }
     });
 
     charts.outcomes = new Chart(document.getElementById('secretOutcomesChart'), {
