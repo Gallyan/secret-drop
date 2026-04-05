@@ -471,6 +471,7 @@ return [
     'stat_route_read' => 'Odczyt',
     'stat_route_confirm_read' => 'Potwierdzenie odczytu',
     'stat_route_download' => 'Pobieranie',
+    'stat_group_pages' => 'Strony (strona główna, FAQ, informacje prawne)',
     'stat_p95_by_group' => 'P95 wg grupy',
     'stat_response_p95' => 'P95 czas odpowiedzi',
     'hint_response_p95' => '95% żądań odpowiada poniżej tego progu. Wysoki P95 oznacza, że niektóre żądania są wolne.',

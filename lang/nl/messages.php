@@ -471,6 +471,7 @@ return [
     'stat_route_read' => 'Lezen',
     'stat_route_confirm_read' => 'Leesbevestiging',
     'stat_route_download' => 'Downloaden',
+    'stat_group_pages' => 'Pagina\'s (homepagina, FAQ, juridisch)',
     'stat_p95_by_group' => 'P95 per groep',
     'stat_response_p95' => 'P95 responstijd',
     'hint_response_p95' => '95 % van de verzoeken reageert onder deze drempel. Een hoge P95 betekent dat sommige verzoeken traag zijn.',

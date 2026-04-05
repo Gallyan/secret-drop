@@ -475,9 +475,10 @@ function updateLists(data) {
         if (entries.length === 0) {
             elP95.innerHTML = '<p class="text-sm text-gray-400 dark:text-slate-500">-</p>';
         } else {
+            const gl = window.superAdminData?.groupLabels || {};
             elP95.innerHTML = entries.map(([group, p95]) =>
                 `<div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-700 dark:text-slate-300 font-mono">${esc(group)}</span>
+                    <span class="text-gray-700 dark:text-slate-300">${esc(gl[group] || group)}</span>
                     <span class="text-gray-900 dark:text-white font-medium">${fmtMs(p95)}</span>
                 </div>`
             ).join('');

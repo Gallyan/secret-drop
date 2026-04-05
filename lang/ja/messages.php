@@ -471,6 +471,7 @@ return [
     'stat_route_read' => '閲覧',
     'stat_route_confirm_read' => '閲覧確認',
     'stat_route_download' => 'ダウンロード',
+    'stat_group_pages' => 'ページ（ホーム、FAQ、法的情報）',
     'stat_p95_by_group' => 'グループ別 P95',
     'stat_response_p95' => 'P95 応答時間',
     'hint_response_p95' => 'リクエストの 95 % がこのしきい値以下で応答しています。P95 が高い場合、一部のリクエストが遅いことを示します。',

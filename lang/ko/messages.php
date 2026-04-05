@@ -471,6 +471,7 @@ return [
     'stat_route_read' => '읽기',
     'stat_route_confirm_read' => '읽기 확인',
     'stat_route_download' => '다운로드',
+    'stat_group_pages' => '페이지 (홈, FAQ, 법적 고지)',
     'stat_p95_by_group' => '그룹별 P95',
     'stat_response_p95' => 'P95 응답 시간',
     'hint_response_p95' => '요청의 95%가 이 임계값 이하로 응답합니다. P95가 높으면 일부 요청이 느린 것을 의미합니다.',

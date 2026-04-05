@@ -299,15 +299,24 @@
             </x-card>
 
             {{-- P95 by route group --}}
+            @php
+                $groupLabels = [
+                    'create' => __('messages.stat_route_create'),
+                    'read' => __('messages.stat_route_read'),
+                    'admin' => 'Admin',
+                    'superadmin' => 'Superadmin',
+                    'pages' => __('messages.stat_group_pages'),
+                ];
+            @endphp
             <x-card class="p-6">
                 <div class="flex items-center gap-1 mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.stat_p95_by_group') }}</h3>
-                    <x-hint-tooltip id="hintP95Group" :text="__('messages.hint_p95_by_group')" direction="below" position="end" />
+                    <x-hint-tooltip id="hintP95Group" :text="__('messages.hint_response_p95')" direction="below" position="end" />
                 </div>
                 <div id="pollP95Groups" class="space-y-2">
                     @forelse($responseTime['by_group'] as $group => $p95)
                         <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-slate-300 font-mono">{{ $group }}</span>
+                            <span class="text-gray-700 dark:text-slate-300">{{ $groupLabels[$group] ?? $group }}</span>
                             <span class="text-gray-900 dark:text-white font-medium">{{ $fmtP95($p95) }}</span>
                         </div>
                     @empty
@@ -652,6 +661,7 @@
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
         routeLabels: @json($routeLabels),
+        groupLabels: @json($groupLabels),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),
         localeNames: @json(\App\Support\LocaleConfig::NATIVE_NAMES),
         noDataText: '{{ __('messages.stat_no_data') }}',

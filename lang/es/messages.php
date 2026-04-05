@@ -471,6 +471,7 @@ return [
     'stat_route_read' => 'Lectura',
     'stat_route_confirm_read' => 'Confirmación de lectura',
     'stat_route_download' => 'Descarga',
+    'stat_group_pages' => 'Páginas (inicio, FAQ, avisos legales)',
     'stat_p95_by_group' => 'P95 por grupo',
     'stat_response_p95' => 'P95 tiempo de respuesta',
     'hint_response_p95' => 'El 95 % de las solicitudes responden por debajo de este umbral. Un P95 alto significa que algunas solicitudes son lentas.',

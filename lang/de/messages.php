@@ -471,6 +471,7 @@ return [
     'stat_route_read' => 'Lesen',
     'stat_route_confirm_read' => 'Lesebestätigung',
     'stat_route_download' => 'Download',
+    'stat_group_pages' => 'Seiten (Startseite, FAQ, Impressum)',
     'stat_p95_by_group' => 'P95 nach Gruppe',
     'stat_response_p95' => 'P95 Antwortzeit',
     'hint_response_p95' => '95 % der Anfragen werden unterhalb dieses Schwellenwerts beantwortet. Ein hoher P95 bedeutet, dass einige Anfragen langsam sind.',

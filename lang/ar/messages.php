@@ -471,6 +471,7 @@ return [
     'stat_route_read' => 'قراءة',
     'stat_route_confirm_read' => 'تأكيد القراءة',
     'stat_route_download' => 'تحميل',
+    'stat_group_pages' => 'الصفحات (الرئيسية، الأسئلة الشائعة، الشروط القانونية)',
     'stat_p95_by_group' => 'P95 حسب المجموعة',
     'stat_response_p95' => 'P95 زمن الاستجابة',
     'hint_response_p95' => '95% من الطلبات تستجيب تحت هذا الحد. P95 مرتفع يعني أن بعض الطلبات بطيئة.',
