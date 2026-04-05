@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'خريطة حرارية للقراءة (يوم/ساعة)',
 
     // Stats
-    'stat_avg_first_read' => 'متوسط تأخير القراءة الأولى',
+    'stat_first_read_delay' => 'تأخير القراءة الأولى',
+    'stat_median_abbr' => 'وسيط',
+    'stat_avg_abbr' => 'متوسط',
 
     // Days
     'day_sunday' => 'أحد',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'حسب مصدر الزيارات',
     'stat_no_data' => 'لا توجد بيانات حتى الآن.',
     'stat_gini_tooltip' => 'Gini: 0 = استخدام موزع بالتساوي، 1 = منشئ واحد يهيمن',
+    'hint_first_read_delay' => 'الوقت بين الإنشاء والقراءة الأولى. الوسيط أكثر تمثيلاً لأنه لا يتأثر بالقيم المتطرفة. إذا كان المتوسط أعلى بكثير من الوسيط، فإن بعض الأسرار تُقرأ متأخراً جداً.',
     'stat_page_home' => 'الرئيسية',
     'stat_page_download' => 'تحميل',
     'stat_page_admin_login' => 'المشرف - تسجيل الدخول',

@@ -234,6 +234,34 @@ class StatsService
         return $total / $count;
     }
 
+    public function getMedianFirstReadDelay(?string $startDate = null): ?float
+    {
+        $query = Secret::query()
+            ->whereNotNull('first_read_at');
+
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+
+        $delays = $query->get(['created_at', 'first_read_at'])
+            ->map(fn (Secret $s) => $s->created_at->diffInSeconds($s->first_read_at))
+            ->sort()
+            ->values();
+
+        if ($delays->isEmpty()) {
+            return null;
+        }
+
+        $count = $delays->count();
+        $middle = intdiv($count, 2);
+
+        if ($count % 2 === 0) {
+            return ($delays[$middle - 1] + $delays[$middle]) / 2;
+        }
+
+        return (float) $delays[$middle];
+    }
+
     public function getActiveSecretsCount(): int
     {
         return Secret::query()

@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'Mapa de calor de leitura (por dia/hora)',
 
     // Stats
-    'stat_avg_first_read' => 'Tempo médio até primeira leitura',
+    'stat_first_read_delay' => 'Tempo até primeira leitura',
+    'stat_median_abbr' => 'mediana',
+    'stat_avg_abbr' => 'médio',
 
     // Days
     'day_sunday' => 'Dom',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'Por fonte de tráfego',
     'stat_no_data' => 'Nenhum dado por enquanto.',
     'stat_gini_tooltip' => 'Gini: 0 = uso distribuído, 1 = um único criador domina',
+    'hint_first_read_delay' => 'Tempo entre a criação e a primeira leitura. A mediana é mais representativa porque não é afetada por valores extremos. Se a média for muito superior à mediana, alguns segredos são lidos muito tarde.',
     'stat_page_home' => 'Início',
     'stat_page_download' => 'Download',
     'stat_page_admin_login' => 'Admin - Acesso',

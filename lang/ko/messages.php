@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => '조회 히트맵 (요일/시간별)',
 
     // Stats
-    'stat_avg_first_read' => '평균 첫 조회 시간',
+    'stat_first_read_delay' => '첫 조회 시간',
+    'stat_median_abbr' => '중앙값',
+    'stat_avg_abbr' => '평균',
 
     // Days
     'day_sunday' => '일',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => '트래픽 소스별',
     'stat_no_data' => '아직 데이터가 없습니다.',
     'stat_gini_tooltip' => 'Gini: 0 = 균등 분포, 1 = 한 명이 독점',
+    'hint_first_read_delay' => '생성부터 첫 조회까지의 시간. 중앙값은 이상값의 영향을 받지 않아 더 대표적입니다. 평균이 중앙값보다 훨씬 높으면 일부 비밀이 매우 늦게 조회되고 있습니다.',
     'stat_page_home' => '홈',
     'stat_page_download' => '다운로드',
     'stat_page_admin_login' => '관리자 - 로그인',

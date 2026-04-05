@@ -42,17 +42,24 @@
         @php
             $totals = $stats['totals'];
 
-            if ($avgFirstReadDelay === null) {
-                $formattedDelay = '-';
-            } elseif ($avgFirstReadDelay < 60) {
-                $formattedDelay = number_format($avgFirstReadDelay, 0) . 's';
-            } elseif ($avgFirstReadDelay < 3600) {
-                $formattedDelay = number_format($avgFirstReadDelay / 60, 1) . 'm';
-            } elseif ($avgFirstReadDelay < 86400) {
-                $formattedDelay = number_format($avgFirstReadDelay / 3600, 1) . 'h';
-            } else {
-                $formattedDelay = number_format($avgFirstReadDelay / 86400, 1) . 'j';
-            }
+            $formatDelay = function (?float $seconds): string {
+                if ($seconds === null) {
+                    return '-';
+                }
+                if ($seconds < 60) {
+                    return number_format($seconds, 0) . 's';
+                }
+                if ($seconds < 3600) {
+                    return number_format($seconds / 60, 1) . 'm';
+                }
+                if ($seconds < 86400) {
+                    return number_format($seconds / 3600, 1) . 'h';
+                }
+                return number_format($seconds / 86400, 1) . 'j';
+            };
+
+            $formattedAvgDelay = $formatDelay($avgFirstReadDelay);
+            $formattedMedianDelay = $formatDelay($medianFirstReadDelay);
 
             $formatBytes = function (int|float $bytes) {
                 if ($bytes >= 1073741824) {
@@ -73,7 +80,20 @@
             <x-stat-card kpi="secrets_read" :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
             <x-stat-card kpi="active_secrets" :value="number_format($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
             <x-stat-card kpi="read_rate" :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
-            <x-stat-card kpi="avg_first_read" :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="median_first_read">{{ $formattedMedianDelay }}</span>
+                    <span class="text-sm text-gray-500 dark:text-slate-400">{{ __('messages.stat_median_abbr') }}</span>
+                </div>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_first_read">{{ $formattedAvgDelay }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_avg_abbr') }}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_first_read_delay') }}</span>
+                    <x-hint-tooltip id="hintFirstReadDelay" :text="__('messages.hint_first_read_delay')" direction="below" />
+                </div>
+            </x-card>
             <x-stat-card kpi="files_shared" :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
             <x-stat-card kpi="volume" :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
             <x-stat-card kpi="disk_usage" :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
@@ -524,6 +544,7 @@
         heatmapRead: @json($heatmapRead),
         pageviewsDaily: @json($pageviews['daily']),
         avgFirstReadDelay: @json($avgFirstReadDelay),
+        medianFirstReadDelay: @json($medianFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
         activeSecrets: @json($systemHealth['active_secrets']),
         readRate: @json($readRate),

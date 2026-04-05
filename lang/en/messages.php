@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'Read heatmap (by day/hour)',
 
     // Stats
-    'stat_avg_first_read' => 'Avg. first read delay',
+    'stat_first_read_delay' => 'First read delay',
+    'stat_median_abbr' => 'median',
+    'stat_avg_abbr' => 'average',
 
     // Days
     'day_sunday' => 'Sun',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'By traffic source',
     'stat_no_data' => 'No data yet.',
     'stat_gini_tooltip' => 'Gini: 0 = evenly distributed usage, 1 = one creator dominates',
+    'hint_first_read_delay' => 'Time between creation and first read. The median is more representative as it is not affected by outliers. If the average is much higher than the median, a few secrets are being read very late.',
     'stat_page_home' => 'Home',
     'stat_page_download' => 'Download',
     'stat_page_admin_login' => 'Admin - Login',

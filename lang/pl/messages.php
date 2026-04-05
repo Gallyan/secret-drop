@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'Mapa ciepła odczytów (wg dnia/godziny)',
 
     // Stats
-    'stat_avg_first_read' => 'Śr. czas do pierwszego odczytu',
+    'stat_first_read_delay' => 'Czas do pierwszego odczytu',
+    'stat_median_abbr' => 'mediana',
+    'stat_avg_abbr' => 'średnia',
 
     // Days
     'day_sunday' => 'Nd',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'Wg źródła ruchu',
     'stat_no_data' => 'Brak danych.',
     'stat_gini_tooltip' => 'Gini: 0 = równomiernie rozłożone, 1 = jeden twórca dominuje',
+    'hint_first_read_delay' => 'Czas między utworzeniem a pierwszym odczytem. Mediana jest bardziej reprezentatywna, ponieważ nie jest wrażliwa na wartości skrajne. Jeśli średnia jest znacznie wyższa od mediany, niektóre sekrety są odczytywane bardzo późno.',
     'stat_page_home' => 'Strona główna',
     'stat_page_download' => 'Pobieranie',
     'stat_page_admin_login' => 'Admin - Logowanie',

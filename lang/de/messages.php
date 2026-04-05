@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'Lese-Heatmap (nach Tag/Stunde)',
 
     // Stats
-    'stat_avg_first_read' => 'Durchschn. Verzögerung erste Lesung',
+    'stat_first_read_delay' => 'Zeit bis zum ersten Abruf',
+    'stat_median_abbr' => 'Median',
+    'stat_avg_abbr' => 'Durchschnitt',
 
     // Days
     'day_sunday' => 'So',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'Nach Traffic-Quelle',
     'stat_no_data' => 'Noch keine Daten.',
     'stat_gini_tooltip' => 'Gini: 0 = gleichmäßig verteilt, 1 = ein Ersteller dominiert',
+    'hint_first_read_delay' => 'Zeit zwischen Erstellung und erstem Abruf. Der Median ist aussagekräftiger, da er nicht von Extremwerten beeinflusst wird. Liegt der Durchschnitt deutlich über dem Median, werden einige Geheimnisse sehr spät abgerufen.',
     'stat_page_home' => 'Startseite',
     'stat_page_download' => 'Download',
     'stat_page_admin_login' => 'Admin - Anmeldung',

@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => 'Lezing heatmap (per dag/uur)',
 
     // Stats
-    'stat_avg_first_read' => 'Gem. eerste leestijd',
+    'stat_first_read_delay' => 'Tijd tot eerste lezing',
+    'stat_median_abbr' => 'mediaan',
+    'stat_avg_abbr' => 'gemiddelde',
 
     // Days
     'day_sunday' => 'Zo',
@@ -463,6 +465,7 @@ return [
     'stat_by_referrer' => 'Per verkeersbron',
     'stat_no_data' => 'Nog geen gegevens.',
     'stat_gini_tooltip' => 'Gini: 0 = gelijkmatig verdeeld, 1 = één maker domineert',
+    'hint_first_read_delay' => 'Tijd tussen aanmaken en eerste lezing. De mediaan is representatiever omdat deze niet wordt beïnvloed door uitschieters. Als het gemiddelde veel hoger is dan de mediaan, worden sommige geheimen zeer laat gelezen.',
     'stat_page_home' => 'Startpagina',
     'stat_page_download' => 'Download',
     'stat_page_admin_login' => 'Admin - Inloggen',

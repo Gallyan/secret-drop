@@ -404,7 +404,9 @@ return [
     'chart_heatmap_read' => '閲覧ヒートマップ（曜日/時間別）',
 
     // Stats
-    'stat_avg_first_read' => '平均初回閲覧時間',
+    'stat_first_read_delay' => '初回閲覧時間',
+    'stat_median_abbr' => '中央値',
+    'stat_avg_abbr' => '平均',
 
     // Days
     'day_sunday' => '日',
@@ -462,7 +464,8 @@ return [
     'stat_by_bot' => 'ボット別',
     'stat_by_referrer' => 'トラフィック元別',
     'stat_no_data' => 'まだデータがありません。',
-    'stat_gini_tooltip' => 'Gini: 0 = 均等に分散、1 = 一人の作成者が独占',
+    'stat_gini_tooltip' => 'Gini: 0 = 均等に分散���1 = 一人の作成者が独占',
+    'hint_first_read_delay' => '作成から初回閲覧までの時間。中央値は外れ値の影響を受けないため、より代表的です。平均が中央値より大幅に高い場合、一部のシークレットが非常に遅く閲覧されています。',
     'stat_page_home' => 'ホーム',
     'stat_page_download' => 'ダウンロード',
     'stat_page_admin_login' => '管理者 - ログイン',
