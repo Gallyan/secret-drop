@@ -354,55 +354,26 @@
                             </div>
 
                         {{-- Error message --}}
-                        <div x-show="error && !captchaRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                        <div x-show="error && !powRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
                             <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
-                        {{-- Captcha challenge --}}
-                        <div x-show="captchaRequired" x-cloak class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                                {{ __('messages.rate_limit_exceeded') }}
-                            </p>
-                            <label for="captchaAnswer" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                                {{ __('messages.captcha_label') }}
-                            </label>
-                            <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl font-mono text-lg text-gray-900 dark:text-white">
-                                    <span x-text="captchaChallenge"></span> = ?
-                                </div>
-                                <input
-                                    id="captchaAnswer"
-                                    type="number"
-                                    x-model="captchaAnswer"
-                                    placeholder="{{ __('messages.captcha_placeholder') }}"
-                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
-                                    @keydown.enter.prevent="submitWithCaptcha()"
-                                >
+                        {{-- Proof-of-Work solving state --}}
+                        <div x-show="powRequired" x-cloak class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
+                            <div x-show="powSolving" class="flex items-center gap-3">
+                                <x-spinner />
+                                <p class="text-sm text-amber-700 dark:text-amber-300">
+                                    {{ __('messages.pow_computing') }}
+                                </p>
                             </div>
-                            <div x-show="error" class="mt-2 text-sm text-red-600 dark:text-red-300" x-text="error"></div>
+                            <div x-show="error && !powSolving" class="text-sm text-red-600 dark:text-red-300" x-text="error"></div>
                         </div>
 
                         {{-- Submit button --}}
                         <x-btn-primary
-                            x-show="!captchaRequired"
+                            x-show="!powRequired"
                             type="submit"
                             x-bind:disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
-                            class="w-full"
-                        >
-                            <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
-                            <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
-                                <x-spinner />
-                                <span x-text="encryptingButtonText()"></span>
-                            </span>
-                        </x-btn-primary>
-
-                        {{-- Captcha submit button --}}
-                        <x-btn-primary
-                            x-show="captchaRequired"
-                            x-cloak
-                            type="button"
-                            @click="submitWithCaptcha()"
-                            x-bind:disabled="isSubmitting || !captchaAnswer.trim()"
                             class="w-full"
                         >
                             <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
