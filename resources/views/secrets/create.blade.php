@@ -358,28 +358,25 @@
                             <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
-                        {{-- Proof-of-Work solving state --}}
-                        <div x-show="powRequired" x-cloak class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <div x-show="powSolving" class="flex items-center gap-3">
-                                <x-spinner />
-                                <p class="text-sm text-amber-700 dark:text-amber-300">
-                                    {{ __('messages.pow_computing') }}
-                                </p>
-                            </div>
-                            <div x-show="error && !powSolving" class="text-sm text-red-600 dark:text-red-300" x-text="error"></div>
+                        {{-- PoW error (shown after solving failure) --}}
+                        <div x-show="powRequired && error && !powSolving" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                            <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
-                        {{-- Submit button --}}
+                        {{-- Submit button (always visible, changes state for PoW) --}}
                         <x-btn-primary
-                            x-show="!powRequired"
                             type="submit"
-                            x-bind:disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
+                            x-bind:disabled="isSubmitting || powSolving || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
                             class="w-full"
                         >
-                            <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
-                            <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
+                            <span x-show="!isSubmitting && !powSolving">{{ __('messages.btn_encrypt') }}</span>
+                            <span x-show="isSubmitting && !powSolving" role="status" class="inline-flex items-center justify-center gap-2">
                                 <x-spinner />
                                 <span x-text="encryptingButtonText()"></span>
+                            </span>
+                            <span x-show="powSolving" role="status" class="inline-flex items-center justify-center gap-2">
+                                <x-spinner />
+                                {{ __('messages.pow_computing') }}
                             </span>
                         </x-btn-primary>
                     </form>
