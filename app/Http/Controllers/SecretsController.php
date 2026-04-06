@@ -190,16 +190,12 @@ class SecretsController extends Controller
     {
         $secret = Secret::where('token', $token)->first();
 
-        if (! $secret || $secret->type !== 'file') {
+        if (! $secret || $secret->type !== 'file' || ! $secret->isAccessible()) {
             return response()->view('secrets.not-found', [], 404);
         }
 
-        if (! $secret->isAccessible()) {
-            return response(__('messages.error_secret_unavailable'), 410);
-        }
-
         if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
-            return response(__('messages.error_file_not_found'), 404);
+            return response()->view('secrets.not-found', [], 404);
         }
 
         return $this->storage->download($secret->file_path);
