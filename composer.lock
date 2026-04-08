@@ -8065,16 +8065,16 @@
         },
         {
             "name": "laravel-lang/starter-kits",
-            "version": "1.11.0",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/starter-kits.git",
-                "reference": "7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974"
+                "reference": "4c54f1349e4354ed69cdf3a6c37d8bdf0c847790"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974",
-                "reference": "7ac2c62d499ce3ee9593f292aa2c7ec19a6fd974",
+                "url": "https://api.github.com/repos/Laravel-Lang/starter-kits/zipball/4c54f1349e4354ed69cdf3a6c37d8bdf0c847790",
+                "reference": "4c54f1349e4354ed69cdf3a6c37d8bdf0c847790",
                 "shasum": ""
             },
             "require": {
@@ -8126,7 +8126,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/starter-kits/issues",
-                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.11.0"
+                "source": "https://github.com/Laravel-Lang/starter-kits/tree/1.12.0"
             },
             "funding": [
                 {
@@ -8138,7 +8138,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-04-05T13:56:06+00:00"
+            "time": "2026-04-08T09:37:11+00:00"
         },
         {
             "name": "laravel/boost",
@@ -8796,12 +8796,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/pao.git",
-                "reference": "a074e02761bcf69c8810628be52b516a77028155"
+                "reference": "1e87644b2bde3fcc23818fe31265dad56c23844f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/pao/zipball/a074e02761bcf69c8810628be52b516a77028155",
-                "reference": "a074e02761bcf69c8810628be52b516a77028155",
+                "url": "https://api.github.com/repos/nunomaduro/pao/zipball/1e87644b2bde3fcc23818fe31265dad56c23844f",
+                "reference": "1e87644b2bde3fcc23818fe31265dad56c23844f",
                 "shasum": ""
             },
             "require": {
@@ -8810,6 +8810,7 @@
                 "shipfastlabs/agent-detector": "^1.1.0"
             },
             "conflict": {
+                "laravel/framework": "<12.0",
                 "nunomaduro/collision": "<8.9.2",
                 "pestphp/pest": "<4.4.3 || >=6.0",
                 "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0"
@@ -8817,10 +8818,11 @@
             "require-dev": {
                 "brianium/paratest": "^7.20.0",
                 "laravel/pint": "^1.29.0",
+                "orchestra/testbench": "^10.11.0 || ^11.0.0",
                 "pestphp/pest": "^4.4.3 || ^5.0.0",
                 "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
                 "phpstan/phpstan": "^2.1.46",
-                "rector/rector": "^2.4.0",
+                "rector/rector": "^2.4.1",
                 "symfony/process": "^7.4.5 || ^8.1.0",
                 "symfony/var-dumper": "^7.4.6 || ^8.0.8"
             },
@@ -8830,6 +8832,11 @@
                 "pest": {
                     "plugins": [
                         "Pao\\Drivers\\Pest\\Plugin"
+                    ]
+                },
+                "laravel": {
+                    "providers": [
+                        "Pao\\Laravel\\ServiceProvider"
                     ]
                 }
             },
@@ -8880,7 +8887,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-04-07T17:37:19+00:00"
+            "time": "2026-04-08T15:02:11+00:00"
         },
         {
             "name": "phar-io/manifest",
