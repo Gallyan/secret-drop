@@ -133,6 +133,13 @@ class PageviewService
         'postman' => 'Postman',
     ];
 
+    /** @var array<string, string> */
+    private const AI_APP_PATTERNS = [
+        'chatgpt/' => '(chatgpt-app)',
+        'perplexity/' => '(perplexity-app)',
+        'claude/' => '(claude-app)',
+    ];
+
     public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = '', string $referrer = ''): void
     {
         $now = now();
@@ -198,9 +205,12 @@ class PageviewService
             );
         }
 
+        $aiApp = $this->detectAiApp($userAgent);
         $domain = $this->extractReferrerDomain($referrer);
 
-        if ($domain === '') {
+        if ($aiApp !== null) {
+            $domain = $aiApp;
+        } elseif ($domain === '') {
             $domain = '(direct)';
         }
 
@@ -233,6 +243,19 @@ class PageviewService
         }
 
         return false;
+    }
+
+    public function detectAiApp(string $userAgent): ?string
+    {
+        $ua = strtolower($userAgent);
+
+        foreach (self::AI_APP_PATTERNS as $pattern => $domain) {
+            if (str_contains($ua, $pattern)) {
+                return $domain;
+            }
+        }
+
+        return null;
     }
 
     public function detectDevice(string $userAgent): string

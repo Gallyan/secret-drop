@@ -121,6 +121,55 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie la détection des apps IA. */
+    public function testDetectsAiApps(): void
+    {
+        $this->assertSame('(chatgpt-app)', $this->service->detectAiApp(
+            'ChatGPT/1.2025.287 (iOS 18.6.2; iPhone17,1; build 18608390057)'
+        ));
+        $this->assertSame('(chatgpt-app)', $this->service->detectAiApp(
+            'ChatGPT/1.2025.258 (Windows_NT 10.0.26200; x86_64) Electron/37.4.0'
+        ));
+        $this->assertSame('(perplexity-app)', $this->service->detectAiApp('Perplexity/1.0 (iOS 18)'));
+        $this->assertSame('(claude-app)', $this->service->detectAiApp('Claude/1.0 (iOS)'));
+        $this->assertNull($this->service->detectAiApp('Mozilla/5.0 Chrome/120'));
+    }
+
+    /** Vérifie que les apps IA sont taguées comme pseudo-referrer. */
+    public function testTrackTagsAiAppAsReferrer(): void
+    {
+        $this->service->track(
+            'home',
+            'ChatGPT/1.2025.287 (iOS 18.6.2; iPhone17,1; build 18608390057)',
+            'en-US',
+            0,
+            '',
+            ''
+        );
+
+        $this->assertDatabaseHas('stats_referrers', [
+            'referrer_domain' => '(chatgpt-app)',
+            'is_bot' => false,
+        ]);
+    }
+
+    /** Vérifie que les apps IA restent comptées comme humains côté device. */
+    public function testTrackAiAppIsNotBot(): void
+    {
+        $ua = 'ChatGPT/1.2025.287 (iOS 18.6.2; iPhone17,1; build 18608390057)';
+        $this->assertFalse($this->service->isBot($ua));
+
+        $this->service->track('home', $ua, 'en-US', 0);
+
+        $this->assertDatabaseHas('stats_pageviews', [
+            'page' => 'home',
+            'is_bot' => false,
+        ]);
+        $this->assertDatabaseHas('stats_devices', [
+            'device_type' => 'mobile',
+        ]);
+    }
+
     /** Vérifie la détection du pays depuis Accept-Language. */
     public function testDetectsCountryFromAcceptLanguage(): void
     {
