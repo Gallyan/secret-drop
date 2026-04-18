@@ -16,6 +16,9 @@ class PageviewService
         'perl', 'libwww', 'apache-http', 'node-fetch', 'axios',
         'postman', 'insomnia', 'httpclient', 'scrapy', 'semrush',
         'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
+        // UAs sans mot-clé évident
+        'googledocs', 'google web preview', 'prefetch proxy',
+        'l9scan', 'paloaltonetworks', 'meta-web',
     ];
 
     /** @var array<string, string> */
@@ -25,7 +28,14 @@ class PageviewService
         'google-inspectiontool' => 'Google Inspection',
         'adsbot-google' => 'Google Ads',
         'mediapartners-google' => 'Google AdSense',
+        'googlebot-image' => 'Google Images',
+        'googlebot-video' => 'Google Video',
+        'googlebot-news' => 'Google News',
         'googlebot' => 'Googlebot',
+        'googleother' => 'Google Other',
+        'googledocs' => 'Google Docs',
+        'google web preview' => 'Google Preview',
+        'prefetch proxy' => 'Chrome Prefetch',
         // Autres moteurs de recherche
         'bingbot' => 'Bingbot',
         'msnbot' => 'Bingbot',
@@ -56,11 +66,16 @@ class PageviewService
         'ccbot' => 'Common Crawl',
         'cohere-ai' => 'Cohere',
         'meta-externalagent' => 'Meta AI',
+        'meta-webindexer' => 'Meta AI',
         'diffbot' => 'Diffbot',
         'mistralai-user' => 'Mistral',
         'amazonbot' => 'Amazon',
         'bytespider' => 'ByteDance',
+        'tiktokspider' => 'TikTok',
         'petalbot' => 'Huawei',
+        'linkupbot' => 'Linkup',
+        'yisouspider' => 'Yisou',
+        'coccocbot' => 'Cốc Cốc',
         // Réseaux sociaux
         'facebot' => 'Facebook',
         'facebookexternalhit' => 'Facebook',
@@ -80,6 +95,29 @@ class PageviewService
         'dotbot' => 'Moz',
         'rogerbot' => 'Moz',
         'blexbot' => 'WebMeUp',
+        'seranking' => 'SE Ranking',
+        'serpstatbot' => 'Serpstat',
+        'dataforseobot' => 'DataForSEO',
+        'halobot' => 'Haloscan',
+        'barkrowler' => 'Babbar',
+        'iboubot' => 'Ibou',
+        'awariobot' => 'Awario',
+        'imagesiftbot' => 'ImageSift',
+        // Monitoring
+        'uptimerobot' => 'UptimeRobot',
+        'feedly' => 'Feedly',
+        // Sécurité
+        'l9scan' => 'LeakIX',
+        'leakix' => 'LeakIX',
+        'bitsightbot' => 'BitSight',
+        'paloaltonetworks' => 'Palo Alto',
+        'aliyunsecbot' => 'Aliyun Security',
+        // Divers
+        '360spider' => 'Qihoo 360',
+        'zoominfobot' => 'ZoomInfo',
+        'semanticscholar' => 'Semantic Scholar',
+        'bnf.fr_bot' => 'BnF',
+        'snap url preview' => 'Snapchat',
         // Outils
         'lighthouse' => 'Lighthouse',
         'pagespeed' => 'PageSpeed',

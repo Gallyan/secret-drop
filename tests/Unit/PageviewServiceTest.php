@@ -25,6 +25,48 @@ class PageviewServiceTest extends TestCase
         $this->assertTrue($this->service->isBot(''));
     }
 
+    /** Vérifie la détection des bots qui ne contiennent pas "bot"/"crawl"/"spider". */
+    public function testDetectsStealthBotUserAgents(): void
+    {
+        $this->assertTrue($this->service->isBot(
+            'Mozilla/5.0 (compatible; GoogleDocs; apps-spreadsheets; +http://docs.google.com)'
+        ));
+        $this->assertTrue($this->service->isBot('Chrome Privacy Preserving Prefetch Proxy'));
+        $this->assertTrue($this->service->isBot(
+            'Mozilla/5.0 (l9scan/2.0; +https://leakix.net)'
+        ));
+        $this->assertTrue($this->service->isBot(
+            'Hello from Palo Alto Networks, find out more about our scans in https://docs-cortex.paloaltonetworks.com/'
+        ));
+        $this->assertTrue($this->service->isBot(
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko; Google Web Preview) Chrome/141.0'
+        ));
+    }
+
+    /** Vérifie l'identification des bots spécifiques. */
+    public function testIdentifiesSpecificBots(): void
+    {
+        $this->assertSame('Google Docs', $this->service->identifyBot(
+            'Mozilla/5.0 (compatible; GoogleDocs; apps-spreadsheets; +http://docs.google.com)'
+        ));
+        $this->assertSame('Google Images', $this->service->identifyBot('Googlebot-Image/1.0'));
+        $this->assertSame('Google Other', $this->service->identifyBot(
+            'Mozilla/5.0 AppleWebKit/537.36 (compatible; GoogleOther) Chrome/141'
+        ));
+        $this->assertSame('UptimeRobot', $this->service->identifyBot(
+            'Mozilla/5.0+(compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)'
+        ));
+        $this->assertSame('Linkup', $this->service->identifyBot(
+            'LinkupBot/1.0 (LinkupBot for web indexing; https://linkup.so/bot; bot@linkup.so)'
+        ));
+        $this->assertSame('LeakIX', $this->service->identifyBot(
+            'Mozilla/5.0 (l9scan/2.0; +https://leakix.net)'
+        ));
+        $this->assertSame('Chrome Prefetch', $this->service->identifyBot(
+            'Chrome Privacy Preserving Prefetch Proxy'
+        ));
+    }
+
     /** Vérifie la détection des user-agents humains. */
     public function testDetectsHumanUserAgents(): void
     {
