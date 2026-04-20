@@ -63,18 +63,7 @@ class MagicLink extends Model
 
     public static function findByToken(string $token): ?self
     {
-        $hash = hash('sha256', $token);
-        $prefix = substr($hash, 0, 12);
-
-        $candidates = self::where('token_hash', 'like', "{$prefix}%")->get();
-
-        foreach ($candidates as $candidate) {
-            if (hash_equals($candidate->token_hash, $hash)) {
-                return $candidate;
-            }
-        }
-
-        return null;
+        return self::where('token_hash', hash('sha256', $token))->first();
     }
 
     public static function hashEmail(string $email): string
