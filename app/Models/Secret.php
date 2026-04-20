@@ -140,7 +140,7 @@ class Secret extends Model
 
         return hash_equals(
             $this->creator_email_hash,
-            hash('sha256', strtolower(trim($email)))
+            MagicLink::hashEmail($email)
         );
     }
 }

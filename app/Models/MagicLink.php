@@ -79,6 +79,10 @@ class MagicLink extends Model
 
     public static function hashEmail(string $email): string
     {
-        return hash('sha256', strtolower(trim($email)));
+        return hash_hmac(
+            'sha256',
+            strtolower(trim($email)),
+            config('secrets.email_hash_pepper')
+        );
     }
 }
