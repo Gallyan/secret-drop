@@ -28,7 +28,7 @@ class ThrottleWithPow
         $decayMinutes = (int) $decayMinutes;
 
         $identifier = $this->getIdentifier($request);
-        $cacheKey = self::CACHE_PREFIX.$identifier.':'.$request->path();
+        $cacheKey = self::CACHE_PREFIX.$identifier.':'.($request->route()?->getName() ?? $request->path());
 
         $attempts = (int) Cache::get($cacheKey, 0);
 
