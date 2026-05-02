@@ -105,7 +105,7 @@
         @endphp
 
         {{-- ── Activité ────────────────────────────────────────────────── --}}
-        <section id="section-activity" aria-labelledby="h-activity" class="scroll-mt-32 mb-10">
+        <section id="section-activity" aria-labelledby="h-activity" class="scroll-mt-40 mb-10">
             <h2 id="h-activity" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_activity') }}</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
@@ -142,7 +142,7 @@
         </section>
 
         {{-- ── Composition ─────────────────────────────────────────────── --}}
-        <section id="section-composition" aria-labelledby="h-composition" class="scroll-mt-32 mb-10">
+        <section id="section-composition" aria-labelledby="h-composition" class="scroll-mt-40 mb-10">
             <h2 id="h-composition" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_composition') }}</h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -168,7 +168,7 @@
         </section>
 
         {{-- ── Volume & stockage ───────────────────────────────────────── --}}
-        <section id="section-volume" aria-labelledby="h-volume" class="scroll-mt-32 mb-10">
+        <section id="section-volume" aria-labelledby="h-volume" class="scroll-mt-40 mb-10">
             <h2 id="h-volume" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_volume') }}</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -179,7 +179,7 @@
         </section>
 
         {{-- ── Cycle de vie ────────────────────────────────────────────── --}}
-        <section id="section-lifecycle" aria-labelledby="h-lifecycle" class="scroll-mt-32 mb-10">
+        <section id="section-lifecycle" aria-labelledby="h-lifecycle" class="scroll-mt-40 mb-10">
             <h2 id="h-lifecycle" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_lifecycle') }}</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -214,7 +214,7 @@
         </section>
 
         {{-- ── Monitoring ──────────────────────────────────────────────── --}}
-        <section id="section-monitoring" aria-labelledby="h-monitoring" class="scroll-mt-32 mb-10">
+        <section id="section-monitoring" aria-labelledby="h-monitoring" class="scroll-mt-40 mb-10">
             <h2 id="h-monitoring" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.monitoring_title') }}</h2>
 
             @php
@@ -355,7 +355,7 @@
         </section>
 
         {{-- ── Audience ────────────────────────────────────────────────── --}}
-        <section id="section-audience" aria-labelledby="h-audience" class="scroll-mt-32">
+        <section id="section-audience" aria-labelledby="h-audience" class="scroll-mt-40">
             <h2 id="h-audience" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_audience') }}</h2>
 
             @php
