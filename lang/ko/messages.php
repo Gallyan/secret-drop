@@ -549,6 +549,14 @@ return [
     'val_days_min' => '일수는 최소 1이어야 합니다.',
     'val_days_max' => '일수는 30을 초과할 수 없습니다.',
 
+    // Dashboard sections
+    'superadmin_section_activity' => '활동',
+    'superadmin_section_composition' => '구성',
+    'superadmin_section_volume' => '용량 및 저장소',
+    'superadmin_section_lifecycle' => '라이프사이클',
+    'superadmin_section_audience' => '오디언스',
+    'superadmin_nav_label' => '이동',
+
     // Monitoring
     'monitoring_title' => '모니터링',
     'stat_errors_4xx' => '클라이언트 오류 (4xx)',

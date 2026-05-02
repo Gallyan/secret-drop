@@ -549,6 +549,14 @@ return [
     'val_days_min' => 'يجب أن يكون عدد الأيام 1 على الأقل.',
     'val_days_max' => 'لا يمكن أن يتجاوز عدد الأيام 30.',
 
+    // Dashboard sections
+    'superadmin_section_activity' => 'النشاط',
+    'superadmin_section_composition' => 'التوزيع',
+    'superadmin_section_volume' => 'الحجم والتخزين',
+    'superadmin_section_lifecycle' => 'دورة الحياة',
+    'superadmin_section_audience' => 'الجمهور',
+    'superadmin_nav_label' => 'الانتقال إلى',
+
     // Monitoring
     'monitoring_title' => 'المراقبة',
     'stat_errors_4xx' => 'أخطاء العميل (4xx)',

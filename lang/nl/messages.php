@@ -549,6 +549,14 @@ return [
     'val_days_min' => 'Het aantal dagen moet minstens 1 zijn.',
     'val_days_max' => 'Het aantal dagen mag niet meer dan 30 zijn.',
 
+    // Dashboard sections
+    'superadmin_section_activity' => 'Activiteit',
+    'superadmin_section_composition' => 'Samenstelling',
+    'superadmin_section_volume' => 'Volume & opslag',
+    'superadmin_section_lifecycle' => 'Levenscyclus',
+    'superadmin_section_audience' => 'Publiek',
+    'superadmin_nav_label' => 'Ga naar',
+
     // Monitoring
     'monitoring_title' => 'Monitoring',
     'stat_errors_4xx' => 'Clientfouten (4xx)',

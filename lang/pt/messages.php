@@ -549,6 +549,14 @@ return [
     'val_days_min' => 'O número de dias deve ser pelo menos 1.',
     'val_days_max' => 'O número de dias não pode exceder 30.',
 
+    // Dashboard sections
+    'superadmin_section_activity' => 'Atividade',
+    'superadmin_section_composition' => 'Composição',
+    'superadmin_section_volume' => 'Volume e armazenamento',
+    'superadmin_section_lifecycle' => 'Ciclo de vida',
+    'superadmin_section_audience' => 'Audiência',
+    'superadmin_nav_label' => 'Ir para',
+
     // Monitoring
     'monitoring_title' => 'Monitoring',
     'stat_errors_4xx' => 'Erros de cliente (4xx)',

@@ -549,6 +549,14 @@ return [
     'val_days_min' => '日数は1以上でなければなりません。',
     'val_days_max' => '日数は30を超えてはなりません。',
 
+    // Dashboard sections
+    'superadmin_section_activity' => 'アクティビティ',
+    'superadmin_section_composition' => '構成',
+    'superadmin_section_volume' => 'データ容量とストレージ',
+    'superadmin_section_lifecycle' => 'ライフサイクル',
+    'superadmin_section_audience' => 'オーディエンス',
+    'superadmin_nav_label' => '移動',
+
     // Monitoring
     'monitoring_title' => 'モニタリング',
     'stat_errors_4xx' => 'クライアントエラー (4xx)',
