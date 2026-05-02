@@ -550,11 +550,18 @@ return [
     'val_days_max' => '日数は30を超えてはなりません。',
 
     // Dashboard sections
-    'superadmin_section_activity' => 'アクティビティ',
-    'superadmin_section_composition' => '構成',
+    'superadmin_section_activity' => 'シークレットのアクティビティ',
+    'superadmin_section_composition' => '利用状況・種類・オプション',
     'superadmin_section_volume' => 'データ容量とストレージ',
-    'superadmin_section_lifecycle' => 'ライフサイクル',
-    'superadmin_section_audience' => 'オーディエンス',
+    'superadmin_section_lifecycle' => 'シークレットのライフサイクル',
+    'superadmin_section_monitoring' => 'エラーとパフォーマンス',
+    'superadmin_section_audience' => 'サイトの訪問数',
+    'superadmin_nav_activity' => 'アクティビティ',
+    'superadmin_nav_composition' => '利用状況',
+    'superadmin_nav_volume' => '容量',
+    'superadmin_nav_lifecycle' => 'ライフサイクル',
+    'superadmin_nav_monitoring' => 'パフォーマンス',
+    'superadmin_nav_audience' => '訪問',
     'superadmin_nav_label' => '移動',
 
     // Monitoring

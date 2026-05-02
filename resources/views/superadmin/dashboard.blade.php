@@ -47,12 +47,12 @@
             <ul class="flex items-center gap-1 overflow-x-auto whitespace-nowrap text-sm font-medium scrollbar-thin">
                 @php
                     $navSections = [
-                        'section-activity' => __('messages.superadmin_section_activity'),
-                        'section-composition' => __('messages.superadmin_section_composition'),
-                        'section-volume' => __('messages.superadmin_section_volume'),
-                        'section-lifecycle' => __('messages.superadmin_section_lifecycle'),
-                        'section-monitoring' => __('messages.monitoring_title'),
-                        'section-audience' => __('messages.superadmin_section_audience'),
+                        'section-activity' => __('messages.superadmin_nav_activity'),
+                        'section-composition' => __('messages.superadmin_nav_composition'),
+                        'section-volume' => __('messages.superadmin_nav_volume'),
+                        'section-lifecycle' => __('messages.superadmin_nav_lifecycle'),
+                        'section-monitoring' => __('messages.superadmin_nav_monitoring'),
+                        'section-audience' => __('messages.superadmin_nav_audience'),
                     ];
                 @endphp
                 @foreach($navSections as $id => $label)
@@ -171,10 +171,20 @@
         <section id="section-volume" aria-labelledby="h-volume" class="scroll-mt-40 mb-10">
             <h2 id="h-volume" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_volume') }}</h2>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <x-stat-card kpi="files_shared" :value="nfmt($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
                 <x-stat-card kpi="volume" :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
                 <x-stat-card kpi="disk_usage" :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
+                <x-stat-card :label="__('messages.stat_avg_secret_size')" :hint="__('messages.hint_avg_secret_size')" hintId="hintSize" hintPosition="end">
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="avg_size_text">{{ $avgSecretSize['text'] !== null ? $formatBytes($avgSecretSize['text']) : '-' }}</span>
+                        <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_text') }}</span>
+                    </div>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_size_file">{{ $avgSecretSize['file'] !== null ? $formatBytes($avgSecretSize['file']) : '-' }}</span>
+                        <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_file') }}</span>
+                    </div>
+                </x-stat-card>
             </div>
         </section>
 
@@ -215,7 +225,7 @@
 
         {{-- ── Monitoring ──────────────────────────────────────────────── --}}
         <section id="section-monitoring" aria-labelledby="h-monitoring" class="scroll-mt-40 mb-10">
-            <h2 id="h-monitoring" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.monitoring_title') }}</h2>
+            <h2 id="h-monitoring" class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ __('messages.superadmin_section_monitoring') }}</h2>
 
             @php
                 $fmtP95 = function (?float $ms): string {
@@ -228,22 +238,12 @@
                     return nfmt($ms / 1000, 1) . ' s';
                 };
             @endphp
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
                 <x-stat-card kpi="errors_4xx" :value="nfmt($errorStats['total_4xx'])" :label="__('messages.stat_errors_4xx')" :hint="__('messages.hint_errors_4xx')" hintId="hint4xx" />
                 <x-stat-card kpi="errors_5xx" :value="nfmt($errorStats['total_5xx'])" :label="__('messages.stat_errors_5xx')" :hint="__('messages.hint_errors_5xx')" hintId="hint5xx" />
                 <x-stat-card kpi="errors_422" :value="nfmt($errorStats['by_code'][422] ?? 0)" :label="__('messages.stat_errors_422')" :hint="__('messages.hint_errors_422')" hintId="hint422" />
                 <x-stat-card kpi="errors_429" :value="nfmt($errorStats['by_code'][429] ?? 0)" :label="__('messages.stat_errors_429')" :hint="__('messages.hint_errors_429')" hintId="hint429" />
                 <x-stat-card kpi="response_p95" :value="$fmtP95($responseTime['p95'])" :label="__('messages.stat_response_p95')" :hint="__('messages.hint_response_p95')" hintId="hintP95" hintPosition="end" />
-                <x-stat-card :label="__('messages.stat_avg_secret_size')" :hint="__('messages.hint_avg_secret_size')" hintId="hintSize" hintPosition="end">
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="avg_size_text">{{ $avgSecretSize['text'] !== null ? $formatBytes($avgSecretSize['text']) : '-' }}</span>
-                        <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_text') }}</span>
-                    </div>
-                    <div class="flex items-baseline gap-2 mt-1">
-                        <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_size_file">{{ $avgSecretSize['file'] !== null ? $formatBytes($avgSecretSize['file']) : '-' }}</span>
-                        <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_file') }}</span>
-                    </div>
-                </x-stat-card>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

@@ -550,11 +550,18 @@ return [
     'val_days_max' => 'لا يمكن أن يتجاوز عدد الأيام 30.',
 
     // Dashboard sections
-    'superadmin_section_activity' => 'النشاط',
-    'superadmin_section_composition' => 'التوزيع',
+    'superadmin_section_activity' => 'نشاط الأسرار',
+    'superadmin_section_composition' => 'الاستخدامات والأنواع والخيارات',
     'superadmin_section_volume' => 'الحجم والتخزين',
-    'superadmin_section_lifecycle' => 'دورة الحياة',
-    'superadmin_section_audience' => 'الجمهور',
+    'superadmin_section_lifecycle' => 'دورة حياة الأسرار',
+    'superadmin_section_monitoring' => 'الأخطاء والأداء',
+    'superadmin_section_audience' => 'زيارات الموقع',
+    'superadmin_nav_activity' => 'النشاط',
+    'superadmin_nav_composition' => 'الاستخدامات',
+    'superadmin_nav_volume' => 'الحجم',
+    'superadmin_nav_lifecycle' => 'دورة الحياة',
+    'superadmin_nav_monitoring' => 'الأداء',
+    'superadmin_nav_audience' => 'الزيارات',
     'superadmin_nav_label' => 'الانتقال إلى',
 
     // Monitoring

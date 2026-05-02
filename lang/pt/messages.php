@@ -550,11 +550,18 @@ return [
     'val_days_max' => 'O número de dias não pode exceder 30.',
 
     // Dashboard sections
-    'superadmin_section_activity' => 'Atividade',
-    'superadmin_section_composition' => 'Composição',
+    'superadmin_section_activity' => 'Atividade dos segredos',
+    'superadmin_section_composition' => 'Usos, tipos e opções',
     'superadmin_section_volume' => 'Volume e armazenamento',
-    'superadmin_section_lifecycle' => 'Ciclo de vida',
-    'superadmin_section_audience' => 'Audiência',
+    'superadmin_section_lifecycle' => 'Ciclo de vida dos segredos',
+    'superadmin_section_monitoring' => 'Erros e desempenho',
+    'superadmin_section_audience' => 'Visitas ao site',
+    'superadmin_nav_activity' => 'Atividade',
+    'superadmin_nav_composition' => 'Usos',
+    'superadmin_nav_volume' => 'Volume',
+    'superadmin_nav_lifecycle' => 'Ciclo de vida',
+    'superadmin_nav_monitoring' => 'Desempenho',
+    'superadmin_nav_audience' => 'Visitas',
     'superadmin_nav_label' => 'Ir para',
 
     // Monitoring

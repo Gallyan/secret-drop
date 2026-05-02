@@ -550,11 +550,18 @@ return [
     'val_days_max' => 'Het aantal dagen mag niet meer dan 30 zijn.',
 
     // Dashboard sections
-    'superadmin_section_activity' => 'Activiteit',
-    'superadmin_section_composition' => 'Samenstelling',
+    'superadmin_section_activity' => 'Activiteit van geheimen',
+    'superadmin_section_composition' => 'Gebruik, typen & opties',
     'superadmin_section_volume' => 'Volume & opslag',
-    'superadmin_section_lifecycle' => 'Levenscyclus',
-    'superadmin_section_audience' => 'Publiek',
+    'superadmin_section_lifecycle' => 'Levenscyclus van geheimen',
+    'superadmin_section_monitoring' => 'Fouten & prestaties',
+    'superadmin_section_audience' => 'Sitebezoeken',
+    'superadmin_nav_activity' => 'Activiteit',
+    'superadmin_nav_composition' => 'Gebruik',
+    'superadmin_nav_volume' => 'Volume',
+    'superadmin_nav_lifecycle' => 'Levenscyclus',
+    'superadmin_nav_monitoring' => 'Prestaties',
+    'superadmin_nav_audience' => 'Bezoeken',
     'superadmin_nav_label' => 'Ga naar',
 
     // Monitoring

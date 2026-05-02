@@ -549,11 +549,18 @@ return [
     'val_days_max' => 'The number of days cannot exceed 30.',
 
     // Dashboard sections
-    'superadmin_section_activity' => 'Activity',
-    'superadmin_section_composition' => 'Composition',
+    'superadmin_section_activity' => 'Secrets activity',
+    'superadmin_section_composition' => 'Usage, types & options',
     'superadmin_section_volume' => 'Volume & storage',
-    'superadmin_section_lifecycle' => 'Lifecycle',
-    'superadmin_section_audience' => 'Audience',
+    'superadmin_section_lifecycle' => 'Secrets lifecycle',
+    'superadmin_section_monitoring' => 'Errors & performance',
+    'superadmin_section_audience' => 'Site visits',
+    'superadmin_nav_activity' => 'Activity',
+    'superadmin_nav_composition' => 'Usage',
+    'superadmin_nav_volume' => 'Volume',
+    'superadmin_nav_lifecycle' => 'Lifecycle',
+    'superadmin_nav_monitoring' => 'Performance',
+    'superadmin_nav_audience' => 'Visits',
     'superadmin_nav_label' => 'Jump to',
 
     // Monitoring
