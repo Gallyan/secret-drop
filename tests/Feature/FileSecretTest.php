@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\TokenService;
@@ -46,7 +47,7 @@ class FileSecretTest extends TestCase
         $secret = Secret::where('token', $token)->first();
 
         $this->assertNotNull($secret);
-        $this->assertEquals('file', $secret->type);
+        $this->assertEquals(SecretType::File, $secret->type);
         // filename/mime/size are encrypted in the file payload, not stored in DB
         $this->assertNotNull($secret->file_path);
         $this->assertTrue($this->storage->exists($secret->file_path));

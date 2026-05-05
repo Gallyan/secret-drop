@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\SecretType;
 use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
@@ -48,7 +49,7 @@ class CleanExpiredSecretsCommand extends Command
                     $expiredUnread++;
                 }
 
-                if ($secret->type === 'file' && $secret->file_path) {
+                if ($secret->type === SecretType::File && $secret->file_path) {
                     if ($storage->exists($secret->file_path)) {
                         if (! $dryRun) {
                             $storage->delete($secret->file_path);

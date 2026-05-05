@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use Tests\TestCase;
 
@@ -57,7 +58,7 @@ class CreateSecretTest extends TestCase
 
         $secret = Secret::where('token', $token)->first();
         $this->assertNotNull($secret);
-        $this->assertEquals('text', $secret->type);
+        $this->assertEquals(SecretType::Text, $secret->type);
         $this->assertEquals(self::VALID_CIPHERTEXT, $secret->ciphertext);
         $this->assertEquals(1, $secret->max_views);
         $this->assertNotNull($secret->expire_at);

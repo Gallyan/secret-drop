@@ -11,7 +11,7 @@
 |  │ PK  id                 uuid                                      │
 |  │ UQ  token              varchar(32)                               │
 |  │ UQ  admin_token_hash   varchar(64)                               │
-|  │     type               enum(text,file)                           │
+|  │     type               varchar(10)  (text|file, validé app)      │
 |  │     cipher_meta        json                                      │
 |  │     ciphertext         longtext          NULL                    │
 |  │     file_path          varchar           NULL                    │
@@ -82,7 +82,7 @@ return new class () extends Migration {
             $table->string('token', 32)->unique();
             $table->string('admin_token_hash', 64)->unique();
 
-            $table->enum('type', ['text', 'file']);
+            $table->string('type', 10);
             $table->json('cipher_meta');
             $table->longText('ciphertext')->nullable();
             $table->string('file_path')->nullable();

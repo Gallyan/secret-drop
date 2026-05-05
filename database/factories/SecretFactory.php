@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class SecretFactory extends Factory
         return [
             'token' => Str::random(32),
             'admin_token_hash' => hash('sha256', Str::random(32)),
-            'type' => 'text',
+            'type' => SecretType::Text,
             'cipher_meta' => [
                 'v' => 1,
                 'iv' => base64_encode(random_bytes(12)),
@@ -35,7 +36,7 @@ class SecretFactory extends Factory
     public function text(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'text',
+            'type' => SecretType::Text,
             'ciphertext' => base64_encode(random_bytes(64)),
             'file_path' => null,
         ]);
@@ -44,7 +45,7 @@ class SecretFactory extends Factory
     public function file(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'file',
+            'type' => SecretType::File,
             'ciphertext' => null,
             'file_path' => 'secrets/'.Str::random(40).'.enc',
         ]);

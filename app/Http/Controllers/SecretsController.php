@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecretType;
 use App\Http\Requests\StoreSecretRequest;
 use App\Models\MagicLink;
 use App\Models\Secret;
@@ -93,7 +94,7 @@ class SecretsController extends Controller
      */
     private function trackCreationStats(Secret $secret, array $validated, ?int $fileSize = null): void
     {
-        if ($secret->type === 'text') {
+        if ($secret->type === SecretType::Text) {
             $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
         } else {
             $this->stats->increment(StatsService::SECRETS_CREATED_FILE);
@@ -139,7 +140,7 @@ class SecretsController extends Controller
             'will_be_destroyed' => $willBeDestroyed,
         ];
 
-        if ($secret->type === 'text') {
+        if ($secret->type === SecretType::Text) {
             $data['ciphertext'] = $secret->ciphertext;
         }
         // For files, metadata (filename, mime, size) is encrypted in the payload
@@ -163,7 +164,7 @@ class SecretsController extends Controller
 
             $maxViewsReached = false;
             if ($secret->shouldBeDestroyed()) {
-                if ($secret->type === 'file' && $secret->file_path) {
+                if ($secret->type === SecretType::File && $secret->file_path) {
                     $this->storage->delete($secret->file_path);
                 }
                 $secret->destroyContent();
@@ -191,7 +192,7 @@ class SecretsController extends Controller
     {
         $secret = Secret::where('token', $token)->first();
 
-        if (! $secret || $secret->type !== 'file' || ! $secret->isAccessible()) {
+        if (! $secret || $secret->type !== SecretType::File || ! $secret->isAccessible()) {
             return response()->view('secrets.not-found', [], 404);
         }
 
@@ -218,7 +219,7 @@ class SecretsController extends Controller
             return response()->json(['error' => 'already_consumed'], 409);
         }
 
-        if ($secret->type === 'file' && $secret->file_path) {
+        if ($secret->type === SecretType::File && $secret->file_path) {
             $this->storage->delete($secret->file_path);
         }
 

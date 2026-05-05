@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecretType;
 use App\Http\Requests\ExtendSecretRequest;
 use App\Http\Requests\RequestAdminAccessRequest;
 use App\Mail\MagicLinkMail;
@@ -194,7 +195,7 @@ class AdminController extends Controller
             return response()->json(['error' => 'already_consumed'], 409);
         }
 
-        if ($secret->type === 'file' && $secret->file_path) {
+        if ($secret->type === SecretType::File && $secret->file_path) {
             $this->storage->delete($secret->file_path);
         }
 

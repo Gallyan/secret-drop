@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -566,7 +567,7 @@ class StatsService
     public function getAverageSecretSize(?string $startDate = null): array
     {
         $textQuery = Secret::query()
-            ->where('type', 'text')
+            ->where('type', SecretType::Text)
             ->whereNotNull('ciphertext');
 
         if ($startDate) {

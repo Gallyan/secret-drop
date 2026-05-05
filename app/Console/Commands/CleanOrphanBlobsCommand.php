@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
@@ -30,7 +31,7 @@ class CleanOrphanBlobsCommand extends Command
         $this->info('Found '.count($files).' files in storage.');
 
         $validPaths = Secret::query()
-            ->where('type', 'file')
+            ->where('type', SecretType::File)
             ->whereNotNull('file_path')
             ->pluck('file_path')
             ->toArray();
