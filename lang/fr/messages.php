@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Questions fréquentes',
     'faq_meta_title' => 'FAQ — Partage chiffré de secrets et fichiers',
     'faq_intro' => 'Tout ce que vous devez savoir avant de confier un secret.',
-    'faq_cta' => 'Créer un secret',
+    'faq_cta' => 'Protéger mon premier secret',
 
     // Usage
     'faq_q1' => 'Secret Drop est-il gratuit ?',
@@ -269,7 +269,7 @@ return [
     'use_cases_tip1' => 'Expiration courte (1h ou 1j) pour les informations très sensibles.',
     'use_cases_tip2' => 'Limite de lecture à 1 pour garantir que le secret ne peut être lu qu\'une seule fois.',
     'use_cases_tip3' => 'Mode séparé : le lien par un canal, la clé par un autre.',
-    'use_cases_cta' => 'Essayer maintenant',
+    'use_cases_cta' => 'Sécuriser mes échanges',
     'use_cases_see_how' => 'Comment fonctionne le chiffrement ?',
 
     // Legal page

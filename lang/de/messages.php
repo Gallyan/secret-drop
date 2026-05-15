@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Häufig gestellte Fragen',
     'faq_meta_title' => 'FAQ — Verschlüsselter Austausch von Geheimnissen und Dateien',
     'faq_intro' => 'Alles, was Sie wissen müssen, bevor Sie uns ein Geheimnis anvertrauen.',
-    'faq_cta' => 'Geheimnis erstellen',
+    'faq_cta' => 'Mein erstes Geheimnis schützen',
     'faq_q1' => 'Ist Secret Drop kostenlos?',
     'faq_a1' => 'Ja, vollständig. Kein Konto, kein Abonnement, keine versteckten Kosten.',
     'faq_q2' => 'Brauche ich ein Konto?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Verwenden Sie eine kurze Ablaufzeit (1 Stunde oder 1 Tag) für hochsensible Informationen.',
     'use_cases_tip2' => 'Aktivieren Sie das Leselimit auf 1, um sicherzustellen, dass das Geheimnis nur einmal gelesen werden kann.',
     'use_cases_tip3' => 'Für maximale Sicherheit verwenden Sie den geteilten Modus und übermitteln den Schlüssel über einen anderen Kanal.',
-    'use_cases_cta' => 'Jetzt ausprobieren',
+    'use_cases_cta' => 'Meinen Austausch sichern',
     'use_cases_see_how' => 'Wie funktioniert die Verschlüsselung?',
 
     // Legal page
