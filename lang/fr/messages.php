@@ -5,7 +5,7 @@ return [
     'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Gratuit et open source.',
     'home_title' => 'Partagez vos secrets en toute sécurité',
     'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
-    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien qui s\'autodétruit. Chiffré dans votre navigateur, le serveur ne voit jamais le contenu.',
+    'home_meta_description' => 'Partagez mot de passe, clé API ou fichier confidentiel via un lien qui s\'autodétruit. Chiffré côté navigateur, le serveur ne voit jamais le contenu.',
     'home_answer_target' => 'Secret Drop chiffre vos mots de passe et fichiers confidentiels dans votre navigateur avant tout envoi. Le serveur ne stocke que des données illisibles et ne peut jamais accéder au contenu. Les secrets s\'autodétruisent après lecture. Gratuit, sans compte, sans traceur.',
     'home_view_source' => 'Voir le code source',
 

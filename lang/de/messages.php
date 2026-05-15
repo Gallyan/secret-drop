@@ -5,7 +5,7 @@ return [
     'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Kostenlos und Open Source.',
     'home_title' => 'Geheimnisse sicher teilen mit Zero-Knowledge-Verschlüsselung',
     'home_hook' => 'Schluss mit Passwörtern im Klartext.',
-    'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen selbstzerstörenden Link. In Ihrem Browser verschlüsselt — der Server sieht den Inhalt nie.',
+    'home_meta_description' => 'Teilen Sie Passwort, API-Schlüssel oder vertrauliche Datei via selbstzerstörenden Link. Im Browser verschlüsselt — der Server sieht nichts.',
     'home_answer_target' => 'Secret Drop verschlüsselt Ihre Passwörter und vertraulichen Dateien in Ihrem Browser, bevor irgendetwas gesendet wird. Der Server speichert nur unlesbare Daten und kann niemals auf den Inhalt zugreifen. Geheimnisse zerstören sich nach dem Lesen selbst. Kostenlos, ohne Konto, ohne Tracker.',
     'home_view_source' => 'Quellcode ansehen',
 
