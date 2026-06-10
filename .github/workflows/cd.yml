@@ -10,6 +10,8 @@
 #   - deploy dans le groupe www-data (sudo usermod -aG www-data deploy)
 #   - Projet : chown www-data:www-data, chmod 775/664, SGID sur les répertoires
 #   - PHP-FPM : UMask=0002 via systemd override
+#   - sudoers : deploy autorisé à `systemctl reload php8.4-fpm` sans mot de passe
+#     (purge l'OPcache après déploiement, sinon workers FPM en erreur 503)
 #
 # Secrets GitHub requis (Settings > Secrets and variables > Actions) :
 #   - SSH_HOST : adresse IP ou domaine du serveur
@@ -96,3 +98,5 @@ jobs:
             php artisan optimize
 
             php artisan up
+
+            sudo systemctl reload php8.4-fpm
