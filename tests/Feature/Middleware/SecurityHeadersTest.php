@@ -217,4 +217,51 @@ class SecurityHeadersTest extends TestCase
 
         $this->assertEquals('same-origin', $response->headers->get('Cross-Origin-Opener-Policy'));
     }
+
+    /** Vérifie la présence du header Cross-Origin-Resource-Policy. */
+    public function testSetsCorpHeader(): void
+    {
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('same-origin', $response->headers->get('Cross-Origin-Resource-Policy'));
+    }
+
+    /** Vérifie la présence du header Cross-Origin-Embedder-Policy en production. */
+    public function testSetsCoepHeaderInProduction(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertEquals('require-corp', $response->headers->get('Cross-Origin-Embedder-Policy'));
+    }
+
+    /** Vérifie l'absence du COEP en local (scripts Vite cross-origin). */
+    public function testDoesNotSetCoepHeaderInLocal(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
+
+        $request = Request::create('/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+
+        $this->assertNull($response->headers->get('Cross-Origin-Embedder-Policy'));
+    }
+
+    /** Vérifie que le cookie XSRF-TOKEN lisible par JS n'est pas émis. */
+    public function testDoesNotSetXsrfTokenCookie(): void
+    {
+        $response = $this->get('/');
+
+        $cookieNames = array_map(
+            fn ($cookie) => $cookie->getName(),
+            $response->headers->getCookies()
+        );
+
+        $this->assertNotContains('XSRF-TOKEN', $cookieNames);
+    }
 }

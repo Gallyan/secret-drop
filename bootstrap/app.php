@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\NoCacheHeaders;
+use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\SanitizeRequestLogging;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
@@ -30,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(ForceHttps::class);
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);
+
+        $middleware->web(replace: [
+            \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class => PreventRequestForgery::class,
+        ]);
 
         $middleware->appendToGroup('web', TrackPageView::class);
         $middleware->appendToGroup('web', TrackHttpErrors::class);
