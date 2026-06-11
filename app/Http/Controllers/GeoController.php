@@ -73,6 +73,12 @@ class GeoController extends Controller
 
     public function securityTxt(): Response
     {
+        $signed = storage_path('app/security.txt.asc');
+
+        if (is_file($signed)) {
+            return response(file_get_contents($signed), 200, ['Content-Type' => 'text/plain']);
+        }
+
         $email = config('legal.contact_email', config('mail.from.address'));
         $canonical = url('/.well-known/security.txt');
         $expires = now()->addYear()->utc()->format('Y-m-d\TH:i:s\Z');

@@ -74,6 +74,42 @@ class GeoControllerTest extends TestCase
         $this->assertStringNotContains('EDITOR_NAME', $content);
     }
 
+    /** Sans fichier signé, security.txt est généré dynamiquement. */
+    public function testSecurityTxtFallsBackToDynamicContentWhenNoSignedFile(): void
+    {
+        $this->assertFileDoesNotExist(storage_path('app/security.txt.asc'));
+
+        $response = $this->get('/.well-known/security.txt');
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
+
+        $content = $response->getContent();
+
+        $this->assertStringContains('Contact: mailto:', $content);
+        $this->assertStringContains('Expires: ', $content);
+        $this->assertStringContains('Preferred-Languages: fr, en', $content);
+        $this->assertStringContains('Canonical: ', $content);
+    }
+
+    /** Le fichier signé storage/app/security.txt.asc est servi tel quel s'il existe. */
+    public function testSecurityTxtServesSignedFileWhenPresent(): void
+    {
+        $signedPath = storage_path('app/security.txt.asc');
+        $signedContent = "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA256\n\nContact: mailto:test@example.com\n-----BEGIN PGP SIGNATURE-----\nfake\n-----END PGP SIGNATURE-----\n";
+
+        file_put_contents($signedPath, $signedContent);
+
+        try {
+            $response = $this->get('/.well-known/security.txt');
+
+            $response->assertStatus(200);
+            $this->assertEquals($signedContent, $response->getContent());
+        } finally {
+            unlink($signedPath);
+        }
+    }
+
     private function assertStringContains(string $needle, string $haystack): void
     {
         $this->assertTrue(
