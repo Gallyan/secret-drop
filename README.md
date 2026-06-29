@@ -44,7 +44,7 @@ Laravel 13 · PHP 8.2+ · Alpine.js 3 (CSP build) · Tailwind CSS 4 · Vite · M
 ## Quick start
 
 ```bash
-git clone https://github.com/perceptron-systems/secret-drop.git
+git clone https://github.com/Gallyan/secret-drop.git
 cd secret-drop
 composer setup    # install deps, generate key, migrate, build
 composer dev      # start dev server
@@ -93,4 +93,4 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr) · © 2026
+Built by [Guillaume Orsal](https://www.orsal.fr) · [Source on GitHub](https://github.com/Gallyan/secret-drop) · © 2026

@@ -1,7 +1,7 @@
 /* TEAM */
 Developer: Guillaume Orsal
 Site: https://www.orsal.fr
-GitHub: https://github.com/perceptron-systems
+GitHub: https://github.com/Gallyan
 Location: France
 
 /* THANKS */
