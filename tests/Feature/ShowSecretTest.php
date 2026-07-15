@@ -368,7 +368,7 @@ class ShowSecretTest extends TestCase
 
         $this->postJson("/api/secrets/{$secret->token}/read");
 
-        Storage::disk('secrets')->assertMissing($filePath);
+        Storage::disk('secrets')->assertEmpty();
 
         $secret->delete();
     }
@@ -422,7 +422,7 @@ class ShowSecretTest extends TestCase
 
         $this->postJson("/api/secrets/{$adminToken}/revoke");
 
-        Storage::disk('secrets')->assertMissing($filePath);
+        Storage::disk('secrets')->assertEmpty();
 
         $secret->refresh();
         $this->assertNotNull($secret->revoked_at);

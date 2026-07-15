@@ -117,6 +117,8 @@ class SecurityHardeningTest extends TestCase
 
         $response->assertStatus(503)
             ->assertJson(['error' => 'service_unavailable']);
+
+        Storage::disk('secrets')->assertEmpty();
     }
 
     /** L'upload de fichier passe quand le quota n'est pas atteint. */
