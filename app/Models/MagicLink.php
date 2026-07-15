@@ -61,12 +61,12 @@ class MagicLink extends Model
         $this->save();
     }
 
-    public static function findByToken(string $token): ?self
+    public static function findByToken(#[\SensitiveParameter] string $token): ?self
     {
         return self::where('token_hash', hash('sha256', $token))->first();
     }
 
-    public static function hashEmail(string $email): string
+    public static function hashEmail(#[\SensitiveParameter] string $email): string
     {
         return hash_hmac(
             'sha256',

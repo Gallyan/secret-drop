@@ -22,7 +22,7 @@ class SecretStorageService
      * Store an encrypted file using streaming to avoid loading into memory.
      * The file content is already encrypted client-side, we only store the blob.
      */
-    public function store(string $token, UploadedFile $file): string
+    public function store(#[\SensitiveParameter] string $token, UploadedFile $file): string
     {
         $path = $this->buildPath($token);
 
@@ -44,7 +44,7 @@ class SecretStorageService
     /**
      * Check if an encrypted file exists.
      */
-    public function exists(string $path): bool
+    public function exists(#[\SensitiveParameter] string $path): bool
     {
         return $this->disk()->exists($path);
     }
@@ -52,7 +52,7 @@ class SecretStorageService
     /**
      * Get the size of an encrypted file in bytes.
      */
-    public function size(string $path): int
+    public function size(#[\SensitiveParameter] string $path): int
     {
         return $this->disk()->size($path);
     }
@@ -67,7 +67,7 @@ class SecretStorageService
      * - Cache-Control: no-store - Prevents caching of sensitive data
      * - X-Download-Options: noopen - IE: prevents direct open
      */
-    public function download(string $path): StreamedResponse
+    public function download(#[\SensitiveParameter] string $path): StreamedResponse
     {
         return $this->disk()->download(
             $path,
@@ -88,7 +88,7 @@ class SecretStorageService
      *
      * @return resource|null
      */
-    public function readStream(string $path)
+    public function readStream(#[\SensitiveParameter] string $path)
     {
         return $this->disk()->readStream($path);
     }
@@ -96,7 +96,7 @@ class SecretStorageService
     /**
      * Delete an encrypted file and clean up empty parent directory.
      */
-    public function delete(string $path): bool
+    public function delete(#[\SensitiveParameter] string $path): bool
     {
         if (! $this->exists($path)) {
             return false;
@@ -145,7 +145,7 @@ class SecretStorageService
      * Build the storage path for a secret file.
      * Partitions into subdirectories using first 2 chars of token.
      */
-    private function buildPath(string $token): string
+    private function buildPath(#[\SensitiveParameter] string $token): string
     {
         return substr($token, 0, 2).'/'.$token;
     }

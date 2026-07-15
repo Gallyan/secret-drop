@@ -14,7 +14,7 @@ class SuperAdminMagicLinkMail extends Mailable
     use SerializesModels;
 
     public function __construct(
-        public string $verifyUrl,
+        #[\SensitiveParameter] public string $verifyUrl,
     ) {
     }
 

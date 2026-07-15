@@ -52,7 +52,7 @@ class TokenService
      * Hash a token using SHA-256.
      * Used for storing magic link tokens securely.
      */
-    public function hashToken(string $token): string
+    public function hashToken(#[\SensitiveParameter] string $token): string
     {
         return hash('sha256', $token);
     }
@@ -61,7 +61,7 @@ class TokenService
      * Verify a plain token against its stored hash.
      * Uses timing-safe comparison to prevent timing attacks.
      */
-    public function verifyToken(string $plainToken, string $storedHash): bool
+    public function verifyToken(#[\SensitiveParameter] string $plainToken, #[\SensitiveParameter] string $storedHash): bool
     {
         return hash_equals($storedHash, $this->hashToken($plainToken));
     }

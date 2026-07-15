@@ -36,7 +36,7 @@ class ProofOfWorkService
         ];
     }
 
-    public function verify(string $token, string $nonce, string $identifier): bool
+    public function verify(#[\SensitiveParameter] string $token, string $nonce, string $identifier): bool
     {
         $cacheKey = self::CACHE_PREFIX.$token;
         $data = Cache::get($cacheKey);

@@ -122,12 +122,12 @@ class SecretsController extends Controller
         $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
     }
 
-    public function show(string $token): View
+    public function show(#[\SensitiveParameter] string $token): View
     {
         return view('secrets.show', ['token' => $token]);
     }
 
-    public function fetch(string $token): JsonResponse
+    public function fetch(#[\SensitiveParameter] string $token): JsonResponse
     {
         $secret = Secret::where('token', $token)->first();
 
@@ -152,7 +152,7 @@ class SecretsController extends Controller
         return response()->json($data);
     }
 
-    public function confirmRead(string $token): JsonResponse
+    public function confirmRead(#[\SensitiveParameter] string $token): JsonResponse
     {
         return DB::transaction(function () use ($token) {
             $secret = Secret::where('token', $token)->lockForUpdate()->first();
@@ -192,7 +192,7 @@ class SecretsController extends Controller
         });
     }
 
-    public function download(string $token): StreamedResponse|Response
+    public function download(#[\SensitiveParameter] string $token): StreamedResponse|Response
     {
         $secret = Secret::where('token', $token)->first();
 
@@ -207,7 +207,7 @@ class SecretsController extends Controller
         return $this->storage->download($secret->file_path);
     }
 
-    public function revoke(string $adminToken): JsonResponse
+    public function revoke(#[\SensitiveParameter] string $adminToken): JsonResponse
     {
         $secret = Secret::findByAdminToken($adminToken);
 

@@ -72,7 +72,7 @@ class SuperAdminController extends Controller
         return redirect()->route('superadmin.accessSent');
     }
 
-    public function verify(Request $request, string $locale, string $token): View|RedirectResponse
+    public function verify(Request $request, string $locale, #[\SensitiveParameter] string $token): View|RedirectResponse
     {
         $magicLink = MagicLink::findByToken($token);
 

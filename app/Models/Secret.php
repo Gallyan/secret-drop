@@ -111,7 +111,7 @@ class Secret extends Model
         $this->save();
     }
 
-    public static function findByAdminToken(string $adminToken): ?self
+    public static function findByAdminToken(#[\SensitiveParameter] string $adminToken): ?self
     {
         return self::where('admin_token_hash', hash('sha256', $adminToken))->first();
     }
@@ -121,7 +121,7 @@ class Secret extends Model
         return $this->creator_email_hash !== null;
     }
 
-    public function verifyCreatorEmail(string $email): bool
+    public function verifyCreatorEmail(#[\SensitiveParameter] string $email): bool
     {
         if ($this->creator_email_hash === null) {
             return false;
