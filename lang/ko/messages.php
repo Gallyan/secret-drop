@@ -323,6 +323,7 @@ return [
     'admin_read_count' => '조회 수',
     'admin_fetch_count' => '가져오기 수',
     'admin_fetch_count_hint' => '암호화된 콘텐츠가 다운로드된 횟수입니다. 조회 수를 초과하면 링크가 탈취되었을 수 있습니다.',
+    'poll_refresh_in' => ':seconds초 후 새로고침',
     'admin_first_read' => '첫 조회',
     'admin_mode' => '모드',
     'admin_limited_views' => '최대 :count회 조회',

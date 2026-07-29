@@ -213,6 +213,17 @@ class SuperAdminControllerTest extends TestCase
         $response->assertViewHas('stats');
     }
 
+    /** Vérifie que l'anneau de polling expose le template de son infobulle de décompte. */
+    public function testDashboardPollRingCarriesRefreshTitleTemplate(): void
+    {
+        $response = $this->withSession(['super_admin_verified' => true])
+            ->get('/fr/superadmin/dashboard');
+
+        $response->assertStatus(200);
+        $response->assertSee('data-title-template="'.__('messages.poll_refresh_in', [], 'fr').'"', false);
+        $response->assertSee('pollRingTitle');
+    }
+
     /** Vérifie que le logout détruit la session et redirige vers le login. */
     public function testLogoutClearsSession(): void
     {

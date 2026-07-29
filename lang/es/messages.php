@@ -323,6 +323,7 @@ return [
     'admin_read_count' => 'Contador de lecturas',
     'admin_fetch_count' => 'Contador de recuperaciones',
     'admin_fetch_count_hint' => 'Número de veces que se ha descargado el contenido cifrado. Si supera el número de lecturas, es posible que el enlace haya sido interceptado.',
+    'poll_refresh_in' => 'Actualización en :seconds s',
     'admin_first_read' => 'Primera lectura',
     'admin_mode' => 'Modo',
     'admin_limited_views' => '{1} :count lectura máx|[2,*] :count lecturas máx',

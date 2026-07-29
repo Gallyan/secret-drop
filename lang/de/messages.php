@@ -323,6 +323,7 @@ return [
     'admin_read_count' => 'Lesezähler',
     'admin_fetch_count' => 'Abrufzähler',
     'admin_fetch_count_hint' => 'Gibt an, wie oft der verschlüsselte Inhalt heruntergeladen wurde. Übersteigt dieser Wert den Lesezähler, wurde der Link möglicherweise abgefangen.',
+    'poll_refresh_in' => 'Aktualisierung in :seconds s',
     'admin_first_read' => 'Erste Lesung',
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count Ansicht max|[2,*] :count Ansichten max',

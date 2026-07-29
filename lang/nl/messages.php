@@ -323,6 +323,7 @@ return [
     'admin_read_count' => 'Leesteller',
     'admin_fetch_count' => 'Ophaalteller',
     'admin_fetch_count_hint' => 'Aantal keren dat de versleutelde inhoud is gedownload. Als dit hoger is dan de leesteller, is de link mogelijk onderschept.',
+    'poll_refresh_in' => 'Vernieuwing over :seconds s',
     'admin_first_read' => 'Eerste lezing',
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count weergave max|[2,*] :count weergaven max',

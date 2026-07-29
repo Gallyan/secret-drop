@@ -323,6 +323,7 @@ return [
     'admin_read_count' => '閲覧数',
     'admin_fetch_count' => '取得数',
     'admin_fetch_count_hint' => '暗号化されたコンテンツがダウンロードされた回数です。閲覧数を上回る場合、リンクが傍受された可能性があります。',
+    'poll_refresh_in' => ':seconds 秒後に更新',
     'admin_first_read' => '初回閲覧',
     'admin_mode' => 'モード',
     'admin_limited_views' => '最大:count回閲覧',

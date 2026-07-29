@@ -323,6 +323,7 @@ return [
     'admin_read_count' => 'Liczba odczytów',
     'admin_fetch_count' => 'Liczba pobrań',
     'admin_fetch_count_hint' => 'Liczba pobrań zaszyfrowanej treści. Jeśli przekracza liczbę odczytów, link mógł zostać przechwycony.',
+    'poll_refresh_in' => 'Odświeżenie za :seconds s',
     'admin_first_read' => 'Pierwszy odczyt',
     'admin_mode' => 'Tryb',
     'admin_limited_views' => '{1} :count wyświetlenie maks.|[2,*] :count wyświetleń maks.',

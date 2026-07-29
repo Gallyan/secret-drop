@@ -12,11 +12,23 @@ export function startRing(durationMs) {
         clearInterval(ringTimer);
     }
 
+    const svg = document.getElementById('pollRing');
+    const titleEl = document.getElementById('pollRingTitle');
+    const titleTemplate = svg ? svg.dataset.titleTemplate : '';
+
     const start = Date.now();
     const tick = () => {
         const elapsed = Date.now() - start;
         const progress = Math.min(elapsed / durationMs, 1);
         ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+
+        if (titleEl && titleTemplate) {
+            const remaining = Math.max(0, Math.ceil((durationMs - elapsed) / 1000));
+            const text = titleTemplate.replace(':seconds', String(remaining));
+            if (titleEl.textContent !== text) {
+                titleEl.textContent = text;
+            }
+        }
     };
 
     tick();
@@ -28,6 +40,12 @@ export function resetRing() {
     if (ring) {
         ring.style.strokeDashoffset = CIRCUMFERENCE;
     }
+
+    const titleEl = document.getElementById('pollRingTitle');
+    if (titleEl) {
+        titleEl.textContent = '';
+    }
+
     if (ringTimer) {
         clearInterval(ringTimer);
     }

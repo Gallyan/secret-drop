@@ -323,6 +323,7 @@ return [
     'admin_read_count' => 'القراءات',
     'admin_fetch_count' => 'الاستردادات',
     'admin_fetch_count_hint' => 'عدد مرات تحميل المحتوى المشفر. إذا تجاوز عدد القراءات، فقد يكون الرابط قد اعتُرض.',
+    'poll_refresh_in' => 'التحديث خلال :seconds ثانية',
     'admin_first_read' => 'القراءة الأولى',
     'admin_mode' => 'الوضع',
     'admin_limited_views' => '{1} قراءة واحدة كحد أقصى|[2,*] :count قراءات كحد أقصى',
