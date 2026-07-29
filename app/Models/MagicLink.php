@@ -22,6 +22,8 @@ class MagicLink extends Model
     use HasFactory;
     use HasUuids;
 
+    public const SUPER_ADMIN_EMAIL_HASH = 'superadmin';
+
     protected $fillable = [
         'email_hash',
         'token_hash',
@@ -48,6 +50,11 @@ class MagicLink extends Model
     public function isUsed(): bool
     {
         return $this->used_at !== null;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->email_hash === self::SUPER_ADMIN_EMAIL_HASH;
     }
 
     public function isValid(): bool

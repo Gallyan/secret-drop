@@ -86,6 +86,10 @@ class AdminController extends Controller
             return view('admin.invalid-link');
         }
 
+        if ($magicLink->isSuperAdmin()) {
+            return view('admin.invalid-link');
+        }
+
         if (! $magicLink->isValid()) {
             return view('admin.invalid-link');
         }

@@ -53,7 +53,7 @@ class SuperAdminController extends Controller
             $tokenData = $this->tokenService->generateMagicLinkToken();
 
             MagicLink::create([
-                'email_hash' => 'superadmin',
+                'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
                 'token_hash' => $tokenData['hash'],
                 'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
             ]);
@@ -76,7 +76,7 @@ class SuperAdminController extends Controller
     {
         $magicLink = MagicLink::findByToken($token);
 
-        if (! $magicLink || $magicLink->email_hash !== 'superadmin') {
+        if (! $magicLink || ! $magicLink->isSuperAdmin()) {
             return view('superadmin.invalid-link');
         }
 

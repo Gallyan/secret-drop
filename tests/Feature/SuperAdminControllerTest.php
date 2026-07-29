@@ -60,7 +60,7 @@ class SuperAdminControllerTest extends TestCase
         Mail::assertSent(\App\Mail\SuperAdminMagicLinkMail::class);
 
         $this->assertDatabaseHas('magic_links', [
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
         ]);
     }
 
@@ -82,7 +82,7 @@ class SuperAdminControllerTest extends TestCase
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
         MagicLink::create([
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
             'token_hash' => $tokenData['hash'],
             'expire_at' => now()->addMinutes(5),
         ]);
@@ -99,7 +99,7 @@ class SuperAdminControllerTest extends TestCase
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
         MagicLink::create([
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
             'token_hash' => $tokenData['hash'],
             'expire_at' => now()->addMinutes(5),
         ]);
@@ -115,7 +115,7 @@ class SuperAdminControllerTest extends TestCase
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
         MagicLink::create([
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
             'token_hash' => $tokenData['hash'],
             'expire_at' => now()->addMinutes(5),
         ]);
@@ -132,7 +132,7 @@ class SuperAdminControllerTest extends TestCase
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
         MagicLink::create([
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
             'token_hash' => $tokenData['hash'],
             'expire_at' => now()->addMinutes(5),
         ]);
@@ -167,7 +167,7 @@ class SuperAdminControllerTest extends TestCase
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
         MagicLink::create([
-            'email_hash' => 'superadmin',
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
             'token_hash' => $tokenData['hash'],
             'expire_at' => now()->subMinutes(1),
         ]);

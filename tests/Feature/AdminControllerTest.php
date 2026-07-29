@@ -205,6 +205,28 @@ class AdminControllerTest extends TestCase
         $response->assertViewIs('admin.invalid-link');
     }
 
+    /** Vérifie qu'un magic link superadmin est refusé sur admin.verify sans être consommé. */
+    public function testVerifyRejectsSuperAdminMagicLinkWithoutConsumingIt(): void
+    {
+        $tokenService = app(TokenService::class);
+        $tokenData = $tokenService->generateMagicLinkToken();
+
+        MagicLink::create([
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $response = $this->post("/fr/admin/verify/{$tokenData['token']}");
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.invalid-link');
+        $this->assertFalse(session()->has('admin_email_hash'));
+
+        $magicLink = MagicLink::findByToken($tokenData['token']);
+        $this->assertNull($magicLink->used_at);
+    }
+
     /** Vérifie que le dashboard redirige vers le login sans authentification. */
     public function testDashboardRequiresAuthentication(): void
     {
