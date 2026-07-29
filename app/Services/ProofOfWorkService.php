@@ -54,8 +54,8 @@ class ProofOfWorkService
             return false;
         }
 
-        // Validate nonce format: hex string, max 32 chars
-        if (! preg_match('/^[0-9a-f]{1,32}$/i', $nonce)) {
+        // Validate nonce format: even-length hex string (1 to 16 bytes), so hex2bin never warns
+        if (! preg_match('/^(?:[0-9a-f]{2}){1,16}$/i', $nonce)) {
             return false;
         }
 

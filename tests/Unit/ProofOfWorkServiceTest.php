@@ -113,4 +113,24 @@ class ProofOfWorkServiceTest extends TestCase
         // Empty nonce
         $this->assertFalse($this->pow->verify($result['token'], '', 'test-identifier'));
     }
+
+    /** Vérifie qu'un nonce de longueur impaire est rejeté sans warning hex2bin. */
+    public function test_verify_rejects_odd_length_nonce_without_warning(): void
+    {
+        $result = $this->pow->generate('test-identifier');
+
+        set_error_handler(function (int $errno, string $errstr): bool {
+            $this->fail("Unexpected PHP warning/notice: {$errstr}");
+        });
+
+        try {
+            $this->assertFalse($this->pow->verify($result['token'], 'abc', 'test-identifier'));
+            $this->assertFalse($this->pow->verify($result['token'], 'a', 'test-identifier'));
+            $this->assertFalse(
+                $this->pow->verify($result['token'], str_repeat('a', 31), 'test-identifier')
+            );
+        } finally {
+            restore_error_handler();
+        }
+    }
 }
