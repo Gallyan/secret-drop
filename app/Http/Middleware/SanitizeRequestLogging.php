@@ -20,8 +20,8 @@ class SanitizeRequestLogging
     private const SENSITIVE_ROUTE_PATTERNS = [
         '#^/s/[^/]+#',           // /s/{token} - secret view
         '#^/api/secrets/[^/]+#', // /api/secrets/{token} - API endpoints
-        '#^/admin/verify/[^/]+#', // /admin/verify/{token} - magic links
-        '#^/superadmin/verify/[^/]+#', // /superadmin/verify/{token}
+        '#^(?:/[a-z]{2})?/admin/verify/[^/]+#', // /{locale?}/admin/verify/{token} - magic links
+        '#^(?:/[a-z]{2})?/superadmin/verify/[^/]+#', // /{locale?}/superadmin/verify/{token}
     ];
 
     public function handle(Request $request, Closure $next): Response
