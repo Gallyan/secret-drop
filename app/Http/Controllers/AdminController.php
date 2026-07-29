@@ -154,6 +154,7 @@ class AdminController extends Controller
             'secrets' => $secrets->map(fn (Secret $secret) => [
                 'id' => $secret->id,
                 'read_count' => $secret->read_count,
+                'fetch_count' => $secret->fetch_count,
                 'max_views' => $secret->max_views,
                 'first_read_at' => $secret->first_read_at?->toIso8601String(),
                 'expire_at' => $secret->expire_at->toIso8601String(),

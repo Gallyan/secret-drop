@@ -321,6 +321,8 @@ return [
     'admin_created' => 'Created',
     'admin_expires' => 'Expires',
     'admin_read_count' => 'Read count',
+    'admin_fetch_count' => 'Retrieval count',
+    'admin_fetch_count_hint' => 'Number of times the encrypted content was downloaded. If it exceeds the read count, the link may have been intercepted.',
     'admin_first_read' => 'First read',
     'admin_mode' => 'Mode',
     'admin_limited_views' => '{1} :count view max|[2,*] :count views max',

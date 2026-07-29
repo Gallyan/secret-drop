@@ -321,6 +321,8 @@ return [
     'admin_created' => 'Creato',
     'admin_expires' => 'Scade',
     'admin_read_count' => 'Contatore letture',
+    'admin_fetch_count' => 'Contatore recuperi',
+    'admin_fetch_count_hint' => 'Numero di volte in cui il contenuto crittografato è stato scaricato. Se supera il numero di letture, il link potrebbe essere stato intercettato.',
     'admin_first_read' => 'Prima lettura',
     'admin_mode' => 'Modalità',
     'admin_limited_views' => '{1} :count lettura max|[2,*] :count letture max',

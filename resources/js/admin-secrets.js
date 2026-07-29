@@ -225,6 +225,27 @@ export default () => ({
                 readsEl.innerHTML = html;
             }
 
+            // Update fetch count, with an amber alert when fetches exceed confirmed reads
+            const fetchesEl = card.querySelector('[data-poll-fetches]');
+            if (fetchesEl) {
+                fetchesEl.textContent = String(secret.fetch_count);
+
+                const suspicious = secret.fetch_count > secret.read_count;
+                fetchesEl.classList.toggle('text-amber-700', suspicious);
+                fetchesEl.classList.toggle('dark:text-amber-300', suspicious);
+                fetchesEl.classList.toggle('text-gray-900', !suspicious);
+                fetchesEl.classList.toggle('dark:text-white', !suspicious);
+
+                const tileEl = fetchesEl.closest('[data-poll-fetches-tile]');
+                if (tileEl) {
+                    if (suspicious) {
+                        tileEl.title = tileEl.dataset.fetchHint;
+                    } else {
+                        tileEl.removeAttribute('title');
+                    }
+                }
+            }
+
             // Update first_read_at
             const firstReadEl = card.querySelector('[data-poll-first-read]');
             const firstReadValueEl = card.querySelector('[data-poll-first-read-value] [data-utc]');

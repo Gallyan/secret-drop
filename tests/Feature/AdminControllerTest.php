@@ -367,7 +367,7 @@ class AdminControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'secrets' => [
-                ['id', 'read_count', 'max_views', 'first_read_at', 'expire_at', 'is_revoked', 'is_expired', 'has_reached_max_views', 'is_accessible'],
+                ['id', 'read_count', 'fetch_count', 'max_views', 'first_read_at', 'expire_at', 'is_revoked', 'is_expired', 'has_reached_max_views', 'is_accessible'],
             ],
         ]);
 
@@ -416,6 +416,28 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($data['has_reached_max_views']);
         $this->assertFalse($data['is_accessible']);
         $this->assertNotNull($data['first_read_at']);
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le poll expose fetch_count. */
+    public function testPollExposesFetchCount(): void
+    {
+        $emailHash = MagicLink::hashEmail('test@example.com');
+        $secret = $this->createSecretWithEmail('test@example.com');
+
+        $secret->recordFetch();
+
+        $response = $this->withSession([
+            'admin_email_hash' => $emailHash,
+            'admin_expires_at' => now()->addMinutes(30)->timestamp,
+        ])->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertStatus(200);
+
+        $data = $response->json('secrets.0');
+        $this->assertEquals(1, $data['fetch_count']);
+        $this->assertEquals(0, $data['read_count']);
 
         $secret->delete();
     }

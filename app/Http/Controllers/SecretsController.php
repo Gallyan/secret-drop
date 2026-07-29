@@ -145,6 +145,8 @@ class SecretsController extends Controller
         ];
 
         if ($secret->type === 'text') {
+            // The ciphertext leaves the server here: count it as a fetch
+            $secret->recordFetch();
             $data['ciphertext'] = $secret->ciphertext;
         }
         // For files, metadata (filename, mime, size) is encrypted in the payload
@@ -203,6 +205,9 @@ class SecretsController extends Controller
         if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
             return response()->view('secrets.not-found', [], 404);
         }
+
+        // The encrypted file leaves the server here: count it as a fetch
+        $secret->recordFetch();
 
         return $this->storage->download($secret->file_path);
     }

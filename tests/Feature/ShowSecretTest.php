@@ -193,6 +193,94 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le fetch d'un secret texte incrémente fetch_count sans toucher read_count. */
+    public function testApiFetchIncrementsFetchCountForTextSecret(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'fetched',
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
+        $secret->refresh();
+        $this->assertEquals(1, $secret->fetch_count);
+        $this->assertEquals(0, $secret->read_count);
+
+        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
+        $secret->refresh();
+        $this->assertEquals(2, $secret->fetch_count);
+        $this->assertEquals(0, $secret->read_count);
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le fetch d'un secret fichier n'incrémente pas fetch_count. */
+    public function testApiFetchDoesNotIncrementFetchCountForFileSecret(): void
+    {
+        $secret = Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
+            'type' => 'file',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'file_path' => 'secrets/test',
+            'expire_at' => now()->addDay(),
+        ]);
+
+        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
+
+        $secret->refresh();
+        $this->assertEquals(0, $secret->fetch_count);
+
+        $secret->delete();
+    }
+
+    /** Vérifie qu'un secret inaccessible retourne 404 sans incrémenter fetch_count. */
+    public function testApiFetchDoesNotIncrementFetchCountForInaccessibleSecret(): void
+    {
+        $revoked = $this->createInaccessibleSecret([
+            'expire_at' => now()->addDay(),
+            'revoked_at' => now(),
+        ]);
+
+        $expired = $this->createInaccessibleSecret([
+            'expire_at' => now()->subHour(),
+        ]);
+
+        $consumed = $this->createInaccessibleSecret([
+            'expire_at' => now()->addDay(),
+            'max_views' => 1,
+            'read_count' => 1,
+        ]);
+
+        foreach ([$revoked, $expired, $consumed] as $secret) {
+            $this->getJson("/api/secrets/{$secret->token}")->assertStatus(404);
+
+            $secret->refresh();
+            $this->assertEquals(0, $secret->fetch_count);
+
+            $secret->delete();
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
+    private function createInaccessibleSecret(array $attributes): Secret
+    {
+        return Secret::create([
+            'token' => $this->tokenService->generatePublicToken(),
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
+            'type' => 'text',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'ciphertext' => 'inaccessible',
+            ...$attributes,
+        ]);
+    }
+
     /** Vérifie que la confirmation de lecture incrémente le compteur plusieurs fois. */
     public function testApiConfirmReadIncrementsReadCountMultipleTimes(): void
     {

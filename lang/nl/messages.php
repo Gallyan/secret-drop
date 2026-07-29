@@ -321,6 +321,8 @@ return [
     'admin_created' => 'Aangemaakt',
     'admin_expires' => 'Verloopt',
     'admin_read_count' => 'Leesteller',
+    'admin_fetch_count' => 'Ophaalteller',
+    'admin_fetch_count_hint' => 'Aantal keren dat de versleutelde inhoud is gedownload. Als dit hoger is dan de leesteller, is de link mogelijk onderschept.',
     'admin_first_read' => 'Eerste lezing',
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count weergave max|[2,*] :count weergaven max',

@@ -68,6 +68,17 @@
                         @endif
                     </p>
                 </div>
+                <div
+                    data-poll-fetches-tile
+                    data-fetch-hint="{{ __('messages.admin_fetch_count_hint') }}"
+                    @if($secret->fetch_count > $secret->read_count) title="{{ __('messages.admin_fetch_count_hint') }}" @endif
+                    class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-xl"
+                >
+                    <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_fetch_count') }}</p>
+                    <p data-poll-fetches class="text-sm font-medium {{ $secret->fetch_count > $secret->read_count ? 'text-amber-700 dark:text-amber-300' : 'text-gray-900 dark:text-white' }}">
+                        {{ $secret->fetch_count }}
+                    </p>
+                </div>
                 <div data-poll-first-read class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-xl {{ $secret->first_read_at ? '' : 'hidden' }}">
                     <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_first_read') }}</p>
                     <p data-poll-first-read-value class="text-sm font-medium text-gray-900 dark:text-white"><span data-utc="{{ $secret->first_read_at?->toIso8601String() }}"></span></p>

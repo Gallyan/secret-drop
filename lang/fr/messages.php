@@ -329,6 +329,8 @@ return [
     'admin_created' => 'Créé',
     'admin_expires' => 'Expire',
     'admin_read_count' => 'Lectures',
+    'admin_fetch_count' => 'Récupérations',
+    'admin_fetch_count_hint' => 'Nombre de fois où le contenu chiffré a été téléchargé. S\'il dépasse le nombre de lectures, le lien a peut-être été intercepté.',
     'admin_first_read' => 'Première lecture',
     'admin_mode' => 'Mode',
     'admin_limited_views' => '{1} :count lecture max|[2,*] :count lectures max',

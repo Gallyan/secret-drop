@@ -111,6 +111,45 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie que le téléchargement incrémente fetch_count sans toucher read_count. */
+    public function testDownloadIncrementsFetchCount(): void
+    {
+        $secret = $this->createFileSecret();
+
+        $this->get("/s/{$secret->token}/download")->assertStatus(200);
+
+        $secret->refresh();
+        $this->assertEquals(1, $secret->fetch_count);
+        $this->assertEquals(0, $secret->read_count);
+
+        $this->cleanup($secret);
+    }
+
+    /** Vérifie qu'un téléchargement refusé n'incrémente pas fetch_count. */
+    public function testDownloadDoesNotIncrementFetchCountForRevokedSecret(): void
+    {
+        $token = $this->tokenService->generatePublicToken();
+        $file = UploadedFile::fake()->create('test.bin', 256);
+        $this->storage->store($token, $file);
+
+        $secret = Secret::create([
+            'token' => $token,
+            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
+            'type' => 'file',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'file_path' => $token,
+            'expire_at' => now()->addDay(),
+            'revoked_at' => now(),
+        ]);
+
+        $this->get("/s/{$secret->token}/download")->assertStatus(404);
+
+        $secret->refresh();
+        $this->assertEquals(0, $secret->fetch_count);
+
+        $this->cleanup($secret);
+    }
+
     /** Vérifie que le download retourne 404 pour un secret texte. */
     public function testDownloadReturns404ForTextSecret(): void
     {

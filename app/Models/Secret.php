@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $file_path
  * @property int|null $max_views
  * @property int $read_count
+ * @property int $fetch_count
  * @property Carbon|null $first_read_at
  * @property Carbon|null $last_read_at
  * @property Carbon|null $expire_at
@@ -93,6 +94,11 @@ class Secret extends Model
         }
 
         $this->save();
+    }
+
+    public function recordFetch(): void
+    {
+        self::withoutTimestamps(fn () => $this->increment('fetch_count'));
     }
 
     public function shouldBeDestroyed(): bool
