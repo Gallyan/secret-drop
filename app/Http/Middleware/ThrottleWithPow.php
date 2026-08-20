@@ -70,7 +70,7 @@ class ThrottleWithPow
 
     private function getIdentifier(Request $request): string
     {
-        return hash('sha256', $request->ip());
+        return hash('sha256', $request->ip() ?? 'unknown');
     }
 
     /**

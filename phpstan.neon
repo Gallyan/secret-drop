@@ -6,7 +6,7 @@ parameters:
     - app/
     - database/
     - routes/
-  level: 7
+  level: 8
 
   ignoreErrors:
     # Every upsert counter goes through CounterExpression::addTo(int), so no

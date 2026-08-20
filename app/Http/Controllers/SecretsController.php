@@ -204,14 +204,16 @@ class SecretsController extends Controller
             return response()->view('secrets.not-found', [], 404);
         }
 
-        if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
+        $filePath = $secret->file_path;
+
+        if (! $filePath || ! $this->storage->exists($filePath)) {
             return response()->view('secrets.not-found', [], 404);
         }
 
         // The encrypted file leaves the server here: count it as a fetch
         $secret->recordFetch();
 
-        return $this->storage->download($secret->file_path);
+        return $this->storage->download($filePath);
     }
 
     public function revoke(#[\SensitiveParameter] string $adminToken): JsonResponse

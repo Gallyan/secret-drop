@@ -85,7 +85,7 @@ if (! function_exists('locale_switcher_urls')) {
             $urls[$locale] = match (true) {
                 $routeName === 'home' => route('home', ['locale' => $locale]),
                 $routeName === 'page.show' => hreflang_page_url($locale) ?? route('home', ['locale' => $locale]),
-                $route && array_key_exists('locale', $route->parameters()) => route($routeName, array_merge($route->parameters(), ['locale' => $locale])),
+                $routeName !== null && array_key_exists('locale', $route->parameters()) => route($routeName, array_merge($route->parameters(), ['locale' => $locale])),
                 default => route('home', ['locale' => $locale]),
             };
         }

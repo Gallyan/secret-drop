@@ -442,6 +442,48 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /**
+     * expire_at is nullable in the schema, so the dashboard and the extend
+     * endpoint must cope with a secret that has no expiry date.
+     */
+    public function testExtendWorksOnSecretWithoutExpiryDate(): void
+    {
+        $emailHash = MagicLink::hashEmail('test@example.com');
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $secret->expire_at = null;
+        $secret->save();
+
+        $response = $this->withSession(['admin_email_hash' => $emailHash])
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
+                'hours' => 24,
+            ]);
+
+        $response->assertStatus(200)->assertJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertNotNull($secret->expire_at);
+        $this->assertTrue($secret->expire_at->gt(now()->addHours(23)));
+
+        $secret->delete();
+    }
+
+    /** Vérifie que la liste expose une date d'expiration nulle sans erreur. */
+    public function testSecretListHandlesNullExpiryDate(): void
+    {
+        $emailHash = MagicLink::hashEmail('test@example.com');
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $secret->expire_at = null;
+        $secret->save();
+
+        $response = $this->withSession(['admin_email_hash' => $emailHash])
+            ->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertStatus(200);
+        $this->assertNull($response->json('secrets.0.expire_at'));
+
+        $secret->delete();
+    }
+
     private function createSecretWithEmail(string $email): Secret
     {
         return Secret::create([

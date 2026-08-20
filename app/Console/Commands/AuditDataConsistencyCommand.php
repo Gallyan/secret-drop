@@ -77,8 +77,10 @@ class AuditDataConsistencyCommand extends Command
             ->where('type', SecretType::File)
             ->whereNotNull('file_path')
             ->each(function (Secret $secret) use ($storage, $fix, &$count) {
-                if (! $storage->exists($secret->file_path)) {
-                    $this->warn("  Missing file: {$secret->file_path} (secret {$secret->token})");
+                $filePath = $secret->file_path;
+
+                if ($filePath !== null && ! $storage->exists($filePath)) {
+                    $this->warn("  Missing file: {$filePath} (secret {$secret->token})");
                     $count++;
 
                     if ($fix) {

@@ -157,7 +157,7 @@ class AdminController extends Controller
                 'fetch_count' => $secret->fetch_count,
                 'max_views' => $secret->max_views,
                 'first_read_at' => $secret->first_read_at?->toIso8601String(),
-                'expire_at' => $secret->expire_at->toIso8601String(),
+                'expire_at' => $secret->expire_at?->toIso8601String(),
                 'is_revoked' => $secret->isRevoked(),
                 'is_expired' => $secret->isExpired(),
                 'has_reached_max_views' => $secret->hasReachedMaxViews(),
@@ -231,7 +231,9 @@ class AdminController extends Controller
             return response()->json(['error' => 'revoked'], 409);
         }
 
-        $baseDate = $secret->expire_at->isPast() ? now() : $secret->expire_at;
+        $baseDate = $secret->expire_at === null || $secret->expire_at->isPast()
+            ? now()
+            : $secret->expire_at;
         $secret->expire_at = $baseDate->addHours($request->validated('hours'));
         $secret->save();
 

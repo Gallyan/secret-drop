@@ -352,7 +352,7 @@ class StatsSeeder extends Seeder
                 $factory = $factory->file();
             }
 
-            if ($hasMaxViews) {
+            if ($maxViews !== null) {
                 $factory = $factory->withMaxViews($maxViews);
             }
 
