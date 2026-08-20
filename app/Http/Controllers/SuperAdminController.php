@@ -143,10 +143,15 @@ class SuperAdminController extends Controller
 
         $stats = $this->stats->getStats($period);
         $startDate = $period === 'all' ? null : $stats['start_date'];
+        $today = now()->toDateString();
 
         return [
             'stats' => $stats,
             'period' => $period,
+            'hourly' => $period === 'today' ? [
+                'created' => $this->stats->getHourlyBreakdown(StatsService::HEATMAP_SECRETS_CREATED, $today),
+                'read' => $this->stats->getHourlyBreakdown(StatsService::HEATMAP_SECRETS_READ, $today),
+            ] : null,
             'heatmapCreated' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate),
             'heatmapRead' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate),
             'avgFirstReadDelay' => $this->stats->getAverageFirstReadDelay($startDate),

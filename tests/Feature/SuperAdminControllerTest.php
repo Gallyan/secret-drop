@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\MagicLink;
+use App\Services\StatsService;
 use App\Services\TokenService;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -165,6 +167,57 @@ class SuperAdminControllerTest extends TestCase
         $dashboard->assertSee('title="14:00–15:00 · 0 vue"', false);
         $dashboard->assertSee('title="23:00–00:00 · 0 vue"', false);
         $dashboard->assertDontSee('title="14h:', false);
+    }
+
+    /**
+     * Over a single day the daily charts collapse to one point, so they switch
+     * to an hourly breakdown taken from the heatmap counters.
+     */
+    public function testTodayPeriodExposesAnHourlyBreakdown(): void
+    {
+        DB::table('stats_heatmap')->insert([
+            'date' => now()->toDateString(),
+            'day_of_week' => (int) now()->dayOfWeek,
+            'hour' => 14,
+            'metric' => StatsService::HEATMAP_SECRETS_CREATED,
+            'count' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->authenticateSuperAdmin();
+
+        $today = $this->get('/fr/superadmin/dashboard?period=today');
+        $today->assertStatus(200);
+        $hourly = $today->viewData('hourly');
+
+        $this->assertCount(24, $hourly['created']);
+        $this->assertSame(3, $hourly['created'][14]);
+        $this->assertSame(0, $hourly['created'][13]);
+        $this->assertCount(24, $hourly['read']);
+    }
+
+    /** Vérifie que les autres périodes conservent l'affichage par jour. */
+    public function testOtherPeriodsKeepTheDailyBreakdown(): void
+    {
+        $this->authenticateSuperAdmin();
+
+        $response = $this->get('/fr/superadmin/dashboard?period=30d');
+
+        $response->assertStatus(200);
+        $this->assertNull($response->viewData('hourly'));
+    }
+
+    private function authenticateSuperAdmin(): void
+    {
+        $tokenData = $this->tokenService->generateMagicLinkToken();
+        MagicLink::create([
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->post("/fr/superadmin/verify/{$tokenData['token']}");
     }
 
     /** Vérifie qu'un token invalide affiche la page d'erreur (GET). */

@@ -168,6 +168,28 @@ class StatsService
     }
 
     /**
+     * Hourly breakdown of a heatmap metric for a single day, in UTC.
+     *
+     * @return array<int, int>
+     */
+    public function getHourlyBreakdown(string $metric, string $date): array
+    {
+        $counts = DB::table('stats_heatmap')
+            ->select('hour', DB::raw('SUM(count) as total'))
+            ->where('metric', $metric)
+            ->where('date', $date)
+            ->groupBy('hour')
+            ->pluck('total', 'hour');
+
+        $breakdown = [];
+        for ($hour = 0; $hour < 24; $hour++) {
+            $breakdown[$hour] = (int) ($counts[$hour] ?? 0);
+        }
+
+        return $breakdown;
+    }
+
+    /**
      * @return array<int, array<int, int>>
      */
     public function getHeatmap(string $metric, ?string $startDate = null): array

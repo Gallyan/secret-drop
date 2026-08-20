@@ -82,6 +82,30 @@ function dateRange(start, end) {
     return labels;
 }
 
+function hourLabels() {
+    return Array.from({ length: 24 }, (_, h) => String(h).padStart(2, '0') + ':00');
+}
+
+function hourlySeries(hourly, key) {
+    const data = hourly?.[key] || {};
+
+    return Array.from({ length: 24 }, (_, h) => data[h] || 0);
+}
+
+/** Rebuilds datasets when their count changes, which updateLineChart cannot do. */
+function setChartSeries(key, labels, datasets) {
+    const chart = charts[key];
+    if (!chart) {
+        return;
+    }
+    chart.data.labels = labels;
+    chart.data.datasets = datasets.map((ds, i) => ({
+        ...(chart.data.datasets[i] || chart.data.datasets[0]),
+        ...ds,
+    }));
+    chart.update('none');
+}
+
 function metricData(metrics, metric, labels) {
     const m = metrics[metric] || {};
     return labels.map(d => m[d] || 0);
@@ -192,14 +216,25 @@ function updateCharts(data) {
     const labels = dateRange(stats.start_date, stats.end_date);
     const m = stats.metrics;
 
-    updateLineChart('created', labels, [
-        metricData(m, 'secrets_created_text', labels),
-        metricData(m, 'secrets_created_file', labels),
-    ]);
+    const tr = window.superAdminData.translations;
 
-    updateLineChart('read', labels, [
-        metricData(m, 'secrets_read', labels),
-    ]);
+    if (data.hourly) {
+        const hours = hourLabels();
+        setChartSeries('created', hours, [
+            { label: tr.chart_secrets_created, data: hourlySeries(data.hourly, 'created'), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)' },
+        ]);
+        setChartSeries('read', hours, [
+            { label: tr.stat_reads, data: hourlySeries(data.hourly, 'read'), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+        ]);
+    } else {
+        setChartSeries('created', labels, [
+            { label: tr.stat_text, data: metricData(m, 'secrets_created_text', labels), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)' },
+            { label: tr.stat_file, data: metricData(m, 'secrets_created_file', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)' },
+        ]);
+        setChartSeries('read', labels, [
+            { label: tr.stat_reads, data: metricData(m, 'secrets_read', labels), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+        ]);
+    }
 
     updateDoughnutChart('types', [t.secrets_created_text || 0, t.secrets_created_file || 0]);
 
@@ -233,7 +268,6 @@ function updateCharts(data) {
     ]);
 
     // Heatmaps (innerHTML-based, safe to re-render)
-    const tr = window.superAdminData.translations;
     if (data.heatmapCreated) {
         renderHeatmap('heatmapCreated', data.heatmapCreated, 'violet', tr);
     }
@@ -601,18 +635,24 @@ function initDashboard() {
         y: { beginAtZero: true, ticks: { stepSize: 1 } }
     };
 
-    const labels = dateRange(stats.start_date, stats.end_date);
+    const hourly = data.hourly;
+    const labels = hourly ? hourLabels() : dateRange(stats.start_date, stats.end_date);
     const m = stats.metrics;
+
+    // A single day charts by hour: the heatmap only counts creations as a whole,
+    // so the text/file split is dropped at that scale.
+    const createdDatasets = hourly
+        ? [
+            { label: translations.chart_secrets_created, data: hourlySeries(hourly, 'created'), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true, tension: 0.3 }
+        ]
+        : [
+            { label: translations.stat_text, data: metricData(m, 'secrets_created_text', labels), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true, tension: 0.3 },
+            { label: translations.stat_file, data: metricData(m, 'secrets_created_file', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 }
+        ];
 
     charts.created = new Chart(document.getElementById('secretsCreatedChart'), {
         type: 'line',
-        data: {
-            labels,
-            datasets: [
-                { label: translations.stat_text, data: metricData(m, 'secrets_created_text', labels), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true, tension: 0.3 },
-                { label: translations.stat_file, data: metricData(m, 'secrets_created_file', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 }
-            ]
-        },
+        data: { labels, datasets: createdDatasets },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
     });
 
@@ -620,7 +660,7 @@ function initDashboard() {
         type: 'line',
         data: {
             labels,
-            datasets: [{ label: translations.stat_reads, data: metricData(m, 'secrets_read', labels), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }]
+            datasets: [{ label: translations.stat_reads, data: hourly ? hourlySeries(hourly, 'read') : metricData(m, 'secrets_read', labels), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales }
     });

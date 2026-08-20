@@ -657,6 +657,7 @@
         referrers: @json($referrers),
         botStats: @json($botStats),
         deviceStats: @json($deviceStats),
+        hourly: @json($hourly),
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
         routeLabels: @json($routeLabels),
@@ -665,6 +666,7 @@
         localeNames: @json(\App\Support\LocaleConfig::NATIVE_NAMES),
         noDataText: '{{ __('messages.stat_no_data') }}',
         translations: {
+            chart_secrets_created: '{{ __('messages.chart_secrets_created') }}',
             stat_text: '{{ __('messages.stat_text') }}',
             stat_file: '{{ __('messages.stat_file') }}',
             stat_reads: '{{ __('messages.stat_reads') }}',
