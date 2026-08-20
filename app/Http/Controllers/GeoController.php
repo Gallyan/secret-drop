@@ -10,8 +10,8 @@ class GeoController extends Controller
     public function llmsTxt(): Response
     {
         $base = url('/en');
-        $github = config('legal.social.github', 'https://github.com/Gallyan/secret-drop');
-        $website = config('legal.social.website', 'https://www.orsal.fr');
+        $github = config('legal.social.github') ?: 'https://github.com/Gallyan/secret-drop';
+        $website = config('legal.social.website') ?: 'https://www.orsal.fr';
         $contactUrl = url('/contact');
         $editorName = config('legal.editor_name', 'Secret Drop');
         $fullUrl = url('/llms-full.txt');
@@ -57,8 +57,8 @@ class GeoController extends Controller
     public function llmsFullTxt(): Response
     {
         $base = url('/en');
-        $github = config('legal.social.github', 'https://github.com/Gallyan/secret-drop');
-        $website = config('legal.social.website', 'https://www.orsal.fr');
+        $github = config('legal.social.github') ?: 'https://github.com/Gallyan/secret-drop';
+        $website = config('legal.social.website') ?: 'https://www.orsal.fr';
         $contactUrl = url('/contact');
 
         $siteUrl = url('');

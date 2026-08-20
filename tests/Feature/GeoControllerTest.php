@@ -118,6 +118,24 @@ class GeoControllerTest extends TestCase
         );
     }
 
+    /**
+     * A fresh install leaves SOCIAL_* commented out in .env.example, and
+     * config() returns null for a key that exists holding null, so a default
+     * passed as its second argument never applies.
+     */
+    public function testLlmsFilesKeepValidLinksWithoutSocialConfig(): void
+    {
+        config(['legal.social.github' => null, 'legal.social.website' => null]);
+
+        foreach (['/llms.txt', '/llms-full.txt'] as $uri) {
+            $content = $this->get($uri)->assertOk()->getContent();
+
+            $this->assertStringNotContains('[Source Code]()', $content);
+            $this->assertStringNotContainsString("Source code:\n", $content);
+            $this->assertMatchesRegularExpression('#\[Source Code\]\(https://\S+\)#', $content);
+        }
+    }
+
     private function assertStringNotContains(string $needle, string $haystack): void
     {
         $this->assertFalse(
