@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Secret;
+use App\Support\CounterExpression;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -78,7 +79,7 @@ class StatsService
                 'updated_at' => now(),
             ],
             ['date', 'metric'],
-            ['count' => DB::raw("count + {$amount}"), 'updated_at' => now()]
+            ['count' => CounterExpression::addTo($amount), 'updated_at' => now()]
         );
     }
 

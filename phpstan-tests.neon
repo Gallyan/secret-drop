@@ -1,0 +1,10 @@
+# Larastan types $this->artisan() as PendingCommand|int, which floods level 7
+# with ~85 false positives across the command tests. Tests stay one level below
+# the application code until that is fixed upstream.
+includes:
+  - vendor/larastan/larastan/extension.neon
+
+parameters:
+  paths:
+    - tests/
+  level: 6

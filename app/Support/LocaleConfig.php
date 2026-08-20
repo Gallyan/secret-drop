@@ -56,6 +56,11 @@ class LocaleConfig
         return self::TRANSLATABLE_PAGES;
     }
 
+    /**
+     * Page route names double as view names.
+     *
+     * @return view-string|null
+     */
     public static function findRouteBySlug(string $slug, string $locale): ?string
     {
         foreach (self::TRANSLATABLE_PAGES as $routeName) {

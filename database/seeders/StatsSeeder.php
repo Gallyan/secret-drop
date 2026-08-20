@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Secret;
+use App\Support\CounterExpression;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -251,7 +252,7 @@ class StatsSeeder extends Seeder
                         'updated_at' => $date,
                     ],
                     ['date', 'local_hour'],
-                    ['count' => DB::raw("count + {$humanCount}")]
+                    ['count' => CounterExpression::addTo($humanCount)]
                 );
             }
 
@@ -295,7 +296,7 @@ class StatsSeeder extends Seeder
                         'updated_at' => $date,
                     ],
                     ['date', 'day_of_week', 'hour', 'metric'],
-                    ['count' => DB::raw("count + {$count}")]
+                    ['count' => CounterExpression::addTo($count)]
                 );
             }
         }

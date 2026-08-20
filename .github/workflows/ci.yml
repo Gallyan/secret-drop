@@ -42,7 +42,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Run Larastan
-        run: vendor/bin/phpstan analyse --memory-limit=512M
+        run: composer stan
 
   test:
     name: Tests (PHP ${{ matrix.php }})
