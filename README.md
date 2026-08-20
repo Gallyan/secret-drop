@@ -39,7 +39,7 @@ Passwords sent over email or Slack remain readable by every intermediary — ind
 
 ## Stack
 
-Laravel 13 · PHP 8.2+ · Alpine.js 3 (CSP build) · Tailwind CSS 4 · Vite · MySQL/SQLite
+Laravel 13 · PHP 8.4+ · Alpine.js 3 (CSP build) · Tailwind CSS 4 · Vite · MySQL/SQLite
 
 ## Quick start
 
@@ -53,7 +53,7 @@ composer dev      # start dev server
 ## Tests
 
 ```bash
-composer test                          # full suite (370+ tests)
+composer test                          # full suite (430+ tests)
 php artisan test --filter=SecretTest   # run a single test
 ```
 
@@ -63,7 +63,7 @@ php artisan test --filter=SecretTest   # run a single test
 |------------------------|--------------------|
 | Ciphertext (AES-256-GCM) | Plaintext content |
 | IV, salt, metadata | Encryption key |
-| Hashed email (SHA-256) | URL fragment (`#key`) |
+| Peppered email hash (HMAC-SHA256) | URL fragment (`#key`) |
 
 Additional measures: strict CSP with nonce, HSTS, log sanitization (tokens and secrets are never logged), rate limiting with SHA-256 proof-of-work, honeypot, daily per-IP limits, file storage quota, CORS restriction, DKIM email signing.
 
