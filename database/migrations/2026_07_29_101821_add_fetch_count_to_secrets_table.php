@@ -14,4 +14,11 @@ return new class () extends Migration {
             $table->unsignedInteger('fetch_count')->default(0)->after('read_count');
         });
     }
+
+    public function down(): void
+    {
+        Schema::table('secrets', function (Blueprint $table) {
+            $table->dropColumn('fetch_count');
+        });
+    }
 };

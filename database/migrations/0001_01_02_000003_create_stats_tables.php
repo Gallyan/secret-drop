@@ -93,4 +93,15 @@ return new class () extends Migration {
             $table->index('date');
         });
     }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('stats_bots');
+        Schema::dropIfExists('stats_devices');
+        Schema::dropIfExists('stats_referrers');
+        Schema::dropIfExists('stats_local_hours');
+        Schema::dropIfExists('stats_pageviews');
+        Schema::dropIfExists('stats_heatmap');
+        Schema::dropIfExists('stats_daily');
+    }
 };

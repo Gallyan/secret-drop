@@ -29,4 +29,10 @@ return new class () extends Migration {
             $table->unique(['date', 'route_group', 'bucket']);
         });
     }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('stats_response_times');
+        Schema::dropIfExists('stats_error_routes');
+    }
 };

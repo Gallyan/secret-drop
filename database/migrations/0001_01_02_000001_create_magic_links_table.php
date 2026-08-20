@@ -18,4 +18,9 @@ return new class () extends Migration {
             $table->index('email_hash');
         });
     }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('magic_links');
+    }
 };
