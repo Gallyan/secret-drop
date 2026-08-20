@@ -2,9 +2,11 @@
 
 namespace Tests\Unit;
 
+use App\Enums\SecretType;
 use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\TokenService;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class SecretModelTest extends TestCase
@@ -17,6 +19,9 @@ class SecretModelTest extends TestCase
         $this->tokenService = app(TokenService::class);
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     private function createSecret(array $attributes = []): Secret
     {
         return Secret::create(array_merge([
@@ -237,8 +242,10 @@ class SecretModelTest extends TestCase
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'abc123', 'version' => 1],
         ]);
 
-        $this->assertIsArray($secret->cipher_meta);
-        $this->assertEquals('AES-256-GCM', $secret->cipher_meta['alg']);
+        $this->assertSame(
+            ['alg' => 'AES-256-GCM', 'iv' => 'abc123', 'version' => 1],
+            $secret->fresh()->cipher_meta
+        );
 
         $secret->delete();
     }
@@ -424,6 +431,28 @@ class SecretModelTest extends TestCase
         $secondLastRead = $secret->last_read_at;
 
         $this->assertTrue($secondLastRead->gte($firstLastRead));
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le type est casté en SecretType depuis la base. */
+    public function testTypeIsCastToEnum(): void
+    {
+        $secret = $this->createSecret(['type' => 'file', 'ciphertext' => null, 'file_path' => 'secrets/x.enc']);
+
+        $this->assertSame(SecretType::File, $secret->fresh()->type);
+        $this->assertTrue($secret->type->isFile());
+        $this->assertFalse($secret->type->isText());
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le type enum est persisté sous sa valeur scalaire. */
+    public function testTypeIsStoredAsScalarValue(): void
+    {
+        $secret = $this->createSecret(['type' => SecretType::Text]);
+
+        $this->assertSame('text', DB::table('secrets')->where('id', $secret->id)->value('type'));
 
         $secret->delete();
     }

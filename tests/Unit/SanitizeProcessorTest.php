@@ -28,6 +28,10 @@ class SanitizeProcessorTest extends TestCase
         return ($this->processor)($record)->message;
     }
 
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
     private function processContext(array $context): array
     {
         $record = new LogRecord(

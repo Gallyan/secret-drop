@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 if (! function_exists('nfmt')) {
     function nfmt(int|float $value, int $decimals = 0): string
     {
-        return Number::format($value, $decimals, locale: app()->getLocale());
+        $formatted = Number::format($value, $decimals, locale: app()->getLocale());
+
+        return $formatted === false ? (string) $value : $formatted;
     }
 }
 

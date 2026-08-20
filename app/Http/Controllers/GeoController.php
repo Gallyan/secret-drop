@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 
 class GeoController extends Controller
 {
@@ -61,7 +62,7 @@ class GeoController extends Controller
         $contactUrl = url('/contact');
 
         $siteUrl = url('');
-        $content = file_get_contents(resource_path('llms-full.txt'));
+        $content = File::get(resource_path('llms-full.txt'));
         $content = str_replace(
             ['WEBSITE_URL', 'CONTACT_URL', 'GITHUB_URL', 'BASE_URL', 'SITE_URL', 'EDITOR_NAME'],
             [$website, $contactUrl, $github, $base, $siteUrl, config('legal.editor_name', 'Secret Drop')],
@@ -76,7 +77,7 @@ class GeoController extends Controller
         $signed = storage_path('app/security.txt.asc');
 
         if (is_file($signed)) {
-            return response(file_get_contents($signed), 200, ['Content-Type' => 'text/plain']);
+            return response(File::get($signed), 200, ['Content-Type' => 'text/plain']);
         }
 
         $email = config('legal.contact_email', config('mail.from.address'));

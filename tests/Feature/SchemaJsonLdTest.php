@@ -8,13 +8,12 @@ class SchemaJsonLdTest extends TestCase
 {
     public function testHomepageHasSingleGraphWithAllSchemaTypes(): void
     {
-        $schemas = $this->extractSchemas('/en');
+        $types = collect($this->extractGraph('/en'))
+            ->flatMap(function (object $schema): array {
+                $type = $schema->{'@type'};
 
-        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
-        $this->assertNotNull($graphBlock, 'Homepage should have a @graph block');
-
-        $types = collect($graphBlock->{'@graph'})
-            ->flatMap(fn ($s) => is_array($s->{'@type'}) ? $s->{'@type'} : [$s->{'@type'}])
+                return is_array($type) ? $type : [$type];
+            })
             ->all();
 
         $this->assertContains('WebSite', $types);
@@ -26,10 +25,7 @@ class SchemaJsonLdTest extends TestCase
 
     public function testWebApplicationHasRichMetadata(): void
     {
-        $schemas = $this->extractSchemas('/en');
-        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
-
-        $app = collect($graphBlock->{'@graph'})->first(function ($s) {
+        $app = collect($this->extractGraph('/en'))->first(function ($s) {
             $types = is_array($s->{'@type'}) ? $s->{'@type'} : [$s->{'@type'}];
 
             return in_array('WebApplication', $types, true);
@@ -48,10 +44,7 @@ class SchemaJsonLdTest extends TestCase
 
     public function testHomepageSchemasHaveIds(): void
     {
-        $schemas = $this->extractSchemas('/en');
-        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
-
-        foreach ($graphBlock->{'@graph'} as $item) {
+        foreach ($this->extractGraph('/en') as $item) {
             $type = is_array($item->{'@type'}) ? implode(',', $item->{'@type'}) : $item->{'@type'};
             $this->assertNotEmpty(
                 $item->{'@id'} ?? null,
@@ -62,9 +55,7 @@ class SchemaJsonLdTest extends TestCase
 
     public function testOrganizationHasFoundingDateAndContactPoint(): void
     {
-        $schemas = $this->extractSchemas('/en');
-        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
-        $org = collect($graphBlock->{'@graph'})->first(fn ($s) => $s->{'@type'} === 'Organization');
+        $org = collect($this->extractGraph('/en'))->first(fn ($s) => $s->{'@type'} === 'Organization');
 
         $this->assertNotEmpty($org->foundingDate ?? null, 'Organization should have foundingDate');
         $this->assertNotEmpty($org->contactPoint ?? null, 'Organization should have contactPoint');
@@ -72,9 +63,7 @@ class SchemaJsonLdTest extends TestCase
 
     public function testPersonHasWorksFor(): void
     {
-        $schemas = $this->extractSchemas('/en');
-        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
-        $person = collect($graphBlock->{'@graph'})->first(fn ($s) => $s->{'@type'} === 'Person');
+        $person = collect($this->extractGraph('/en'))->first(fn ($s) => $s->{'@type'} === 'Person');
 
         $this->assertNotEmpty($person->worksFor ?? null, 'Person should have worksFor');
     }
@@ -114,6 +103,20 @@ class SchemaJsonLdTest extends TestCase
             $this->assertNotNull($webPage, "{$page} should have WebPage schema");
             $this->assertNotEmpty($webPage->speakable ?? null, "{$page} WebPage should have speakable");
         }
+    }
+
+    /**
+     * @return array<int, object>
+     */
+    private function extractGraph(string $uri): array
+    {
+        foreach ($this->extractSchemas($uri) as $schema) {
+            if (isset($schema->{'@graph'}) && is_array($schema->{'@graph'})) {
+                return array_values(array_filter($schema->{'@graph'}, 'is_object'));
+            }
+        }
+
+        $this->fail("No @graph block found on {$uri}");
     }
 
     /**

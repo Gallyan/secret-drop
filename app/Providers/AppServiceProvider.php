@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        TrustProxies::at(config('app.trusted_proxies'));
+
         Model::shouldBeStrict(! $this->app->isProduction());
 
         DB::prohibitDestructiveCommands($this->app->isProduction());

@@ -25,9 +25,9 @@ class StatsTrackingTest extends TestCase
 
     private function getMetricTotal(string $metric): int
     {
-        return (int) (DB::table('stats_daily')
+        return (int) DB::table('stats_daily')
             ->where('metric', $metric)
-            ->sum('count') ?? 0);
+            ->sum('count');
     }
 
     private function getTodayMetric(string $metric): int

@@ -151,7 +151,6 @@ class StatsServiceTest extends TestCase
 
         $rate = $this->statsService->getReadRate();
 
-        $this->assertNotNull($rate);
         $this->assertEquals(80.0, $rate);
 
         DB::table('stats_daily')->whereIn('metric', $metrics)->delete();

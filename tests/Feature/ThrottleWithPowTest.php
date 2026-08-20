@@ -18,6 +18,9 @@ class ThrottleWithPowTest extends TestCase
         config(['pow.difficulty' => 8]); // Low difficulty for fast tests
     }
 
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function exhaustRateLimit(array $payload): void
     {
         for ($i = 0; $i < self::API_THRESHOLD; $i++) {
@@ -187,6 +190,9 @@ class ThrottleWithPowTest extends TestCase
         $response->assertHeader('Retry-After');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getValidSecretPayload(): array
     {
         return [

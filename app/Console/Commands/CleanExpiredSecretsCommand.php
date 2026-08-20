@@ -48,7 +48,7 @@ class CleanExpiredSecretsCommand extends Command
                     $expiredUnread++;
                 }
 
-                if ($secret->type === 'file' && $secret->file_path) {
+                if ($secret->type->isFile() && $secret->file_path) {
                     if ($storage->exists($secret->file_path)) {
                         if (! $dryRun) {
                             $storage->delete($secret->file_path);

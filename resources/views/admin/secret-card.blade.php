@@ -7,8 +7,8 @@
     <button type="button" class="w-full p-5 flex items-center justify-between cursor-pointer text-left" @click="expanded = !expanded" :aria-expanded="expanded" aria-label="{{ __('messages.a11y_expand_secret') }}">
         <div class="flex items-center gap-4">
             {{-- Type icon --}}
-            <div class="flex items-center justify-center w-10 h-10 rounded-xl shrink-0 {{ $secret->type === 'text' ? 'bg-violet-100 dark:bg-violet-500/10' : 'bg-indigo-100 dark:bg-indigo-500/10' }}">
-                @if($secret->type === 'text')
+            <div class="flex items-center justify-center w-10 h-10 rounded-xl shrink-0 {{ $secret->type->isText() ? 'bg-violet-100 dark:bg-violet-500/10' : 'bg-indigo-100 dark:bg-indigo-500/10' }}">
+                @if($secret->type->isText())
                     <x-icon.document class="w-5 h-5 text-violet-600 dark:text-violet-300" />
                 @else
                     <x-icon.file class="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -18,7 +18,7 @@
             <div>
                 <div class="flex items-center gap-2">
                     <span class="font-medium text-gray-900 dark:text-white">
-                        {{ $secret->type === 'text' ? __('messages.type_text') : __('messages.type_file') }}
+                        {{ $secret->type->isText() ? __('messages.type_text') : __('messages.type_file') }}
                     </span>
                     {{-- Status badge --}}
                     <span data-poll-badge>

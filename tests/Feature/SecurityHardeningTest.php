@@ -18,6 +18,9 @@ class SecurityHardeningTest extends TestCase
 
     private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 bytes
 
+    /**
+     * @return array<string, mixed>
+     */
     private function validPayload(): array
     {
         return [

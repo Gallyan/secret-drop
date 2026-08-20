@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\SecretStorageService;
 use App\Services\TokenService;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
@@ -20,13 +19,10 @@ class SecretWorkflowTest extends TestCase
 
     private TokenService $tokenService;
 
-    private SecretStorageService $storage;
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->tokenService = app(TokenService::class);
-        $this->storage = app(SecretStorageService::class);
     }
 
     /** Vérifie le workflow complet : création, lecture et destruction du secret texte. */

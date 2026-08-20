@@ -16,6 +16,9 @@ class MagicLinkModelTest extends TestCase
         $this->tokenService = app(TokenService::class);
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     private function createMagicLink(array $attributes = []): MagicLink
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();

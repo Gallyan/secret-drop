@@ -22,6 +22,7 @@ class CipherValidationTest extends TestCase
     private const SHORT_CIPHERTEXT = 'ZWVlZWVlZWVlZWVl'; // 15 bytes (< 16 GCM tag)
 
     /**
+     * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>
      */
     private function validPayload(array $overrides = []): array

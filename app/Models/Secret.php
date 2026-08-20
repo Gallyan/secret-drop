@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SecretType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $id
  * @property string $token
  * @property string $admin_token_hash
- * @property string $type
+ * @property SecretType $type
  * @property array<string, mixed> $cipher_meta
  * @property string|null $ciphertext
  * @property string|null $file_path
@@ -52,6 +53,7 @@ class Secret extends Model
     protected function casts(): array
     {
         return [
+            'type' => SecretType::class,
             'cipher_meta' => 'array',
             'first_read_at' => 'datetime',
             'last_read_at' => 'datetime',
@@ -108,7 +110,7 @@ class Secret extends Model
 
     public function destroyContent(): void
     {
-        if ($this->type === 'text') {
+        if ($this->type->isText()) {
             $this->ciphertext = null;
         } else {
             $this->file_path = null;

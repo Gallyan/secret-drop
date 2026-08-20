@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
-use App\Services\TokenService;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
@@ -12,14 +12,11 @@ class FileSecretTest extends TestCase
 {
     private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
 
-    private TokenService $tokenService;
-
     private SecretStorageService $storage;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->tokenService = app(TokenService::class);
         $this->storage = app(SecretStorageService::class);
     }
 
@@ -46,7 +43,7 @@ class FileSecretTest extends TestCase
         $secret = Secret::where('token', $token)->first();
 
         $this->assertNotNull($secret);
-        $this->assertEquals('file', $secret->type);
+        $this->assertSame(SecretType::File, $secret->type);
         // filename/mime/size are encrypted in the file payload, not stored in DB
         $this->assertNotNull($secret->file_path);
         $this->assertTrue($this->storage->exists($secret->file_path));

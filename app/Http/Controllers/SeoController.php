@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Support\LocaleConfig;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 
 class SeoController extends Controller
 {
@@ -87,7 +88,7 @@ class SeoController extends Controller
     public function sitemapStylesheet(): Response
     {
         return response(
-            file_get_contents(resource_path('sitemap.xsl')),
+            File::get(resource_path('sitemap.xsl')),
             200,
             ['Content-Type' => 'text/xsl']
         );

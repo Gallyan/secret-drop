@@ -55,9 +55,12 @@ class TrackPageView
         if ($name === 'page.show') {
             $slug = $route->parameter('pageSlug', 'unknown');
             $locale = $route->parameter('locale', LocaleConfig::DEFAULT_LOCALE);
-            $canonical = LocaleConfig::findRouteBySlug($slug, $locale);
 
-            return $canonical ?? $slug;
+            if (! is_string($slug) || ! is_string($locale)) {
+                return $name;
+            }
+
+            return LocaleConfig::findRouteBySlug($slug, $locale) ?? $slug;
         }
 
         return $name;
@@ -68,7 +71,7 @@ class TrackPageView
         $route = $request->route();
         $locale = $route?->parameter('locale');
 
-        if ($locale && LocaleConfig::isSupported($locale)) {
+        if (is_string($locale) && LocaleConfig::isSupported($locale)) {
             return $locale;
         }
 

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /** Manages encrypted file blobs on the dedicated secrets disk with streamed I/O and directory partitioning. */
@@ -26,7 +27,11 @@ class SecretStorageService
     {
         $path = $this->buildPath($token);
 
-        $stream = fopen($file->getRealPath(), 'rb');
+        $stream = fopen((string) $file->getRealPath(), 'rb');
+
+        if ($stream === false) {
+            throw new RuntimeException('Unable to read the uploaded file.');
+        }
 
         try {
             $this->disk()->writeStream($path, $stream);

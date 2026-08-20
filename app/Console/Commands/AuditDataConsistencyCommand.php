@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
@@ -39,7 +40,7 @@ class AuditDataConsistencyCommand extends Command
 
         $files = $storage->disk()->allFiles();
         $validPaths = Secret::query()
-            ->where('type', 'file')
+            ->where('type', SecretType::File)
             ->whereNotNull('file_path')
             ->pluck('file_path')
             ->toArray();
@@ -73,7 +74,7 @@ class AuditDataConsistencyCommand extends Command
         $count = 0;
 
         Secret::query()
-            ->where('type', 'file')
+            ->where('type', SecretType::File)
             ->whereNotNull('file_path')
             ->each(function (Secret $secret) use ($storage, $fix, &$count) {
                 if (! $storage->exists($secret->file_path)) {
@@ -127,7 +128,7 @@ class AuditDataConsistencyCommand extends Command
         $this->components->info('Checking for text secrets without ciphertext...');
 
         $count = Secret::query()
-            ->where('type', 'text')
+            ->where('type', SecretType::Text)
             ->whereNull('ciphertext')
             ->whereNull('revoked_at')
             ->where(function ($q) {

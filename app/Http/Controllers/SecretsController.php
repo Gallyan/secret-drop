@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SecretType;
 use App\Http\Requests\StoreSecretRequest;
 use App\Models\MagicLink;
 use App\Models\Secret;
@@ -42,9 +43,10 @@ class SecretsController extends Controller
         }
 
         $validated = $request->validated();
+        $type = SecretType::from($validated['type']);
 
         // Check file storage quota before accepting uploads
-        if ($validated['type'] === 'file' && $this->storage->isQuotaExceeded()) {
+        if ($type->isFile() && $this->storage->isQuotaExceeded()) {
             return response()->json([
                 'error' => 'service_unavailable',
                 'message' => __('messages.storage_quota_exceeded'),
@@ -60,7 +62,7 @@ class SecretsController extends Controller
         $secretData = [
             'token' => $token,
             'admin_token_hash' => $adminTokenData['hash'],
-            'type' => $validated['type'],
+            'type' => $type,
             'cipher_meta' => $validated['cipher_meta'],
             'max_views' => $validated['max_views'] ?? null,
             'expire_at' => $expireAt,
@@ -68,11 +70,11 @@ class SecretsController extends Controller
         ];
 
         $fileSize = null;
-        if ($validated['type'] === 'text') {
+        if ($type->isText()) {
             $secretData['ciphertext'] = $validated['ciphertext'];
         } else {
             $file = $request->file('encrypted_file');
-            $fileSize = $file->getSize();
+            $fileSize = $file->getSize() ?: null;
             $filePath = $this->storage->store($token, $file);
 
             $secretData['file_path'] = $filePath;
@@ -93,7 +95,7 @@ class SecretsController extends Controller
      */
     private function trackCreationStats(Secret $secret, array $validated, ?int $fileSize = null): void
     {
-        if ($secret->type === 'text') {
+        if ($secret->type->isText()) {
             $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
 
             $textSize = strlen((string) $secret->ciphertext);
@@ -139,12 +141,12 @@ class SecretsController extends Controller
             && $secret->read_count + 1 >= $secret->max_views;
 
         $data = [
-            'type' => $secret->type,
+            'type' => $secret->type->value,
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => $willBeDestroyed,
         ];
 
-        if ($secret->type === 'text') {
+        if ($secret->type->isText()) {
             // The ciphertext leaves the server here: count it as a fetch
             $secret->recordFetch();
             $data['ciphertext'] = $secret->ciphertext;
@@ -170,7 +172,7 @@ class SecretsController extends Controller
 
             $maxViewsReached = false;
             if ($secret->shouldBeDestroyed()) {
-                if ($secret->type === 'file' && $secret->file_path) {
+                if ($secret->type->isFile() && $secret->file_path) {
                     $this->storage->delete($secret->file_path);
                 }
                 $secret->destroyContent();
@@ -198,7 +200,7 @@ class SecretsController extends Controller
     {
         $secret = Secret::where('token', $token)->first();
 
-        if (! $secret || $secret->type !== 'file' || ! $secret->isAccessible()) {
+        if (! $secret || ! $secret->type->isFile() || ! $secret->isAccessible()) {
             return response()->view('secrets.not-found', [], 404);
         }
 
@@ -228,7 +230,7 @@ class SecretsController extends Controller
             return response()->json(['error' => 'already_consumed'], 409);
         }
 
-        if ($secret->type === 'file' && $secret->file_path) {
+        if ($secret->type->isFile() && $secret->file_path) {
             $this->storage->delete($secret->file_path);
         }
 

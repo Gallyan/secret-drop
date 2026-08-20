@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\TokenService;
@@ -135,7 +136,7 @@ class DownloadSecurityTest extends TestCase
         $secret = Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
+            'type' => SecretType::File,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
             'expire_at' => now()->addDay(),
@@ -179,7 +180,7 @@ class DownloadSecurityTest extends TestCase
         $secret = Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
+            'type' => SecretType::File,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
             'expire_at' => now()->subHour(),
@@ -202,7 +203,7 @@ class DownloadSecurityTest extends TestCase
         $secret = Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
+            'type' => SecretType::File,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $token,
             'expire_at' => now()->addDay(),
@@ -222,7 +223,7 @@ class DownloadSecurityTest extends TestCase
         $secret = Secret::create([
             'token' => $this->tokenService->generatePublicToken(),
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
+            'type' => SecretType::File,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => 'nonexistent_path',
             'expire_at' => now()->addDay(),
@@ -235,16 +236,16 @@ class DownloadSecurityTest extends TestCase
         $secret->delete();
     }
 
-    private function createFileSecret(): Secret
+    private function createFileSecret(string $originalFilename = 'test.bin'): Secret
     {
         $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create('test.bin', 256);
+        $file = UploadedFile::fake()->create($originalFilename, 256);
         $filePath = $this->storage->store($token, $file);
 
         return Secret::create([
             'token' => $token,
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
+            'type' => SecretType::File,
             'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
             'file_path' => $filePath,
             'expire_at' => now()->addDay(),

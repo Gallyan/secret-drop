@@ -28,6 +28,13 @@ class SignEmailWithDkim
         }
 
         $privateKey = file_get_contents($fullPath);
+
+        if ($privateKey === false) {
+            Log::warning('DKIM private key is not readable', ['path' => $privateKeyPath]);
+
+            return;
+        }
+
         $passphrase = config('mail.dkim.passphrase', '');
 
         $signer = new DkimSigner($privateKey, $domain, $selector, [], $passphrase);

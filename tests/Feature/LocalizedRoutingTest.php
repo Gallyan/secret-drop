@@ -341,7 +341,9 @@ class LocalizedRoutingTest extends TestCase
                 $slug = LocaleConfig::translatedSlug($page, $locale);
                 $response = $this->get("/{$locale}/{$slug}");
 
-                $response->assertOk(
+                $this->assertSame(
+                    200,
+                    $response->getStatusCode(),
                     "Page '{$page}' with slug '{$slug}' for locale '{$locale}' should return 200"
                 );
             }

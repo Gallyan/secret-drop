@@ -10,9 +10,9 @@ class ErrorTrackingTest extends TestCase
 {
     private function getMetricTotal(string $metric): int
     {
-        return (int) (DB::table('stats_daily')
+        return (int) DB::table('stats_daily')
             ->where('metric', $metric)
-            ->sum('count') ?? 0);
+            ->sum('count');
     }
 
     /** Vérifie que les erreurs 404 sont trackées. */

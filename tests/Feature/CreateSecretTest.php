@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SecretType;
 use App\Models\Secret;
 use Tests\TestCase;
 
@@ -57,7 +58,7 @@ class CreateSecretTest extends TestCase
 
         $secret = Secret::where('token', $token)->first();
         $this->assertNotNull($secret);
-        $this->assertEquals('text', $secret->type);
+        $this->assertSame(SecretType::Text, $secret->type);
         $this->assertEquals(self::VALID_CIPHERTEXT, $secret->ciphertext);
         $this->assertEquals(1, $secret->max_views);
         $this->assertNotNull($secret->expire_at);
@@ -141,6 +142,42 @@ class CreateSecretTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['expiration']);
+    }
+
+    /** Vérifie le rejet d'un type de secret inconnu. */
+    public function testRejectsUnknownType(): void
+    {
+        $response = $this->postJson('/api/secrets', [
+            'type' => 'archive',
+            'ciphertext' => self::VALID_CIPHERTEXT,
+            'cipher_meta' => [
+                'alg' => 'AES-256-GCM',
+                'iv' => self::VALID_IV,
+                'version' => 1,
+            ],
+            'expiration' => '7d',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['type']);
+    }
+
+    /** Vérifie qu'un type numérique ne passe pas par coercition de type. */
+    public function testRejectsTypeThatOnlyMatchesLoosely(): void
+    {
+        $response = $this->postJson('/api/secrets', [
+            'type' => 0,
+            'ciphertext' => self::VALID_CIPHERTEXT,
+            'cipher_meta' => [
+                'alg' => 'AES-256-GCM',
+                'iv' => self::VALID_IV,
+                'version' => 1,
+            ],
+            'expiration' => '7d',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['type']);
     }
 
     /** Vérifie le rejet d'un email invalide. */

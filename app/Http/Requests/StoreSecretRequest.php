@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\SecretType;
 use App\Rules\Base64UrlBytes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class StoreSecretRequest extends FormRequest
@@ -37,7 +39,7 @@ class StoreSecretRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'in:text,file'],
+            'type' => ['required', Rule::enum(SecretType::class)],
 
             // Text secrets (~50 KB plaintext = ~70 KB ciphertext in base64)
             'ciphertext' => [
@@ -100,7 +102,7 @@ class StoreSecretRequest extends FormRequest
     {
         return [
             'type.required' => __('messages.val_type_required'),
-            'type.in' => __('messages.val_type_in'),
+            'type.enum' => __('messages.val_type_in'),
             'ciphertext.required_if' => __('messages.val_ciphertext_required'),
             'encrypted_file.required_if' => __('messages.val_file_required'),
             'ciphertext.max' => __('messages.val_ciphertext_max'),

@@ -134,4 +134,20 @@ return [
 
     'super_admin_email' => env('SUPER_ADMIN_EMAIL'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Trusted Proxies
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated IP addresses or CIDR ranges of the proxies allowed to set
+    | the X-Forwarded-* headers. Leave empty when the web server faces the
+    | internet directly, so forwarded headers are never trusted.
+    |
+    */
+
+    'trusted_proxies' => array_values(array_filter(
+        array_map('trim', explode(',', (string) env('TRUSTED_PROXIES', '')))
+    )),
+
+
 ];
