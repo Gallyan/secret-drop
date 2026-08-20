@@ -16,10 +16,18 @@ class TrustedProxiesTest extends TestCase
         });
     }
 
+    /** Vérifie qu'aucun proxy n'est approuvé quand la variable est vide. */
+    public function testConfigIsEmptyWhenBlank(): void
+    {
+        $this->withEnv('', function (array $config): void {
+            $this->assertSame([], $config['trusted_proxies']);
+        });
+    }
+
     /** Vérifie qu'aucun proxy n'est approuvé quand la variable est absente. */
     public function testConfigIsEmptyWhenUnset(): void
     {
-        $this->withEnv('', function (array $config): void {
+        $this->withEnv(null, function (array $config): void {
             $this->assertSame([], $config['trusted_proxies']);
         });
     }
@@ -33,18 +41,40 @@ class TrustedProxiesTest extends TestCase
     }
 
     /**
+     * Env::get() reads $_SERVER before $_ENV, and dotenv populates both, so a
+     * fixture that only sets $_ENV is silently ignored wherever .env defines
+     * the variable.
+     *
      * @param  callable(array<string, mixed>): void  $assertions
      */
-    private function withEnv(string $value, callable $assertions): void
+    private function withEnv(?string $value, callable $assertions): void
     {
-        putenv("TRUSTED_PROXIES={$value}");
-        $_ENV['TRUSTED_PROXIES'] = $value;
+        $previous = [
+            'env' => array_key_exists('TRUSTED_PROXIES', $_ENV) ? $_ENV['TRUSTED_PROXIES'] : null,
+            'server' => array_key_exists('TRUSTED_PROXIES', $_SERVER) ? $_SERVER['TRUSTED_PROXIES'] : null,
+            'putenv' => getenv('TRUSTED_PROXIES'),
+        ];
+
+        $this->setEnv($value);
 
         try {
             $assertions(require base_path('config/app.php'));
         } finally {
-            putenv('TRUSTED_PROXIES');
-            unset($_ENV['TRUSTED_PROXIES']);
+            $this->setEnv($previous['env'] ?? $previous['server'] ?? ($previous['putenv'] ?: null));
         }
+    }
+
+    private function setEnv(?string $value): void
+    {
+        if ($value === null) {
+            unset($_ENV['TRUSTED_PROXIES'], $_SERVER['TRUSTED_PROXIES']);
+            putenv('TRUSTED_PROXIES');
+
+            return;
+        }
+
+        $_ENV['TRUSTED_PROXIES'] = $value;
+        $_SERVER['TRUSTED_PROXIES'] = $value;
+        putenv("TRUSTED_PROXIES={$value}");
     }
 }
