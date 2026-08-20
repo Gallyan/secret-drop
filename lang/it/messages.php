@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => 'Per ora del server',
     'stat_by_local_hour' => 'Per ora locale',
     'stat_local_hour_note' => "Basato sull'ora del browser del visitatore",
+    'stat_hour_views' => '{0} :count visualizzazioni|{1} :count visualizzazione|[2,*] :count visualizzazioni',
     'stat_by_country' => 'Per paese',
     'stat_by_language' => 'Per lingua',
     'stat_by_page' => 'Per pagina',

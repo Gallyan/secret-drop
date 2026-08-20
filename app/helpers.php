@@ -13,6 +13,14 @@ if (! function_exists('nfmt')) {
     }
 }
 
+if (! function_exists('hour_range_label')) {
+    /** Labels an hourly bucket as a range, so "14:00-15:00" cannot be read as a single time. */
+    function hour_range_label(int $hour): string
+    {
+        return sprintf('%02d:00–%02d:00', $hour, ($hour + 1) % 24);
+    }
+}
+
 if (! function_exists('csp_nonce')) {
     function csp_nonce(): string
     {

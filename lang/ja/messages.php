@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => 'サーバー時間別',
     'stat_by_local_hour' => '現地時間別',
     'stat_local_hour_note' => '訪問者のブラウザ時刻に基づく',
+    'stat_hour_views' => ':count ビュー',
     'stat_by_country' => '国別',
     'stat_by_language' => '言語別',
     'stat_by_page' => 'ページ別',

@@ -473,7 +473,7 @@
                                 <div
                                     class="flex-1 bg-violet-500/80 dark:bg-violet-400/80 rounded-t-sm transition-colors hover:bg-violet-600 dark:hover:bg-violet-300"
                                     style="height: {{ $heightPx }}px"
-                                    title="{{ $hour }}h: {{ $count }}"
+                                    title="{{ hour_range_label($hour) }} · {{ trans_choice('messages.stat_hour_views', $count, ['count' => $count]) }}"
                                 ></div>
                             @endforeach
                         </div>
@@ -502,7 +502,7 @@
                                 <div
                                     class="flex-1 bg-amber-500/80 dark:bg-amber-400/80 rounded-t-sm transition-colors hover:bg-amber-600 dark:hover:bg-amber-300"
                                     style="height: {{ $heightPx }}px"
-                                    title="{{ $hour }}h: {{ $count }}"
+                                    title="{{ hour_range_label($hour) }} · {{ trans_choice('messages.stat_hour_views', $count, ['count' => $count]) }}"
                                 ></div>
                             @endforeach
                         </div>
@@ -687,6 +687,9 @@
                 '{{ __('messages.day_friday') }}',
                 '{{ __('messages.day_saturday') }}'
             ],
+            stat_hour_views_zero: '{{ trans_choice('messages.stat_hour_views', 0, ['count' => ':count']) }}',
+            stat_hour_views_one: '{{ trans_choice('messages.stat_hour_views', 1, ['count' => ':count']) }}',
+            stat_hour_views_many: '{{ trans_choice('messages.stat_hour_views', 2, ['count' => ':count']) }}',
             stat_visitors: '{{ __('messages.stat_visitors') }}',
             stat_bots: '{{ __('messages.stat_bots') }}'
         },

@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => 'Nach Serverstunde',
     'stat_by_local_hour' => 'Nach Ortszeit',
     'stat_local_hour_note' => 'Basierend auf der Browserzeit des Besuchers',
+    'stat_hour_views' => '{0} :count Aufrufe|{1} :count Aufruf|[2,*] :count Aufrufe',
     'stat_by_country' => 'Nach Land',
     'stat_by_language' => 'Nach Sprache',
     'stat_by_page' => 'Nach Seite',

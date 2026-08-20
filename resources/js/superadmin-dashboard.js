@@ -321,8 +321,8 @@ function updateLists(data) {
     }
 
     // By hour (bar chart)
-    renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80');
-    renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80');
+    renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80', tr);
+    renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80', tr);
 
     // By device
     const elD = document.getElementById('pollByDevice');
@@ -481,7 +481,24 @@ function updateLists(data) {
     }
 }
 
-function renderBarList(id, hourData, barClass) {
+function hourRangeLabel(hour) {
+    const pad = n => String(n).padStart(2, '0');
+
+    return `${pad(hour)}:00\u2013${pad((hour + 1) % 24)}:00`;
+}
+
+function hourViewsLabel(count, translations) {
+    let template = translations.stat_hour_views_many;
+    if (count === 0) {
+        template = translations.stat_hour_views_zero;
+    } else if (count === 1) {
+        template = translations.stat_hour_views_one;
+    }
+
+    return template ? template.replace(':count', count) : String(count);
+}
+
+function renderBarList(id, hourData, barClass, translations) {
     const el = document.getElementById(id);
     if (!el) {
         return;
@@ -493,7 +510,7 @@ function renderBarList(id, hourData, barClass) {
     for (let h = 0; h < 24; h++) {
         const count = hourData[h] || 0;
         const height = Math.max(2, Math.round((count / maxVal) * maxPx));
-        bars += `<div class="flex-1 ${barClass} rounded-t-sm" style="height: ${height}px" title="${h}h: ${count}"></div>`;
+        bars += `<div class="flex-1 ${barClass} rounded-t-sm" style="height: ${height}px" title="${hourRangeLabel(h)} \u00b7 ${esc(hourViewsLabel(count, translations))}"></div>`;
         labels += `<div class="flex-1 text-center text-[8px] text-gray-400 dark:text-slate-500">${h % 6 === 0 ? h : ''}</div>`;
     }
     bars += '</div>';
@@ -549,7 +566,7 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
         for (let i = 0; i < 7; i++) {
             const di = dayOrder[i];
             const val = heatmapData[di]?.[hour] || 0;
-            const title = `${esc(days[i])} ${hour}h: ${val}`;
+            const title = `${esc(days[i])} ${hourRangeLabel(hour)} \u00b7 ${val}`;
             html += `<td class="p-px"><div class="h-3 rounded-sm flex items-center justify-center text-[8px] leading-none ${cls(val, maxValue, color)}" title="${title}">${val > 0 ? val : ''}</div></td>`;
         }
         html += '</tr>';

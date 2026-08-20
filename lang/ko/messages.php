@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => '서버 시간별',
     'stat_by_local_hour' => '현지 시간별',
     'stat_local_hour_note' => '방문자 브라우저 시간 기준',
+    'stat_hour_views' => ':count회 조회',
     'stat_by_country' => '국가별',
     'stat_by_language' => '언어별',
     'stat_by_page' => '페이지별',

@@ -395,6 +395,7 @@ return [
     'stat_by_hour' => 'Par heure serveur',
     'stat_by_local_hour' => 'Par heure locale',
     'stat_local_hour_note' => "Basé sur l'heure du navigateur",
+    'stat_hour_views' => '{0} :count vue|{1} :count vue|[2,*] :count vues',
     'stat_by_country' => 'Par pays',
     'stat_by_language' => 'Par langue',
     'stat_by_page' => 'Par page',

@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => 'حسب ساعة الخادم',
     'stat_by_local_hour' => 'حسب التوقيت المحلي',
     'stat_local_hour_note' => 'بناءً على توقيت متصفح الزائر',
+    'stat_hour_views' => '{0} :count مشاهدة|{1} مشاهدة واحدة|[2,*] :count مشاهدات',
     'stat_by_country' => 'حسب البلد',
     'stat_by_language' => 'حسب اللغة',
     'stat_by_page' => 'حسب الصفحة',

@@ -144,6 +144,29 @@ class SuperAdminControllerTest extends TestCase
         $dashboard->assertViewIs('superadmin.dashboard');
     }
 
+    /**
+     * "14h: 2" reads like a clock time; the hourly charts must label the bucket
+     * as a range and name what is being counted.
+     */
+    public function testHourlyChartTooltipsShowARangeAndAUnit(): void
+    {
+        $tokenData = $this->tokenService->generateMagicLinkToken();
+        MagicLink::create([
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->post("/fr/superadmin/verify/{$tokenData['token']}");
+
+        $dashboard = $this->get('/fr/superadmin/dashboard');
+
+        $dashboard->assertStatus(200);
+        $dashboard->assertSee('title="14:00–15:00 · 0 vue"', false);
+        $dashboard->assertSee('title="23:00–00:00 · 0 vue"', false);
+        $dashboard->assertDontSee('title="14h:', false);
+    }
+
     /** Vérifie qu'un token invalide affiche la page d'erreur (GET). */
     public function testVerifyWithInvalidTokenShowsError(): void
     {

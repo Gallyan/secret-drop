@@ -387,6 +387,7 @@ return [
     'stat_by_hour' => 'Według godziny serwera',
     'stat_by_local_hour' => 'Według czasu lokalnego',
     'stat_local_hour_note' => 'Na podstawie czasu przeglądarki odwiedzającego',
+    'stat_hour_views' => '{0} :count odsłon|{1} :count odsłona|[2,*] :count odsłon',
     'stat_by_country' => 'Według kraju',
     'stat_by_language' => 'Według języka',
     'stat_by_page' => 'Według strony',
