@@ -53,7 +53,7 @@ composer dev      # start dev server
 ## Tests
 
 ```bash
-composer test                          # full suite (430+ tests)
+composer test                          # full suite (470+ tests)
 php artisan test --filter=SecretTest   # run a single test
 ```
 
@@ -85,7 +85,7 @@ See `.env.production.example` for all available configuration options.
 
 ## CI/CD
 
-GitHub Actions: Pint (code style) → Larastan (static analysis) → PHPUnit → deploy via SSH.
+GitHub Actions: Pint (code style) → Larastan (static analysis) → PHPUnit → deploy via SSH. Deployments that change public content notify search engines through IndexNow; a manual workflow is available for on-demand submissions.
 
 ## License
 
