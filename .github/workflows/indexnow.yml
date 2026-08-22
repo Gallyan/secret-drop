@@ -1,0 +1,82 @@
+# IndexNow - Notification manuelle des moteurs de recherche
+#
+# Ce workflow signale à IndexNow (Bing, Yandex, Seznam, Naver, Yep) que des
+# pages publiques ont changé. Le CD le fait déjà automatiquement quand un
+# déploiement modifie du contenu éditorial ; ce workflow permet de forcer une
+# soumission à la main, par exemple après un changement de configuration non
+# versionné (.env de production) ou après la mise en place d'une nouvelle clé.
+#
+# Aucune liste d'URL n'est dupliquée ici : le workflow exécute la commande
+# artisan `indexnow:submit` sur le serveur, seule source de vérité des URLs.
+#
+# Prérequis serveur :
+#   - INDEXNOW_KEY renseignée dans le .env de production (8 à 128 caractères
+#     parmi a-z, A-Z, 0-9 et le tiret). Sans elle la commande s'arrête
+#     proprement en erreur et rien n'est soumis.
+#   - La clé doit être servie sur https://<domaine>/<INDEXNOW_KEY>.txt : c'est
+#     une route Laravel, il n'y a aucun fichier à déposer sur le serveur.
+#
+# Secrets GitHub requis (Settings > Secrets and variables > Actions) :
+#   - SSH_HOST : adresse IP ou domaine du serveur
+#   - SSH_USER : utilisateur SSH (ex: deploy)
+#   - SSH_KEY : clé privée SSH ed25519
+#   - SSH_PORT : port SSH (si différent de 22)
+#   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
+#
+# Note : le bouton « Run workflow » n'apparaît dans l'onglet Actions qu'une fois
+# ce fichier présent sur la branche par défaut.
+
+name: IndexNow
+run-name: "IndexNow — ${{ inputs.urls || 'toutes les pages publiques' }}${{ inputs.dry_run && ' (dry run)' || '' }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "URLs absolues à soumettre, séparées par des espaces ou des virgules (vide = toutes les pages publiques)"
+        required: false
+        type: string
+        default: ""
+      dry_run:
+        description: "Afficher ce qui serait soumis sans appeler l'API"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  submit:
+    name: Submit URLs to IndexNow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify IndexNow
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          INDEXNOW_URLS: ${{ inputs.urls }}
+          INDEXNOW_DRY_RUN: ${{ inputs.dry_run }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: INDEXNOW_URLS,INDEXNOW_DRY_RUN
+          script: |
+            set -e
+            set -f
+            cd ${{ secrets.SSH_PATH }}
+
+            set --
+
+            if [ "$INDEXNOW_DRY_RUN" = "true" ]; then
+                set -- "$@" --dry-run
+            fi
+
+            if [ -n "$INDEXNOW_URLS" ]; then
+                for url in $(printf '%s' "$INDEXNOW_URLS" | tr ',' ' '); do
+                    set -- "$@" "--url=$url"
+                done
+            fi
+
+            echo "IndexNow : php artisan indexnow:submit $*"
+
+            php artisan indexnow:submit "$@"

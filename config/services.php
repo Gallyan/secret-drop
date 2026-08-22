@@ -37,4 +37,9 @@ return [
         'site_verification' => env('BING_SITE_VERIFICATION'),
     ],
 
+    'indexnow' => [
+        'key' => env('INDEXNOW_KEY'),
+        'endpoint' => env('INDEXNOW_ENDPOINT', 'https://api.indexnow.org/indexnow'),
+    ],
+
 ];

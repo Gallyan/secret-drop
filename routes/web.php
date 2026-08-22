@@ -34,6 +34,10 @@ Route::get('/llms.txt', [GeoController::class, 'llmsTxt']);
 Route::get('/llms-full.txt', [GeoController::class, 'llmsFullTxt']);
 Route::get('/.well-known/security.txt', [GeoController::class, 'securityTxt']);
 
+// IndexNow key verification file (declared after the static .txt routes above so it never captures them)
+Route::get('/{indexnowKey}.txt', [SeoController::class, 'indexNowKey'])
+    ->where(['indexnowKey' => '[A-Za-z0-9-]{8,128}']);
+
 // Localized pages (public + admin + superadmin)
 Route::prefix('{locale}')
     ->where(['locale' => LocaleConfig::localePattern()])

@@ -94,4 +94,18 @@ class SeoController extends Controller
         );
     }
 
+    public function indexNowKey(string $indexnowKey): Response
+    {
+        $key = (string) config('services.indexnow.key');
+
+        if ($key === '') {
+            abort(404);
+        }
+
+        if (! hash_equals($key, $indexnowKey)) {
+            abort(404);
+        }
+
+        return response($key, 200, ['Content-Type' => 'text/plain']);
+    }
 }

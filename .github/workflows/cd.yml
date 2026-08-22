@@ -6,6 +6,10 @@
 # Les assets sont buildés dans GitHub Actions puis transférés sur le serveur.
 # Node.js/npm ne sont pas nécessaires en production.
 #
+# En fin de déploiement, IndexNow n'est notifié que si le pull a réellement
+# modifié du contenu éditorial (traductions, vues publiques, liste des locales).
+# Une soumission manuelle reste possible via le workflow « IndexNow ».
+#
 # Prérequis serveur :
 #   - deploy dans le groupe www-data (sudo usermod -aG www-data deploy)
 #   - Projet : chown www-data:www-data, chmod 775/664, SGID sur les répertoires
@@ -15,6 +19,8 @@
 #     Ne touche NI Apache NI MySQL.
 #   - sudoers : deploy autorisé à `/usr/local/bin/restart-php-fpm` sans mot de passe
 #     (sinon workers FPM en erreur 503 après déploiement)
+#   - INDEXNOW_KEY renseignée dans le .env de production pour que la soumission
+#     IndexNow aboutisse (sans elle, la commande échoue sans bloquer le déploiement)
 #
 # Secrets GitHub requis (Settings > Secrets and variables > Actions) :
 #   - SSH_HOST : adresse IP ou domaine du serveur
@@ -86,6 +92,10 @@ jobs:
             umask 002
             cd ${{ secrets.SSH_PATH }}
 
+            # Révision avant le pull : sert à détecter les changements de contenu
+            # (git checkout -- . et git pull ne déplacent pas cette référence)
+            BEFORE=$(git rev-parse HEAD)
+
             php artisan down --retry=60 || true
 
             git checkout -- .
@@ -103,3 +113,19 @@ jobs:
             sudo /usr/local/bin/restart-php-fpm
 
             php artisan up
+
+            # IndexNow : après la remise en ligne, et sans jamais faire échouer
+            # le déploiement. La forme "if ... then" évite qu'un grep sans
+            # correspondance (code 1) n'avorte le script à cause de set -e.
+            AFTER=$(git rev-parse HEAD)
+            CONTENT_PATHS='^(lang/[a-z]{2}/(messages|routes)\.php|resources/views/(layouts|components)/|resources/views/(faq|how-it-works|use-cases|legal|sitemap)\.blade\.php|resources/views/secrets/create\.blade\.php|app/Support/LocaleConfig\.php)'
+
+            if [ "$BEFORE" = "$AFTER" ]; then
+              echo "IndexNow : soumission sautée — aucun nouveau commit déployé ($BEFORE)"
+            elif git diff --name-only "$BEFORE" "$AFTER" | grep -qE "$CONTENT_PATHS"; then
+              echo "IndexNow : contenu éditorial modifié entre $BEFORE et $AFTER — soumission en cours"
+              git diff --name-only "$BEFORE" "$AFTER" | grep -E "$CONTENT_PATHS" || true
+              php artisan indexnow:submit || echo "IndexNow : soumission en échec (déploiement non impacté)"
+            else
+              echo "IndexNow : soumission sautée — aucun contenu éditorial modifié entre $BEFORE et $AFTER"
+            fi
