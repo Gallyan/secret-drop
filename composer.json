@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "perception-systems/secret-drop",
+    "name": "gallyan/secret-drop",
     "type": "project",
     "description": "Zero-knowledge secret and file sharing application.",
     "keywords": ["zero-knowledge", "encryption", "secret-sharing", "laravel"],
