@@ -36,12 +36,12 @@ class TrackHttpErrors
         }
 
         if ($status >= 500) {
-            $this->stats->increment(StatsService::HTTP_ERRORS_5XX);
+            $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_5XX);
 
             $route = $request->route()?->getName() ?? $request->getPathInfo();
             $this->stats->trackErrorRoute($status, mb_substr($route, 0, 100));
         } else {
-            $this->stats->increment(StatsService::HTTP_ERRORS_4XX);
+            $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_4XX);
         }
 
         $this->stats->increment("http_errors_{$status}");

@@ -194,7 +194,39 @@ class SuperAdminControllerTest extends TestCase
         $this->assertCount(24, $hourly['created']);
         $this->assertSame(3, $hourly['created'][14]);
         $this->assertSame(0, $hourly['created'][13]);
-        $this->assertCount(24, $hourly['read']);
+
+        foreach (['read', 'magic_links_requested', 'magic_links_used', 'secrets_extended', 'errors_4xx', 'errors_5xx'] as $series) {
+            $this->assertCount(24, $hourly[$series], "La serie {$series} doit couvrir 24 heures");
+        }
+    }
+
+    /** Vérifie que les erreurs HTTP sont comptées à l'heure comme au jour. */
+    public function testHttpErrorsAreRecordedHourly(): void
+    {
+        $this->get('/fr/une-page-qui-nexiste-pas')->assertStatus(404);
+
+        $hour = (int) now()->hour;
+
+        $this->assertSame(1, (int) DB::table('stats_heatmap')
+            ->where('metric', StatsService::HTTP_ERRORS_4XX)
+            ->where('date', now()->toDateString())
+            ->where('hour', $hour)
+            ->value('count'));
+    }
+
+    /** Vérifie que les demandes de lien magique sont comptées à l'heure. */
+    public function testMagicLinkRequestsAreRecordedHourly(): void
+    {
+        Config::set('app.super_admin_email', 'boss@example.com');
+
+        $this->post('/fr/superadmin/request-access', ['email' => 'boss@example.com'])
+            ->assertRedirect(route('superadmin.accessSent'));
+
+        $this->assertSame(1, (int) DB::table('stats_heatmap')
+            ->where('metric', StatsService::MAGIC_LINKS_REQUESTED)
+            ->where('date', now()->toDateString())
+            ->where('hour', (int) now()->hour)
+            ->value('count'));
     }
 
     /** Vérifie que les autres périodes conservent l'affichage par jour. */

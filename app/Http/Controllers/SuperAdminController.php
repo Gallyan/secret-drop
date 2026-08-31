@@ -63,7 +63,7 @@ class SuperAdminController extends Controller
                 ->locale(app()->getLocale())
                 ->send(new SuperAdminMagicLinkMail($url));
 
-            defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
+            defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
         } else {
             // Mimic mail-send latency to prevent super-admin email enumeration via response timing.
             usleep(random_int(150_000, 400_000));
@@ -91,7 +91,7 @@ class SuperAdminController extends Controller
         }
 
         $magicLink->markAsUsed();
-        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_USED));
+        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
@@ -151,6 +151,11 @@ class SuperAdminController extends Controller
             'hourly' => $period === 'today' ? [
                 'created' => $this->stats->getHourlyBreakdown(StatsService::HEATMAP_SECRETS_CREATED, $today),
                 'read' => $this->stats->getHourlyBreakdown(StatsService::HEATMAP_SECRETS_READ, $today),
+                'magic_links_requested' => $this->stats->getHourlyBreakdown(StatsService::MAGIC_LINKS_REQUESTED, $today),
+                'magic_links_used' => $this->stats->getHourlyBreakdown(StatsService::MAGIC_LINKS_USED, $today),
+                'secrets_extended' => $this->stats->getHourlyBreakdown(StatsService::SECRETS_EXTENDED, $today),
+                'errors_4xx' => $this->stats->getHourlyBreakdown(StatsService::HTTP_ERRORS_4XX, $today),
+                'errors_5xx' => $this->stats->getHourlyBreakdown(StatsService::HTTP_ERRORS_5XX, $today),
             ] : null,
             'heatmapCreated' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate),
             'heatmapRead' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate),

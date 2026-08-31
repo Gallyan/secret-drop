@@ -145,6 +145,13 @@ class StatsService
         return $this->getTotals(null);
     }
 
+    /** Records a metric at both the daily and the hourly granularity, under the same name. */
+    public function incrementDailyAndHourly(string $metric, int $amount = 1): void
+    {
+        $this->increment($metric, $amount);
+        $this->incrementHeatmap($metric);
+    }
+
     public function incrementHeatmap(string $metric): void
     {
         $now = now();

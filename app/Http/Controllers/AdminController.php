@@ -73,7 +73,7 @@ class AdminController extends Controller
             ->locale(app()->getLocale())
             ->send(new MagicLinkMail($verifyUrl));
 
-        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
+        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
 
         return redirect()->route('admin.accessSent');
     }
@@ -101,7 +101,7 @@ class AdminController extends Controller
         }
 
         $magicLink->markAsUsed();
-        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_USED));
+        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
@@ -237,7 +237,7 @@ class AdminController extends Controller
         $secret->expire_at = $baseDate->addHours($request->validated('hours'));
         $secret->save();
 
-        defer(fn () => $this->stats->increment(StatsService::SECRETS_EXTENDED));
+        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::SECRETS_EXTENDED));
 
         return response()->json([
             'success' => true,

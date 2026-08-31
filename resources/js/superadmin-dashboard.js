@@ -92,6 +92,10 @@ function hourlySeries(hourly, key) {
     return Array.from({ length: 24 }, (_, h) => data[h] || 0);
 }
 
+function seriesData(hourly, hourlyKey, metrics, metric, labels) {
+    return hourly ? hourlySeries(hourly, hourlyKey) : metricData(metrics, metric, labels);
+}
+
 /** Rebuilds datasets when their count changes, which updateLineChart cannot do. */
 function setChartSeries(key, labels, datasets) {
     const chart = charts[key];
@@ -215,16 +219,17 @@ function updateCharts(data) {
     const t = stats.totals;
     const labels = dateRange(stats.start_date, stats.end_date);
     const m = stats.metrics;
+    const hourly = data.hourly;
+    const chartLabels = hourly ? hourLabels() : labels;
 
     const tr = window.superAdminData.translations;
 
-    if (data.hourly) {
-        const hours = hourLabels();
-        setChartSeries('created', hours, [
-            { label: tr.chart_secrets_created, data: hourlySeries(data.hourly, 'created'), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)' },
+    if (hourly) {
+        setChartSeries('created', chartLabels, [
+            { label: tr.chart_secrets_created, data: hourlySeries(hourly, 'created'), borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)' },
         ]);
-        setChartSeries('read', hours, [
-            { label: tr.stat_reads, data: hourlySeries(data.hourly, 'read'), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+        setChartSeries('read', chartLabels, [
+            { label: tr.stat_reads, data: hourlySeries(hourly, 'read'), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' },
         ]);
     } else {
         setChartSeries('created', labels, [
@@ -247,16 +252,16 @@ function updateCharts(data) {
         t.secrets_max_views_reached || 0,
     ]);
 
-    updateLineChart('admin', labels, [
-        metricData(m, 'magic_links_requested', labels),
-        metricData(m, 'magic_links_used', labels),
-        metricData(m, 'secrets_extended', labels),
+    updateLineChart('admin', chartLabels, [
+        seriesData(hourly, 'magic_links_requested', m, 'magic_links_requested', labels),
+        seriesData(hourly, 'magic_links_used', m, 'magic_links_used', labels),
+        seriesData(hourly, 'secrets_extended', m, 'secrets_extended', labels),
     ]);
 
     // Error trends
-    updateLineChart('errors', labels, [
-        metricData(m, 'http_errors_4xx', labels),
-        metricData(m, 'http_errors_5xx', labels),
+    updateLineChart('errors', chartLabels, [
+        seriesData(hourly, 'errors_4xx', m, 'http_errors_4xx', labels),
+        seriesData(hourly, 'errors_5xx', m, 'http_errors_5xx', labels),
     ]);
 
     // Pageviews daily
@@ -698,9 +703,9 @@ function initDashboard() {
         data: {
             labels,
             datasets: [
-                { label: translations.stat_magic_links_requested, data: metricData(m, 'magic_links_requested', labels), borderColor: '#8b5cf6', tension: 0.3 },
-                { label: translations.stat_magic_links_used, data: metricData(m, 'magic_links_used', labels), borderColor: '#10b981', tension: 0.3 },
-                { label: translations.stat_secrets_extended, data: metricData(m, 'secrets_extended', labels), borderColor: '#06b6d4', tension: 0.3 }
+                { label: translations.stat_magic_links_requested, data: seriesData(hourly, 'magic_links_requested', m, 'magic_links_requested', labels), borderColor: '#8b5cf6', tension: 0.3 },
+                { label: translations.stat_magic_links_used, data: seriesData(hourly, 'magic_links_used', m, 'magic_links_used', labels), borderColor: '#10b981', tension: 0.3 },
+                { label: translations.stat_secrets_extended, data: seriesData(hourly, 'secrets_extended', m, 'secrets_extended', labels), borderColor: '#06b6d4', tension: 0.3 }
             ]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
@@ -714,8 +719,8 @@ function initDashboard() {
             data: {
                 labels,
                 datasets: [
-                    { label: et.errors_4xx || '4xx', data: metricData(m, 'http_errors_4xx', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 },
-                    { label: et.errors_5xx || '5xx', data: metricData(m, 'http_errors_5xx', labels), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.3 }
+                    { label: et.errors_4xx || '4xx', data: seriesData(hourly, 'errors_4xx', m, 'http_errors_4xx', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 },
+                    { label: et.errors_5xx || '5xx', data: seriesData(hourly, 'errors_5xx', m, 'http_errors_5xx', labels), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.3 }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
