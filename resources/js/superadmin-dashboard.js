@@ -360,8 +360,8 @@ function updateLists(data) {
     }
 
     // By hour (bar chart)
-    renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80', tr);
-    renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80', tr);
+    renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80', sd.translations);
+    renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80', sd.translations);
 
     // By device
     const elD = document.getElementById('pollByDevice');
@@ -882,39 +882,41 @@ async function poll() {
         }
 
         if (!response.ok) {
-            return;
+            console.warn('Dashboard poll failed with status', response.status);
+        } else {
+            applyPollData(data, await response.json());
         }
-
-        const newData = await response.json();
-
-        // Update shared state
-        data.stats = newData.stats;
-        data.heatmapCreated = newData.heatmapCreated;
-        data.heatmapRead = newData.heatmapRead;
-        data.pageviewsDaily = newData.pageviews.daily;
-        data.avgFirstReadDelay = newData.avgFirstReadDelay;
-        data.currentDiskUsage = newData.currentDiskUsage;
-        data.systemHealth = newData.systemHealth;
-        data.readRate = newData.readRate;
-        data.creatorConcentration = newData.creatorConcentration;
-        data.referrers = newData.referrers;
-        data.pageviews = newData.pageviews;
-        data.botStats = newData.botStats;
-        data.deviceStats = newData.deviceStats;
-        data.errorStats = newData.errorStats;
-        data.responseTime = newData.responseTime;
-        data.avgSecretSize = newData.avgSecretSize;
-
-        // In-place updates (no scroll jump)
-        updateKpis(newData);
-        updateCharts(newData);
-
-        // Restart ring
-        const interval = data.pollInterval || 30000;
-        startRing(interval);
-    } catch {
-        // Network error — skip this cycle, ring will restart on next poll
+    } catch (error) {
+        // A rendering error must not freeze the countdown along with the data
+        console.error('Dashboard poll failed', error);
     }
+
+    startRing(data.pollInterval || 30000);
+}
+
+function applyPollData(data, newData) {
+    // Update shared state
+    data.stats = newData.stats;
+    data.heatmapCreated = newData.heatmapCreated;
+    data.heatmapRead = newData.heatmapRead;
+    data.pageviewsDaily = newData.pageviews.daily;
+    data.avgFirstReadDelay = newData.avgFirstReadDelay;
+    data.currentDiskUsage = newData.currentDiskUsage;
+    data.systemHealth = newData.systemHealth;
+    data.readRate = newData.readRate;
+    data.creatorConcentration = newData.creatorConcentration;
+    data.referrers = newData.referrers;
+    data.pageviews = newData.pageviews;
+    data.botStats = newData.botStats;
+    data.deviceStats = newData.deviceStats;
+    data.errorStats = newData.errorStats;
+    data.responseTime = newData.responseTime;
+    data.avgSecretSize = newData.avgSecretSize;
+    data.hourly = newData.hourly;
+
+    // In-place updates (no scroll jump)
+    updateKpis(newData);
+    updateCharts(newData);
 }
 
 // ── Boot ─────────────────────────────────────────────────────────────────
