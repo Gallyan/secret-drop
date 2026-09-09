@@ -82,7 +82,7 @@ export default () => ({
                 // For files, metadata (filename, mime, size) is encrypted in the payload
 
                 this.parseFragment();
-            } catch (e) {
+            } catch {
                 this.loadError = {
                     type: 'error',
                     message: t('error_connection'),
@@ -264,7 +264,7 @@ export default () => ({
                 await copyText(this.plaintext);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
-            } catch (e) {
+            } catch {
                 this.error = t('crypto_clipboard_failed');
             }
         },

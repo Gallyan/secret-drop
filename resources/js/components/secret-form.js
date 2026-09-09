@@ -1,7 +1,6 @@
 import { t, formatFileSize, buildCipherMeta, copyText } from '../utils.js';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const MAX_TEXT_LENGTH = 50000;
 const MIN_PASSPHRASE_LENGTH = 12;
 
 export default () => ({
@@ -327,7 +326,7 @@ export default () => ({
                 await copyText(this.shareUrl);
                 this.copied = true;
                 setTimeout(() => this.copied = false, 2000);
-            } catch (e) {
+            } catch {
                 this.error = t('crypto_clipboard_failed');
             }
         },
@@ -337,7 +336,7 @@ export default () => ({
                 await copyText(this.shareKey);
                 this.keyCopied = true;
                 setTimeout(() => this.keyCopied = false, 2000);
-            } catch (e) {
+            } catch {
                 this.error = t('crypto_clipboard_failed');
             }
         },
@@ -365,7 +364,7 @@ export default () => ({
                         },
                         errorCorrectionLevel: 'M'
                     });
-                } catch (e) {
+                } catch {
                     this.error = t('qr_generation_failed');
                     return;
                 }
