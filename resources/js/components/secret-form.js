@@ -1,6 +1,10 @@
 import { t, formatFileSize, buildCipherMeta, copyText } from '../utils.js';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+// Le serveur plafonne le chiffré encodé à 70 000 caractères. Le base64url coûte
+// 4 caractères par tranche de 3 octets, et AES-GCM ajoute 16 octets par couche
+// (deux couches avec passphrase) : 50 000 octets clairs laissent de la marge.
+const MAX_TEXT_BYTES = 50000;
 const MIN_PASSPHRASE_LENGTH = 12;
 
 export default () => ({
@@ -58,6 +62,15 @@ export default () => ({
 
         hasMinLength() {
             return this.passphrase.length >= MIN_PASSPHRASE_LENGTH;
+        },
+
+        /** Taille réellement chiffrée : un caractère peut peser plusieurs octets en UTF-8. */
+        secretByteLength() {
+            return new TextEncoder().encode(this.secret).length;
+        },
+
+        isSecretTooLong() {
+            return this.secretByteLength() > MAX_TEXT_BYTES;
         },
 
         hasLowercase() {
@@ -193,6 +206,10 @@ export default () => ({
         async submitText(passphrase) {
             if (!this.secret.trim()) {
                 throw new Error(t('crypto_enter_secret'));
+            }
+
+            if (this.secretByteLength() > MAX_TEXT_BYTES) {
+                throw new Error(t('text_too_large'));
             }
 
             const encrypted = await window.SecretCrypto.encryptSecret(this.secret, passphrase);

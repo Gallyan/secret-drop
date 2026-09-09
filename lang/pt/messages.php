@@ -51,6 +51,7 @@ return [
     'file_drop_or_drag' => 'ou arraste um arquivo',
     'file_max_size' => 'Máximo 10 MB',
     'file_too_large' => 'Arquivo muito grande (máx. 10 MB)',
+    'text_too_large' => 'Texto muito longo (máx. 50 KB)',
 
     // Buttons
     'btn_encrypt' => 'Criptografar e criar link',

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\SecretType;
+use App\Http\Requests\StoreSecretRequest;
 use App\Models\Secret;
 use Tests\TestCase;
 
@@ -142,6 +143,43 @@ class CreateSecretTest extends TestCase
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['expiration']);
+    }
+
+    /**
+     * La limite saisie côté client doit garantir que le chiffré passe la règle
+     * serveur : base64url coûte 4 caractères pour 3 octets, et chaque couche
+     * AES-GCM ajoute 16 octets (deux couches avec passphrase).
+     */
+    public function testClientTextLimitFitsTheServerCiphertextRule(): void
+    {
+        $js = file_get_contents(resource_path('js/components/secret-form.js'));
+        $this->assertMatchesRegularExpression('/const MAX_TEXT_BYTES = (\d+);/', $js);
+        preg_match('/const MAX_TEXT_BYTES = (\d+);/', $js, $matches);
+        $maxTextBytes = (int) $matches[1];
+
+        $ciphertextRules = (new StoreSecretRequest())->rules()['ciphertext'];
+        $maxRule = collect($ciphertextRules)->first(fn ($rule) => is_string($rule) && str_starts_with($rule, 'max:'));
+        $serverMax = (int) str_replace('max:', '', (string) $maxRule);
+
+        $encodedLength = (int) ceil(($maxTextBytes + 32) * 4 / 3);
+
+        $this->assertLessThanOrEqual(
+            $serverMax,
+            $encodedLength,
+            "Un texte de {$maxTextBytes} octets produit {$encodedLength} caractères chiffrés, au-delà de la limite serveur de {$serverMax}."
+        );
+    }
+
+    /** Vérifie que le message de dépassement existe dans toutes les langues. */
+    public function testTextTooLargeMessageIsTranslatedEverywhere(): void
+    {
+        foreach (\App\Support\LocaleConfig::SUPPORTED_LOCALES as $locale) {
+            $this->assertNotSame(
+                'messages.text_too_large',
+                __('messages.text_too_large', [], $locale),
+                "Traduction manquante pour la locale {$locale}."
+            );
+        }
     }
 
     /** Vérifie le rejet d'un type de secret inconnu. */

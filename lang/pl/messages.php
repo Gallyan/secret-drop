@@ -51,6 +51,7 @@ return [
     'file_drop_or_drag' => 'lub przeciągnij plik',
     'file_max_size' => 'Maksymalnie 10 MB',
     'file_too_large' => 'Plik jest za duży (maks. 10 MB)',
+    'text_too_large' => 'Tekst jest za długi (maks. 50 KB)',
 
     // Buttons
     'btn_encrypt' => 'Zaszyfruj i utwórz link',

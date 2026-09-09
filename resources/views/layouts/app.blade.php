@@ -234,6 +234,7 @@
             'error_connection',
             'error_loading',
             'file_too_large',
+            'text_too_large',
             'qr_generation_failed',
             'secret_expired',
             'secret_file',
