@@ -42,16 +42,24 @@ class ProofOfWorkService
         $cacheKey = self::CACHE_PREFIX.$token;
         $data = Cache::get($cacheKey);
 
-        if (! $data) {
+        // Defense in depth: the entry is server-generated, but nothing guarantees
+        // what the cache hands back, so every field is checked before use.
+        if (! is_array($data)) {
             return false;
         }
 
-        if ($data['identifier'] !== $identifier) {
+        $challenge = $data['challenge'] ?? null;
+        $difficulty = $data['difficulty'] ?? null;
+
+        if (($data['identifier'] ?? null) !== $identifier) {
             return false;
         }
 
-        // Defense in depth: challenge is server-generated, but guard against any cache corruption.
-        if (! is_string($data['challenge']) || ! ctype_xdigit($data['challenge'])) {
+        if (! is_string($challenge) || ! ctype_xdigit($challenge) || strlen($challenge) % 2 !== 0) {
+            return false;
+        }
+
+        if (! is_int($difficulty)) {
             return false;
         }
 
@@ -60,9 +68,9 @@ class ProofOfWorkService
             return false;
         }
 
-        $hash = hash('sha256', hex2bin($data['challenge']).hex2bin($nonce), true);
+        $hash = hash('sha256', hex2bin($challenge).hex2bin($nonce), true);
 
-        if (! $this->hasLeadingZeroBits($hash, $data['difficulty'])) {
+        if (! $this->hasLeadingZeroBits($hash, $difficulty)) {
             return false;
         }
 
