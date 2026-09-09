@@ -136,8 +136,8 @@ class AdminController extends Controller
             return response()->json(['error' => 'unauthenticated'], 401);
         }
 
-        $page = (int) $request->input('page', 1);
-        $knownIds = array_filter(explode(',', $request->input('known', '')));
+        $page = $request->integer('page', 1);
+        $knownIds = array_filter(explode(',', $request->string('known')->toString()));
 
         $secrets = Secret::where('creator_email_hash', $emailHash)
             ->orderByDesc('created_at')

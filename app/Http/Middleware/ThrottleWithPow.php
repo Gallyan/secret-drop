@@ -51,10 +51,10 @@ class ThrottleWithPow
         }
 
         // Rate limit exceeded — check for valid proof-of-work
-        $powToken = $request->input('pow_token') ?? $request->header('X-Pow-Token');
-        $powNonce = $request->input('pow_nonce') ?? $request->header('X-Pow-Nonce');
+        $powToken = $request->string('pow_token', $request->header('X-Pow-Token', ''))->toString();
+        $powNonce = $request->string('pow_nonce', $request->header('X-Pow-Nonce', ''))->toString();
 
-        if ($powToken && $powNonce !== null) {
+        if ($powToken !== '' && $powNonce !== '') {
             if ($this->pow->verify($powToken, $powNonce, $identifier)) {
                 return $next($request);
             }
