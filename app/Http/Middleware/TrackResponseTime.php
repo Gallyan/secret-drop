@@ -47,7 +47,7 @@ class TrackResponseTime
     {
         $start = $request->attributes->get('_rt_start');
 
-        if (! $start) {
+        if (! is_float($start)) {
             return;
         }
 

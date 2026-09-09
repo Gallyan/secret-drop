@@ -48,13 +48,13 @@ class SanitizeProcessor implements ProcessorInterface
     }
 
     /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
+     * @param array<array-key, mixed> $data
+     * @return array<array-key, mixed>
      */
     private function sanitizeArray(array $data): array
     {
         foreach ($data as $key => $value) {
-            if ($this->isSensitiveKey($key)) {
+            if (is_string($key) && $this->isSensitiveKey($key)) {
                 $data[$key] = '[REDACTED]';
             } elseif (is_array($value)) {
                 $data[$key] = $this->sanitizeArray($value);

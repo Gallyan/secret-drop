@@ -41,15 +41,14 @@ class SanitizeRequestLogging
             $request->server->set('ORIGINAL_REQUEST_URI', '[REDACTED]');
         }
 
-        $queryString = $request->server->get('QUERY_STRING', '');
-        if ($queryString && $this->containsSensitiveParams($queryString)) {
+        $queryString = $request->server->getString('QUERY_STRING');
+        if ($queryString !== '' && $this->containsSensitiveParams($queryString)) {
             $request->server->set('QUERY_STRING', '[REDACTED]');
         }
 
         if ($request->server->has('HTTP_REFERER')) {
-            $referer = $request->server->get('HTTP_REFERER');
-            $sanitizedReferer = $this->sanitizeFullUrl($referer);
-            $request->server->set('HTTP_REFERER', $sanitizedReferer);
+            $referer = $request->server->getString('HTTP_REFERER');
+            $request->server->set('HTTP_REFERER', $this->sanitizeFullUrl($referer));
         }
     }
 
