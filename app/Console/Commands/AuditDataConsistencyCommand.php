@@ -43,7 +43,8 @@ class AuditDataConsistencyCommand extends Command
             ->where('type', SecretType::File)
             ->whereNotNull('file_path')
             ->pluck('file_path')
-            ->toArray();
+            ->filter(fn (mixed $path): bool => is_string($path))
+            ->all();
 
         $orphans = array_diff($files, $validPaths);
 

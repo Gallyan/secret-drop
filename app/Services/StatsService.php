@@ -84,7 +84,14 @@ class StatsService
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{
+     *     period: string,
+     *     days: int|null,
+     *     start_date: string,
+     *     end_date: string,
+     *     metrics: array<string, array<string, int>>,
+     *     totals: array<string, int>,
+     * }
      */
     public function getStats(string $period = '30d'): array
     {
@@ -108,10 +115,12 @@ class StatsService
 
         $stats = [];
         foreach ($query->cursor() as $row) {
-            $stats[$row->metric][$row->date] = $row->count;
+            $stats[self::asKey($row->metric)][self::asKey($row->date)] = self::asInt($row->count);
         }
 
-        $firstDate = $startDate ?? DB::table('stats_daily')->min('date') ?? now()->toDateString();
+        $firstDate = $startDate
+            ?? self::asKey(DB::table('stats_daily')->min('date'))
+            ?: now()->toDateString();
 
         return [
             'period' => $period,
@@ -134,7 +143,7 @@ class StatsService
 
         $this->applyDateFilter($query, $startDate);
 
-        return $query->pluck('total', 'metric')->map(fn ($v) => (int) $v)->toArray();
+        return $this->sumByColumn($query, 'metric');
     }
 
     /**
@@ -190,7 +199,7 @@ class StatsService
 
         $breakdown = [];
         for ($hour = 0; $hour < 24; $hour++) {
-            $breakdown[$hour] = (int) ($counts[$hour] ?? 0);
+            $breakdown[$hour] = self::asInt($counts[$hour] ?? 0);
         }
 
         return $breakdown;
@@ -295,7 +304,8 @@ class StatsService
             ->groupBy('creator_email_hash')
             ->orderBy('total')
             ->pluck('total')
-            ->toArray();
+            ->map(fn (mixed $total): int => self::asInt($total))
+            ->all();
 
         $uniqueCreators = count($counts);
 
@@ -470,7 +480,7 @@ class StatsService
 
         $this->applyDateFilter($query, $startDate);
 
-        return $query->pluck('total', 'bot_name')->map(fn ($v) => (int) $v)->toArray();
+        return $this->sumByColumn($query, 'bot_name');
     }
 
     /**
@@ -485,7 +495,7 @@ class StatsService
 
         $this->applyDateFilter($query, $startDate);
 
-        return $query->pluck('total', 'device_type')->map(fn ($v) => (int) $v)->toArray();
+        return $this->sumByColumn($query, 'device_type');
     }
 
     /**
@@ -599,10 +609,39 @@ class StatsService
         $hours = array_fill(0, 24, 0);
 
         foreach ($data as $hour => $total) {
-            $hours[$hour] = (int) $total;
+            $hours[$hour] = self::asInt($total);
         }
 
         return $hours;
+    }
+
+    /**
+     * Sums a column into a keyed map of integers.
+     *
+     * Database drivers return aggregates as strings or integers depending on the
+     * connection, so the values are normalised here rather than at each caller.
+     *
+     * @return array<string, int>
+     */
+    private function sumByColumn(Builder $query, string $keyColumn): array
+    {
+        $counts = [];
+
+        foreach ($query->pluck('total', $keyColumn) as $key => $total) {
+            $counts[self::asKey($key)] = self::asInt($total);
+        }
+
+        return $counts;
+    }
+
+    private static function asInt(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
+    }
+
+    private static function asKey(mixed $value): string
+    {
+        return is_scalar($value) ? (string) $value : '';
     }
 
     /** @param array<int, int> $buckets */
