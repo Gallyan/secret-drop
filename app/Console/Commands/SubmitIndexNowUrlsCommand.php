@@ -22,7 +22,7 @@ class SubmitIndexNowUrlsCommand extends Command
 
     public function handle(): int
     {
-        $key = (string) config('services.indexnow.key');
+        $key = config_string('services.indexnow.key');
 
         if ($key === '') {
             $this->warn('IndexNow key is not configured: set INDEXNOW_KEY in your environment.');
@@ -30,7 +30,7 @@ class SubmitIndexNowUrlsCommand extends Command
             return Command::FAILURE;
         }
 
-        $host = (string) parse_url((string) config('app.url'), PHP_URL_HOST);
+        $host = (string) parse_url(config_string('app.url'), PHP_URL_HOST);
 
         if ($host === '') {
             $this->warn('Cannot determine the site host: check APP_URL in your environment.');
@@ -94,7 +94,7 @@ class SubmitIndexNowUrlsCommand extends Command
                     fn (\Throwable $exception): bool => $exception instanceof ConnectionException,
                     throw: false
                 )
-                ->post((string) config('services.indexnow.endpoint'), $payload);
+                ->post(config_string('services.indexnow.endpoint', 'https://api.indexnow.org/indexnow'), $payload);
         } catch (ConnectionException $exception) {
             $this->warn("Could not reach the IndexNow endpoint: {$exception->getMessage()}");
 

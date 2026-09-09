@@ -96,7 +96,7 @@ class SeoController extends Controller
 
     public function indexNowKey(string $indexnowKey): Response
     {
-        $key = (string) config('services.indexnow.key');
+        $key = config_string('services.indexnow.key');
 
         if ($key === '') {
             abort(404);

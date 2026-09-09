@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -22,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        TrustProxies::at(config('app.trusted_proxies'));
+        TrustProxies::at(Config::array('app.trusted_proxies'));
 
         Model::shouldBeStrict(! $this->app->isProduction());
 
@@ -37,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('daily', function (Request $request) {
-            return Limit::perDay(config('secrets.daily_limit_per_ip'))
+            return Limit::perDay(Config::integer('secrets.daily_limit_per_ip'))
                 ->by($request->ip())
                 ->response(function () {
                     return response()->json([

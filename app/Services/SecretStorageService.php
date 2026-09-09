@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -132,7 +133,7 @@ class SecretStorageService
 
     public function isQuotaExceeded(): bool
     {
-        $quotaMb = config('secrets.file_storage_quota_mb');
+        $quotaMb = Config::integer('secrets.file_storage_quota_mb');
 
         if ($quotaMb <= 0) {
             return false;

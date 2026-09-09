@@ -129,9 +129,9 @@ return [
     */
 
     'dkim' => [
-        'domain' => env('MAIL_DKIM_DOMAIN'),
+        'domain' => env('MAIL_DKIM_DOMAIN', ''),
         'selector' => env('MAIL_DKIM_SELECTOR', 'secretdrop'),
-        'private_key_path' => env('MAIL_DKIM_PRIVATE_KEY_PATH'),
+        'private_key_path' => env('MAIL_DKIM_PRIVATE_KEY_PATH', ''),
         'passphrase' => env('MAIL_DKIM_PASSPHRASE', ''),
     ],
 

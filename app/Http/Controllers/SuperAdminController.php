@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 
 use function Illuminate\Support\defer;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -26,7 +27,7 @@ class SuperAdminController extends Controller
 
     private function sessionTtl(): int
     {
-        return config('secrets.super_admin_session_ttl');
+        return Config::integer('secrets.super_admin_session_ttl');
     }
 
     public function __construct(
@@ -47,7 +48,7 @@ class SuperAdminController extends Controller
     public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
         $email = strtolower(trim($request->validated('email')));
-        $superAdminEmail = strtolower(trim(config('app.super_admin_email', '')));
+        $superAdminEmail = strtolower(trim(config_string('app.super_admin_email')));
 
         if ($superAdminEmail !== '' && hash_equals($superAdminEmail, $email)) {
             $tokenData = $this->tokenService->generateMagicLinkToken();
@@ -55,7 +56,7 @@ class SuperAdminController extends Controller
             MagicLink::create([
                 'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
                 'token_hash' => $tokenData['hash'],
-                'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
+                'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
             ]);
 
             $url = route('superadmin.verify', ['token' => $tokenData['token']]);

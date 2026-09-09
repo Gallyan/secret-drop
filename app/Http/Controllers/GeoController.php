@@ -10,10 +10,10 @@ class GeoController extends Controller
     public function llmsTxt(): Response
     {
         $base = url('/en');
-        $github = config('legal.social.github') ?: 'https://github.com/Gallyan/secret-drop';
-        $website = config('legal.social.website') ?: 'https://www.orsal.fr';
+        $github = config_string('legal.social.github', 'https://github.com/Gallyan/secret-drop');
+        $website = config_string('legal.social.website', 'https://www.orsal.fr');
         $contactUrl = url('/contact');
-        $editorName = config('legal.editor_name', 'Secret Drop');
+        $editorName = config_string('legal.editor_name', 'Secret Drop');
         $fullUrl = url('/llms-full.txt');
 
         $content = <<<TXT
@@ -57,15 +57,15 @@ class GeoController extends Controller
     public function llmsFullTxt(): Response
     {
         $base = url('/en');
-        $github = config('legal.social.github') ?: 'https://github.com/Gallyan/secret-drop';
-        $website = config('legal.social.website') ?: 'https://www.orsal.fr';
+        $github = config_string('legal.social.github', 'https://github.com/Gallyan/secret-drop');
+        $website = config_string('legal.social.website', 'https://www.orsal.fr');
         $contactUrl = url('/contact');
 
         $siteUrl = url('');
         $content = File::get(resource_path('llms-full.txt'));
         $content = str_replace(
             ['WEBSITE_URL', 'CONTACT_URL', 'GITHUB_URL', 'BASE_URL', 'SITE_URL', 'EDITOR_NAME'],
-            [$website, $contactUrl, $github, $base, $siteUrl, config('legal.editor_name', 'Secret Drop')],
+            [$website, $contactUrl, $github, $base, $siteUrl, config_string('legal.editor_name', 'Secret Drop')],
             $content,
         );
 
@@ -80,7 +80,7 @@ class GeoController extends Controller
             return response(File::get($signed), 200, ['Content-Type' => 'text/plain']);
         }
 
-        $email = config('legal.contact_email', config('mail.from.address'));
+        $email = config_string('legal.contact_email', config_string('mail.from.address'));
         $canonical = url('/.well-known/security.txt');
         $expires = now()->addYear()->utc()->format('Y-m-d\TH:i:s\Z');
 

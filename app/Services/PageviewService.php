@@ -363,7 +363,7 @@ class PageviewService
             $host = substr($host, 4);
         }
 
-        $appHost = parse_url(config('app.url', ''), PHP_URL_HOST);
+        $appHost = parse_url(config_string('app.url'), PHP_URL_HOST);
 
         if ($appHost) {
             $appHost = strtolower($appHost);

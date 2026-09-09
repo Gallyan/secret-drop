@@ -9,10 +9,10 @@ return [
     'organization_name' => env('LEGAL_ORGANIZATION_NAME', config('app.name')),
 
     'social' => [
-        'github' => env('SOCIAL_GITHUB'),
-        'twitter' => env('SOCIAL_TWITTER'),
-        'linkedin' => env('SOCIAL_LINKEDIN'),
-        'website' => env('SOCIAL_WEBSITE'),
+        'github' => env('SOCIAL_GITHUB', ''),
+        'twitter' => env('SOCIAL_TWITTER', ''),
+        'linkedin' => env('SOCIAL_LINKEDIN', ''),
+        'website' => env('SOCIAL_WEBSITE', ''),
     ],
 
     'hosting' => [

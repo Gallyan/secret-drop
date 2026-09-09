@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 
 use function Illuminate\Support\defer;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -244,7 +245,10 @@ class SecretsController extends Controller
 
     private function calculateExpireAt(string $expiration): \Carbon\Carbon
     {
-        $hours = config('secrets.expirations.'.$expiration, config('secrets.expirations.'.config('secrets.default_expiration')));
+        $hours = Config::integer(
+            'secrets.expirations.'.$expiration,
+            Config::integer('secrets.expirations.'.Config::string('secrets.default_expiration'))
+        );
 
         return now()->addHours($hours);
     }

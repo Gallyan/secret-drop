@@ -8,7 +8,7 @@ class ContactController extends Controller
 {
     public function email(): RedirectResponse
     {
-        $email = config('legal.contact_email', config('mail.from.address'));
+        $email = config_string('legal.contact_email', config_string('mail.from.address'));
 
         return redirect()->away("mailto:{$email}");
     }

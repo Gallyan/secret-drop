@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @property string $id
@@ -78,7 +79,7 @@ class MagicLink extends Model
         return hash_hmac(
             'sha256',
             strtolower(trim($email)),
-            config('secrets.email_hash_pepper')
+            Config::string('secrets.email_hash_pepper')
         );
     }
 }

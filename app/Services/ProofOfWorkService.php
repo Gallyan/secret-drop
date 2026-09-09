@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 /** Generates and verifies SHA-256 proof-of-work challenges to gate rate-limited requests. */
 class ProofOfWorkService
@@ -16,7 +17,7 @@ class ProofOfWorkService
     {
         $challenge = bin2hex(random_bytes(16));
         $token = bin2hex(random_bytes(16));
-        $difficulty = (int) config('pow.difficulty', 20);
+        $difficulty = Config::integer('pow.difficulty', 20);
 
         Cache::put(
             self::CACHE_PREFIX.$token,
@@ -26,7 +27,7 @@ class ProofOfWorkService
                 'identifier' => $identifier,
                 'created_at' => now()->timestamp,
             ],
-            (int) config('pow.ttl_seconds', 300)
+            Config::integer('pow.ttl_seconds', 300)
         );
 
         return [

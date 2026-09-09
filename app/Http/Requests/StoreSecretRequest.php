@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\SecretType;
 use App\Rules\Base64UrlBytes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -59,7 +60,7 @@ class StoreSecretRequest extends FormRequest
             'cipher_meta.iv2' => ['bail', 'nullable', 'string', new Base64UrlBytes(exactBytes: 12)],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
-            'expiration' => ['required', 'in:'.implode(',', array_keys(config('secrets.expirations')))],
+            'expiration' => ['required', 'in:'.implode(',', array_keys(Config::array('secrets.expirations')))],
             'max_views' => ['nullable', 'integer', 'min:1', 'max:100'],
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],

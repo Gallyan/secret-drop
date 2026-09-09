@@ -13,6 +13,21 @@ if (! function_exists('nfmt')) {
     }
 }
 
+if (! function_exists('config_string')) {
+    /**
+     * Reads a configuration value that may legitimately be absent, empty or null.
+     *
+     * Config::string() throws on anything but a string, which turns a missing
+     * optional setting into a 500 instead of letting the caller fall back.
+     */
+    function config_string(string $key, string $default = ''): string
+    {
+        $value = config($key);
+
+        return is_string($value) && $value !== '' ? $value : $default;
+    }
+}
+
 if (! function_exists('hour_range_label')) {
     /** Labels an hourly bucket as a range, so "14:00-15:00" cannot be read as a single time. */
     function hour_range_label(int $hour): string

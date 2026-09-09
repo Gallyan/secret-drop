@@ -11,11 +11,11 @@ class SignEmailWithDkim
 {
     public function handle(MessageSending $event): void
     {
-        $domain = config('mail.dkim.domain');
-        $selector = config('mail.dkim.selector');
-        $privateKeyPath = config('mail.dkim.private_key_path');
+        $domain = config_string('mail.dkim.domain');
+        $selector = config_string('mail.dkim.selector');
+        $privateKeyPath = config_string('mail.dkim.private_key_path');
 
-        if (empty($domain) || empty($selector) || empty($privateKeyPath)) {
+        if ($domain === '' || $selector === '' || $privateKeyPath === '') {
             return;
         }
 
@@ -35,7 +35,7 @@ class SignEmailWithDkim
             return;
         }
 
-        $passphrase = config('mail.dkim.passphrase', '');
+        $passphrase = config_string('mail.dkim.passphrase');
 
         $signer = new DkimSigner($privateKey, $domain, $selector, [], $passphrase);
         $signedMessage = $signer->sign($event->message);

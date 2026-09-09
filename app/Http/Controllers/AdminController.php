@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 
 use function Illuminate\Support\defer;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -28,7 +29,7 @@ class AdminController extends Controller
 
     private function sessionTtl(): int
     {
-        return config('secrets.admin_session_ttl');
+        return Config::integer('secrets.admin_session_ttl');
     }
 
     public function __construct(
@@ -65,7 +66,7 @@ class AdminController extends Controller
         MagicLink::create([
             'email_hash' => $emailHash,
             'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
+            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
