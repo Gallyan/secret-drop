@@ -67,6 +67,65 @@ class StoreSecretRequest extends FormRequest
         ];
     }
 
+    /**
+     * Typed readers over the validated payload.
+     *
+     * They all go through validated(), never input(): the rules above stay the
+     * only gate, and callers get a guaranteed type instead of mixed.
+     */
+    public function secretType(): SecretType
+    {
+        $type = $this->validated('type');
+
+        return SecretType::from(is_string($type) ? $type : '');
+    }
+
+    public function expiration(): string
+    {
+        $expiration = $this->validated('expiration');
+
+        return is_string($expiration) ? $expiration : '';
+    }
+
+    public function ciphertext(): string
+    {
+        $ciphertext = $this->validated('ciphertext');
+
+        return is_string($ciphertext) ? $ciphertext : '';
+    }
+
+    /** @return array<string, mixed> */
+    public function cipherMeta(): array
+    {
+        $meta = $this->validated('cipher_meta');
+
+        return is_array($meta) ? $meta : [];
+    }
+
+    public function creatorEmail(): ?string
+    {
+        $email = $this->validated('creator_email');
+
+        return is_string($email) && $email !== '' ? $email : null;
+    }
+
+    public function maxViews(): ?int
+    {
+        $maxViews = $this->validated('max_views');
+
+        return is_numeric($maxViews) ? (int) $maxViews : null;
+    }
+
+    public function hasPassphrase(): bool
+    {
+        return (bool) $this->validated('cipher_meta.has_passphrase');
+    }
+
+    public function isSplitMode(): bool
+    {
+        return (bool) $this->validated('split_mode');
+    }
+
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {

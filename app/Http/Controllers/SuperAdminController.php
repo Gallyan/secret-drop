@@ -47,7 +47,7 @@ class SuperAdminController extends Controller
 
     public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
-        $email = strtolower(trim($request->validated('email')));
+        $email = strtolower(trim($request->email()));
         $superAdminEmail = strtolower(trim(config_string('app.super_admin_email')));
 
         if ($superAdminEmail !== '' && hash_equals($superAdminEmail, $email)) {

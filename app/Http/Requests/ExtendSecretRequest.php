@@ -22,6 +22,20 @@ class ExtendSecretRequest extends FormRequest
     }
 
     /**
+     * Reads the validated value, so the rules above stay the single source of truth.
+     *
+     * The `integer` rule accepts numeric strings, hence the conversion here; the
+     * fallback only satisfies the return type and is unreachable once validation
+     * has passed.
+     */
+    public function hours(): int
+    {
+        $hours = $this->validated('hours');
+
+        return is_numeric($hours) ? (int) $hours : 0;
+    }
+
+    /**
      * @return array<string, string>
      */
     public function messages(): array

@@ -50,7 +50,7 @@ class AdminController extends Controller
 
     public function requestAccess(RequestAdminAccessRequest $request): RedirectResponse
     {
-        $emailHash = MagicLink::hashEmail($request->validated('email'));
+        $emailHash = MagicLink::hashEmail($request->email());
 
         $hasSecrets = Secret::where('creator_email_hash', $emailHash)->exists();
 
@@ -70,7 +70,7 @@ class AdminController extends Controller
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
-        Mail::to($request->validated('email'))
+        Mail::to($request->email())
             ->locale(app()->getLocale())
             ->send(new MagicLinkMail($verifyUrl));
 
@@ -235,7 +235,7 @@ class AdminController extends Controller
         $baseDate = $secret->expire_at === null || $secret->expire_at->isPast()
             ? now()
             : $secret->expire_at;
-        $secret->expire_at = $baseDate->addHours($request->validated('hours'));
+        $secret->expire_at = $baseDate->addHours($request->hours());
         $secret->save();
 
         defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::SECRETS_EXTENDED));

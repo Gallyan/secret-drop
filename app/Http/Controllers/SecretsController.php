@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\SecretType;
 use App\Http\Requests\StoreSecretRequest;
 use App\Models\MagicLink;
 use App\Models\Secret;
@@ -43,8 +42,7 @@ class SecretsController extends Controller
             ], 201);
         }
 
-        $validated = $request->validated();
-        $type = SecretType::from($validated['type']);
+        $type = $request->secretType();
 
         // Check file storage quota before accepting uploads
         if ($type->isFile() && $this->storage->isQuotaExceeded()) {
@@ -54,25 +52,25 @@ class SecretsController extends Controller
             ], 503);
         }
 
-        $expireAt = $this->calculateExpireAt($validated['expiration']);
+        $expireAt = $this->calculateExpireAt($request->expiration());
         $token = $this->tokenService->generatePublicToken();
 
-        $creatorEmail = $validated['creator_email'] ?? null;
+        $creatorEmail = $request->creatorEmail();
         $adminTokenData = $this->tokenService->generateAdminToken();
 
         $secretData = [
             'token' => $token,
             'admin_token_hash' => $adminTokenData['hash'],
             'type' => $type,
-            'cipher_meta' => $validated['cipher_meta'],
-            'max_views' => $validated['max_views'] ?? null,
+            'cipher_meta' => $request->cipherMeta(),
+            'max_views' => $request->maxViews(),
             'expire_at' => $expireAt,
             'creator_email_hash' => $creatorEmail ? MagicLink::hashEmail($creatorEmail) : null,
         ];
 
         $fileSize = null;
         if ($type->isText()) {
-            $secretData['ciphertext'] = $validated['ciphertext'];
+            $secretData['ciphertext'] = $request->ciphertext();
         } else {
             $file = $request->file('encrypted_file');
             $fileSize = $file->getSize() ?: null;
@@ -83,7 +81,10 @@ class SecretsController extends Controller
 
         $secret = Secret::create($secretData);
 
-        defer(fn () => $this->trackCreationStats($secret, $validated, $fileSize));
+        $hasPassphrase = $request->hasPassphrase();
+        $splitMode = $request->isSplitMode();
+
+        defer(fn () => $this->trackCreationStats($secret, $hasPassphrase, $splitMode, $fileSize));
 
         return response()->json([
             'token' => $secret->token,
@@ -91,11 +92,12 @@ class SecretsController extends Controller
         ], 201);
     }
 
-    /**
-     * @param  array<string, mixed>  $validated
-     */
-    private function trackCreationStats(Secret $secret, array $validated, ?int $fileSize = null): void
-    {
+    private function trackCreationStats(
+        Secret $secret,
+        bool $hasPassphrase,
+        bool $splitMode,
+        ?int $fileSize = null,
+    ): void {
         if ($secret->type->isText()) {
             $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
 
@@ -110,7 +112,7 @@ class SecretsController extends Controller
             }
         }
 
-        if (! empty($validated['cipher_meta']['has_passphrase'])) {
+        if ($hasPassphrase) {
             $this->stats->increment(StatsService::SECRETS_WITH_PASSPHRASE);
         }
 
@@ -118,7 +120,7 @@ class SecretsController extends Controller
             $this->stats->increment(StatsService::SECRETS_WITH_MAX_VIEWS);
         }
 
-        if (! empty($validated['split_mode'])) {
+        if ($splitMode) {
             $this->stats->increment(StatsService::SECRETS_SPLIT_MODE);
         }
 

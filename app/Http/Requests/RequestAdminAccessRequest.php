@@ -21,6 +21,14 @@ class RequestAdminAccessRequest extends FormRequest
         ];
     }
 
+    /** Reads the validated value, so the rules above stay the single source of truth. */
+    public function email(): string
+    {
+        $email = $this->validated('email');
+
+        return is_string($email) ? $email : '';
+    }
+
     /**
      * @return array<string, string>
      */
