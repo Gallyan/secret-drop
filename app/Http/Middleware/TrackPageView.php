@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Services\PageviewService;
 use App\Support\LocaleConfig;
+use App\Support\StatsPages;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ class TrackPageView
             return $response;
         }
 
-        $page = $this->identifyPage($request);
+        $page = StatsPages::identify($request->route());
 
         if (! $page) {
             return $response;
@@ -40,30 +41,6 @@ class TrackPageView
         );
 
         return $response;
-    }
-
-    private function identifyPage(Request $request): ?string
-    {
-        $route = $request->route();
-
-        $name = $route?->getName();
-
-        if (! $name || str_starts_with($name, 'generated::')) {
-            return null;
-        }
-
-        if ($name === 'page.show') {
-            $slug = $route->parameter('pageSlug', 'unknown');
-            $locale = $route->parameter('locale', LocaleConfig::DEFAULT_LOCALE);
-
-            if (! is_string($slug) || ! is_string($locale)) {
-                return $name;
-            }
-
-            return LocaleConfig::findRouteBySlug($slug, $locale) ?? $slug;
-        }
-
-        return $name;
     }
 
     private function extractLocale(Request $request): string

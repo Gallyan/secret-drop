@@ -7,6 +7,7 @@ use App\Mail\SuperAdminMagicLinkMail;
 use App\Models\MagicLink;
 use App\Services\StatsService;
 use App\Services\TokenService;
+use App\Support\StatsPages;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -110,6 +111,7 @@ class SuperAdminController extends Controller
         $this->renewSessionExpiry($request);
 
         $data = $this->collectStats($request);
+        $data['pageLabels'] = StatsPages::labels();
 
         return view('superadmin.dashboard', $data);
     }

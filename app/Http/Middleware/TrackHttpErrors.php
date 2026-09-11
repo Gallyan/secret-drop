@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Services\StatsService;
+use App\Support\StatsPages;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -38,12 +40,23 @@ class TrackHttpErrors
         if ($status >= 500) {
             $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_5XX);
 
-            $route = $request->route()?->getName() ?? $request->getPathInfo();
-            $this->stats->trackErrorRoute($status, mb_substr($route, 0, 100));
+            $this->stats->trackErrorRoute($status, mb_substr($this->identifyRoute($request), 0, 100));
         } else {
             $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_4XX);
         }
 
         $this->stats->increment("http_errors_{$status}");
+    }
+
+    /** Page identifier, or the route URI template: the actual path may carry secret or admin tokens. */
+    private function identifyRoute(Request $request): string
+    {
+        $route = $request->route();
+
+        if (! $route instanceof Route) {
+            return StatsPages::UNKNOWN;
+        }
+
+        return StatsPages::identify($route) ?? $route->uri();
     }
 }

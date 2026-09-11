@@ -214,6 +214,29 @@ class SuperAdminControllerTest extends TestCase
             ->value('count'));
     }
 
+    /** Vérifie que les erreurs 5xx par page affichent le libellé de la page, y compris pour page.show. */
+    public function testErrorRoutesAreDisplayedWithTheirPageLabel(): void
+    {
+        foreach (['faq' => 2, 'page.show' => 1] as $route => $count) {
+            DB::table('stats_error_routes')->insert([
+                'date' => now()->toDateString(),
+                'status' => 500,
+                'route' => $route,
+                'count' => $count,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->authenticateSuperAdmin();
+
+        $this->get('/fr/superadmin/dashboard')->assertSeeInOrder([
+            __('messages.stat_5xx_by_route', [], 'fr'),
+            __('messages.faq_title', [], 'fr'),
+            __('messages.stat_page_content', [], 'fr'),
+        ]);
+    }
+
     /** Vérifie que les demandes de lien magique sont comptées à l'heure. */
     public function testMagicLinkRequestsAreRecordedHourly(): void
     {

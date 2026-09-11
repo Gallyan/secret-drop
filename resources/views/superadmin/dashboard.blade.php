@@ -276,32 +276,9 @@
                 <x-card class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_5xx_by_route') }}</h3>
                     <div id="pollErrorRoutes" class="space-y-2">
-                        @php
-                            $byRoute = $errorStats['by_route'] ?? [];
-                            $routeLabels = [
-                                'home' => __('messages.stat_page_home'),
-                                'secrets.store' => __('messages.stat_route_create'),
-                                'secrets.show' => __('messages.stat_route_read'),
-                                'secrets.fetch' => __('messages.stat_route_read') . ' (API)',
-                                'secrets.confirmRead' => __('messages.stat_route_confirm_read'),
-                                'secrets.download' => __('messages.stat_route_download'),
-                                'admin.index' => 'Admin',
-                                'admin.dashboard' => 'Admin dashboard',
-                                'admin.poll' => 'Admin poll',
-                                'admin.requestAccess' => 'Admin login',
-                                'admin.verify' => 'Admin verify',
-                                'admin.extend' => 'Admin extend',
-                                'admin.revoke' => 'Admin revoke',
-                                'superadmin.index' => 'Superadmin',
-                                'superadmin.dashboard' => 'Superadmin dashboard',
-                                'superadmin.poll' => 'Superadmin poll',
-                                'superadmin.requestAccess' => 'Superadmin login',
-                                'superadmin.verify' => 'Superadmin verify',
-                            ];
-                        @endphp
-                        @forelse($byRoute as $route => $statuses)
+                        @forelse($errorStats['by_route'] ?? [] as $route => $statuses)
                             <div class="flex items-center justify-between text-sm">
-                                <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">{{ $routeLabels[$route] ?? $route }}</span>
+                                <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">{{ $pageLabels[$route] ?? $route }}</span>
                                 <div class="flex items-center gap-2">
                                     @foreach($statuses as $code => $count)
                                         <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-mono font-medium">{{ $code }}</span>
@@ -376,50 +353,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {{-- By page --}}
                 @php
-                    $pageTitleMap = [
-                        'home' => __('messages.stat_page_home'),
-                        'how-it-works' => __('messages.how_it_works_title'),
-                        'use-cases' => __('messages.use_cases_title'),
-                        'legal' => __('messages.legal_title'),
-                        'faq' => __('messages.faq_title'),
-                        'secrets.show' => __('messages.view_secret_title'),
-                        'secrets.download' => __('messages.stat_page_download'),
-                        'admin.index' => __('messages.stat_page_admin_login'),
-                        'admin.dashboard' => __('messages.stat_page_admin_dashboard'),
-                        'superadmin.index' => __('messages.stat_page_superadmin_login'),
-                        'superadmin.dashboard' => __('messages.stat_page_superadmin_dashboard'),
-                        'admin.verify' => __('messages.stat_page_admin_verify'),
-                        'admin.accessSent' => __('messages.stat_page_admin_access_sent'),
-                        'superadmin.verify' => __('messages.stat_page_superadmin_verify'),
-                        'superadmin.accessSent' => __('messages.stat_page_superadmin_access_sent'),
-                        'page.show' => __('messages.stat_page_content'),
-                        // Legacy underscore variants
-                        'admin' => __('messages.stat_page_admin_login'),
-                        'admin_dashboard' => __('messages.stat_page_admin_dashboard'),
-                        'superadmin' => __('messages.stat_page_superadmin_login'),
-                        'superadmin_dashboard' => __('messages.stat_page_superadmin_dashboard'),
-                    ];
-
-                    // Add localized slugs from all locales
-                    $slugTitleKeys = [
-                        'how-it-works' => 'messages.how_it_works_title',
-                        'use-cases' => 'messages.use_cases_title',
-                        'legal' => 'messages.legal_title',
-                        'faq' => 'messages.faq_title',
-                    ];
-                    foreach (\App\Support\LocaleConfig::SUPPORTED_LOCALES as $loc) {
-                        foreach ($slugTitleKeys as $routeName => $titleKey) {
-                            $slug = trans("routes.{$routeName}", [], $loc);
-                            if ($slug !== "routes.{$routeName}" && ! isset($pageTitleMap[$slug])) {
-                                $pageTitleMap[$slug] = __($titleKey);
-                            }
-                        }
-                    }
-                @endphp
-                @php
                     $mergedByPage = [];
                     foreach ($pageviews['by_page'] as $page => $counts) {
-                        $title = $pageTitleMap[$page] ?? $page;
+                        $title = $pageLabels[$page] ?? $page;
                         $mergedByPage[$title] ??= ['human' => 0, 'bot' => 0];
                         $mergedByPage[$title]['human'] += $counts['human'];
                         $mergedByPage[$title]['bot'] += $counts['bot'];
@@ -659,8 +595,7 @@
         deviceStats: @json($deviceStats),
         hourly: @json($hourly),
         pageviews: @json($pageviews),
-        pageTitleMap: @json($pageTitleMap),
-        routeLabels: @json($routeLabels),
+        pageLabels: @json($pageLabels),
         groupLabels: @json($groupLabels),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),
         localeNames: @json(\App\Support\LocaleConfig::NATIVE_NAMES),

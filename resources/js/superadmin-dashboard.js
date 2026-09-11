@@ -299,7 +299,7 @@ function updateLists(data) {
     // By page (merged by title)
     const el = document.getElementById('pollByPage');
     if (el) {
-        const map = sd.pageTitleMap || {};
+        const map = sd.pageLabels || {};
         const merged = {};
         for (const [page, counts] of Object.entries(pv.by_page)) {
             const title = map[page] || page;
@@ -486,7 +486,7 @@ function updateLists(data) {
             const et = window.superAdminData?.errorTranslations || {};
             elRoutes.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
         } else {
-            const rl = window.superAdminData?.routeLabels || {};
+            const rl = window.superAdminData?.pageLabels || {};
             elRoutes.innerHTML = entries.map(([route, statuses]) => {
                 const label = rl[route] || route;
                 const codes = Object.entries(statuses).map(([code, count]) =>
