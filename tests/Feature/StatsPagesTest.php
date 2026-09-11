@@ -14,7 +14,7 @@ class StatsPagesTest extends TestCase
     {
         $labels = StatsPages::labels();
 
-        foreach (Route::getRoutes() as $route) {
+        foreach (Route::getRoutes()->getRoutes() as $route) {
             $name = $route->getName();
 
             if (! $name || str_starts_with($name, 'generated::') || str_starts_with($route->getActionName(), 'Laravel\\')) {
