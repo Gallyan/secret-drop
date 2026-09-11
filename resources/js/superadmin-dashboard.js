@@ -796,8 +796,21 @@ function initSectionNav() {
         });
     }
 
+    // While a click-triggered scroll is in flight, the scrollspy must not
+    // highlight the sections passing by.
+    let scrollingTo = null;
+    let releaseTimer = null;
+
+    function releaseScrollLock() {
+        scrollingTo = null;
+        clearTimeout(releaseTimer);
+    }
+
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
+            if (scrollingTo) {
+                return;
+            }
             const visible = entries
                 .filter((e) => e.isIntersecting)
                 .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
@@ -811,8 +824,35 @@ function initSectionNav() {
         sections.forEach((s) => observer.observe(s));
     }
 
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
     links.forEach((a) => {
-        a.addEventListener('click', () => setActive(a.dataset.navTarget));
+        a.addEventListener('click', (event) => {
+            const id = a.dataset.navTarget;
+            const target = document.getElementById(id);
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+
+            // A mouse click leaves the pointer on the sticky link; drop focus so
+            // the browser does not keep it as the hit target after the scroll.
+            if (event.detail > 0) {
+                a.blur();
+            }
+
+            setActive(id);
+            scrollingTo = id;
+            clearTimeout(releaseTimer);
+            releaseTimer = setTimeout(releaseScrollLock, 1500);
+            if ('onscrollend' in window) {
+                window.addEventListener('scrollend', releaseScrollLock, { once: true });
+            }
+
+            history.pushState(null, '', `#${id}`);
+            target.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+        });
     });
 
     const initialId = (window.location.hash || '').slice(1);
