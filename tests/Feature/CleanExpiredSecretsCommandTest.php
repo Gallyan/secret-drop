@@ -4,224 +4,239 @@ namespace Tests\Feature;
 
 use App\Models\MagicLink;
 use App\Models\Secret;
-use App\Services\SecretStorageService;
-use App\Services\TokenService;
-use Illuminate\Http\UploadedFile;
+use App\Services\StatsService;
+use Closure;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class CleanExpiredSecretsCommandTest extends TestCase
 {
-    private TokenService $tokenService;
-
-    private SecretStorageService $storage;
-
-    protected function setUp(): void
+    /**
+     * @return array<string, array{0: Closure(): Secret}>
+     */
+    public static function secretsNotCountedAsExpiredUnread(): array
     {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-        $this->storage = app(SecretStorageService::class);
+        return [
+            'expiré après avoir été lu' => [fn (): Secret => Secret::factory()->expired()->read()->create()],
+            'expiré puis révoqué' => [fn (): Secret => Secret::factory()->expired()->revoked()->create()],
+            'révoqué avant expiration' => [fn (): Secret => Secret::factory()->revoked()->create()],
+            'vues épuisées avant expiration' => [fn (): Secret => Secret::factory()->consumed()->create()],
+        ];
     }
 
-    /** Vérifie la suppression des secrets expirés. */
-    public function testDeletesExpiredSecrets(): void
+    /** Vérifie que la commande supprime un secret expiré et conserve un secret encore valide. */
+    public function testDeletesExpiredSecretAndKeepsValidOne(): void
     {
-        $expiredSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'expired',
-            'expire_at' => now()->subHour(),
-        ]);
-
-        $validSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'valid',
-            'expire_at' => now()->addDay(),
-        ]);
+        $this->freezeTime();
+        $expiredSecret = Secret::factory()->expired()->create();
+        $validSecret = Secret::factory()->create();
 
         $this->artisan('secrets:clean')
+            ->expectsOutput('Found 1 secrets to delete.')
+            ->expectsOutput('Deleted 1 secrets and 0 files.')
             ->assertSuccessful();
 
-        $this->assertNull(Secret::find($expiredSecret->id));
-        $this->assertNotNull(Secret::find($validSecret->id));
-
-        $validSecret->delete();
+        $this->assertModelMissing($expiredSecret);
+        $this->assertModelExists($validSecret);
     }
 
-    /** Vérifie la suppression des secrets révoqués. */
-    public function testDeletesRevokedSecrets(): void
+    /** Vérifie que la commande supprime un secret révoqué non expiré. */
+    public function testDeletesRevokedSecret(): void
     {
-        $revokedSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'revoked',
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
+        $this->freezeTime();
+        $revokedSecret = Secret::factory()->revoked()->create();
 
-        $this->artisan('secrets:clean')
-            ->assertSuccessful();
+        $this->artisan('secrets:clean')->assertSuccessful();
 
-        $this->assertNull(Secret::find($revokedSecret->id));
+        $this->assertModelMissing($revokedSecret);
     }
 
-    /** Vérifie la suppression des secrets ayant atteint le max de vues. */
-    public function testDeletesMaxViewsReachedSecrets(): void
+    /** Vérifie que la commande supprime un secret dont le nombre de lectures atteint la limite de vues. */
+    public function testDeletesSecretWhoseMaxViewsAreReached(): void
     {
-        $maxViewsSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'maxviews',
-            'max_views' => 3,
-            'read_count' => 3,
-            'expire_at' => now()->addDay(),
-        ]);
+        $this->freezeTime();
+        $maxViewsSecret = Secret::factory()->withMaxViews(3)->read(3)->create();
 
-        $this->artisan('secrets:clean')
-            ->assertSuccessful();
+        $this->artisan('secrets:clean')->assertSuccessful();
 
-        $this->assertNull(Secret::find($maxViewsSecret->id));
+        $this->assertModelMissing($maxViewsSecret);
     }
 
-    /** Vérifie la suppression des secrets usage unique déjà lus. */
-    public function testDeletesSingleUseSecretsAlreadyRead(): void
+    /** Vérifie qu'un secret sans date d'expiration n'est jamais sélectionné pour le nettoyage. */
+    public function testReportsNothingToCleanWhenOnlySecretHasNoExpiry(): void
     {
-        $singleUseSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'singleuse',
-            'max_views' => 1,
-            'read_count' => 1,
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $this->artisan('secrets:clean')
-            ->assertSuccessful();
-
-        $this->assertNull(Secret::find($singleUseSecret->id));
-    }
-
-    /** Vérifie la suppression du fichier du storage. */
-    public function testDeletesFileFromStorage(): void
-    {
-        $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create('encrypted', 256);
-        $filePath = $this->storage->store($token, $file);
-
-        $fileSecret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $filePath,
-            'expire_at' => now()->subHour(),
-        ]);
-
-        $this->assertTrue($this->storage->exists($filePath));
-
-        $this->artisan('secrets:clean')
-            ->assertSuccessful();
-
-        $this->assertNull(Secret::find($fileSecret->id));
-        $this->assertFalse($this->storage->exists($filePath));
-    }
-
-    /** Vérifie que --dry-run ne supprime rien. */
-    public function testDryRunDoesNotDelete(): void
-    {
-        $expiredSecret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'dryrun',
-            'expire_at' => now()->subHour(),
-        ]);
-
-        $this->artisan('secrets:clean --dry-run')
-            ->assertSuccessful();
-
-        $this->assertNotNull(Secret::find($expiredSecret->id));
-
-        $expiredSecret->delete();
-    }
-
-    /** Vérifie le message quand il n'y a rien à nettoyer. */
-    public function testOutputsNothingToCleanMessage(): void
-    {
-        // Delete any existing expired secrets first
-        Secret::where('expire_at', '<', now())->delete();
-        Secret::whereNotNull('revoked_at')->delete();
+        $this->freezeTime();
+        $secret = Secret::factory()->withoutExpiry()->create();
 
         $this->artisan('secrets:clean')
             ->expectsOutput('No expired secrets to clean.')
             ->assertSuccessful();
+
+        $this->assertModelExists($secret);
     }
 
-    /** Vérifie la suppression des magic links expirés. */
-    public function testDeletesExpiredMagicLinks(): void
+    /** Vérifie que la commande supprime le secret fichier expiré et son blob chiffré. */
+    public function testDeletesExpiredFileSecretAndItsBlob(): void
     {
-        $expiredLink = MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => hash('sha256', 'expired-token'),
-            'expire_at' => now()->subMinutes(10),
-        ]);
-
-        $validLink = MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test2@example.com'),
-            'token_hash' => hash('sha256', 'valid-token'),
-            'expire_at' => now()->addMinutes(5),
-        ]);
+        $this->freezeTime();
+        Storage::fake('secrets');
+        $fileSecret = Secret::factory()->expired()->withStoredBlob()->create();
+        $filePath = (string) $fileSecret->file_path;
 
         $this->artisan('secrets:clean')
+            ->expectsOutput('Found 1 secrets to delete.')
+            ->expectsOutput('Deleted 1 secrets and 1 files.')
             ->assertSuccessful();
 
-        $this->assertNull(MagicLink::find($expiredLink->id));
-        $this->assertNotNull(MagicLink::find($validLink->id));
-
-        $validLink->delete();
+        $this->assertModelMissing($fileSecret);
+        Storage::disk('secrets')->assertMissing($filePath);
     }
 
-    /** Vérifie la suppression des magic links utilisés. */
-    public function testDeletesUsedMagicLinks(): void
+    /** Vérifie que la suppression d'un blob invalide les tailles de stockage mises en cache. */
+    public function testInvalidatesCachedDiskUsageWhenBlobIsDeleted(): void
     {
-        $usedLink = MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => hash('sha256', 'used-token'),
-            'expire_at' => now()->addMinutes(5),
-            'used_at' => now(),
-        ]);
+        $this->freezeTime();
+        Storage::fake('secrets');
+        Secret::factory()->expired()->withStoredBlob()->create();
+        Cache::put('disk_usage_secrets', 123, 3600);
+        Cache::put('secrets:total_file_size', 123, 300);
+
+        $this->artisan('secrets:clean')->assertSuccessful();
+
+        $this->assertFalse(Cache::has('disk_usage_secrets'));
+        $this->assertFalse(Cache::has('secrets:total_file_size'));
+    }
+
+    /** Vérifie qu'un secret dont le blob a disparu du disque est supprimé sans compter de fichier. */
+    public function testDeletesSecretWhoseBlobIsMissingWithoutCountingFile(): void
+    {
+        $this->freezeTime();
+        Storage::fake('secrets');
+        $fileSecret = Secret::factory()->expired()->file()->create();
 
         $this->artisan('secrets:clean')
+            ->expectsOutput('Deleted 1 secrets and 0 files.')
             ->assertSuccessful();
 
-        $this->assertNull(MagicLink::find($usedLink->id));
+        $this->assertModelMissing($fileSecret);
     }
 
-    /** Vérifie que --dry-run ne supprime pas les magic links. */
-    public function testDryRunDoesNotDeleteMagicLinks(): void
+    /** Vérifie qu'un secret fichier révoqué dont le chemin est déjà effacé est supprimé sans compter de fichier. */
+    public function testDeletesRevokedFileSecretWithoutFilePath(): void
     {
-        $expiredLink = MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => hash('sha256', 'dryrun-token'),
-            'expire_at' => now()->subMinutes(10),
-        ]);
+        $this->freezeTime();
+        Storage::fake('secrets');
+        $fileSecret = Secret::factory()->file()->revoked()->create();
 
-        $this->artisan('secrets:clean --dry-run')
+        $this->artisan('secrets:clean')
+            ->expectsOutput('Deleted 1 secrets and 0 files.')
             ->assertSuccessful();
 
-        $this->assertNotNull(MagicLink::find($expiredLink->id));
+        $this->assertModelMissing($fileSecret);
+    }
 
-        $expiredLink->delete();
+    /** Vérifie que les secrets expirés jamais lus sont comptés dans la statistique du jour. */
+    public function testCountsExpiredUnreadSecretsInDailyStats(): void
+    {
+        $this->travelTo('2026-09-15 12:00:00');
+        Secret::factory()->count(2)->expired()->create();
+
+        $this->artisan('secrets:clean')->assertSuccessful();
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::SECRETS_EXPIRED_UNREAD,
+            'count' => 2,
+        ]);
+    }
+
+    /**
+     * Vérifie que les secrets supprimés sans être expirés et non lus ne sont pas comptés comme expirés non lus.
+     *
+     * @param  Closure(): Secret  $createSecret
+     */
+    #[DataProvider('secretsNotCountedAsExpiredUnread')]
+    public function testDoesNotCountSecretAsExpiredUnreadWhenReadOrDestroyed(Closure $createSecret): void
+    {
+        $this->travelTo('2026-09-15 12:00:00');
+        $secret = $createSecret();
+
+        $this->artisan('secrets:clean')->assertSuccessful();
+
+        $this->assertModelMissing($secret);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_EXPIRED_UNREAD]);
+    }
+
+    /** Vérifie que --dry-run annonce la suppression sans supprimer le secret ni alimenter la statistique. */
+    public function testDryRunKeepsExpiredSecretAndStats(): void
+    {
+        $this->freezeTime();
+        $expiredSecret = Secret::factory()->expired()->create();
+
+        $this->artisan('secrets:clean', ['--dry-run' => true])
+            ->expectsOutput('[DRY RUN] Found 1 secrets to delete.')
+            ->expectsOutput('[DRY RUN] Would delete 1 secrets and 0 files.')
+            ->assertSuccessful();
+
+        $this->assertModelExists($expiredSecret);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_EXPIRED_UNREAD]);
+    }
+
+    /** Vérifie que --dry-run conserve le blob d'un secret fichier expiré et le cache d'usage disque. */
+    public function testDryRunKeepsFileSecretBlobAndCachedDiskUsage(): void
+    {
+        $this->freezeTime();
+        Storage::fake('secrets');
+        $fileSecret = Secret::factory()->expired()->withStoredBlob('encrypted-blob')->create();
+        Cache::put('disk_usage_secrets', 123, 3600);
+
+        $this->artisan('secrets:clean', ['--dry-run' => true])
+            ->expectsOutput('[DRY RUN] Would delete 1 secrets and 1 files.')
+            ->assertSuccessful();
+
+        $this->assertModelExists($fileSecret);
+        Storage::disk('secrets')->assertExists((string) $fileSecret->file_path, 'encrypted-blob');
+        $this->assertSame(123, Cache::get('disk_usage_secrets'));
+    }
+
+    /** Vérifie que la commande supprime un magic link expiré et conserve un magic link valide. */
+    public function testDeletesExpiredMagicLinkAndKeepsValidOne(): void
+    {
+        $this->freezeTime();
+        $expiredLink = MagicLink::factory()->expired()->create();
+        $validLink = MagicLink::factory()->valid()->create();
+
+        $this->artisan('secrets:clean')
+            ->expectsOutput('Deleted 1 magic links.')
+            ->assertSuccessful();
+
+        $this->assertModelMissing($expiredLink);
+        $this->assertModelExists($validLink);
+    }
+
+    /** Vérifie que la commande supprime un magic link déjà utilisé non expiré. */
+    public function testDeletesUsedMagicLink(): void
+    {
+        $this->freezeTime();
+        $usedLink = MagicLink::factory()->used()->create();
+
+        $this->artisan('secrets:clean')->assertSuccessful();
+
+        $this->assertModelMissing($usedLink);
+    }
+
+    /** Vérifie que --dry-run conserve les magic links expirés. */
+    public function testDryRunKeepsExpiredMagicLink(): void
+    {
+        $this->freezeTime();
+        $expiredLink = MagicLink::factory()->expired()->create();
+
+        $this->artisan('secrets:clean', ['--dry-run' => true])
+            ->expectsOutput('[DRY RUN] Would delete 1 magic links.')
+            ->assertSuccessful();
+
+        $this->assertModelExists($expiredLink);
     }
 }

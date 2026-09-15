@@ -4,147 +4,107 @@ namespace Tests\Feature;
 
 use App\Enums\SecretType;
 use App\Models\Secret;
-use App\Services\SecretStorageService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class FileSecretTest extends TestCase
 {
-    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 octets
 
-    private SecretStorageService $storage;
+    /** Limite de la règle encrypted_file max:14336 (kilo-octets). */
+    private const MAX_FILE_KILOBYTES = 14336;
 
-    protected function setUp(): void
+    /** Vérifie qu'un secret fichier est créé en 201, blob stocké à l'identique sous le chemin partitionné, vues illimitées par défaut. */
+    public function testCreatesFileSecretAndStoresEncryptedBlob(): void
     {
-        parent::setUp();
-        $this->storage = app(SecretStorageService::class);
-    }
+        Storage::fake('secrets');
+        $file = UploadedFile::fake()->createWithContent('encrypted', 'encrypted-payload-bytes');
 
-    /** Vérifie la création d'un secret fichier. */
-    public function testCanCreateFileSecret(): void
-    {
-        $file = UploadedFile::fake()->create('encrypted', 1024, 'application/octet-stream');
+        $response = $this->postJson('/api/secrets', $this->filePayload($file));
 
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(201);
-        $response->assertJsonStructure(['token', 'expire_at']);
-
+        $response->assertCreated();
         $token = $response->json('token');
-        $secret = Secret::where('token', $token)->first();
+        $this->assertIsString($token);
 
-        $this->assertNotNull($secret);
+        $secret = Secret::where('token', $token)->firstOrFail();
         $this->assertSame(SecretType::File, $secret->type);
-        // filename/mime/size are encrypted in the file payload, not stored in DB
-        $this->assertNotNull($secret->file_path);
-        $this->assertTrue($this->storage->exists($secret->file_path));
-
-        // Cleanup
-        $this->storage->delete($secret->file_path);
-        $secret->delete();
-    }
-
-    /** Vérifie que le fichier chiffré est requis. */
-    public function testFileSecretRequiresEncryptedFile(): void
-    {
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['encrypted_file']);
-    }
-
-    /** Vérifie le rejet d'un fichier trop volumineux (> 100 Mo). */
-    public function testFileSecretRejectsFileTooLarge(): void
-    {
-        // 101MB file (limit is 100MB)
-        $file = UploadedFile::fake()->create('encrypted', 101 * 1024, 'application/octet-stream');
-
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['encrypted_file']);
-    }
-
-    /** Vérifie le téléchargement du fichier chiffré. */
-    public function testCanDownloadEncryptedFile(): void
-    {
-        $file = UploadedFile::fake()->create('encrypted', 512, 'application/octet-stream');
-
-        // Create secret via API
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $token = $createResponse->json('token');
-
-        // Download the file
-        $response = $this->get("/s/{$token}/download");
-
-        $response->assertStatus(200);
-        $response->assertHeader('Content-Type', 'application/octet-stream');
-
-        // Cleanup
-        $secret = Secret::where('token', $token)->first();
-        $this->storage->delete($secret->file_path);
-        $secret->delete();
-    }
-
-    /** Vérifie que max_views est null par défaut pour les fichiers. */
-    public function testFileSecretDefaultsToUnlimitedViews(): void
-    {
-        $file = UploadedFile::fake()->create('encrypted', 256);
-
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $token = $response->json('token');
-        $secret = Secret::where('token', $token)->first();
-
+        $this->assertSame(substr($token, 0, 2)."/{$token}", $secret->file_path);
+        $this->assertNull($secret->ciphertext);
         $this->assertNull($secret->max_views);
 
-        // Cleanup
-        $this->storage->delete($secret->file_path);
-        $secret->delete();
+        Storage::disk('secrets')->assertExists($secret->file_path, 'encrypted-payload-bytes');
+    }
+
+    /** Vérifie que le fichier chiffré est requis pour un secret fichier. */
+    public function testRejectsFileSecretWithoutEncryptedFile(): void
+    {
+        Storage::fake('secrets');
+
+        $response = $this->postJson('/api/secrets', $this->filePayload(null));
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['encrypted_file' => 'The encrypted file is required.']);
+        $this->assertDatabaseCount('secrets', 0);
+    }
+
+    /** Vérifie qu'un encrypted_file envoyé en chaîne est refusé. */
+    public function testRejectsEncryptedFileSentAsString(): void
+    {
+        Storage::fake('secrets');
+
+        $response = $this->postJson('/api/secrets', $this->filePayload('not-a-file'));
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['encrypted_file' => 'The encrypted file field must be a file.']);
+        Storage::disk('secrets')->assertDirectoryEmpty('/');
+    }
+
+    /** Vérifie qu'un fichier exactement à la limite de taille est accepté. */
+    public function testAcceptsFileAtExactSizeLimit(): void
+    {
+        Storage::fake('secrets');
+        $file = UploadedFile::fake()->create('encrypted', self::MAX_FILE_KILOBYTES, 'application/octet-stream');
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($file));
+
+        $response->assertCreated();
+        $this->assertDatabaseCount('secrets', 1);
+    }
+
+    /** Vérifie qu'un fichier d'un kilo-octet au-delà de la limite est refusé sans rien stocker. */
+    public function testRejectsFileOneKilobyteOverSizeLimit(): void
+    {
+        Storage::fake('secrets');
+        $file = UploadedFile::fake()->create('encrypted', self::MAX_FILE_KILOBYTES + 1, 'application/octet-stream');
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($file));
+
+        $response->assertUnprocessable();
+        $response->assertJsonValidationErrors(['encrypted_file' => 'The file must not exceed 10 MB.']);
+        $this->assertDatabaseCount('secrets', 0);
+        Storage::disk('secrets')->assertDirectoryEmpty('/');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function filePayload(UploadedFile|string|null $file): array
+    {
+        $payload = [
+            'type' => 'file',
+            'cipher_meta' => json_encode([
+                'alg' => 'AES-256-GCM',
+                'iv' => self::VALID_IV,
+                'version' => 1,
+            ]),
+            'expiration' => '7d',
+        ];
+
+        if ($file !== null) {
+            $payload['encrypted_file'] = $file;
+        }
+
+        return $payload;
     }
 }

@@ -5,6 +5,8 @@ namespace Tests\Feature\Middleware;
 use App\Http\Middleware\ForceHttps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class ForceHttpsTest extends TestCase
@@ -21,69 +23,70 @@ class ForceHttpsTest extends TestCase
     public function testDoesNotRedirectInLocalEnvironment(): void
     {
         $this->app->detectEnvironment(fn () => 'local');
-
         $request = Request::create('http://localhost/test', 'GET');
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $response = $this->middleware->handle($request, fn () => response('OK'));
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('OK', $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertSame('OK', $response->getContent());
     }
 
-    /** Vérifie la redirection HTTP vers HTTPS en production. */
-    public function testRedirectsHttpToHttpsInProduction(): void
+    /** @return array<string, array{string}> */
+    public static function readMethods(): array
     {
-        $this->app->detectEnvironment(fn () => 'production');
-
-        $request = Request::create('http://example.com/test', 'GET');
-        $request->server->set('HTTPS', 'off');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals(301, $response->getStatusCode());
-        $this->assertStringStartsWith('https://', $response->headers->get('Location'));
+        return [
+            'GET' => ['GET'],
+            'HEAD' => ['HEAD'],
+        ];
     }
 
-    /** Vérifie que HTTPS ne déclenche pas de redirection en production. */
-    public function testDoesNotRedirectHttpsInProduction(): void
+    /** Vérifie qu'en production une lecture HTTP est redirigée en 301 vers HTTPS en gardant l'URI et la query. */
+    #[DataProvider('readMethods')]
+    public function testRedirectsHttpReadPermanentlyToHttpsInProduction(string $method): void
     {
         $this->app->detectEnvironment(fn () => 'production');
+        $request = Request::create('http://localhost/s/abc123?foo=bar', $method);
 
-        $request = Request::create('https://example.com/test', 'GET');
-        $request->server->set('HTTPS', 'on');
+        $response = $this->middleware->handle($request, fn () => response('OK'));
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('OK', $response->getContent());
+        $this->assertSame(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertSame('https://localhost/s/abc123?foo=bar', $response->headers->get('Location'));
     }
 
-    /** Vérifie que le schéma HTTPS est forcé pour la génération d'URL. */
-    public function testForcesHttpsSchemeInProduction(): void
+    /** @return array<string, array{string}> */
+    public static function writeMethods(): array
     {
-        $this->app->detectEnvironment(fn () => 'production');
-
-        $request = Request::create('https://example.com/test', 'GET');
-        $request->server->set('HTTPS', 'on');
-
-        $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        // URL::forceScheme should have been called
-        $this->assertEquals('https', parse_url(URL::to('/'), PHP_URL_SCHEME));
+        return [
+            'POST' => ['POST'],
+            'PUT' => ['PUT'],
+            'PATCH' => ['PATCH'],
+            'DELETE' => ['DELETE'],
+        ];
     }
 
-    /** Vérifie que l'URI et les query params sont préservés lors de la redirection. */
-    public function testPreservesRequestUriOnRedirect(): void
+    /** Vérifie qu'en production une écriture HTTP est redirigée en 308 pour que le navigateur renvoie la méthode et le corps. */
+    #[DataProvider('writeMethods')]
+    public function testRedirectsHttpWriteWith308InProduction(string $method): void
     {
         $this->app->detectEnvironment(fn () => 'production');
+        $request = Request::create('http://localhost/api/secrets', $method, ['type' => 'text']);
 
-        $request = Request::create('http://example.com/s/abc123?foo=bar', 'GET');
-        $request->server->set('HTTPS', 'off');
+        $response = $this->middleware->handle($request, fn () => response('OK'));
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $this->assertSame(Response::HTTP_PERMANENTLY_REDIRECT, $response->getStatusCode());
+        $this->assertSame('https://localhost/api/secrets', $response->headers->get('Location'));
+    }
 
-        $location = $response->headers->get('Location');
-        $this->assertStringContainsString('/s/abc123', $location);
-        $this->assertStringContainsString('foo=bar', $location);
+    /** Vérifie qu'en production une requête HTTPS passe sans redirection et que les URL générées sont en HTTPS. */
+    public function testPassesHttpsThroughAndForcesHttpsSchemeInProduction(): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+        $request = Request::create('https://localhost/test', 'GET');
+
+        $response = $this->middleware->handle($request, fn () => response('OK'));
+
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertSame('OK', $response->getContent());
+        $this->assertSame('https', parse_url(URL::to('/'), PHP_URL_SCHEME));
     }
 }

@@ -63,10 +63,28 @@ class MagicLink extends Model
         return ! $this->isExpired() && ! $this->isUsed();
     }
 
-    public function markAsUsed(): void
+    /**
+     * Consumes the link with a conditional update, so that only one of several
+     * concurrent requests holding the same unused link can win.
+     */
+    public function markAsUsed(): bool
     {
-        $this->used_at = now();
-        $this->save();
+        $usedAt = now();
+
+        $consumed = self::query()
+            ->whereKey($this->getKey())
+            ->whereNull('used_at')
+            ->where('expire_at', '>=', $usedAt)
+            ->update(['used_at' => $usedAt]);
+
+        if ($consumed === 0) {
+            return false;
+        }
+
+        $this->used_at = $usedAt;
+        $this->syncOriginalAttribute('used_at');
+
+        return true;
     }
 
     public static function findByToken(#[\SensitiveParameter] string $token): ?self

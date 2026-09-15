@@ -17,7 +17,7 @@ class RequestSuperAdminAccessRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
         ];
     }
 
@@ -37,6 +37,7 @@ class RequestSuperAdminAccessRequest extends FormRequest
         return [
             'email.required' => __('messages.val_email_required'),
             'email.email' => __('messages.val_email_invalid'),
+            'email.max' => __('messages.val_email_max'),
         ];
     }
 }

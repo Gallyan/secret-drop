@@ -4,11 +4,19 @@ namespace Tests\Unit;
 
 use App\Services\SecretStorageService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class SecretStorageServiceTest extends TestCase
 {
+    private const TOKEN = 'ab34567890abcdef1234567890abcdef';
+
+    private const SIBLING_TOKEN = 'abfedcba0987654321fedcba09876543';
+
     private SecretStorageService $storage;
 
     protected function setUp(): void
@@ -17,110 +25,171 @@ class SecretStorageServiceTest extends TestCase
         $this->storage = app(SecretStorageService::class);
     }
 
-    protected function tearDown(): void
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function sizeCacheKeys(): array
     {
-        Storage::disk('secrets')->deleteDirectory('.');
-        parent::tearDown();
+        return [
+            'taille totale utilisée pour le quota' => ['secrets:total_file_size'],
+            'usage disque affiché au superadmin' => ['disk_usage_secrets'],
+        ];
     }
 
-    /** Vérifie que store crée un fichier sur le disque. */
-    public function testStoreCreatesFileOnDisk(): void
+    /**
+     * @return array<string, array{0: int, 1: bool}>
+     */
+    public static function quotaBoundaries(): array
     {
-        $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'test_token_'.uniqid();
+        return [
+            'un octet sous le quota' => [1048575, false],
+            'quota atteint exactement' => [1048576, true],
+        ];
+    }
 
-        $path = $this->storage->store($token, $file);
+    /** Vérifie que store écrit le contenu envoyé dans le sous-répertoire des deux premiers caractères du token. */
+    public function testStoreWritesUploadedContentUnderTokenPrefixDirectory(): void
+    {
+        Storage::fake('secrets');
+        $file = UploadedFile::fake()->createWithContent('test.bin', 'encrypted-bytes');
 
-        $this->assertEquals(substr($token, 0, 2).'/'.$token, $path);
+        $path = $this->storage->store(self::TOKEN, $file);
+
+        $this->assertSame('ab/ab34567890abcdef1234567890abcdef', $path);
         $this->assertTrue($this->storage->exists($path));
+        $this->assertSame('encrypted-bytes', $this->storage->disk()->get($path));
     }
 
-    /** Vérifie que exists retourne false pour un fichier inexistant. */
-    public function testExistsReturnsFalseForNonExistentFile(): void
+    /** Vérifie que exists retourne false pour un fichier absent du disque. */
+    public function testExistsReturnsFalseForMissingFile(): void
     {
-        $this->assertFalse($this->storage->exists('nonexistent_file'));
+        Storage::fake('secrets');
+
+        $this->assertFalse($this->storage->exists('ab/missing'));
     }
 
-    /** Vérifie que exists retourne true pour un fichier existant. */
-    public function testExistsReturnsTrueForExistingFile(): void
+    /** Vérifie que size retourne la taille du fichier en octets. */
+    public function testSizeReturnsFileSizeInBytes(): void
     {
-        $file = UploadedFile::fake()->create('test.bin', 50);
-        $token = 'exists_test_'.uniqid();
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/blob', str_repeat('x', 1024));
 
-        $path = $this->storage->store($token, $file);
-
-        $this->assertTrue($this->storage->exists($path));
+        $this->assertSame(1024, $this->storage->size('ab/blob'));
     }
 
-    /** Vérifie que size retourne la taille du fichier. */
-    public function testSizeReturnsFileSize(): void
+    /** Vérifie que delete supprime le fichier et son répertoire devenu vide. */
+    public function testDeleteRemovesFileAndItsEmptyDirectory(): void
     {
-        $content = str_repeat('x', 1024);
-        $file = UploadedFile::fake()->createWithContent('test.bin', $content);
-        $token = 'size_test_'.uniqid();
-
-        $path = $this->storage->store($token, $file);
-
-        $size = $this->storage->size($path);
-        $this->assertEquals(1024, $size);
-    }
-
-    /** Vérifie que delete supprime le fichier et le répertoire vide. */
-    public function testDeleteRemovesFileAndEmptyDirectory(): void
-    {
-        $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'delete_test_'.uniqid();
-
-        $path = $this->storage->store($token, $file);
-        $this->assertTrue($this->storage->exists($path));
+        Storage::fake('secrets');
+        $path = $this->storage->store(self::TOKEN, UploadedFile::fake()->createWithContent('test.bin', 'blob'));
 
         $result = $this->storage->delete($path);
 
         $this->assertTrue($result);
         $this->assertFalse($this->storage->exists($path));
-        $this->assertFalse($this->storage->disk()->exists(dirname($path)));
+        $this->assertFalse($this->storage->disk()->exists('ab'));
     }
 
-    /** Vérifie que delete retourne false pour un fichier inexistant. */
-    public function testDeleteReturnsFalseForNonExistentFile(): void
+    /** Vérifie que delete conserve le répertoire quand il contient encore un autre fichier. */
+    public function testDeleteKeepsDirectoryThatStillHoldsAnotherFile(): void
     {
-        $result = $this->storage->delete('nonexistent_file');
+        Storage::fake('secrets');
+        $path = $this->storage->store(self::TOKEN, UploadedFile::fake()->createWithContent('a.bin', 'blob'));
+        $siblingPath = $this->storage->store(self::SIBLING_TOKEN, UploadedFile::fake()->createWithContent('b.bin', 'sibling'));
 
-        $this->assertFalse($result);
+        $this->storage->delete($path);
+
+        $this->assertFalse($this->storage->exists($path));
+        $this->assertSame('sibling', $this->storage->disk()->get($siblingPath));
+        $this->assertTrue($this->storage->disk()->exists('ab'));
     }
 
-    /** Vérifie que download retourne une réponse streamée. */
-    public function testDownloadReturnsStreamedResponse(): void
+    /** Vérifie que delete retourne false pour un fichier absent du disque. */
+    public function testDeleteReturnsFalseForMissingFile(): void
     {
-        $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'download_test_'.uniqid();
+        Storage::fake('secrets');
 
-        $path = $this->storage->store($token, $file);
-
-        $response = $this->storage->download($path);
-
-        $this->assertInstanceOf(\Symfony\Component\HttpFoundation\StreamedResponse::class, $response);
+        $this->assertFalse($this->storage->delete('ab/missing'));
     }
 
-    /** Vérifie que readStream retourne une ressource. */
-    public function testReadStreamReturnsResource(): void
+    /** Vérifie que store invalide les tailles mises en cache. */
+    #[DataProvider('sizeCacheKeys')]
+    public function testStoreInvalidatesCachedSize(string $cacheKey): void
     {
-        $file = UploadedFile::fake()->create('test.bin', 100);
-        $token = 'stream_test_'.uniqid();
+        Storage::fake('secrets');
+        Cache::put($cacheKey, 123, 3600);
 
-        $path = $this->storage->store($token, $file);
+        $this->storage->store(self::TOKEN, UploadedFile::fake()->createWithContent('test.bin', 'blob'));
 
-        $stream = $this->storage->readStream($path);
+        $this->assertFalse(Cache::has($cacheKey));
+    }
+
+    /** Vérifie que delete invalide les tailles mises en cache. */
+    #[DataProvider('sizeCacheKeys')]
+    public function testDeleteInvalidatesCachedSize(string $cacheKey): void
+    {
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/blob', 'blob');
+        Cache::put($cacheKey, 123, 3600);
+
+        $this->storage->delete('ab/blob');
+
+        $this->assertFalse(Cache::has($cacheKey));
+    }
+
+    /** Vérifie que totalSize additionne les fichiers du disque puis sert la valeur mise en cache. */
+    public function testTotalSizeSumsFilesThenServesCachedValue(): void
+    {
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/first', str_repeat('x', 100));
+        $this->storage->disk()->put('cd/second', str_repeat('x', 50));
+
+        $firstTotal = $this->storage->totalSize();
+        $this->storage->disk()->put('ef/third', str_repeat('x', 25));
+        $secondTotal = $this->storage->totalSize();
+
+        $this->assertSame(150, $firstTotal);
+        $this->assertSame(150, $secondTotal);
+    }
+
+    /** Vérifie que le quota est considéré dépassé dès que la taille totale l'atteint. */
+    #[DataProvider('quotaBoundaries')]
+    public function testQuotaIsExceededFromTheExactQuotaSize(int $storedBytes, bool $expected): void
+    {
+        Storage::fake('secrets');
+        Config::set('secrets.file_storage_quota_mb', 1);
+        $this->storage->disk()->put('ab/blob', str_repeat('x', $storedBytes));
+
+        $this->assertSame($expected, $this->storage->isQuotaExceeded());
+    }
+
+    /** Vérifie que download renvoie le contenu chiffré avec les en-têtes de téléchargement sécurisés. */
+    public function testDownloadStreamsEncryptedContentWithSecurityHeaders(): void
+    {
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/blob', 'encrypted-bytes');
+
+        $response = TestResponse::fromBaseResponse($this->storage->download('ab/blob'));
+
+        $response->assertHeader('Content-Type', 'application/octet-stream');
+        $response->assertHeader('Content-Disposition', 'attachment; filename="encrypted"');
+        $response->assertHeader('X-Content-Type-Options', 'nosniff');
+        $response->assertHeader('Cache-Control', 'max-age=0, must-revalidate, no-cache, no-store, private');
+        $response->assertHeader('Pragma', 'no-cache');
+        $response->assertHeader('X-Download-Options', 'noopen');
+        $this->assertSame('encrypted-bytes', $response->streamedContent());
+    }
+
+    /** Vérifie que readStream donne accès au contenu du fichier. */
+    public function testReadStreamReturnsFileContents(): void
+    {
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/blob', 'encrypted-bytes');
+
+        $stream = $this->storage->readStream('ab/blob');
 
         $this->assertIsResource($stream);
+        $this->assertSame('encrypted-bytes', stream_get_contents($stream));
         fclose($stream);
-    }
-
-    /** Vérifie que disk retourne une instance Filesystem. */
-    public function testDiskReturnsFilesystemInstance(): void
-    {
-        $disk = $this->storage->disk();
-
-        $this->assertInstanceOf(\Illuminate\Contracts\Filesystem\Filesystem::class, $disk);
     }
 }

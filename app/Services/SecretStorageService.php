@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 /** Manages encrypted file blobs on the dedicated secrets disk with streamed I/O and directory partitioning. */
 class SecretStorageService
 {
+    public const TOTAL_SIZE_CACHE_KEY = 'secrets:total_file_size';
+
+    /** Cache key of StatsService::getCurrentDiskUsage(), shown on the superadmin dashboard. */
+    public const DISK_USAGE_CACHE_KEY = 'disk_usage_secrets';
+
     private const DISK_NAME = 'secrets';
 
     public function disk(): Filesystem
@@ -125,7 +130,7 @@ class SecretStorageService
      */
     public function totalSize(): int
     {
-        return (int) Cache::remember('secrets:total_file_size', 300, function () {
+        return (int) Cache::remember(self::TOTAL_SIZE_CACHE_KEY, 300, function () {
             return collect($this->disk()->allFiles())
                 ->sum(fn (string $file) => $this->disk()->size($file));
         });
@@ -144,7 +149,8 @@ class SecretStorageService
 
     private function invalidateSizeCache(): void
     {
-        Cache::forget('secrets:total_file_size');
+        Cache::forget(self::TOTAL_SIZE_CACHE_KEY);
+        Cache::forget(self::DISK_USAGE_CACHE_KEY);
     }
 
     /**

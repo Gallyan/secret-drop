@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Verbraucht',
     'admin_created' => 'Erstellt',
     'admin_expires' => 'Läuft ab',
+    'admin_no_expiry' => 'Kein Ablaufdatum',
     'admin_read_count' => 'Lesezähler',
     'admin_fetch_count' => 'Abrufzähler',
     'admin_fetch_count_hint' => 'Gibt an, wie oft der verschlüsselte Inhalt heruntergeladen wurde. Übersteigt dieser Wert den Lesezähler, wurde der Link möglicherweise abgefangen.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'Die E-Mail-Adresse ist erforderlich.',
     'val_email_invalid' => 'Die E-Mail-Adresse ist ungültig.',
     'val_email_max' => 'Die E-Mail-Adresse darf 255 Zeichen nicht überschreiten.',
-    'val_days_required' => 'Die Anzahl der Tage ist erforderlich.',
-    'val_days_integer' => 'Die Anzahl der Tage muss eine ganze Zahl sein.',
-    'val_days_min' => 'Die Anzahl der Tage muss mindestens 1 betragen.',
-    'val_days_max' => 'Die Anzahl der Tage darf 30 nicht überschreiten.',
+    'val_hours_required' => 'Die Anzahl der Stunden ist erforderlich.',
+    'val_hours_integer' => 'Die Anzahl der Stunden muss eine ganze Zahl sein.',
+    'val_hours_min' => 'Die Anzahl der Stunden muss mindestens 1 betragen.',
+    'val_hours_max' => 'Die Anzahl der Stunden darf 720 nicht überschreiten.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Secret-Aktivität',

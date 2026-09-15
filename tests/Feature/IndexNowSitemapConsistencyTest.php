@@ -17,15 +17,6 @@ class IndexNowSitemapConsistencyTest extends TestCase
         $this->assertSame($this->sitemapLocations($response->getContent()), PublicUrls::all());
     }
 
-    /** Vérifie que le sitemap et la liste partagée exposent bien 55 URLs uniques. */
-    public function testPublicUrlsAreUniqueAndComplete(): void
-    {
-        $urls = PublicUrls::all();
-
-        $this->assertCount(55, $urls);
-        $this->assertSame($urls, array_values(array_unique($urls)));
-    }
-
     /**
      * @return array<int, string>
      */

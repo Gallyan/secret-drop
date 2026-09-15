@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Consumed',
     'admin_created' => 'Created',
     'admin_expires' => 'Expires',
+    'admin_no_expiry' => 'No expiry',
     'admin_read_count' => 'Read count',
     'admin_fetch_count' => 'Retrieval count',
     'admin_fetch_count_hint' => 'Number of times the encrypted content was downloaded. If it exceeds the read count, the link may have been intercepted.',
@@ -561,10 +562,10 @@ return [
     'val_email_required' => 'The email address is required.',
     'val_email_invalid' => 'The email address is not valid.',
     'val_email_max' => 'The email address must not exceed 255 characters.',
-    'val_days_required' => 'The number of days is required.',
-    'val_days_integer' => 'The number of days must be an integer.',
-    'val_days_min' => 'The number of days must be at least 1.',
-    'val_days_max' => 'The number of days cannot exceed 30.',
+    'val_hours_required' => 'The number of hours is required.',
+    'val_hours_integer' => 'The number of hours must be an integer.',
+    'val_hours_min' => 'The number of hours must be at least 1.',
+    'val_hours_max' => 'The number of hours cannot exceed 720.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Secrets activity',

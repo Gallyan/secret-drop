@@ -41,6 +41,7 @@ return [
             'journal_mode' => null,
             'synchronous' => null,
             'transaction_mode' => 'DEFERRED',
+            'mask_bindings_in_exception_messages' => true,
         ],
 
         'mysql' => [
@@ -61,6 +62,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            'mask_bindings_in_exception_messages' => true,
         ],
 
         'mariadb' => [
@@ -81,6 +83,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            'mask_bindings_in_exception_messages' => true,
         ],
 
         'pgsql' => [
@@ -96,6 +99,7 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'mask_bindings_in_exception_messages' => true,
         ],
 
         'sqlsrv' => [
@@ -111,6 +115,7 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+            'mask_bindings_in_exception_messages' => true,
         ],
 
     ],

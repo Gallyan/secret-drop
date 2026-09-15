@@ -6,32 +6,25 @@ use Tests\TestCase;
 
 class ContactControllerTest extends TestCase
 {
-    /** Vérifie la redirection vers mailto. */
-    public function testContactRedirectsToMailto(): void
+    /** Vérifie que /contact redirige en 302 vers le mailto de l'email de contact configuré. */
+    public function testContactRedirectsToConfiguredEmail(): void
     {
-        $response = $this->get('/contact');
-
-        $response->assertRedirect();
-        $this->assertStringStartsWith('mailto:', $response->headers->get('Location'));
-    }
-
-    /** Vérifie l'utilisation de l'email configuré. */
-    public function testContactUsesConfiguredEmail(): void
-    {
-        config(['legal.contact_email' => 'test@example.com']);
+        config(['legal.contact_email' => 'test@example.com', 'mail.from.address' => 'fallback@example.com']);
 
         $response = $this->get('/contact');
 
+        $response->assertFound();
         $response->assertRedirect('mailto:test@example.com');
     }
 
-    /** Vérifie le fallback sur l'adresse mail.from. */
+    /** Vérifie que /contact retombe en 302 sur l'adresse mail.from quand aucun email de contact n'est configuré. */
     public function testContactFallsBackToMailFromAddress(): void
     {
         config(['legal.contact_email' => null, 'mail.from.address' => 'fallback@example.com']);
 
         $response = $this->get('/contact');
 
-        $this->assertStringContainsString('mailto:', $response->headers->get('Location'));
+        $response->assertFound();
+        $response->assertRedirect('mailto:fallback@example.com');
     }
 }

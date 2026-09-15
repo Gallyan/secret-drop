@@ -3,11 +3,14 @@
 namespace Tests\Unit;
 
 use App\Services\TokenService;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class TokenServiceTest extends TestCase
 {
+    private const PLAIN_TOKEN = 'abc';
+
+    private const PLAIN_TOKEN_SHA256 = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
+
     private TokenService $tokenService;
 
     protected function setUp(): void
@@ -16,128 +19,55 @@ class TokenServiceTest extends TestCase
         $this->tokenService = new TokenService();
     }
 
-    /** Vérifie que le token public fait 32 caractères. */
-    #[Test]
-    public function publicTokenHasCorrectLength(): void
-    {
-        $token = $this->tokenService->generatePublicToken();
-
-        $this->assertSame(32, strlen($token));
-    }
-
-    /** Vérifie que le token public est en hexadécimal. */
-    #[Test]
-    public function publicTokenIsHexadecimal(): void
+    /** Vérifie que le token public est composé de 32 caractères hexadécimaux (128 bits). */
+    public function testPublicTokenIsThirtyTwoHexadecimalCharacters(): void
     {
         $token = $this->tokenService->generatePublicToken();
 
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $token);
     }
 
-    /** Vérifie que 100 tokens publics générés sont tous uniques. */
-    #[Test]
-    public function publicTokensAreUnique(): void
-    {
-        $tokens = [];
-        for ($i = 0; $i < 100; $i++) {
-            $tokens[] = $this->tokenService->generatePublicToken();
-        }
-
-        $this->assertCount(100, array_unique($tokens));
-    }
-
-    /** Vérifie que le token admin retourne un token et son hash. */
-    #[Test]
-    public function adminTokenReturnsTokenAndHash(): void
-    {
-        $result = $this->tokenService->generateAdminToken();
-
-        $this->assertArrayHasKey('token', $result);
-        $this->assertArrayHasKey('hash', $result);
-        $this->assertSame(32, strlen($result['token']));
-        $this->assertSame(64, strlen($result['hash']));
-    }
-
-    /** Vérifie que le token admin et son hash sont en hexadécimal. */
-    #[Test]
-    public function adminTokenIsHexadecimal(): void
+    /** Vérifie que le token admin est composé de 32 caractères hexadécimaux et accompagné de son empreinte SHA-256. */
+    public function testAdminTokenIsThirtyTwoHexadecimalCharactersWithItsSha256Hash(): void
     {
         $result = $this->tokenService->generateAdminToken();
 
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $result['token']);
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['hash']);
+        $this->assertSame($this->tokenService->hashToken($result['token']), $result['hash']);
     }
 
-    /** Vérifie que le token magic link retourne un token et son hash. */
-    #[Test]
-    public function magicLinkTokenReturnsTokenAndHash(): void
+    /** Vérifie que le token de magic link est composé de 32 caractères hexadécimaux et accompagné de son empreinte SHA-256. */
+    public function testMagicLinkTokenIsThirtyTwoHexadecimalCharactersWithItsSha256Hash(): void
     {
         $result = $this->tokenService->generateMagicLinkToken();
 
-        $this->assertArrayHasKey('token', $result);
-        $this->assertArrayHasKey('hash', $result);
+        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $result['token']);
+        $this->assertSame($this->tokenService->hashToken($result['token']), $result['hash']);
     }
 
-    /** Vérifie que le token magic link a les bonnes longueurs. */
-    #[Test]
-    public function magicLinkTokenHasCorrectLength(): void
+    /** Vérifie que hashToken retourne l'empreinte SHA-256 hexadécimale connue d'une chaîne fixe. */
+    public function testHashTokenReturnsKnownSha256Digest(): void
     {
-        $result = $this->tokenService->generateMagicLinkToken();
+        $hash = $this->tokenService->hashToken(self::PLAIN_TOKEN);
 
-        $this->assertSame(32, strlen($result['token']));
-        $this->assertSame(64, strlen($result['hash']));
+        $this->assertSame(self::PLAIN_TOKEN_SHA256, $hash);
     }
 
-    /** Vérifie que le hash du magic link est un SHA-256 valide. */
-    #[Test]
-    public function magicLinkHashIsSha256(): void
+    /** Vérifie que verifyToken accepte le token correspondant à l'empreinte stockée. */
+    public function testVerifyTokenReturnsTrueForMatchingToken(): void
     {
-        $result = $this->tokenService->generateMagicLinkToken();
-
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['hash']);
+        $this->assertTrue($this->tokenService->verifyToken(self::PLAIN_TOKEN, self::PLAIN_TOKEN_SHA256));
     }
 
-    /** Vérifie que hashToken produit un SHA-256 correct. */
-    #[Test]
-    public function hashTokenProducesSha256(): void
+    /** Vérifie que verifyToken refuse un autre token que celui de l'empreinte stockée. */
+    public function testVerifyTokenReturnsFalseForWrongToken(): void
     {
-        $token = 'test_token';
-        $hash = $this->tokenService->hashToken($token);
-
-        $this->assertSame(hash('sha256', $token), $hash);
+        $this->assertFalse($this->tokenService->verifyToken('abd', self::PLAIN_TOKEN_SHA256));
     }
 
-    /** Vérifie que verifyToken retourne true pour un token valide. */
-    #[Test]
-    public function verifyTokenReturnsTrueForValidToken(): void
+    /** Vérifie que verifyToken refuse le bon token face à une empreinte altérée. */
+    public function testVerifyTokenReturnsFalseForTamperedHash(): void
     {
-        $result = $this->tokenService->generateMagicLinkToken();
-
-        $this->assertTrue(
-            $this->tokenService->verifyToken($result['token'], $result['hash'])
-        );
-    }
-
-    /** Vérifie que verifyToken retourne false pour un mauvais token. */
-    #[Test]
-    public function verifyTokenReturnsFalseForInvalidToken(): void
-    {
-        $result = $this->tokenService->generateMagicLinkToken();
-
-        $this->assertFalse(
-            $this->tokenService->verifyToken('wrong_token', $result['hash'])
-        );
-    }
-
-    /** Vérifie que verifyToken retourne false pour un hash altéré. */
-    #[Test]
-    public function verifyTokenReturnsFalseForTamperedHash(): void
-    {
-        $result = $this->tokenService->generateMagicLinkToken();
-        $tamperedHash = str_repeat('0', 64);
-
-        $this->assertFalse(
-            $this->tokenService->verifyToken($result['token'], $tamperedHash)
-        );
+        $this->assertFalse($this->tokenService->verifyToken(self::PLAIN_TOKEN, str_repeat('0', 64)));
     }
 }

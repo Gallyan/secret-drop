@@ -61,7 +61,7 @@ function formatLocal(isoString) {
 
 function formatUtcElements(container) {
     container.querySelectorAll('[data-utc]').forEach(el => {
-        el.textContent = formatLocal(el.dataset.utc);
+        el.textContent = el.dataset.utc ? formatLocal(el.dataset.utc) : (el.dataset.emptyLabel ?? '');
     });
 }
 
@@ -211,8 +211,8 @@ export default () => ({
             // Update expire_at
             const expireEl = card.querySelector('[data-poll-expire] [data-utc]');
             if (expireEl) {
-                expireEl.dataset.utc = secret.expire_at;
-                expireEl.textContent = formatLocal(secret.expire_at);
+                expireEl.dataset.utc = secret.expire_at ?? '';
+                expireEl.textContent = secret.expire_at ? formatLocal(secret.expire_at) : (expireEl.dataset.emptyLabel ?? '');
             }
 
             // Update read count

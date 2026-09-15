@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'مستهلك',
     'admin_created' => 'تم الإنشاء',
     'admin_expires' => 'ينتهي',
+    'admin_no_expiry' => 'بدون انتهاء صلاحية',
     'admin_read_count' => 'القراءات',
     'admin_fetch_count' => 'الاستردادات',
     'admin_fetch_count_hint' => 'عدد مرات تحميل المحتوى المشفر. إذا تجاوز عدد القراءات، فقد يكون الرابط قد اعتُرض.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'البريد الإلكتروني مطلوب.',
     'val_email_invalid' => 'البريد الإلكتروني غير صالح.',
     'val_email_max' => 'يجب ألا يتجاوز البريد الإلكتروني 255 حرفاً.',
-    'val_days_required' => 'عدد الأيام مطلوب.',
-    'val_days_integer' => 'يجب أن يكون عدد الأيام عدداً صحيحاً.',
-    'val_days_min' => 'يجب أن يكون عدد الأيام 1 على الأقل.',
-    'val_days_max' => 'لا يمكن أن يتجاوز عدد الأيام 30.',
+    'val_hours_required' => 'عدد الساعات مطلوب.',
+    'val_hours_integer' => 'يجب أن يكون عدد الساعات عدداً صحيحاً.',
+    'val_hours_min' => 'يجب أن يكون عدد الساعات 1 على الأقل.',
+    'val_hours_max' => 'لا يمكن أن يتجاوز عدد الساعات 720.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'نشاط الأسرار',

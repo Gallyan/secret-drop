@@ -46,10 +46,10 @@ class DemoSeeder extends Seeder
         Secret::factory()->count(2)->revoked()->withCreatorEmail($email)->create();
 
         // Secrets usage unique consommés
-        Secret::factory()->count(2)->singleUse()->read()->withCreatorEmail($email)->create();
+        Secret::factory()->count(2)->singleUse()->consumed()->withCreatorEmail($email)->create();
 
         // Secrets ayant atteint max_views
-        Secret::factory()->count(2)->withMaxViews(3)->read(3)->withCreatorEmail($email)->create();
+        Secret::factory()->count(2)->withMaxViews(3)->consumed()->withCreatorEmail($email)->create();
 
         $this->command->info('  -> '.Secret::count().' secrets créés');
     }

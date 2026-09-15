@@ -8,10 +8,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 /**
  * Terminable middleware that records HTTP 4xx/5xx errors in stats_daily.
  * For 5xx errors, also tracks the offending route in stats_error_routes.
+ *
+ * Enregistré en global : les middlewares de groupe ne s'exécutent pas pour une URL
+ * sans route, dont les 404 ne seraient alors jamais comptées.
  */
 class TrackHttpErrors
 {
@@ -28,7 +32,7 @@ class TrackHttpErrors
         return $next($request);
     }
 
-    /** Record error counters after the response has been sent. */
+    /** Enregistre les compteurs après l'envoi de la réponse ; un échec des statistiques est signalé, jamais relancé. */
     public function terminate(Request $request, Response $response): void
     {
         $status = $response->getStatusCode();
@@ -37,11 +41,22 @@ class TrackHttpErrors
             return;
         }
 
+        try {
+            $this->record($request, $status);
+        } catch (Throwable $e) {
+            report($e);
+        }
+    }
+
+    private function record(Request $request, int $status): void
+    {
         if ($status >= 500) {
             $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_5XX);
 
             $this->stats->trackErrorRoute($status, mb_substr($this->identifyRoute($request), 0, 100));
-        } else {
+        }
+
+        if ($status < 500) {
             $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_4XX);
         }
 

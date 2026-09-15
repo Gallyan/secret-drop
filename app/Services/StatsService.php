@@ -79,7 +79,7 @@ class StatsService
                 'updated_at' => now(),
             ],
             ['date', 'metric'],
-            ['count' => CounterExpression::addTo($amount), 'updated_at' => now()]
+            ['count' => CounterExpression::addTo('stats_daily', $amount), 'updated_at' => now()]
         );
     }
 
@@ -179,7 +179,7 @@ class StatsService
                 'updated_at' => $now,
             ],
             ['date', 'day_of_week', 'hour', 'metric'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            ['count' => CounterExpression::addTo('stats_heatmap', 1), 'updated_at' => $now]
         );
     }
 
@@ -362,7 +362,7 @@ class StatsService
 
     public function getCurrentDiskUsage(): int
     {
-        return Cache::remember('disk_usage_secrets', 3600, function () {
+        return Cache::remember(SecretStorageService::DISK_USAGE_CACHE_KEY, 3600, function () {
             $path = Storage::disk('secrets')->path('');
 
             if (! is_dir($path)) {
@@ -387,6 +387,7 @@ class StatsService
      *     by_country: array<string, int>,
      *     by_language: array<string, int>,
      *     by_hour: array<int, int>,
+     *     by_local_hour: array<int, int>,
      *     daily: array<string, array{human: int, bot: int}>
      * }
      */
@@ -535,7 +536,7 @@ class StatsService
                 'updated_at' => $now,
             ],
             ['date', 'status', 'route'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            ['count' => CounterExpression::addTo('stats_error_routes', 1), 'updated_at' => $now]
         );
     }
 
@@ -582,11 +583,11 @@ class StatsService
 
         $textCount = $totals[self::SECRETS_CREATED_TEXT] ?? 0;
         $textBytes = $totals[self::TOTAL_TEXT_SIZE_BYTES] ?? 0;
-        $textAvg = $textCount > 0 ? $textBytes / $textCount : null;
+        $textAvg = $textCount > 0 ? (float) ($textBytes / $textCount) : null;
 
         $fileCount = $totals[self::SECRETS_CREATED_FILE] ?? 0;
         $fileBytes = $totals[self::TOTAL_FILE_SIZE_BYTES] ?? 0;
-        $fileAvg = $fileCount > 0 ? $fileBytes / $fileCount : null;
+        $fileAvg = $fileCount > 0 ? (float) ($fileBytes / $fileCount) : null;
 
         return [
             'text' => $textAvg,

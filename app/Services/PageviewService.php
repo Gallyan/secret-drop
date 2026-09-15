@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\CounterExpression;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -158,7 +159,7 @@ class PageviewService
                 'updated_at' => $now,
             ],
             ['date', 'page', 'is_bot', 'hour', 'country', 'locale'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            ['count' => CounterExpression::addTo('stats_pageviews', 1), 'updated_at' => $now]
         );
 
         if ($isBot) {
@@ -173,7 +174,7 @@ class PageviewService
                     'updated_at' => $now,
                 ],
                 ['date', 'bot_name'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+                ['count' => CounterExpression::addTo('stats_bots', 1), 'updated_at' => $now]
             );
         }
 
@@ -187,7 +188,7 @@ class PageviewService
                     'updated_at' => $now,
                 ],
                 ['date', 'device_type'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+                ['count' => CounterExpression::addTo('stats_devices', 1), 'updated_at' => $now]
             );
 
             $localHour = $this->getLocalHour($now, $tzOffset);
@@ -201,7 +202,7 @@ class PageviewService
                     'updated_at' => $now,
                 ],
                 ['date', 'local_hour'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+                ['count' => CounterExpression::addTo('stats_local_hours', 1), 'updated_at' => $now]
             );
         }
 
@@ -224,7 +225,7 @@ class PageviewService
                 'updated_at' => $now,
             ],
             ['date', 'referrer_domain', 'is_bot'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            ['count' => CounterExpression::addTo('stats_referrers', 1), 'updated_at' => $now]
         );
     }
 
@@ -286,6 +287,11 @@ class PageviewService
         return 'Other';
     }
 
+    private const MIN_TZ_OFFSET_MINUTES = -840;
+
+    private const MAX_TZ_OFFSET_MINUTES = 720;
+
+    /** @var array<string, string> */
     private const LANG_TO_COUNTRY = [
         'en' => 'US',
         'fr' => 'FR',
@@ -318,31 +324,45 @@ class PageviewService
         'hu' => 'HU',
     ];
 
+    /**
+     * Pays de la langue préférée, en code de deux lettres comme la colonne l'exige.
+     *
+     * Seul un sous-tag de région de deux lettres est un pays : script (zh-Hant), région
+     * ONU M.49 (es-419) et variantes sont ignorés, avec repli sur la langue principale.
+     */
     private function detectCountry(string $acceptLanguage): string
     {
-        if (empty($acceptLanguage)) {
-            return 'XX';
+        $firstRange = explode(',', $acceptLanguage)[0];
+        $subtags = explode('-', trim(explode(';', $firstRange)[0]));
+        $language = strtolower(array_shift($subtags));
+
+        foreach ($subtags as $subtag) {
+            if (strlen($subtag) === 1) {
+                break;
+            }
+
+            if (preg_match('/^[A-Za-z]{2}$/', $subtag) === 1) {
+                return strtoupper($subtag);
+            }
         }
 
-        $first = explode(',', $acceptLanguage)[0];
-        $locale = trim(explode(';', $first)[0]);
-
-        if (str_contains($locale, '-')) {
-            $parts = explode('-', $locale);
-
-            return strtoupper($parts[1]);
-        }
-
-        $lang = strtolower(substr($locale, 0, 2));
-
-        return self::LANG_TO_COUNTRY[$lang] ?? 'XX';
+        return self::LANG_TO_COUNTRY[$language] ?? 'XX';
     }
 
+    /**
+     * Heure locale d'après Date.getTimezoneOffset() du navigateur (minutes, positives à l'ouest d'UTC).
+     *
+     * Un décalage hors de la plage réelle (UTC-12 à UTC+14) vient d'un cookie falsifié : il est ignoré.
+     */
     private function getLocalHour(Carbon $now, int $tzOffset): int
     {
-        $localHour = ($now->hour - (int) ($tzOffset / 60)) % 24;
+        if ($tzOffset < self::MIN_TZ_OFFSET_MINUTES || $tzOffset > self::MAX_TZ_OFFSET_MINUTES) {
+            $tzOffset = 0;
+        }
 
-        return ($localHour + 24) % 24;
+        $minutesSinceMidnight = $now->hour * 60 + $now->minute - $tzOffset;
+
+        return intdiv(($minutesSinceMidnight % 1440 + 1440) % 1440, 60);
     }
 
     private function extractReferrerDomain(string $referrer): string

@@ -27,16 +27,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prepend(ForceHttps::class);
         $middleware->append(SetLocale::class);
         $middleware->append(SecurityHeaders::class);
+        $middleware->append(TrackHttpErrors::class);
 
         $middleware->web(replace: [
             \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class => PreventRequestForgery::class,
         ]);
 
         $middleware->appendToGroup('web', TrackPageView::class);
-        $middleware->appendToGroup('web', TrackHttpErrors::class);
         $middleware->appendToGroup('web', TrackResponseTime::class);
         $middleware->appendToGroup('web', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
-        $middleware->appendToGroup('api', TrackHttpErrors::class);
         $middleware->appendToGroup('api', TrackResponseTime::class);
         $middleware->appendToGroup('api', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
 

@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use InvalidArgumentException;
+
 /** Central registry of supported locales, native names, flags, and translatable page slug resolution. */
 class LocaleConfig
 {
@@ -87,8 +89,15 @@ class LocaleConfig
         return null;
     }
 
+    /**
+     * @throws InvalidArgumentException when the page is not translatable, instead of returning the translation key as a slug
+     */
     public static function translatedSlug(string $routeName, string $locale): string
     {
+        if (! in_array($routeName, self::TRANSLATABLE_PAGES, true)) {
+            throw new InvalidArgumentException("Unknown translatable page [{$routeName}].");
+        }
+
         return trans("routes.{$routeName}", [], $locale);
     }
 

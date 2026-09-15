@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => '소모됨',
     'admin_created' => '생성일',
     'admin_expires' => '만료일',
+    'admin_no_expiry' => '만료 없음',
     'admin_read_count' => '조회 수',
     'admin_fetch_count' => '가져오기 수',
     'admin_fetch_count_hint' => '암호화된 콘텐츠가 다운로드된 횟수입니다. 조회 수를 초과하면 링크가 탈취되었을 수 있습니다.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => '이메일 주소는 필수입니다.',
     'val_email_invalid' => '이메일 주소가 유효하지 않습니다.',
     'val_email_max' => '이메일 주소는 255자를 초과할 수 없습니다.',
-    'val_days_required' => '일수는 필수입니다.',
-    'val_days_integer' => '일수는 정수여야 합니다.',
-    'val_days_min' => '일수는 최소 1이어야 합니다.',
-    'val_days_max' => '일수는 30을 초과할 수 없습니다.',
+    'val_hours_required' => '시간 수는 필수입니다.',
+    'val_hours_integer' => '시간 수는 정수여야 합니다.',
+    'val_hours_min' => '시간 수는 최소 1이어야 합니다.',
+    'val_hours_max' => '시간 수는 720을 초과할 수 없습니다.',
 
     // Dashboard sections
     'superadmin_section_activity' => '시크릿 활동',

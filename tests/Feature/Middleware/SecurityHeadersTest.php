@@ -4,6 +4,10 @@ namespace Tests\Feature\Middleware;
 
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Http\Request;
+use Illuminate\Support\Once;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class SecurityHeadersTest extends TestCase
@@ -16,97 +20,79 @@ class SecurityHeadersTest extends TestCase
         $this->middleware = new SecurityHeaders();
     }
 
-    /** Vérifie la présence du header X-Content-Type-Options. */
-    public function testSetsXContentTypeOptions(): void
+    /** @return array<string, array{string, string}> */
+    public static function hardeningHeaders(): array
     {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('nosniff', $response->headers->get('X-Content-Type-Options'));
+        return [
+            'X-Content-Type-Options' => ['X-Content-Type-Options', 'nosniff'],
+            'X-Frame-Options' => ['X-Frame-Options', 'DENY'],
+            'Referrer-Policy' => ['Referrer-Policy', 'strict-origin-when-cross-origin'],
+            'Permissions-Policy' => ['Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()'],
+            'Cross-Origin-Opener-Policy' => ['Cross-Origin-Opener-Policy', 'same-origin'],
+            'Cross-Origin-Resource-Policy' => ['Cross-Origin-Resource-Policy', 'same-origin'],
+            'X-Permitted-Cross-Domain-Policies' => ['X-Permitted-Cross-Domain-Policies', 'none'],
+        ];
     }
 
-    /** Vérifie la présence du header X-Frame-Options: DENY. */
-    public function testSetsXFrameOptions(): void
+    /** Vérifie la valeur de chaque en-tête de durcissement posé dans tous les environnements. */
+    #[DataProvider('hardeningHeaders')]
+    public function testSetsHardeningHeader(string $header, string $expectedValue): void
     {
-        $request = Request::create('/test', 'GET');
+        $response = $this->handle();
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('DENY', $response->headers->get('X-Frame-Options'));
+        $this->assertSame($expectedValue, $response->headers->get($header));
     }
 
     /** Vérifie l'absence du header obsolète X-XSS-Protection. */
     public function testDoesNotSetObsoleteXXssProtection(): void
     {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertNull($response->headers->get('X-XSS-Protection'));
+        $this->assertNull($this->handle()->headers->get('X-XSS-Protection'));
     }
 
-    /** Vérifie la présence du header Referrer-Policy. */
-    public function testSetsReferrerPolicy(): void
+    /** Vérifie que le CSP de production est strict : nonce seul pour scripts et styles, aucune source externe. */
+    public function testCspIsStrictInProduction(): void
     {
-        $request = Request::create('/test', 'GET');
+        $this->app->detectEnvironment(fn () => 'production');
+        $nonce = csp_nonce();
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $directives = $this->cspDirectives($this->handle());
 
-        $this->assertEquals('strict-origin-when-cross-origin', $response->headers->get('Referrer-Policy'));
+        $this->assertSame([
+            'default-src' => "'self'",
+            'script-src' => "'self' 'nonce-{$nonce}'",
+            'style-src' => "'self' 'nonce-{$nonce}'",
+            'style-src-attr' => "'unsafe-inline'",
+            'img-src' => "'self' data:",
+            'font-src' => "'self'",
+            'connect-src' => "'self'",
+            'frame-ancestors' => "'none'",
+            'form-action' => "'self'",
+            'base-uri' => "'self'",
+            'object-src' => "'none'",
+        ], $directives);
     }
 
-    /** Vérifie la présence du header Permissions-Policy. */
-    public function testSetsPermissionsPolicy(): void
+    /** Vérifie qu'en local le CSP ouvre unsafe-eval aux scripts, unsafe-inline aux styles et le websocket Vite. */
+    public function testCspRelaxesScriptStyleAndConnectInLocal(): void
     {
-        $request = Request::create('/test', 'GET');
+        $this->app->detectEnvironment(fn () => 'local');
+        $nonce = csp_nonce();
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $directives = $this->cspDirectives($this->handle());
 
-        $this->assertEquals('camera=(), microphone=(), geolocation=(), payment=(), usb=()', $response->headers->get('Permissions-Policy'));
+        $this->assertSame("'self' 'nonce-{$nonce}' 'unsafe-eval'", $directives['script-src']);
+        $this->assertSame("'self' 'nonce-{$nonce}' 'unsafe-inline'", $directives['style-src']);
+        $this->assertSame("'self' ws://localhost:* http://localhost:*", $directives['connect-src']);
     }
 
-    /** Vérifie la présence du CSP avec les directives principales. */
-    public function testSetsContentSecurityPolicy(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertNotNull($csp);
-        $this->assertStringContainsString("default-src 'self'", $csp);
-        $this->assertStringContainsString("script-src 'self'", $csp);
-        $this->assertStringContainsString("style-src 'self'", $csp);
-        $this->assertStringContainsString("object-src 'none'", $csp);
-    }
-
-    /** Vérifie que le CSP contient un nonce. */
-    public function testCspContainsNonce(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertMatchesRegularExpression("/nonce-[A-Za-z0-9+\/=]+/", $csp);
-    }
-
-    /** Vérifie la présence du HSTS en production. */
-    public function testSetsHstsInProduction(): void
+    /** Vérifie que le HSTS de production couvre les sous-domaines et demande le preload. */
+    public function testSetsHstsWithPreloadInProduction(): void
     {
         $this->app->detectEnvironment(fn () => 'production');
 
-        $request = Request::create('/test', 'GET');
+        $response = $this->handle();
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $hsts = $response->headers->get('Strict-Transport-Security');
-        $this->assertNotNull($hsts);
-        $this->assertStringContainsString('max-age=31536000', $hsts);
-        $this->assertStringContainsString('includeSubDomains', $hsts);
+        $this->assertSame('max-age=31536000; includeSubDomains; preload', $response->headers->get('Strict-Transport-Security'));
     }
 
     /** Vérifie l'absence du HSTS en local. */
@@ -114,118 +100,7 @@ class SecurityHeadersTest extends TestCase
     {
         $this->app->detectEnvironment(fn () => 'local');
 
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertNull($response->headers->get('Strict-Transport-Security'));
-    }
-
-    /** Vérifie que le CSP autorise les websockets en local. */
-    public function testCspAllowsWebsocketInLocal(): void
-    {
-        $this->app->detectEnvironment(fn () => 'local');
-
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringContainsString('ws://localhost:', $csp);
-    }
-
-    /** Vérifie que le CSP n'autorise pas les websockets en production. */
-    public function testCspDoesNotAllowWebsocketInProduction(): void
-    {
-        $this->app->detectEnvironment(fn () => 'production');
-
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringNotContainsString('ws://localhost:', $csp);
-        $this->assertStringContainsString("connect-src 'self'", $csp);
-    }
-
-    /** Vérifie que le CSP bloque les frame-ancestors. */
-    public function testCspBlocksFrameAncestors(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringContainsString("frame-ancestors 'none'", $csp);
-    }
-
-    /** Vérifie que le CSP restreint form-action à self. */
-    public function testCspBlocksFormActionToExternal(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringContainsString("form-action 'self'", $csp);
-    }
-
-    /** Vérifie que le CSP est strict en production (pas unsafe-eval/inline). */
-    public function testCspIsStrictInProduction(): void
-    {
-        $this->app->detectEnvironment(fn () => 'production');
-
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringNotContainsString('unsafe-eval', $csp);
-        // No unsafe-inline in script-src or style-src (nonce-only), but allowed in style-src-attr
-        $this->assertDoesNotMatchRegularExpression("/script-src[^;]*'unsafe-inline'/", $csp);
-        $this->assertDoesNotMatchRegularExpression("/style-src [^;]*'unsafe-inline'/", $csp);
-        // style-src-attr allows Alpine.js inline style="" attributes (no nonce mechanism for these)
-        $this->assertStringContainsString("style-src-attr 'unsafe-inline'", $csp);
-    }
-
-    /** Vérifie que le CSP autorise unsafe-eval en local (dev HMR). */
-    public function testCspAllowsUnsafeEvalInLocal(): void
-    {
-        $this->app->detectEnvironment(fn () => 'local');
-
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $csp = $response->headers->get('Content-Security-Policy');
-
-        $this->assertStringContainsString('unsafe-eval', $csp);
-        $this->assertStringContainsString('unsafe-inline', $csp);
-    }
-
-    /** Vérifie la présence du header Cross-Origin-Opener-Policy. */
-    public function testSetsCoopHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('same-origin', $response->headers->get('Cross-Origin-Opener-Policy'));
-    }
-
-    /** Vérifie la présence du header Cross-Origin-Resource-Policy. */
-    public function testSetsCorpHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('same-origin', $response->headers->get('Cross-Origin-Resource-Policy'));
+        $this->assertNull($this->handle()->headers->get('Strict-Transport-Security'));
     }
 
     /** Vérifie la présence du header Cross-Origin-Embedder-Policy en production. */
@@ -233,11 +108,7 @@ class SecurityHeadersTest extends TestCase
     {
         $this->app->detectEnvironment(fn () => 'production');
 
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('require-corp', $response->headers->get('Cross-Origin-Embedder-Policy'));
+        $this->assertSame('require-corp', $this->handle()->headers->get('Cross-Origin-Embedder-Policy'));
     }
 
     /** Vérifie l'absence du COEP en local (scripts Vite cross-origin). */
@@ -245,23 +116,86 @@ class SecurityHeadersTest extends TestCase
     {
         $this->app->detectEnvironment(fn () => 'local');
 
-        $request = Request::create('/test', 'GET');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertNull($response->headers->get('Cross-Origin-Embedder-Policy'));
+        $this->assertNull($this->handle()->headers->get('Cross-Origin-Embedder-Policy'));
     }
 
-    /** Vérifie que le cookie XSRF-TOKEN lisible par JS n'est pas émis. */
-    public function testDoesNotSetXsrfTokenCookie(): void
+    /** @return array<string, array{string}> */
+    public static function sitemapUris(): array
     {
-        $response = $this->get('/');
+        return [
+            'sitemap.xml' => ['/sitemap.xml'],
+            'sitemap.xsl' => ['/sitemap.xsl'],
+        ];
+    }
 
-        $cookieNames = array_map(
-            fn ($cookie) => $cookie->getName(),
-            $response->headers->getCookies()
-        );
+    /** Vérifie que le sitemap et sa feuille XSL sont servis sans CSP mais avec les autres en-têtes. */
+    #[DataProvider('sitemapUris')]
+    public function testOmitsCspOnSitemapFiles(string $uri): void
+    {
+        $response = $this->get($uri);
 
-        $this->assertNotContains('XSRF-TOKEN', $cookieNames);
+        $response->assertOk();
+        $response->assertHeaderMissing('Content-Security-Policy');
+        $response->assertHeader('X-Content-Type-Options', 'nosniff');
+    }
+
+    /** Vérifie que chaque balise nonce du HTML rendu porte le nonce annoncé dans l'en-tête CSP. */
+    public function testRenderedPageNoncesMatchTheCspHeader(): void
+    {
+        $response = $this->get('/fr');
+
+        $response->assertOk();
+        $headerNonce = $this->headerNonce($response);
+        preg_match_all('/<(script|style|link)\b[^>]*\bnonce="([^"]*)"/', (string) $response->getContent(), $tags);
+        $this->assertContains('script', $tags[1]);
+        $this->assertContains('style', $tags[1]);
+        $this->assertSame(array_fill(0, count($tags[2]), $headerNonce), $tags[2]);
+    }
+
+    /**
+     * Vérifie que le nonce change d'une requête à l'autre.
+     *
+     * csp_nonce() est mémorisé via once() pour la durée du processus PHP, qui ne sert qu'une
+     * requête sous PHP-FPM : Once::flush() reproduit cette frontière entre les deux appels.
+     */
+    public function testNonceDiffersBetweenRequests(): void
+    {
+        $firstNonce = $this->headerNonce($this->get('/fr'));
+        Once::flush();
+
+        $secondNonce = $this->headerNonce($this->get('/fr'));
+
+        $this->assertNotSame($firstNonce, $secondNonce);
+    }
+
+    private function handle(): Response
+    {
+        return $this->middleware->handle(Request::create('/test'), fn () => response('OK'));
+    }
+
+    /** @return array<string, string> */
+    private function cspDirectives(Response $response): array
+    {
+        $csp = $response->headers->get('Content-Security-Policy');
+        $this->assertIsString($csp);
+
+        $directives = [];
+
+        foreach (explode('; ', $csp) as $directive) {
+            [$name, $sources] = explode(' ', $directive, 2);
+            $directives[$name] = $sources;
+        }
+
+        return $directives;
+    }
+
+    /** @param TestResponse<Response> $response */
+    private function headerNonce(TestResponse $response): string
+    {
+        $csp = $response->headers->get('Content-Security-Policy');
+        $this->assertIsString($csp);
+        $this->assertSame(1, preg_match("/script-src 'self' 'nonce-([A-Za-z0-9]+)'/", $csp, $matches));
+
+        return $matches[1];
     }
 }

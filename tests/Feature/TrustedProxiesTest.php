@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Http\Middleware\TrustProxies;
-use ReflectionProperty;
+use App\Providers\AppServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class TrustedProxiesTest extends TestCase
@@ -11,33 +12,63 @@ class TrustedProxiesTest extends TestCase
     /** Vérifie que la liste TRUSTED_PROXIES est découpée et nettoyée. */
     public function testConfigParsesCommaSeparatedList(): void
     {
-        $this->withEnv('10.0.0.1, 192.168.0.0/24 , ', function (array $config): void {
-            $this->assertSame(['10.0.0.1', '192.168.0.0/24'], $config['trusted_proxies']);
+        $this->withEnv('10.0.0.1, 192.168.0.0/24 , ', function (): void {
+            $this->assertSame(['10.0.0.1', '192.168.0.0/24'], $this->freshAppConfig()['trusted_proxies']);
         });
     }
 
     /** Vérifie qu'aucun proxy n'est approuvé quand la variable est vide. */
     public function testConfigIsEmptyWhenBlank(): void
     {
-        $this->withEnv('', function (array $config): void {
-            $this->assertSame([], $config['trusted_proxies']);
+        $this->withEnv('', function (): void {
+            $this->assertSame([], $this->freshAppConfig()['trusted_proxies']);
         });
     }
 
     /** Vérifie qu'aucun proxy n'est approuvé quand la variable est absente. */
     public function testConfigIsEmptyWhenUnset(): void
     {
-        $this->withEnv(null, function (array $config): void {
-            $this->assertSame([], $config['trusted_proxies']);
+        $this->withEnv(null, function (): void {
+            $this->assertSame([], $this->freshAppConfig()['trusted_proxies']);
         });
     }
 
-    /** Vérifie que la config est bien poussée dans le middleware au boot. */
-    public function testConfigReachesTheMiddleware(): void
+    /** Vérifie qu'au démarrage un proxy configuré est approuvé : l'IP client vient de X-Forwarded-For pour lui seul. */
+    public function testConfiguredProxyForwardsTheClientIp(): void
     {
-        $proxies = new ReflectionProperty(TrustProxies::class, 'alwaysTrustProxies');
+        config(['app.trusted_proxies' => ['10.0.0.1']]);
+        $provider = $this->app->getProvider(AppServiceProvider::class);
+        $this->assertInstanceOf(AppServiceProvider::class, $provider);
+        $provider->boot();
+        Route::get('/test-client-ip', fn (Request $request) => $request->ip());
 
-        $this->assertSame(config('app.trusted_proxies'), $proxies->getValue());
+        $viaTrustedProxy = $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.1'])
+            ->withHeader('X-Forwarded-For', '203.0.113.9')
+            ->get('/test-client-ip');
+        $viaUntrustedHost = $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.2'])
+            ->withHeader('X-Forwarded-For', '203.0.113.9')
+            ->get('/test-client-ip');
+
+        $this->assertSame('203.0.113.9', $viaTrustedProxy->getContent());
+        $this->assertSame('10.0.0.2', $viaUntrustedHost->getContent());
+    }
+
+    /** Vérifie que sans proxy configuré l'en-tête X-Forwarded-For est ignoré. */
+    public function testForwardedHeaderIsIgnoredWithoutConfiguredProxy(): void
+    {
+        Route::get('/test-client-ip', fn (Request $request) => $request->ip());
+
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '10.0.0.1'])
+            ->withHeader('X-Forwarded-For', '203.0.113.9')
+            ->get('/test-client-ip');
+
+        $this->assertSame('10.0.0.1', $response->getContent());
+    }
+
+    /** @return array<string, mixed> */
+    private function freshAppConfig(): array
+    {
+        return require base_path('config/app.php');
     }
 
     /**
@@ -45,7 +76,7 @@ class TrustedProxiesTest extends TestCase
      * fixture that only sets $_ENV is silently ignored wherever .env defines
      * the variable.
      *
-     * @param  callable(array<string, mixed>): void  $assertions
+     * @param  callable(): void  $assertions
      */
     private function withEnv(?string $value, callable $assertions): void
     {
@@ -58,15 +89,15 @@ class TrustedProxiesTest extends TestCase
         $this->setEnv($value);
 
         try {
-            $assertions(require base_path('config/app.php'));
+            $assertions();
         } finally {
             $this->setEnv($previous['env'] ?? $previous['server'] ?? ($previous['putenv'] ?: null));
         }
     }
 
-    private function setEnv(?string $value): void
+    private function setEnv(mixed $value): void
     {
-        if ($value === null) {
+        if (! is_string($value)) {
             unset($_ENV['TRUSTED_PROXIES'], $_SERVER['TRUSTED_PROXIES']);
             putenv('TRUSTED_PROXIES');
 

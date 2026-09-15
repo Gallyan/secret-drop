@@ -5,495 +5,685 @@ namespace Tests\Feature;
 use App\Mail\MagicLinkMail;
 use App\Models\MagicLink;
 use App\Models\Secret;
-use App\Services\TokenService;
+use App\Services\StatsService;
+use Carbon\CarbonInterval;
+use Closure;
+use Database\Factories\SecretFactory;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Sleep;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
 {
-    /** Vérifie que la page d'index admin se charge correctement. */
-    public function testAdminIndexPageLoads(): void
+    private const OWNER_EMAIL = 'owner@example.com';
+
+    private const MAGIC_LINK_TOKEN = 'plain-magic-link-token-for-tests';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Config::set('secrets.magic_link_ttl', 10);
+        Config::set('secrets.admin_session_ttl', 15);
+    }
+
+    /** Vérifie que l'index affiche le formulaire de connexion sans session. */
+    public function testIndexRendersLoginFormWithoutSession(): void
     {
         $response = $this->get('/fr/admin');
 
-        $response->assertStatus(200);
         $response->assertViewIs('admin.index');
     }
 
-    /** Vérifie que la page de confirmation s'affiche même pour un email sans secrets. */
-    public function testRequestAccessShowsConfirmationEvenForNonExistentEmail(): void
+    /** Vérifie que l'index redirige vers le dashboard quand la session admin est valide. */
+    public function testIndexRedirectsToDashboardWhenSessionIsValid(): void
     {
-        Mail::fake();
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))->get('/fr/admin');
 
-        $response = $this->post('/fr/admin/request-access', [
-            'email' => 'nonexistent@example.com',
-        ]);
-
-        $response->assertRedirect(route('admin.accessSent'));
-        Mail::assertNothingSent();
-    }
-
-    /** Vérifie qu'un magic link est envoyé quand l'email a des secrets associés. */
-    public function testRequestAccessSendsMagicLinkForExistingSecrets(): void
-    {
-        Mail::fake();
-
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->post('/fr/admin/request-access', [
-            'email' => 'test@example.com',
-        ]);
-
-        $response->assertRedirect(route('admin.accessSent'));
-
-        Mail::assertSent(MagicLinkMail::class, function ($mail) {
-            return $mail->hasTo('test@example.com');
-        });
-
-        $this->assertEquals(1, MagicLink::count());
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le magic link expire dans un délai de 5 minutes. */
-    public function testMagicLinkExpireIn5Minutes(): void
-    {
-        Mail::fake();
-
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $this->post('/fr/admin/request-access', [
-            'email' => 'test@example.com',
-        ]);
-
-        $magicLink = MagicLink::first();
-        $this->assertNotNull($magicLink);
-        $this->assertTrue($magicLink->expire_at->diffInMinutes(now()) <= 5);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que GET verify affiche la page de confirmation sans consommer le token. */
-    public function testVerifyGetShowsConfirmationPage(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.verify-confirm');
-        $response->assertViewHas('token', $tokenData['token']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que GET verify ne marque pas le token comme utilisé (protection scanner email). */
-    public function testVerifyGetDoesNotConsumeToken(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $this->get("/fr/admin/verify/{$tokenData['token']}");
-
-        $magicLink = MagicLink::findByToken($tokenData['token']);
-        $this->assertNull($magicLink->used_at);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que POST verify consomme le token et redirige vers le dashboard. */
-    public function testVerifyPostRedirectsToDashboard(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $response = $this->post("/fr/admin/verify/{$tokenData['token']}");
-
-        $response->assertRedirect(route('admin.dashboard', ['locale' => 'fr']));
-        $this->assertTrue(session()->has('admin_email_hash'));
-
-        $secret->delete();
-    }
-
-    /** Vérifie le flux complet : POST verify puis accès au dashboard avec session persistante. */
-    public function testVerifyPostThenDashboardFlowWorksEndToEnd(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $this->post("/fr/admin/verify/{$tokenData['token']}");
-
-        $dashboard = $this->get('/fr/admin/dashboard');
-        $dashboard->assertStatus(200);
-        $dashboard->assertViewIs('admin.dashboard');
-
-        $secret->delete();
-    }
-
-    /** Vérifie qu'un token invalide affiche la page d'erreur (POST). */
-    public function testVerifyPostWithInvalidTokenShowsError(): void
-    {
-        $response = $this->post('/fr/admin/verify/invalid-token');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.invalid-link');
-    }
-
-    /** Vérifie qu'un magic link expiré affiche la page d'erreur. */
-    public function testVerifyExpiredMagicLinkShowsInvalidPage(): void
-    {
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->subMinutes(1),
-        ]);
-
-        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.invalid-link');
-    }
-
-    /** Vérifie qu'un magic link déjà utilisé affiche la page d'erreur. */
-    public function testVerifyUsedMagicLinkShowsInvalidPage(): void
-    {
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-            'used_at' => now(),
-        ]);
-
-        $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.invalid-link');
-    }
-
-    /** Vérifie qu'un magic link superadmin est refusé sur admin.verify sans être consommé. */
-    public function testVerifyRejectsSuperAdminMagicLinkWithoutConsumingIt(): void
-    {
-        $tokenService = app(TokenService::class);
-        $tokenData = $tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $response = $this->post("/fr/admin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.invalid-link');
-        $this->assertFalse(session()->has('admin_email_hash'));
-
-        $magicLink = MagicLink::findByToken($tokenData['token']);
-        $this->assertNull($magicLink->used_at);
-    }
-
-    /** Vérifie que le dashboard redirige vers le login sans authentification. */
-    public function testDashboardRequiresAuthentication(): void
-    {
-        $response = $this->get('/fr/admin/dashboard');
-
-        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
-    }
-
-    /** Vérifie que le dashboard affiche les secrets de l'utilisateur authentifié. */
-    public function testDashboardShowsSecretsForAuthenticatedUser(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->get('/fr/admin/dashboard');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.dashboard');
-        $response->assertViewHas('secrets');
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le logout détruit la session et redirige vers le login. */
-    public function testLogoutClearsSession(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->post('/fr/admin/logout');
-
-        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
-        $this->assertFalse(session()->has('admin_email_hash'));
-    }
-
-    /** Vérifie que la révocation nécessite une authentification. */
-    public function testRevokeRequiresAuthentication(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/revoke");
-
-        $response->assertStatus(401);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que la révocation d'un secret fonctionne correctement. */
-    public function testRevokeSecretWorks(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
-
-        $response->assertStatus(200);
-        $response->assertJson(['success' => true]);
-
-        $secret->refresh();
-        $this->assertTrue($secret->isRevoked());
-
-        $secret->delete();
-    }
-
-    /** Vérifie que la prolongation nécessite une authentification. */
-    public function testExtendRequiresAuthentication(): void
-    {
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-            'hours' => 168,
-        ]);
-
-        $response->assertStatus(401);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que la prolongation d'un secret fonctionne correctement. */
-    public function testExtendSecretWorks(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $originalExpireAt = $secret->expire_at;
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-                'hours' => 168,
-            ]);
-
-        $response->assertStatus(200);
-        $response->assertJson(['success' => true]);
-
-        $secret->refresh();
-        $this->assertTrue($secret->expire_at->gt($originalExpireAt));
-
-        $secret->delete();
-    }
-
-    /** Vérifie qu'un utilisateur ne peut pas révoquer les secrets d'un autre utilisateur. */
-    public function testCannotAccessOtherUsersSecrets(): void
-    {
-        $emailHash = MagicLink::hashEmail('attacker@example.com');
-        $secret = $this->createSecretWithEmail('victim@example.com');
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
-
-        $response->assertStatus(404);
-
-        $secret->refresh();
-        $this->assertFalse($secret->isRevoked());
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le poll nécessite une authentification. */
-    public function testPollRequiresAuthentication(): void
-    {
-        $response = $this->getJson('/fr/admin/dashboard/poll');
-
-        $response->assertStatus(401);
-    }
-
-    /** Vérifie que le poll retourne les secrets en JSON pour un utilisateur authentifié. */
-    public function testPollReturnsSecretsForAuthenticatedUser(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $response = $this->withSession([
-            'admin_email_hash' => $emailHash,
-            'admin_expires_at' => now()->addMinutes(30)->timestamp,
-        ])->getJson('/fr/admin/dashboard/poll');
-
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'secrets' => [
-                ['id', 'read_count', 'fetch_count', 'max_views', 'first_read_at', 'expire_at', 'is_revoked', 'is_expired', 'has_reached_max_views', 'is_accessible'],
-            ],
-        ]);
-
-        $data = $response->json('secrets.0');
-        $this->assertEquals($secret->id, $data['id']);
-        $this->assertEquals(0, $data['read_count']);
-        $this->assertFalse($data['is_revoked']);
-        $this->assertTrue($data['is_accessible']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le poll ne retourne pas les secrets d'un autre utilisateur. */
-    public function testPollDoesNotReturnOtherUsersSecrets(): void
-    {
-        $emailHash = MagicLink::hashEmail('alice@example.com');
-        $secret = $this->createSecretWithEmail('bob@example.com');
-
-        $response = $this->withSession([
-            'admin_email_hash' => $emailHash,
-            'admin_expires_at' => now()->addMinutes(30)->timestamp,
-        ])->getJson('/fr/admin/dashboard/poll');
-
-        $response->assertStatus(200);
-        $response->assertJsonCount(0, 'secrets');
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le poll reflète les changements de statut d'un secret lu. */
-    public function testPollReflectsReadCountChanges(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $secret->update(['max_views' => 1]);
-
-        $secret->incrementReadCount();
-
-        $response = $this->withSession([
-            'admin_email_hash' => $emailHash,
-            'admin_expires_at' => now()->addMinutes(30)->timestamp,
-        ])->getJson('/fr/admin/dashboard/poll');
-
-        $data = $response->json('secrets.0');
-        $this->assertEquals(1, $data['read_count']);
-        $this->assertTrue($data['has_reached_max_views']);
-        $this->assertFalse($data['is_accessible']);
-        $this->assertNotNull($data['first_read_at']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le poll expose fetch_count. */
-    public function testPollExposesFetchCount(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-
-        $secret->recordFetch();
-
-        $response = $this->withSession([
-            'admin_email_hash' => $emailHash,
-            'admin_expires_at' => now()->addMinutes(30)->timestamp,
-        ])->getJson('/fr/admin/dashboard/poll');
-
-        $response->assertStatus(200);
-
-        $data = $response->json('secrets.0');
-        $this->assertEquals(1, $data['fetch_count']);
-        $this->assertEquals(0, $data['read_count']);
-
-        $secret->delete();
+        $response->assertRedirect('/fr/admin/dashboard');
     }
 
     /**
-     * expire_at is nullable in the schema, so the dashboard and the extend
-     * endpoint must cope with a secret that has no expiry date.
+     * @return array<string, array{0: Closure(): array<string, mixed>}>
      */
-    public function testExtendWorksOnSecretWithoutExpiryDate(): void
+    public static function unusableSessions(): array
     {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $secret->expire_at = null;
-        $secret->save();
+        return [
+            'sans date d\'expiration' => [fn (): array => [
+                'admin_email_hash' => MagicLink::hashEmail(self::OWNER_EMAIL),
+            ]],
+            'expirée' => [fn (): array => [
+                'admin_email_hash' => MagicLink::hashEmail(self::OWNER_EMAIL),
+                'admin_expires_at' => now()->subSecond()->timestamp,
+            ]],
+        ];
+    }
 
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-                'hours' => 24,
-            ]);
+    /**
+     * Vérifie que l'index affiche le formulaire quand la session est expirée ou sans expiration.
+     *
+     * @param  Closure(): array<string, mixed>  $session
+     */
+    #[DataProvider('unusableSessions')]
+    public function testIndexRendersLoginFormWhenSessionIsNotUsable(Closure $session): void
+    {
+        $this->freezeTime();
 
-        $response->assertStatus(200)->assertJson(['success' => true]);
+        $response = $this->withSession($session())->get('/fr/admin');
+
+        $response->assertViewIs('admin.index');
+    }
+
+    /** Vérifie qu'une demande d'accès pour un email propriétaire envoie le lien, le persiste et compte la demande. */
+    public function testRequestAccessSendsMagicLinkToSecretOwner(): void
+    {
+        $this->travelTo('2026-09-15 14:30:00');
+        Mail::fake();
+        Sleep::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $response = $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $response->assertRedirect('/fr/admin/access-sent');
+
+        Mail::assertSent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL));
+
+        $magicLink = MagicLink::sole();
+        $this->assertSame(MagicLink::hashEmail(self::OWNER_EMAIL), $magicLink->email_hash);
+        $this->assertSame('2026-09-15 14:40:00', $magicLink->expire_at->toDateTimeString());
+        $this->assertNull($magicLink->used_at);
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::MAGIC_LINKS_REQUESTED,
+            'count' => 1,
+        ]);
+        $this->assertDatabaseHas('stats_heatmap', [
+            'date' => '2026-09-15',
+            'hour' => 14,
+            'metric' => StatsService::MAGIC_LINKS_REQUESTED,
+            'count' => 1,
+        ]);
+
+        Sleep::assertNeverSlept();
+    }
+
+    /** Vérifie qu'un email sans secret ne reçoit rien mais que la réponse est retardée comme un envoi. */
+    public function testRequestAccessForUnknownEmailSendsNothingButStillWaits(): void
+    {
+        Mail::fake();
+        Sleep::fake();
+
+        $response = $this->post('/fr/admin/request-access', ['email' => 'nobody@example.com']);
+
+        $response->assertRedirect('/fr/admin/access-sent');
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
+
+        Sleep::assertSlept(fn (CarbonInterval $duration): bool => $duration->totalMicroseconds >= 150_000
+            && $duration->totalMicroseconds <= 400_000);
+    }
+
+    /** Vérifie qu'une demande faite depuis /en produit un mail rendu en anglais. */
+    public function testRequestAccessFromEnglishPageSendsEnglishMail(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $this->post('/en/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $mail = Mail::sent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL))->sole();
+        $this->assertSame('en', $mail->locale);
+        $this->assertStringContainsString(e(__('messages.email_magic_link_button', [], 'en')), $mail->render());
+    }
+
+    /**
+     * @return array<string, array{0: array<string, string>, 1: string}>
+     */
+    public static function invalidAccessRequests(): array
+    {
+        return [
+            'email absent' => [[], 'messages.val_email_required'],
+            'email invalide' => [['email' => 'not-an-email'], 'messages.val_email_invalid'],
+            'email de plus de 255 caractères' => [
+                ['email' => str_repeat('a', 60).'@'.implode('.', str_split(str_repeat('b', 200), 60)).'.com'],
+                'messages.val_email_max',
+            ],
+        ];
+    }
+
+    /**
+     * Vérifie que chaque règle de validation de l'email affiche son message sur le formulaire.
+     *
+     * @param  array<string, string>  $payload
+     */
+    #[DataProvider('invalidAccessRequests')]
+    public function testRequestAccessRejectsInvalidEmailWithVisibleMessage(array $payload, string $messageKey): void
+    {
+        Mail::fake();
+
+        $response = $this->from('/fr/admin')
+            ->followingRedirects()
+            ->post('/fr/admin/request-access', $payload);
+
+        $response->assertViewIs('admin.index');
+        $response->assertSee(__($messageKey));
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+    }
+
+    /** Vérifie que GET verify affiche la confirmation sans consommer le lien (protection contre les scanners de mail). */
+    public function testVerifyGetShowsConfirmationWithoutConsumingLink(): void
+    {
+        $magicLink = MagicLink::factory()->forEmail(self::OWNER_EMAIL)->withToken(self::MAGIC_LINK_TOKEN)->create();
+
+        $response = $this->get('/fr/admin/verify/'.self::MAGIC_LINK_TOKEN);
+
+        $response->assertViewIs('admin.verify-confirm');
+        $response->assertViewHas('token', self::MAGIC_LINK_TOKEN);
+        $response->assertSessionMissing('admin_email_hash');
+
+        $this->assertNull($magicLink->refresh()->used_at);
+    }
+
+    /** Vérifie que le lien réellement envoyé par mail ouvre la session admin du destinataire. */
+    public function testFollowingTheMailedLinkOpensAdminSession(): void
+    {
+        Mail::fake();
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $verifyUrl = Mail::sent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL))
+            ->sole()
+            ->verifyUrl;
+
+        $this->get($verifyUrl)->assertViewIs('admin.verify-confirm');
+        $this->post($verifyUrl)->assertRedirect('/fr/admin/dashboard');
+        $dashboard = $this->get('/fr/admin/dashboard');
+
+        $dashboard->assertViewIs('admin.dashboard');
+        $dashboard->assertSee("data-secret-id=\"{$secret->id}\"", false);
+    }
+
+    /** Vérifie que POST verify consomme le lien, régénère l'ID de session, pose l'expiration et compte l'usage. */
+    public function testVerifyPostConsumesLinkAndOpensFreshSession(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $magicLink = MagicLink::factory()->forEmail(self::OWNER_EMAIL)->withToken(self::MAGIC_LINK_TOKEN)->create();
+        $this->startSession();
+        $sessionIdBeforeLogin = session()->getId();
+
+        $response = $this->withCookie(config('session.cookie'), $sessionIdBeforeLogin)
+            ->post('/fr/admin/verify/'.self::MAGIC_LINK_TOKEN);
+
+        $response->assertRedirect('/fr/admin/dashboard');
+        $response->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
+        $response->assertSessionHas('admin_expires_at', 1789467300);
+        $this->assertNotSame($sessionIdBeforeLogin, session()->getId());
+
+        $this->assertSame('2026-09-15 10:00:00', $magicLink->refresh()->used_at?->toDateTimeString());
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::MAGIC_LINKS_USED,
+            'count' => 1,
+        ]);
+        $this->assertDatabaseHas('stats_heatmap', [
+            'date' => '2026-09-15',
+            'hour' => 10,
+            'metric' => StatsService::MAGIC_LINKS_USED,
+            'count' => 1,
+        ]);
+    }
+
+    /**
+     * @return array<string, array{0: Closure(string): MagicLink}>
+     */
+    public static function unusableMagicLinks(): array
+    {
+        return [
+            'jeton inconnu' => [fn (string $token): MagicLink => MagicLink::factory()->forEmail(self::OWNER_EMAIL)->create()],
+            'lien expiré' => [fn (string $token): MagicLink => MagicLink::factory()->forEmail(self::OWNER_EMAIL)->withToken($token)->expired()->create()],
+            'lien déjà utilisé' => [fn (string $token): MagicLink => MagicLink::factory()->forEmail(self::OWNER_EMAIL)->withToken($token)->used()->create()],
+            'lien superadmin' => [fn (string $token): MagicLink => MagicLink::factory()->superAdmin()->withToken($token)->create()],
+        ];
+    }
+
+    /**
+     * Vérifie qu'un lien inutilisable affiche la page d'erreur sans ouvrir de session ni toucher au lien.
+     *
+     * @param  Closure(string): MagicLink  $createMagicLink
+     */
+    #[DataProvider('unusableMagicLinks')]
+    public function testVerifyPostWithUnusableLinkShowsInvalidPage(Closure $createMagicLink): void
+    {
+        $this->freezeTime();
+        $magicLink = $createMagicLink(self::MAGIC_LINK_TOKEN);
+        $usedAtBefore = $magicLink->used_at?->toDateTimeString();
+        $this->travel(5)->minutes();
+
+        $response = $this->post('/fr/admin/verify/'.self::MAGIC_LINK_TOKEN);
+
+        $response->assertViewIs('admin.invalid-link');
+        $response->assertSessionMissing('admin_email_hash');
+
+        $this->assertSame($usedAtBefore, $magicLink->refresh()->used_at?->toDateTimeString());
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_USED]);
+    }
+
+    /** Vérifie qu'un lien consommé par une requête concurrente entre sa lecture et sa consommation n'ouvre pas de session. */
+    public function testVerifyPostLosingConsumptionRaceShowsInvalidPage(): void
+    {
+        MagicLink::factory()->forEmail(self::OWNER_EMAIL)->withToken(self::MAGIC_LINK_TOKEN)->create();
+        MagicLink::retrieved(function (MagicLink $magicLink): void {
+            MagicLink::whereKey($magicLink->id)->update(['used_at' => now()]);
+        });
+
+        $response = $this->post('/fr/admin/verify/'.self::MAGIC_LINK_TOKEN);
+
+        $response->assertViewIs('admin.invalid-link');
+        $response->assertSessionMissing('admin_email_hash');
+
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_USED]);
+    }
+
+    /** Vérifie que verify est limité à 5 tentatives par minute, en GET comme en POST. */
+    public function testVerifyIsThrottledToFiveAttemptsPerMinute(): void
+    {
+        foreach (['get', 'post', 'get', 'post', 'get'] as $method) {
+            $this->{$method}('/fr/admin/verify/unknown-token')->assertViewIs('admin.invalid-link');
+        }
+
+        $response = $this->post('/fr/admin/verify/unknown-token');
+
+        $response->assertTooManyRequests();
+    }
+
+    /** Vérifie que le dashboard redirige vers l'index sans session. */
+    public function testDashboardRedirectsToIndexWithoutSession(): void
+    {
+        $response = $this->get('/fr/admin/dashboard');
+
+        $response->assertRedirect('/fr/admin');
+    }
+
+    /**
+     * Vérifie qu'une session expirée ou sans expiration redirige vers l'index et oublie les deux clés.
+     *
+     * @param  Closure(): array<string, mixed>  $session
+     */
+    #[DataProvider('unusableSessions')]
+    public function testDashboardRedirectsAndForgetsUnusableSession(Closure $session): void
+    {
+        $this->freezeTime();
+
+        $response = $this->withSession($session())->get('/fr/admin/dashboard');
+
+        $response->assertRedirect('/fr/admin');
+        $response->assertSessionMissing('admin_email_hash');
+        $response->assertSessionMissing('admin_expires_at');
+    }
+
+    /** Vérifie que le dashboard n'affiche que les secrets du propriétaire et prolonge la session. */
+    public function testDashboardShowsOwnSecretsAndSlidesSessionExpiry(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $ownSecret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $otherSecret = Secret::factory()->withCreatorEmail('someone-else@example.com')->create();
+        $session = [
+            'admin_email_hash' => MagicLink::hashEmail(self::OWNER_EMAIL),
+            'admin_expires_at' => now()->addMinutes(2)->timestamp,
+        ];
+
+        $response = $this->withSession($session)->get('/fr/admin/dashboard');
+
+        $response->assertViewIs('admin.dashboard');
+        $response->assertSee("data-secret-id=\"{$ownSecret->id}\"", false);
+        $response->assertDontSee($otherSecret->id);
+        $response->assertSessionHas('admin_expires_at', 1789467300);
+    }
+
+    /** Vérifie que le dashboard affiche « sans expiration » pour un secret dont expire_at est nul. */
+    public function testDashboardRendersSecretWithoutExpiry(): void
+    {
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->withoutExpiry()->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))->get('/fr/admin/dashboard');
+
+        $response->assertViewIs('admin.dashboard');
+        $response->assertSee("data-secret-id=\"{$secret->id}\"", false);
+        $response->assertSee('<span data-utc="" data-empty-label="'.e(__('messages.admin_no_expiry')).'">'.e(__('messages.admin_no_expiry')).'</span>', false);
+    }
+
+    /** Vérifie que le poll renvoie 401 sans session. */
+    public function testPollReturns401WithoutSession(): void
+    {
+        $response = $this->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertUnauthorized();
+        $response->assertExactJson(['error' => 'unauthenticated']);
+    }
+
+    /** Vérifie que le poll expose l'état exact des secrets du propriétaire, sans ceux des autres. */
+    public function testPollReturnsStatusOfOwnSecretsOnly(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->singleUse()->create();
+        $secret->incrementReadCount();
+        $secret->recordFetch();
+        $secret->recordFetch();
+        Secret::factory()->withCreatorEmail('someone-else@example.com')->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertExactJson([
+            'total' => 1,
+            'secrets' => [[
+                'id' => $secret->id,
+                'read_count' => 1,
+                'fetch_count' => 2,
+                'max_views' => 1,
+                'first_read_at' => '2026-09-15T10:00:00+00:00',
+                'expire_at' => '2026-09-22T10:00:00+00:00',
+                'is_revoked' => false,
+                'is_expired' => false,
+                'has_reached_max_views' => true,
+                'is_accessible' => false,
+            ]],
+            'new_cards_html' => [],
+        ]);
+    }
+
+    /** Vérifie que le poll pagine selon page et ne rend que les cartes absentes de known, y compris sans expiration. */
+    public function testPollRendersCardsOnlyForUnknownSecretsOfRequestedPage(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        Secret::factory()
+            ->count(5)
+            ->withCreatorEmail(self::OWNER_EMAIL)
+            ->sequence(fn ($sequence): array => ['created_at' => now()->subMinutes($sequence->index)])
+            ->create();
+        $knownOnSecondPage = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create(['created_at' => now()->subHour()]);
+        $unknownOnSecondPage = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->withoutExpiry()->create(['created_at' => now()->subHours(2)]);
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->getJson("/fr/admin/dashboard/poll?page=2&known={$knownOnSecondPage->id}");
+
+        $response->assertJsonPath('total', 7);
+        $response->assertJsonPath('secrets.*.id', [$knownOnSecondPage->id, $unknownOnSecondPage->id]);
+        $this->assertSame([$unknownOnSecondPage->id], array_keys($response->json('new_cards_html')));
+        $this->assertStringContainsString(
+            "data-secret-id=\"{$unknownOnSecondPage->id}\"",
+            $response->json("new_cards_html.{$unknownOnSecondPage->id}")
+        );
+    }
+
+    /** Vérifie que la révocation renvoie 401 sans session et laisse le secret intact. */
+    public function testRevokeReturns401WithoutSession(): void
+    {
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/revoke");
+
+        $response->assertUnauthorized();
+
+        $this->assertNull($secret->refresh()->revoked_at);
+    }
+
+    /** Vérifie que la révocation d'un secret texte le marque révoqué, détruit son contenu et la compte. */
+    public function testRevokeMarksTextSecretRevokedAndDestroysContent(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->text()->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
+
+        $response->assertExactJson(['success' => true]);
 
         $secret->refresh();
-        $this->assertNotNull($secret->expire_at);
-        $this->assertTrue($secret->expire_at->gt(now()->addHours(23)));
+        $this->assertSame('2026-09-15 10:00:00', $secret->revoked_at?->toDateTimeString());
+        $this->assertNull($secret->ciphertext);
 
-        $secret->delete();
-    }
-
-    /** Vérifie que la liste expose une date d'expiration nulle sans erreur. */
-    public function testSecretListHandlesNullExpiryDate(): void
-    {
-        $emailHash = MagicLink::hashEmail('test@example.com');
-        $secret = $this->createSecretWithEmail('test@example.com');
-        $secret->expire_at = null;
-        $secret->save();
-
-        $response = $this->withSession(['admin_email_hash' => $emailHash])
-            ->getJson('/fr/admin/dashboard/poll');
-
-        $response->assertStatus(200);
-        $this->assertNull($response->json('secrets.0.expire_at'));
-
-        $secret->delete();
-    }
-
-    private function createSecretWithEmail(string $email): Secret
-    {
-        return Secret::create([
-            'token' => bin2hex(random_bytes(16)),
-            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
-            'ciphertext' => 'encrypted',
-            'expire_at' => now()->addDays(7),
-            'creator_email_hash' => MagicLink::hashEmail($email),
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::SECRETS_REVOKED,
+            'count' => 1,
         ]);
+    }
+
+    /** Vérifie que la révocation d'un secret fichier supprime le blob du disque et invalide l'usage disque en cache. */
+    public function testRevokeDeletesFileSecretBlob(): void
+    {
+        Storage::fake('secrets');
+        Cache::put('disk_usage_secrets', 123, 3600);
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->withStoredBlob()->create();
+        $blobPath = (string) $secret->file_path;
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
+
+        $response->assertExactJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertNotNull($secret->revoked_at);
+        $this->assertNull($secret->file_path);
+
+        Storage::disk('secrets')->assertMissing($blobPath);
+        $this->assertFalse(Cache::has('disk_usage_secrets'));
+    }
+
+    /**
+     * @return array<string, array{0: Closure(): SecretFactory, 1: string}>
+     */
+    public static function unrevokableSecrets(): array
+    {
+        return [
+            'déjà révoqué' => [fn (): SecretFactory => Secret::factory()->revoked(), 'already_revoked'],
+            'déjà consommé' => [fn (): SecretFactory => Secret::factory()->consumed(), 'already_consumed'],
+        ];
+    }
+
+    /**
+     * Vérifie qu'un secret déjà révoqué ou consommé renvoie 409 sans être modifié.
+     *
+     * @param  Closure(): SecretFactory  $secretFactory
+     */
+    #[DataProvider('unrevokableSecrets')]
+    public function testRevokeReturns409ForUnrevokableSecret(Closure $secretFactory, string $error): void
+    {
+        $this->freezeTime();
+        $secret = $secretFactory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $revokedAtBefore = $secret->revoked_at?->toDateTimeString();
+        $this->travel(5)->minutes();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
+
+        $response->assertConflict();
+        $response->assertExactJson(['error' => $error]);
+
+        $this->assertSame($revokedAtBefore, $secret->refresh()->revoked_at?->toDateTimeString());
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_REVOKED]);
+    }
+
+    /** Vérifie qu'un admin ne peut pas révoquer le secret d'un autre email : 404 et secret intact. */
+    public function testRevokeOfAnotherOwnersSecretReturns404AndLeavesItIntact(): void
+    {
+        $secret = Secret::factory()->withCreatorEmail('victim@example.com')->text()->create();
+        $ciphertext = $secret->ciphertext;
+
+        $response = $this->withSession($this->adminSession('attacker@example.com'))
+            ->postJson("/fr/admin/secrets/{$secret->id}/revoke");
+
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
+
+        $secret->refresh();
+        $this->assertNull($secret->revoked_at);
+        $this->assertSame($ciphertext, $secret->ciphertext);
+    }
+
+    /** Vérifie que la prolongation renvoie 401 sans session et laisse l'expiration intacte. */
+    public function testExtendReturns401WithoutSession(): void
+    {
+        $this->freezeTime();
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $expireAtBefore = $secret->expire_at?->toDateTimeString();
+
+        $response = $this->postJson("/fr/admin/secrets/{$secret->id}/extend", ['hours' => 24]);
+
+        $response->assertUnauthorized();
+
+        $this->assertSame($expireAtBefore, $secret->refresh()->expire_at?->toDateTimeString());
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>, 1: string}>
+     */
+    public static function invalidExtensions(): array
+    {
+        return [
+            'heures absentes' => [[], 'messages.val_hours_required'],
+            'heures non numériques' => [['hours' => 'abc'], 'messages.val_hours_integer'],
+            'zéro heure' => [['hours' => 0], 'messages.val_hours_min'],
+            'une heure au-delà du maximum' => [['hours' => 721], 'messages.val_hours_max'],
+        ];
+    }
+
+    /**
+     * Vérifie que chaque règle de validation des heures renvoie 422 avec son message traduit.
+     *
+     * @param  array<string, mixed>  $payload
+     */
+    #[DataProvider('invalidExtensions')]
+    public function testExtendRejectsInvalidHoursWithTranslatedMessage(array $payload, string $messageKey): void
+    {
+        $this->freezeTime();
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $expireAtBefore = $secret->expire_at?->toDateTimeString();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", $payload);
+
+        $response->assertUnprocessable();
+        $response->assertOnlyJsonValidationErrors(['hours' => __($messageKey)]);
+        $this->assertNotSame($messageKey, __($messageKey));
+
+        $this->assertSame($expireAtBefore, $secret->refresh()->expire_at?->toDateTimeString());
+    }
+
+    /**
+     * @return array<string, array{0: Closure(): SecretFactory, 1: string}>
+     */
+    public static function extensionBaseDates(): array
+    {
+        return [
+            'expiration future : ajout à l\'expiration' => [fn (): SecretFactory => Secret::factory()->expiresIn(2), '2026-09-16 12:00:00'],
+            'expiration passée : ajout à maintenant' => [fn (): SecretFactory => Secret::factory()->expired(), '2026-09-16 10:00:00'],
+            'sans expiration : ajout à maintenant' => [fn (): SecretFactory => Secret::factory()->withoutExpiry(), '2026-09-16 10:00:00'],
+        ];
+    }
+
+    /**
+     * Vérifie que la prolongation ajoute les heures à la bonne base, renvoie la date et compte l'action.
+     *
+     * @param  Closure(): SecretFactory  $secretFactory
+     */
+    #[DataProvider('extensionBaseDates')]
+    public function testExtendAddsHoursToTheRightBaseDate(Closure $secretFactory, string $expectedExpireAt): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $secret = $secretFactory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", ['hours' => 24]);
+
+        $response->assertExactJson([
+            'success' => true,
+            'expire_at' => str_replace(' ', 'T', $expectedExpireAt).'+00:00',
+        ]);
+
+        $this->assertSame($expectedExpireAt, $secret->refresh()->expire_at?->toDateTimeString());
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::SECRETS_EXTENDED,
+            'count' => 1,
+        ]);
+        $this->assertDatabaseHas('stats_heatmap', [
+            'date' => '2026-09-15',
+            'hour' => 10,
+            'metric' => StatsService::SECRETS_EXTENDED,
+            'count' => 1,
+        ]);
+    }
+
+    /** Vérifie qu'un secret révoqué ne peut pas être prolongé : 409 et expiration intacte. */
+    public function testExtendReturns409ForRevokedSecret(): void
+    {
+        $this->freezeTime();
+        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->revoked()->create();
+        $expireAtBefore = $secret->expire_at?->toDateTimeString();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", ['hours' => 24]);
+
+        $response->assertConflict();
+        $response->assertExactJson(['error' => 'revoked']);
+
+        $this->assertSame($expireAtBefore, $secret->refresh()->expire_at?->toDateTimeString());
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_EXTENDED]);
+    }
+
+    /** Vérifie qu'un admin ne peut pas prolonger le secret d'un autre email : 404 et expiration intacte. */
+    public function testExtendOfAnotherOwnersSecretReturns404AndLeavesExpiryIntact(): void
+    {
+        $this->freezeTime();
+        $secret = Secret::factory()->withCreatorEmail('victim@example.com')->create();
+        $expireAtBefore = $secret->expire_at?->toDateTimeString();
+
+        $response = $this->withSession($this->adminSession('attacker@example.com'))
+            ->postJson("/fr/admin/secrets/{$secret->id}/extend", ['hours' => 24]);
+
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
+
+        $this->assertSame($expireAtBefore, $secret->refresh()->expire_at?->toDateTimeString());
+    }
+
+    /** Vérifie que la déconnexion oublie la session admin et régénère le jeton CSRF. */
+    public function testLogoutForgetsSessionAndRegeneratesCsrfToken(): void
+    {
+        $this->withSession($this->adminSession(self::OWNER_EMAIL));
+        $csrfTokenBefore = session()->token();
+
+        $response = $this->post('/fr/admin/logout');
+        $csrfTokenAfter = session()->token();
+
+        $response->assertRedirect('/fr/admin');
+        $response->assertSessionMissing('admin_email_hash');
+        $response->assertSessionMissing('admin_expires_at');
+        $this->assertNotEmpty($csrfTokenAfter);
+        $this->assertNotSame($csrfTokenBefore, $csrfTokenAfter);
+    }
+
+    /**
+     * @return array{admin_email_hash: string, admin_expires_at: int}
+     */
+    private function adminSession(string $email): array
+    {
+        return [
+            'admin_email_hash' => MagicLink::hashEmail($email),
+            'admin_expires_at' => now()->addMinutes(15)->timestamp,
+        ];
     }
 }

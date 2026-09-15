@@ -3,572 +3,379 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\TokenService;
+use App\Services\StatsService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ShowSecretTest extends TestCase
 {
-    private TokenService $tokenService;
+    private const ADMIN_TOKEN = '0123456789abcdef0123456789abcdef';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-    }
+    private const UNKNOWN_TOKEN = 'nonexistenttoken12345678901';
 
-    /** Vérifie que la page de consultation retourne 200 avec un token valide. */
-    public function testShowPageReturns200WithToken(): void
+    /** Vérifie que la page de consultation affiche le token d'un secret existant. */
+    public function testShowPageRendersTokenOfExistingSecret(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'encryptedcontent',
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = Secret::factory()->create();
 
         $response = $this->get("/s/{$secret->token}");
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertSee($secret->token);
-
-        $secret->delete();
     }
 
-    /** Vérifie que la page retourne 200 même pour un token inexistant. */
-    public function testShowPageReturns200EvenForNonExistentToken(): void
+    /** Vérifie que la page de consultation répond 200 pour un token inconnu (pas de fuite d'existence). */
+    public function testShowPageReturns200ForUnknownToken(): void
     {
-        $response = $this->get('/s/nonexistenttoken12345678901');
+        $response = $this->get('/s/'.self::UNKNOWN_TOKEN);
 
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
-    /** Vérifie que l'API retourne les données chiffrées du secret. */
-    public function testApiFetchReturnsSecretData(): void
+    /** Vérifie que le fetch renvoie le chiffré et les métadonnées sans compter de lecture. */
+    public function testApiFetchReturnsCiphertextAndCipherMetaWithoutCountingRead(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'encryptedcontent',
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = Secret::factory()->withPassphrase()->create();
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
 
-        $response->assertStatus(200);
-        $response->assertJson([
+        $response->assertOk();
+        $response->assertExactJson([
             'type' => 'text',
-            'ciphertext' => 'encryptedcontent',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
+            'cipher_meta' => $secret->cipher_meta,
+            'will_be_destroyed' => false,
+            'ciphertext' => $secret->ciphertext,
+        ]);
+
+        $secret->refresh();
+        $this->assertSame(0, $secret->read_count);
+        $this->assertNull($secret->first_read_at);
+    }
+
+    /**
+     * Vérifie que max_views reste coopératif : des fetch répétés sans /read ne consomment pas
+     * un secret à usage unique (décision utilisateur, comportement figé).
+     */
+    public function testRepeatedFetchWithoutReadConfirmationDoesNotConsumeSingleUseSecret(): void
+    {
+        $secret = Secret::factory()->singleUse()->create();
+
+        $this->getJson("/api/secrets/{$secret->token}")->assertOk();
+        $this->getJson("/api/secrets/{$secret->token}")->assertOk();
+        $this->getJson("/api/secrets/{$secret->token}")->assertOk()->assertJsonPath('ciphertext', $secret->ciphertext);
+
+        $secret->refresh();
+        $this->assertSame(0, $secret->read_count);
+        $this->assertSame(3, $secret->fetch_count);
+        $this->assertNotNull($secret->ciphertext);
+    }
+
+    /** Vérifie que le fetch d'un secret fichier renvoie uniquement les métadonnées sans incrémenter fetch_count. */
+    public function testApiFetchReturnsOnlyMetadataForFileSecretWithoutCountingFetch(): void
+    {
+        $secret = Secret::factory()->file()->create();
+
+        $response = $this->getJson("/api/secrets/{$secret->token}");
+
+        $response->assertOk();
+        $response->assertExactJson([
+            'type' => 'file',
+            'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => false,
         ]);
 
         $secret->refresh();
-        $this->assertEquals(0, $secret->read_count);
-        $this->assertNull($secret->first_read_at);
-
-        $secret->delete();
+        $this->assertSame(0, $secret->fetch_count);
     }
 
-    /** Vérifie que la confirmation de lecture incrémente le compteur. */
-    public function testApiConfirmReadIncrementsReadCount(): void
+    /** Vérifie que le fetch retourne 404 pour un token inconnu. */
+    public function testApiFetchReturns404ForUnknownToken(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'encryptedcontent',
-            'expire_at' => now()->addDay(),
-        ]);
+        $response = $this->getJson('/api/secrets/'.self::UNKNOWN_TOKEN);
 
-        $response = $this->postJson("/api/secrets/{$secret->token}/read");
-
-        $response->assertStatus(200);
-        $response->assertJson(['success' => true]);
-
-        $secret->refresh();
-        $this->assertEquals(1, $secret->read_count);
-        $this->assertNotNull($secret->first_read_at);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que l'API retourne 404 pour un secret inexistant. */
-    public function testApiFetchReturns404ForNonExistentSecret(): void
-    {
-        $response = $this->getJson('/api/secrets/nonexistenttoken12345678901');
-
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
-    }
-
-    /** Vérifie que l'API retourne 404 pour un secret expiré. */
-    public function testApiFetchReturns404ForExpiredSecret(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'expired',
-            'expire_at' => now()->subHour(),
-        ]);
-
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que l'API retourne 404 pour un secret révoqué. */
-    public function testApiFetchReturns404ForRevokedSecret(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'revoked',
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
-
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que l'API retourne 404 quand le max de vues est atteint. */
-    public function testApiFetchReturns404WhenMaxViewsReached(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'maxviews',
-            'max_views' => 1,
-            'read_count' => 1,
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le fetch API n'incrémente pas le compteur de lectures. */
-    public function testApiFetchDoesNotIncrementReadCount(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'counting',
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $this->getJson("/api/secrets/{$secret->token}");
-        $secret->refresh();
-        $this->assertEquals(0, $secret->read_count);
-
-        $this->getJson("/api/secrets/{$secret->token}");
-        $secret->refresh();
-        $this->assertEquals(0, $secret->read_count);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le fetch d'un secret texte incrémente fetch_count sans toucher read_count. */
-    public function testApiFetchIncrementsFetchCountForTextSecret(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'fetched',
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
-        $secret->refresh();
-        $this->assertEquals(1, $secret->fetch_count);
-        $this->assertEquals(0, $secret->read_count);
-
-        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
-        $secret->refresh();
-        $this->assertEquals(2, $secret->fetch_count);
-        $this->assertEquals(0, $secret->read_count);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le fetch d'un secret fichier n'incrémente pas fetch_count. */
-    public function testApiFetchDoesNotIncrementFetchCountForFileSecret(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => 'secrets/test',
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $this->getJson("/api/secrets/{$secret->token}")->assertStatus(200);
-
-        $secret->refresh();
-        $this->assertEquals(0, $secret->fetch_count);
-
-        $secret->delete();
-    }
-
-    /** Vérifie qu'un secret inaccessible retourne 404 sans incrémenter fetch_count. */
-    public function testApiFetchDoesNotIncrementFetchCountForInaccessibleSecret(): void
-    {
-        $revoked = $this->createInaccessibleSecret([
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
-
-        $expired = $this->createInaccessibleSecret([
-            'expire_at' => now()->subHour(),
-        ]);
-
-        $consumed = $this->createInaccessibleSecret([
-            'expire_at' => now()->addDay(),
-            'max_views' => 1,
-            'read_count' => 1,
-        ]);
-
-        foreach ([$revoked, $expired, $consumed] as $secret) {
-            $this->getJson("/api/secrets/{$secret->token}")->assertStatus(404);
-
-            $secret->refresh();
-            $this->assertEquals(0, $secret->fetch_count);
-
-            $secret->delete();
-        }
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
     }
 
     /**
-     * @param  array<string, mixed>  $attributes
+     * @return array<string, array{0: 'expired'|'revoked'|'consumed'}>
      */
-    private function createInaccessibleSecret(array $attributes): Secret
+    public static function inaccessibleStates(): array
     {
-        return Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'inaccessible',
-            ...$attributes,
-        ]);
+        return [
+            'expiré' => ['expired'],
+            'révoqué' => ['revoked'],
+            'max_views atteint' => ['consumed'],
+        ];
     }
 
-    /** Vérifie que la confirmation de lecture incrémente le compteur plusieurs fois. */
-    public function testApiConfirmReadIncrementsReadCountMultipleTimes(): void
+    /**
+     * Vérifie qu'un secret inaccessible renvoie un 404 uniforme sans incrémenter fetch_count.
+     *
+     * @param  'expired'|'revoked'|'consumed'  $state
+     */
+    #[DataProvider('inaccessibleStates')]
+    public function testApiFetchReturns404WithoutCountingFetchForInaccessibleSecret(string $state): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'counting',
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $this->postJson("/api/secrets/{$secret->token}/read");
-        $secret->refresh();
-        $this->assertEquals(1, $secret->read_count);
-
-        $this->postJson("/api/secrets/{$secret->token}/read");
-        $secret->refresh();
-        $this->assertEquals(2, $secret->read_count);
-
-        $secret->delete();
-    }
-
-    /** Vérifie qu'un secret usage unique devient inaccessible après lecture. */
-    public function testApiSingleUseSecretBecomesInaccessibleAfterConfirmRead(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'singleuse',
-            'max_views' => 1,
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = $this->createInaccessibleSecret($state);
 
         $response = $this->getJson("/api/secrets/{$secret->token}");
-        $response->assertStatus(200);
-        $response->assertJson(['will_be_destroyed' => true]);
 
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
 
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-        $response->assertStatus(404);
-
-        $secret->delete();
+        $secret->refresh();
+        $this->assertSame(0, $secret->fetch_count);
     }
 
-    /** Vérifie que confirm-read retourne 404 pour un secret inexistant. */
-    public function testApiConfirmReadReturns404ForNonExistentSecret(): void
+    /** Vérifie que chaque confirmation de lecture incrémente read_count et ne fixe first_read_at qu'une fois. */
+    public function testApiConfirmReadIncrementsReadCountAndSetsFirstReadAtOnce(): void
     {
-        $response = $this->postJson('/api/secrets/nonexistenttoken12345678901/read');
+        $this->travelTo('2026-03-10 14:00:00');
+        $secret = Secret::factory()->create();
 
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
+        $this->travel(5)->minutes();
+        $first = $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->travel(5)->minutes();
+        $second = $this->postJson("/api/secrets/{$secret->token}/read");
+
+        $first->assertOk()->assertExactJson(['success' => true]);
+        $second->assertOk()->assertExactJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertSame(2, $secret->read_count);
+        $this->assertSame('2026-03-10 14:05:00', $secret->first_read_at?->toDateTimeString());
+        $this->assertSame('2026-03-10 14:10:00', $secret->last_read_at?->toDateTimeString());
+        $this->assertNotNull($secret->ciphertext);
     }
 
-    /** Vérifie que confirm-read retourne 404 pour un secret expiré. */
+    /** Vérifie que la confirmation de lecture retourne 404 pour un token inconnu. */
+    public function testApiConfirmReadReturns404ForUnknownToken(): void
+    {
+        $response = $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/read');
+
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
+    }
+
+    /** Vérifie que la confirmation de lecture d'un secret expiré retourne 404 sans compter de lecture. */
     public function testApiConfirmReadReturns404ForExpiredSecret(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'expired',
-            'expire_at' => now()->subHour(),
-        ]);
+        $secret = Secret::factory()->expired()->create();
 
         $response = $this->postJson("/api/secrets/{$secret->token}/read");
 
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
 
-        $secret->delete();
+        $secret->refresh();
+        $this->assertSame(0, $secret->read_count);
+        $this->assertNull($secret->first_read_at);
     }
 
-    /** Vérifie que le ciphertext est détruit après lecture d'un secret usage unique. */
-    public function testSingleUseSecretCiphertextIsDestroyedAfterRead(): void
+    /** Vérifie qu'un secret à usage unique est détruit à la lecture puis renvoie 404 sans recompter. */
+    public function testSingleUseSecretIsDestroyedOnReadThenReturns404(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'topsecretdata',
-            'max_views' => 1,
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = Secret::factory()->singleUse()->create();
 
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-        $response->assertStatus(200);
-        $response->assertJson(['ciphertext' => 'topsecretdata']);
-
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->getJson("/api/secrets/{$secret->token}")
+            ->assertOk()
+            ->assertJsonPath('will_be_destroyed', true);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
         $secret->refresh();
         $this->assertNull($secret->ciphertext);
+        $this->assertSame(1, $secret->read_count);
 
-        $secret->delete();
+        $this->getJson("/api/secrets/{$secret->token}")->assertNotFound();
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertNotFound();
+
+        $secret->refresh();
+        $this->assertSame(1, $secret->read_count);
     }
 
-    /** Vérifie que le ciphertext est détruit après la dernière lecture autorisée. */
-    public function testMaxViewsSecretCiphertextIsDestroyedAfterLastRead(): void
+    /** Vérifie qu'un secret à max_views 3 garde son chiffré jusqu'à la 3e lecture et refuse la 4e. */
+    public function testMaxViewsSecretKeepsCiphertextUntilLastAllowedRead(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'limitedviewsdata',
-            'max_views' => 2,
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = Secret::factory()->withMaxViews(3)->create();
+        $ciphertext = $secret->ciphertext;
 
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->getJson("/api/secrets/{$secret->token}")->assertJsonPath('will_be_destroyed', false);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
+        $this->getJson("/api/secrets/{$secret->token}")->assertJsonPath('will_be_destroyed', false);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
+
         $secret->refresh();
-        $this->assertEquals('limitedviewsdata', $secret->ciphertext);
+        $this->assertSame($ciphertext, $secret->ciphertext);
 
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->getJson("/api/secrets/{$secret->token}")->assertJsonPath('will_be_destroyed', true);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertNotFound();
+
         $secret->refresh();
         $this->assertNull($secret->ciphertext);
-
-        $secret->delete();
+        $this->assertSame(3, $secret->read_count);
     }
 
-    /** Vérifie que l'API retourne les métadonnées d'un secret fichier. */
-    public function testApiFetchReturnsFileMetadata(): void
-    {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => 'secrets/test',
-            'expire_at' => now()->addDay(),
-        ]);
-
-        $response = $this->getJson("/api/secrets/{$secret->token}");
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-        ]);
-        // filename/mime/size are encrypted in file payload, not returned by API
-        $response->assertJsonMissing(['ciphertext', 'filename', 'mime', 'size', 'encrypted_size']);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que le fichier est supprimé après lecture d'un secret fichier usage unique. */
-    public function testSingleUseFileSecretIsDeletedAfterRead(): void
+    /** Vérifie que la lecture d'un fichier à usage unique supprime le blob, vide file_path et invalide l'usage disque en cache. */
+    public function testSingleUseFileSecretBlobIsDeletedOnRead(): void
     {
         Storage::fake('secrets');
+        Cache::put('disk_usage_secrets', 123, 3600);
+        $secret = Secret::factory()->singleUse()->withStoredBlob()->create();
+        $filePath = (string) $secret->file_path;
 
-        $token = $this->tokenService->generatePublicToken();
-        $filePath = $token;
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
-        Storage::disk('secrets')->put($filePath, 'encrypted-file-content');
+        Storage::disk('secrets')->assertMissing($filePath);
+        $this->assertFalse(Cache::has('disk_usage_secrets'));
 
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $filePath,
-            'max_views' => 1,
-            'expire_at' => now()->addDay(),
-        ]);
-
-        Storage::disk('secrets')->assertExists($filePath);
-
-        $this->postJson("/api/secrets/{$secret->token}/read");
-
-        Storage::disk('secrets')->assertEmpty();
-
-        $secret->delete();
+        $secret->refresh();
+        $this->assertNull($secret->file_path);
+        $this->assertSame(1, $secret->read_count);
     }
 
-    /** Vérifie que la révocation supprime le ciphertext et marque le secret comme révoqué. */
-    public function testRevokeSecretDeletesCiphertextAndMarksRevoked(): void
+    /**
+     * @return array<string, array{0: ?int}>
+     */
+    public static function remainingViewsLimits(): array
     {
-        $adminToken = bin2hex(random_bytes(16));
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => hash('sha256', $adminToken),
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'secretdata',
-            'expire_at' => now()->addDay(),
+        return [
+            'max_views 2' => [2],
+            'sans limite' => [null],
+        ];
+    }
+
+    /** Vérifie que la lecture d'un fichier conserve le blob tant qu'il reste des vues. */
+    #[DataProvider('remainingViewsLimits')]
+    public function testFileSecretBlobIsKeptOnReadWhileViewsRemain(?int $maxViews): void
+    {
+        Storage::fake('secrets');
+        $secret = Secret::factory()->withStoredBlob('encrypted-bytes')->create(['max_views' => $maxViews]);
+        $filePath = (string) $secret->file_path;
+
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
+
+        Storage::disk('secrets')->assertExists($filePath, 'encrypted-bytes');
+
+        $secret->refresh();
+        $this->assertSame($filePath, $secret->file_path);
+        $this->assertSame(1, $secret->read_count);
+    }
+
+    /** Vérifie que la dernière lecture d'un fichier dont le blob a disparu détruit le contenu sans erreur. */
+    public function testReadOfFileSecretWithMissingBlobDestroysContentWithoutError(): void
+    {
+        Storage::fake('secrets');
+        $secret = Secret::factory()->singleUse()->file()->create();
+
+        $response = $this->postJson("/api/secrets/{$secret->token}/read");
+
+        $response->assertOk();
+        $response->assertExactJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertNull($secret->file_path);
+        $this->assertSame(1, $secret->read_count);
+    }
+
+    /** Vérifie que la révocation détruit le chiffré, date la révocation, rend le secret inaccessible et compte la stat. */
+    public function testRevokeDestroysCiphertextMarksRevokedAndTracksStat(): void
+    {
+        $this->travelTo('2026-03-10 14:00:00');
+        $secret = Secret::factory()->withAdminToken(self::ADMIN_TOKEN)->create();
+
+        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
+
+        $response->assertOk();
+        $response->assertExactJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertSame('2026-03-10 14:00:00', $secret->revoked_at?->toDateTimeString());
+        $this->assertNull($secret->ciphertext);
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-03-10',
+            'metric' => StatsService::SECRETS_REVOKED,
+            'count' => 1,
         ]);
 
-        $response = $this->postJson("/api/secrets/{$adminToken}/revoke");
+        $this->getJson("/api/secrets/{$secret->token}")->assertNotFound();
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertNotFound();
+    }
 
-        $response->assertStatus(200);
-        $response->assertJson(['success' => true]);
+    /** Vérifie que la révocation d'un secret fichier supprime son blob et invalide l'usage disque en cache. */
+    public function testRevokeDeletesStoredBlobOfFileSecret(): void
+    {
+        Storage::fake('secrets');
+        Cache::put('disk_usage_secrets', 123, 3600);
+        $secret = Secret::factory()->withStoredBlob()->withAdminToken(self::ADMIN_TOKEN)->create();
+        $filePath = (string) $secret->file_path;
+
+        $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke')->assertOk();
+
+        Storage::disk('secrets')->assertMissing($filePath);
+        $this->assertFalse(Cache::has('disk_usage_secrets'));
 
         $secret->refresh();
         $this->assertNotNull($secret->revoked_at);
-        $this->assertNull($secret->ciphertext);
-
-        $secret->delete();
+        $this->assertNull($secret->file_path);
     }
 
-    /** Vérifie que la révocation supprime le fichier associé. */
-    public function testRevokeSecretDeletesFile(): void
-    {
-        Storage::fake('secrets');
-
-        $token = $this->tokenService->generatePublicToken();
-        $filePath = $token;
-        $adminToken = bin2hex(random_bytes(16));
-
-        Storage::disk('secrets')->put($filePath, 'encrypted-file-content');
-
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => hash('sha256', $adminToken),
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $filePath,
-            'expire_at' => now()->addDay(),
-        ]);
-
-        Storage::disk('secrets')->assertExists($filePath);
-
-        $this->postJson("/api/secrets/{$adminToken}/revoke");
-
-        Storage::disk('secrets')->assertEmpty();
-
-        $secret->refresh();
-        $this->assertNotNull($secret->revoked_at);
-
-        $secret->delete();
-    }
-
-    /** Vérifie que la révocation retourne 404 pour un admin token invalide. */
-    public function testRevokeReturns404ForInvalidAdminToken(): void
+    /** Vérifie que la révocation retourne 404 pour un admin token inconnu. */
+    public function testRevokeReturns404ForUnknownAdminToken(): void
     {
         $response = $this->postJson('/api/secrets/invalidtoken123/revoke');
 
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
+        $response->assertNotFound();
+        $response->assertExactJson(['error' => 'not_found']);
     }
 
-    /** Vérifie que la révocation retourne 409 pour un secret déjà révoqué. */
+    /** Vérifie que la révocation retourne 409 already_revoked pour un secret déjà révoqué, sans stat. */
     public function testRevokeReturns409ForAlreadyRevokedSecret(): void
     {
-        $adminToken = bin2hex(random_bytes(16));
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => hash('sha256', $adminToken),
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'secretdata',
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
+        $this->travelTo('2026-03-10 14:00:00');
+        $secret = Secret::factory()->revoked()->withAdminToken(self::ADMIN_TOKEN)->create();
+        $this->travel(1)->hour();
 
-        $response = $this->postJson("/api/secrets/{$adminToken}/revoke");
+        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
 
-        $response->assertStatus(409);
-        $response->assertJson(['error' => 'already_revoked']);
+        $response->assertConflict();
+        $response->assertExactJson(['error' => 'already_revoked']);
 
-        $secret->delete();
+        $secret->refresh();
+        $this->assertSame('2026-03-10 14:00:00', $secret->revoked_at?->toDateTimeString());
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_REVOKED]);
     }
 
-    /** Vérifie qu'un secret révoqué est inaccessible. */
-    public function testRevokedSecretIsInaccessible(): void
+    /** Vérifie que la révocation retourne 409 already_consumed pour un secret dont les vues sont épuisées, sans stat. */
+    public function testRevokeReturns409ForConsumedSecret(): void
     {
-        $adminToken = bin2hex(random_bytes(16));
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => hash('sha256', $adminToken),
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'secretdata',
-            'expire_at' => now()->addDay(),
-        ]);
+        $secret = Secret::factory()->consumed()->withAdminToken(self::ADMIN_TOKEN)->create();
 
-        $this->postJson("/api/secrets/{$adminToken}/revoke");
+        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
 
-        $response = $this->getJson("/api/secrets/{$secret->token}");
+        $response->assertConflict();
+        $response->assertExactJson(['error' => 'already_consumed']);
 
-        $response->assertStatus(404);
-        $response->assertJson(['error' => 'not_found']);
+        $secret->refresh();
+        $this->assertNull($secret->revoked_at);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_REVOKED]);
+    }
 
-        $secret->delete();
+    /**
+     * @param  'expired'|'revoked'|'consumed'  $state
+     */
+    private function createInaccessibleSecret(string $state): Secret
+    {
+        $factory = Secret::factory();
+
+        return match ($state) {
+            'expired' => $factory->expired()->create(),
+            'revoked' => $factory->revoked()->create(),
+            'consumed' => $factory->consumed()->create(),
+        };
     }
 }

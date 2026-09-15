@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Consumato',
     'admin_created' => 'Creato',
     'admin_expires' => 'Scade',
+    'admin_no_expiry' => 'Nessuna scadenza',
     'admin_read_count' => 'Contatore letture',
     'admin_fetch_count' => 'Contatore recuperi',
     'admin_fetch_count_hint' => 'Numero di volte in cui il contenuto crittografato è stato scaricato. Se supera il numero di letture, il link potrebbe essere stato intercettato.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'L\'indirizzo email è obbligatorio.',
     'val_email_invalid' => 'L\'indirizzo email non è valido.',
     'val_email_max' => 'L\'indirizzo email non deve superare i 255 caratteri.',
-    'val_days_required' => 'Il numero di giorni è obbligatorio.',
-    'val_days_integer' => 'Il numero di giorni deve essere un numero intero.',
-    'val_days_min' => 'Il numero di giorni deve essere almeno 1.',
-    'val_days_max' => 'Il numero di giorni non può superare 30.',
+    'val_hours_required' => 'Il numero di ore è obbligatorio.',
+    'val_hours_integer' => 'Il numero di ore deve essere un numero intero.',
+    'val_hours_min' => 'Il numero di ore deve essere almeno 1.',
+    'val_hours_max' => 'Il numero di ore non può superare 720.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Attività dei segreti',

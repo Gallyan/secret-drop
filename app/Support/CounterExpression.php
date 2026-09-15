@@ -3,19 +3,31 @@
 namespace App\Support;
 
 use Illuminate\Contracts\Database\Query\Expression;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Grammar;
 
 /**
- * Builds the "add to the current value" expression used by the upsert counters.
+ * "Add to the current value" expression used by the upsert counters.
  *
- * Funnelling every such expression through an int-only signature is what makes
- * it safe: no caller can inject anything through an integer, which is why the
- * literal-string warning is suppressed for this file alone.
+ * The column is qualified with its table, wrapped by the grammar compiling the
+ * query: PostgreSQL rejects a bare `count` in `on conflict do update` because it
+ * is ambiguous with `excluded.count`. The amount is an integer, so nothing can
+ * be injected through it.
  */
-class CounterExpression
+final class CounterExpression implements Expression
 {
-    public static function addTo(int $amount): Expression
+    private function __construct(
+        private string $table,
+        private int $amount,
+    ) {
+    }
+
+    public static function addTo(string $table, int $amount): self
     {
-        return DB::raw('count + '.$amount);
+        return new self($table, $amount);
+    }
+
+    public function getValue(Grammar $grammar): string
+    {
+        return "{$grammar->wrap("{$this->table}.count")} + {$this->amount}";
     }
 }

@@ -43,6 +43,23 @@ if (! function_exists('csp_nonce')) {
     }
 }
 
+if (! function_exists('json_ld')) {
+    /**
+     * Encodes a Schema.org structure for a <script type="application/ld+json"> block.
+     *
+     * Values stay raw (no HTML entities); JSON_HEX_TAG escapes < and > so no value can close the script element.
+     *
+     * @param  array<string, mixed>  $schema
+     */
+    function json_ld(array $schema): string
+    {
+        return json_encode(
+            $schema,
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR
+        );
+    }
+}
+
 if (! function_exists('localized_route')) {
     function localized_route(string $page, ?string $locale = null): string
     {

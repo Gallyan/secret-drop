@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => '使用済み',
     'admin_created' => '作成日',
     'admin_expires' => '有効期限',
+    'admin_no_expiry' => '期限なし',
     'admin_read_count' => '閲覧数',
     'admin_fetch_count' => '取得数',
     'admin_fetch_count_hint' => '暗号化されたコンテンツがダウンロードされた回数です。閲覧数を上回る場合、リンクが傍受された可能性があります。',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'メールアドレスは必須です。',
     'val_email_invalid' => 'メールアドレスが有効ではありません。',
     'val_email_max' => 'メールアドレスは255文字を超えてはなりません。',
-    'val_days_required' => '日数は必須です。',
-    'val_days_integer' => '日数は整数でなければなりません。',
-    'val_days_min' => '日数は1以上でなければなりません。',
-    'val_days_max' => '日数は30を超えてはなりません。',
+    'val_hours_required' => '時間数は必須です。',
+    'val_hours_integer' => '時間数は整数でなければなりません。',
+    'val_hours_min' => '時間数は1以上でなければなりません。',
+    'val_hours_max' => '時間数は720を超えてはなりません。',
 
     // Dashboard sections
     'superadmin_section_activity' => 'シークレットのアクティビティ',

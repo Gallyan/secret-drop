@@ -3,131 +3,97 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\SecretStorageService;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CleanOrphanBlobsCommandTest extends TestCase
 {
-    private SecretStorageService $storage;
+    private const SECRET_TOKEN = 'ab34567890abcdef1234567890abcdef';
 
-    protected function setUp(): void
+    private const ORPHAN_PATH = 'cd/cd34567890abcdef1234567890abcdef';
+
+    /** Vérifie que la commande supprime un blob orphelin et son répertoire devenu vide sans toucher au blob d'un secret existant. */
+    public function testDeletesOrphanBlobAndItsDirectoryButKeepsSecretBlob(): void
     {
-        parent::setUp();
-        $this->storage = app(SecretStorageService::class);
-    }
-
-    protected function tearDown(): void
-    {
-        $files = $this->storage->disk()->allFiles();
-        foreach ($files as $file) {
-            $this->storage->delete($file);
-        }
-
-        parent::tearDown();
-    }
-
-    /** Vérifie la suppression des blobs orphelins. */
-    public function testCommandDeletesOrphanBlobs(): void
-    {
-        $orphanPath = 'orphan_file_'.bin2hex(random_bytes(8));
-        $this->storage->disk()->put($orphanPath, 'orphan content');
-
-        $this->assertTrue($this->storage->exists($orphanPath));
+        Storage::fake('secrets');
+        Secret::factory()->withStoredBlob('valid-blob')->create(['token' => self::SECRET_TOKEN]);
+        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
 
         $this->artisan('secrets:clean-blobs')
-            ->expectsOutputToContain('1 orphan blobs')
-            ->assertExitCode(0);
+            ->expectsOutput('Found 2 files in storage.')
+            ->expectsOutput('Found 1 orphan blobs to delete.')
+            ->expectsOutput('Deleted 1 orphan blobs.')
+            ->assertSuccessful();
 
-        $this->assertFalse($this->storage->exists($orphanPath));
+        Storage::disk('secrets')->assertMissing(self::ORPHAN_PATH);
+        $this->assertFalse(Storage::disk('secrets')->directoryExists('cd'));
+        Storage::disk('secrets')->assertExists('ab/ab34567890abcdef1234567890abcdef', 'valid-blob');
     }
 
-    /** Vérifie que les fichiers avec secret associé sont conservés. */
-    public function testCommandKeepsFilesWithCorrespondingSecrets(): void
+    /** Vérifie que la commande signale l'absence d'orphelin quand chaque blob appartient à un secret. */
+    public function testReportsNoOrphanBlobsWhenEveryBlobBelongsToSecret(): void
     {
-        $token = bin2hex(random_bytes(16));
-        $file = UploadedFile::fake()->create('test.enc', 100);
-        $filePath = $this->storage->store($token, $file);
-
-        Secret::create([
-            'token' => $token,
-            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
-            'file_path' => $filePath,
-            'expire_at' => now()->addDays(7),
-        ]);
-
-        $this->assertTrue($this->storage->exists($filePath));
+        Storage::fake('secrets');
+        Secret::factory()->withStoredBlob()->create();
 
         $this->artisan('secrets:clean-blobs')
-            ->expectsOutputToContain('No orphan blobs found')
-            ->assertExitCode(0);
-
-        $this->assertTrue($this->storage->exists($filePath));
-
-        Secret::where('token', $token)->delete();
+            ->expectsOutput('No orphan blobs found.')
+            ->assertSuccessful();
     }
 
-    /** Vérifie la suppression des orphelins tout en gardant les valides. */
-    public function testCommandDeletesOrphanButKeepsValid(): void
+    /** Vérifie que le blob résiduel d'un secret consommé, dont le chemin est effacé, est supprimé comme orphelin. */
+    public function testDeletesLeftoverBlobOfConsumedSecret(): void
     {
-        $validToken = bin2hex(random_bytes(16));
-        $validFile = UploadedFile::fake()->create('valid.enc', 100);
-        $validPath = $this->storage->store($validToken, $validFile);
-
-        Secret::create([
-            'token' => $validToken,
-            'admin_token_hash' => hash('sha256', bin2hex(random_bytes(16))),
-            'type' => 'file',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'test', 'version' => 1],
-            'file_path' => $validPath,
-            'expire_at' => now()->addDays(7),
-        ]);
-
-        $orphanPath = 'orphan_'.bin2hex(random_bytes(8));
-        $this->storage->disk()->put($orphanPath, 'orphan content');
-
-        $this->assertTrue($this->storage->exists($validPath));
-        $this->assertTrue($this->storage->exists($orphanPath));
+        Storage::fake('secrets');
+        $consumedSecret = Secret::factory()->file()->consumed()->create();
+        $leftoverPath = substr($consumedSecret->token, 0, 2).'/'.$consumedSecret->token;
+        Storage::disk('secrets')->put($leftoverPath, 'leftover-blob');
 
         $this->artisan('secrets:clean-blobs')
-            ->expectsOutputToContain('1 orphan blobs')
-            ->assertExitCode(0);
+            ->expectsOutput('Deleted 1 orphan blobs.')
+            ->assertSuccessful();
 
-        $this->assertTrue($this->storage->exists($validPath));
-        $this->assertFalse($this->storage->exists($orphanPath));
-
-        Secret::where('token', $validToken)->delete();
+        Storage::disk('secrets')->assertMissing($leftoverPath);
     }
 
-    /** Vérifie que --dry-run ne supprime pas les fichiers. */
-    public function testDryRunDoesNotDeleteFiles(): void
+    /** Vérifie que la suppression d'orphelins invalide les tailles de stockage mises en cache. */
+    public function testInvalidatesCachedDiskUsageWhenOrphansAreDeleted(): void
     {
-        $orphanPath = 'orphan_dry_run_'.bin2hex(random_bytes(8));
-        $this->storage->disk()->put($orphanPath, 'orphan content');
+        Storage::fake('secrets');
+        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
+        Cache::put('disk_usage_secrets', 123, 3600);
+        Cache::put('secrets:total_file_size', 123, 300);
 
-        $this->assertTrue($this->storage->exists($orphanPath));
+        $this->artisan('secrets:clean-blobs')->assertSuccessful();
+
+        $this->assertFalse(Cache::has('disk_usage_secrets'));
+        $this->assertFalse(Cache::has('secrets:total_file_size'));
+    }
+
+    /** Vérifie que --dry-run annonce la suppression sans supprimer l'orphelin ni invalider le cache. */
+    public function testDryRunKeepsOrphanBlobAndCachedDiskUsage(): void
+    {
+        Storage::fake('secrets');
+        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
+        Cache::put('disk_usage_secrets', 123, 3600);
 
         $this->artisan('secrets:clean-blobs', ['--dry-run' => true])
-            ->expectsOutputToContain('[DRY RUN]')
-            ->assertExitCode(0);
+            ->expectsOutput('[DRY RUN] Found 1 orphan blobs to delete.')
+            ->expectsOutput('[DRY RUN] Would delete 1 orphan blobs.')
+            ->assertSuccessful();
 
-        $this->assertTrue($this->storage->exists($orphanPath));
-
-        $this->storage->delete($orphanPath);
+        Storage::disk('secrets')->assertExists(self::ORPHAN_PATH, 'orphan-blob');
+        $this->assertSame(123, Cache::get('disk_usage_secrets'));
     }
 
-    /** Vérifie la gestion du storage vide. */
-    public function testCommandHandlesEmptyStorage(): void
+    /** Vérifie que la commande signale un stockage vide. */
+    public function testReportsEmptyStorage(): void
     {
-        $files = $this->storage->disk()->allFiles();
-        foreach ($files as $file) {
-            $this->storage->delete($file);
-        }
+        Storage::fake('secrets');
 
         $this->artisan('secrets:clean-blobs')
-            ->expectsOutputToContain('No files in storage')
-            ->assertExitCode(0);
+            ->expectsOutput('No files in storage.')
+            ->assertSuccessful();
     }
 }

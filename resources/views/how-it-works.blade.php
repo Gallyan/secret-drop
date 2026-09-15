@@ -4,95 +4,96 @@
 @section('description', __('messages.how_it_works_meta_description'))
 
 @push('schema')
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "BreadcrumbList",
-    "itemListElement": [
-        {
-            "@@type": "ListItem",
-            "position": 1,
-            "name": "{{ config('app.name') }}",
-            "item": "{{ route('home') }}"
-        },
-        {
-            "@@type": "ListItem",
-            "position": 2,
-            "name": "{{ __('messages.how_it_works_title') }}",
-            "item": "{{ localized_route('how-it-works') }}"
-        }
-    ]
-}
-</script>
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "HowTo",
-    "name": "{{ __('messages.how_it_works_title') }}",
-    "description": "{{ __('messages.how_it_works_intro') }}",
-    "step": [
-        {
-            "@@type": "HowToStep",
-            "position": 1,
-            "name": "{{ __('messages.how_step1_title') }}",
-            "text": "{{ __('messages.how_step1_desc') }}"
-        },
-        {
-            "@@type": "HowToStep",
-            "position": 2,
-            "name": "{{ __('messages.how_step2_title') }}",
-            "text": "{{ strip_tags(__('messages.how_step2_desc')) }}"
-        },
-        {
-            "@@type": "HowToStep",
-            "position": 3,
-            "name": "{{ __('messages.how_step3_title') }}",
-            "text": "{{ __('messages.how_step3_desc') }}"
-        },
-        {
-            "@@type": "HowToStep",
-            "position": 4,
-            "name": "{{ __('messages.how_step4_title') }}",
-            "text": "{{ __('messages.how_step4_desc') }}"
-        },
-        {
-            "@@type": "HowToStep",
-            "position": 5,
-            "name": "{{ __('messages.how_step5_title') }}",
-            "text": "{{ __('messages.how_step5_desc') }}"
-        },
-        {
-            "@@type": "HowToStep",
-            "position": 6,
-            "name": "{{ __('messages.how_step6_title') }}",
-            "text": "{{ __('messages.how_step6_desc') }}"
-        }
-    ]
-}
-</script>
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "WebPage",
-    "name": "{{ __('messages.how_it_works_title') }}",
-    "description": "{{ __('messages.how_it_works_meta_description') }}",
-    "datePublished": "2026-03-01",
-    "dateModified": "{{ date('Y-m-d', filemtime(resource_path('views/how-it-works.blade.php'))) }}",
-    "about": {
-        "@@type": "WebApplication",
-        "name": "{{ config('app.name') }}"
-    },
-    "isPartOf": {
-        "@@type": "WebSite",
-        "name": "{{ config('app.name') }}",
-        "url": "{{ url('/') }}"
-    },
-    "speakable": {
-        "@@type": "SpeakableSpecification",
-        "cssSelector": ["h1", ".text-lg"]
-    }
-}
-</script>
+    @php
+        $breadcrumb = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => config_string('app.name'),
+                    'item' => route('home'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => __('messages.how_it_works_title'),
+                    'item' => localized_route('how-it-works'),
+                ],
+            ],
+        ];
+
+        $howTo = [
+            '@context' => 'https://schema.org',
+            '@type' => 'HowTo',
+            'name' => __('messages.how_it_works_title'),
+            'description' => __('messages.how_it_works_intro'),
+            'step' => [
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 1,
+                    'name' => __('messages.how_step1_title'),
+                    'text' => __('messages.how_step1_desc'),
+                ],
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 2,
+                    'name' => __('messages.how_step2_title'),
+                    'text' => strip_tags(__('messages.how_step2_desc')),
+                ],
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 3,
+                    'name' => __('messages.how_step3_title'),
+                    'text' => __('messages.how_step3_desc'),
+                ],
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 4,
+                    'name' => __('messages.how_step4_title'),
+                    'text' => __('messages.how_step4_desc'),
+                ],
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 5,
+                    'name' => __('messages.how_step5_title'),
+                    'text' => __('messages.how_step5_desc'),
+                ],
+                [
+                    '@type' => 'HowToStep',
+                    'position' => 6,
+                    'name' => __('messages.how_step6_title'),
+                    'text' => __('messages.how_step6_desc'),
+                ],
+            ],
+        ];
+
+        $webPage = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => __('messages.how_it_works_title'),
+            'description' => __('messages.how_it_works_meta_description'),
+            'datePublished' => '2026-03-01',
+            'dateModified' => date('Y-m-d', filemtime(resource_path('views/how-it-works.blade.php'))),
+            'about' => [
+                '@type' => 'WebApplication',
+                'name' => config_string('app.name'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config_string('app.name'),
+                'url' => url('/'),
+            ],
+            'speakable' => [
+                '@type' => 'SpeakableSpecification',
+                'cssSelector' => ['h1', '.text-lg'],
+            ],
+        ];
+    @endphp
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($breadcrumb) !!}</script>
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($howTo) !!}</script>
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($webPage) !!}</script>
 @endpush
 
 @section('content')

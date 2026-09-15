@@ -2,58 +2,42 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class LocalizedPagesControllerTest extends TestCase
 {
-    /** Vérifie que les pages localisées EN retournent 200. */
-    public function testEnglishPagesReturnSuccess(): void
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function slugsOfAnotherLocale(): array
     {
-        $this->get('/en/how-it-works')->assertStatus(200);
-        $this->get('/en/use-cases')->assertStatus(200);
-        $this->get('/en/legal-notice')->assertStatus(200);
-        $this->get('/en/faq')->assertStatus(200);
+        return [
+            'english slug under french' => ['/fr/how-it-works', 'http://localhost/fr/comment-ca-marche'],
+            'french slug under english' => ['/en/comment-ca-marche', 'http://localhost/en/how-it-works'],
+            'spanish slug under french' => ['/fr/preguntas-frecuentes', 'http://localhost/fr/faq'],
+            'german slug under japanese' => ['/ja/impressum', 'http://localhost/ja/legal-notice'],
+            'portuguese slug under spanish' => ['/es/perguntas-frequentes', 'http://localhost/es/preguntas-frecuentes'],
+            'slug shared by spanish and portuguese under italian' => ['/it/como-funciona', 'http://localhost/it/come-funziona'],
+            'legal slug shared by spanish and portuguese under italian' => ['/it/aviso-legal', 'http://localhost/it/avviso-legale'],
+        ];
     }
 
-    /** Vérifie que les pages localisées FR retournent 200. */
-    public function testFrenchPagesReturnSuccess(): void
+    /** Vérifie qu'un slug d'une autre locale redirige en 301 vers le slug traduit de la locale de l'URL. */
+    #[DataProvider('slugsOfAnotherLocale')]
+    public function testSlugOfAnotherLocaleRedirectsPermanentlyToTheTranslatedSlug(string $uri, string $expectedLocation): void
     {
-        $this->get('/fr/comment-ca-marche')->assertStatus(200);
-        $this->get('/fr/cas-d-usage')->assertStatus(200);
-        $this->get('/fr/mentions-legales')->assertStatus(200);
-        $this->get('/fr/faq')->assertStatus(200);
+        $response = $this->get($uri);
+
+        $response->assertMovedPermanently();
+        $response->assertRedirect($expectedLocation);
     }
 
-    /** Vérifie qu'un slug EN sous /fr redirige 301 vers le bon slug FR. */
-    public function testEnglishSlugUnderFrenchLocaleRedirects(): void
-    {
-        $response = $this->get('/fr/how-it-works');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString('comment-ca-marche', $response->headers->get('Location'));
-    }
-
-    /** Vérifie qu'un slug FR sous /en redirige 301 vers le bon slug EN. */
-    public function testFrenchSlugUnderEnglishLocaleRedirects(): void
-    {
-        $response = $this->get('/en/comment-ca-marche');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString('how-it-works', $response->headers->get('Location'));
-    }
-
-    /** Vérifie qu'un slug inexistant retourne 404. */
-    public function testUnknownSlugReturns404(): void
+    /** Vérifie qu'un slug inconnu de toutes les locales retourne 404. */
+    public function testUnknownSlugReturnsNotFound(): void
     {
         $response = $this->get('/en/this-page-does-not-exist');
 
-        $response->assertStatus(404);
-    }
-
-    /** Vérifie que la page d'accueil localisée retourne 200. */
-    public function testLocalizedHomeReturnsSuccess(): void
-    {
-        $this->get('/en')->assertStatus(200);
-        $this->get('/fr')->assertStatus(200);
+        $response->assertNotFound();
     }
 }

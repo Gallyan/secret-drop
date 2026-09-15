@@ -4,69 +4,55 @@ namespace Tests\Feature;
 
 use App\Mail\MagicLinkMail;
 use App\Mail\SuperAdminMagicLinkMail;
+use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
 class MagicLinkMailTest extends TestCase
 {
+    private const URL_WITH_SPECIAL_CHARACTERS = 'https://example.com/fr/admin/verify/abc?x=1&y="2"<b>';
+
+    private const ESCAPED_URL = 'https://example.com/fr/admin/verify/abc?x=1&amp;y=&quot;2&quot;&lt;b&gt;';
+
     /** Vérifie le sujet de l'email magic link. */
-    public function testMagicLinkMailHasCorrectSubject(): void
+    public function testMagicLinkMailHasTranslatedSubject(): void
     {
-        $mail = new MagicLinkMail('https://example.com/verify/token123');
+        $mail = new MagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
-        $this->assertEquals(__('messages.email_magic_link_subject'), $mail->envelope()->subject);
+        $this->assertSame(__('messages.email_magic_link_subject'), $mail->envelope()->subject);
     }
 
-    /** Vérifie le rendu de l'email avec l'URL de vérification. */
-    public function testMagicLinkMailRendersWithVerifyUrl(): void
+    /** Vérifie que l'email magic link rend un lien cliquable échappé, le bouton et la durée de validité. */
+    public function testMagicLinkMailRendersEscapedClickableUrlAndValidity(): void
     {
-        $url = 'https://example.com/verify/token123';
-        $mail = new MagicLinkMail($url);
+        Config::set('secrets.magic_link_ttl', 10);
+        $mail = new MagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
         $rendered = $mail->render();
 
-        $this->assertStringContainsString($url, $rendered);
-        $this->assertStringContainsString(__('messages.email_magic_link_button'), $rendered);
-        $this->assertStringContainsString(e(__('messages.email_magic_link_warning', ['minutes' => config('secrets.magic_link_ttl')])), $rendered);
-    }
-
-    /** Vérifie que l'email contient un lien cliquable. */
-    public function testMagicLinkMailContainsClickableUrl(): void
-    {
-        $url = 'https://example.com/verify/token123';
-        $mail = new MagicLinkMail($url);
-
-        $rendered = $mail->render();
-
-        $this->assertStringContainsString('href="'.$url.'"', $rendered);
+        $this->assertStringContainsString('href="'.self::ESCAPED_URL.'"', $rendered);
+        $this->assertStringNotContainsString('<b>', $rendered);
+        $this->assertStringContainsString(e(__('messages.email_magic_link_button')), $rendered);
+        $this->assertStringContainsString(e(__('messages.email_magic_link_warning', ['minutes' => 10])), $rendered);
     }
 
     /** Vérifie le sujet de l'email magic link superadmin. */
-    public function testSuperAdminMagicLinkMailHasCorrectSubject(): void
+    public function testSuperAdminMagicLinkMailHasTranslatedSubject(): void
     {
-        $mail = new SuperAdminMagicLinkMail('https://example.com/verify/token123');
+        $mail = new SuperAdminMagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
-        $this->assertEquals(__('messages.email_superadmin_subject'), $mail->envelope()->subject);
+        $this->assertSame(__('messages.email_superadmin_subject'), $mail->envelope()->subject);
     }
 
-    /** Vérifie le rendu de l'email superadmin. */
-    public function testSuperAdminMagicLinkMailRendersWithVerifyUrl(): void
+    /** Vérifie que l'email superadmin rend un lien cliquable échappé, le bouton et le badge Super Admin. */
+    public function testSuperAdminMagicLinkMailRendersEscapedClickableUrlAndBadge(): void
     {
-        $url = 'https://example.com/verify/token123';
-        $mail = new SuperAdminMagicLinkMail($url);
+        $mail = new SuperAdminMagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
         $rendered = $mail->render();
 
-        $this->assertStringContainsString($url, $rendered);
-        $this->assertStringContainsString(__('messages.email_superadmin_button'), $rendered);
-    }
-
-    /** Vérifie la présence du badge Super Admin dans l'email. */
-    public function testSuperAdminMagicLinkMailContainsBadge(): void
-    {
-        $mail = new SuperAdminMagicLinkMail('https://example.com/verify/token123');
-
-        $rendered = $mail->render();
-
-        $this->assertStringContainsString(__('messages.superadmin_title'), $rendered);
+        $this->assertStringContainsString('href="'.self::ESCAPED_URL.'"', $rendered);
+        $this->assertStringNotContainsString('<b>', $rendered);
+        $this->assertStringContainsString(e(__('messages.email_superadmin_button')), $rendered);
+        $this->assertStringContainsString(e(__('messages.superadmin_title')), $rendered);
     }
 }

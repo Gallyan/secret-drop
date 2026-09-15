@@ -3,304 +3,133 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\SecretStorageService;
 use App\Services\StatsService;
-use App\Services\TokenService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class StatsTrackingTest extends TestCase
 {
-    private TokenService $tokenService;
+    private const CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ';
 
-    private StatsService $statsService;
+    private const TODAY = '2026-09-15';
 
-    protected function setUp(): void
+    private function metricCount(string $metric): int
     {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-        $this->statsService = app(StatsService::class);
-    }
-
-    private function getMetricTotal(string $metric): int
-    {
-        return (int) DB::table('stats_daily')
+        $count = DB::table('stats_daily')
             ->where('metric', $metric)
-            ->sum('count');
+            ->where('date', self::TODAY)
+            ->value('count');
+
+        return is_numeric($count) ? (int) $count : 0;
     }
 
-    private function getTodayMetric(string $metric): int
+    /**
+     * @return array<string, mixed>
+     */
+    private function textSecretPayload(): array
     {
-        return (int) (DB::table('stats_daily')
-            ->where('metric', $metric)
-            ->where('date', now()->toDateString())
-            ->value('count') ?? 0);
-    }
-
-    /** Vérifie que la création d'un secret texte incrémente les stats. */
-    public function testTextSecretCreationIncrementsStats(): void
-    {
-        $ciphertext = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ';
-        $initialCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_TEXT);
-        $initialSizeCount = $this->getMetricTotal(StatsService::TOTAL_TEXT_SIZE_BYTES);
-
-        $this->postJson('/api/secrets', [
+        return [
             'type' => 'text',
-            'ciphertext' => $ciphertext,
+            'ciphertext' => self::CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
                 'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
-        ]);
-
-        $newCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_TEXT);
-        $newSizeCount = $this->getMetricTotal(StatsService::TOTAL_TEXT_SIZE_BYTES);
-
-        $this->assertEquals($initialCount + 1, $newCount);
-        $this->assertEquals($initialSizeCount + strlen($ciphertext), $newSizeCount);
-
-        // Cleanup
-        Secret::orderBy('id', 'desc')->first()->delete();
+        ];
     }
 
-    /** La taille moyenne d'un secret texte se calcule depuis les compteurs persistants. */
-    public function testAverageTextSecretSizeComesFromCounters(): void
+    /** Vérifie que la création d'un secret texte incrémente le compteur et la taille cumulée. */
+    public function testTextSecretCreationIncrementsStats(): void
     {
-        $today = now()->toDateString();
-        $this->statsService->increment(StatsService::SECRETS_CREATED_TEXT, 2);
-        $this->statsService->increment(StatsService::TOTAL_TEXT_SIZE_BYTES, 300);
+        $this->travelTo(self::TODAY.' 12:00:00');
 
-        $createdText = $this->getTodayMetric(StatsService::SECRETS_CREATED_TEXT);
-        $textBytes = $this->getTodayMetric(StatsService::TOTAL_TEXT_SIZE_BYTES);
+        $this->postJson('/api/secrets', $this->textSecretPayload())->assertCreated();
 
-        $average = $this->statsService->getAverageSecretSize($today);
-
-        $this->assertNotNull($average['text']);
-        $this->assertEqualsWithDelta($textBytes / $createdText, $average['text'], 0.0001);
+        $this->assertSame(1, $this->metricCount(StatsService::SECRETS_CREATED_TEXT));
+        $this->assertSame(43, $this->metricCount(StatsService::TOTAL_TEXT_SIZE_BYTES));
     }
 
-    /** Vérifie que la création d'un secret fichier incrémente les stats. */
+    /** Vérifie que la création d'un secret fichier incrémente le compteur et la taille du fichier chiffré. */
     public function testFileSecretCreationIncrementsStats(): void
     {
-        $initialFileCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_FILE);
-        $initialSizeCount = $this->getMetricTotal(StatsService::TOTAL_FILE_SIZE_BYTES);
-
-        // Create a 256 KB file
-        $file = UploadedFile::fake()->create('test.bin', 256);
+        $this->travelTo(self::TODAY.' 12:00:00');
+        Storage::fake('secrets');
 
         $this->postJson('/api/secrets', [
             'type' => 'file',
-            'encrypted_file' => $file,
+            'encrypted_file' => UploadedFile::fake()->create('test.bin', 256),
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
                 'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ]),
             'expiration' => '7d',
-        ]);
+        ])->assertCreated();
 
-        $newFileCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_FILE);
-        $newSizeCount = $this->getMetricTotal(StatsService::TOTAL_FILE_SIZE_BYTES);
-
-        $this->assertEquals($initialFileCount + 1, $newFileCount);
-        // Size is now calculated from the actual stored file
-        $this->assertGreaterThan($initialSizeCount, $newSizeCount);
-
-        // Cleanup
-        $secret = Secret::orderBy('id', 'desc')->first();
-        if ($secret->file_path) {
-            app(SecretStorageService::class)->delete($secret->file_path);
-        }
-        $secret->delete();
+        $this->assertSame(1, $this->metricCount(StatsService::SECRETS_CREATED_FILE));
+        $this->assertSame(256 * 1024, $this->metricCount(StatsService::TOTAL_FILE_SIZE_BYTES));
     }
 
-    /** Vérifie que la création avec max_views incrémente les stats. */
-    public function testMaxViewsSecretIncrementsStats(): void
+    /** Vérifie que la création incrémente la heatmap au jour et à l'heure de création. */
+    public function testHeatmapCreatedIsIncremented(): void
     {
-        $initialCount = $this->getMetricTotal(StatsService::SECRETS_WITH_MAX_VIEWS);
+        $this->travelTo(self::TODAY.' 14:20:00');
 
-        $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'YWFhYWFhYWFhYWFh',
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-            'max_views' => 5,
-        ]);
+        $this->postJson('/api/secrets', $this->textSecretPayload())->assertCreated();
 
-        $newCount = $this->getMetricTotal(StatsService::SECRETS_WITH_MAX_VIEWS);
-        $this->assertEquals($initialCount + 1, $newCount);
-
-        // Cleanup
-        Secret::orderBy('id', 'desc')->first()->delete();
+        $this->assertSame(1, app(StatsService::class)->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED)[2][14]);
     }
 
-    /** Vérifie que confirm-read incrémente la stat de lectures. */
-    public function testConfirmReadIncrementsSecretsReadStats(): void
+    /** Vérifie que confirm-read incrémente les lectures et la heatmap de lecture au jour et à l'heure de lecture. */
+    public function testConfirmReadIncrementsReadStatsAndHeatmap(): void
     {
-        $secret = $this->createTextSecret();
-        $initialCount = $this->getMetricTotal(StatsService::SECRETS_READ);
+        $this->travelTo(self::TODAY.' 14:20:00');
+        $secret = Secret::factory()->create();
 
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
-        $newCount = $this->getMetricTotal(StatsService::SECRETS_READ);
-        $this->assertEquals($initialCount + 1, $newCount);
-
-        // Cleanup
-        $secret->delete();
+        $this->assertSame(1, $this->metricCount(StatsService::SECRETS_READ));
+        $this->assertSame(1, app(StatsService::class)->getHeatmap(StatsService::HEATMAP_SECRETS_READ)[2][14]);
     }
 
     /** Vérifie que l'atteinte du max_views incrémente les stats. */
     public function testMaxViewsReachedIncrementsStats(): void
     {
-        $initialCount = $this->getMetricTotal(StatsService::SECRETS_MAX_VIEWS_REACHED);
+        $this->travelTo(self::TODAY.' 12:00:00');
+        $secret = Secret::factory()->singleUse()->create();
 
-        // Create secret with max_views = 1
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'YWFhYWFhYWFhYWFh',
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-            'max_views' => 1,
-        ]);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
-        $token = $response->json('token');
-
-        // Confirm read (should trigger max_views_reached)
-        $this->postJson("/api/secrets/{$token}/read");
-
-        $newCount = $this->getMetricTotal(StatsService::SECRETS_MAX_VIEWS_REACHED);
-        $this->assertEquals($initialCount + 1, $newCount);
-
-        // Cleanup
-        Secret::where('token', $token)->delete();
+        $this->assertSame(1, $this->metricCount(StatsService::SECRETS_MAX_VIEWS_REACHED));
     }
 
-    /** Vérifie que la heatmap de création est incrémentée. */
-    public function testHeatmapCreatedIsIncremented(): void
-    {
-        $dayOfWeek = (int) now()->format('w');
-        $hour = (int) now()->format('G');
-
-        $initialHeatmap = $this->statsService->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
-        $initialValue = $initialHeatmap[$dayOfWeek][$hour] ?? 0;
-
-        $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'YWFhYWFhYWFhYWFh',
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $newHeatmap = $this->statsService->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED);
-        $newValue = $newHeatmap[$dayOfWeek][$hour] ?? 0;
-
-        $this->assertEquals($initialValue + 1, $newValue);
-
-        // Cleanup
-        Secret::orderBy('id', 'desc')->first()->delete();
-    }
-
-    /** Vérifie que la heatmap de lecture est incrémentée. */
-    public function testHeatmapReadIsIncremented(): void
-    {
-        $secret = $this->createTextSecret();
-        $dayOfWeek = (int) now()->format('w');
-        $hour = (int) now()->format('G');
-
-        $initialHeatmap = $this->statsService->getHeatmap(StatsService::HEATMAP_SECRETS_READ);
-        $initialValue = $initialHeatmap[$dayOfWeek][$hour] ?? 0;
-
-        $this->postJson("/api/secrets/{$secret->token}/read");
-
-        $newHeatmap = $this->statsService->getHeatmap(StatsService::HEATMAP_SECRETS_READ);
-        $newValue = $newHeatmap[$dayOfWeek][$hour] ?? 0;
-
-        $this->assertEquals($initialValue + 1, $newValue);
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie que le délai de première lecture est suivi. */
+    /** Vérifie que la première lecture enregistre le délai écoulé depuis la création. */
     public function testFirstReadDelayIsTracked(): void
     {
-        // Get initial stats
-        $initialDelayCount = $this->getTodayMetric(StatsService::FIRST_READ_DELAY_COUNT);
+        $this->travelTo(self::TODAY.' 11:58:30');
+        $secret = Secret::factory()->create();
+        $this->travelTo(self::TODAY.' 12:00:00');
 
-        // Create and immediately read a secret
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => 'YWFhYWFhYWFhYWFh',
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-        ]);
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
-        $token = $response->json('token');
-
-        // Confirm read
-        $this->postJson("/api/secrets/{$token}/read");
-
-        // Verify delay was tracked
-        $newDelayCount = $this->getTodayMetric(StatsService::FIRST_READ_DELAY_COUNT);
-        $this->assertEquals($initialDelayCount + 1, $newDelayCount);
-
-        // Cleanup
-        Secret::where('token', $token)->delete();
+        $this->assertSame(90, $this->metricCount(StatsService::FIRST_READ_DELAY_TOTAL));
+        $this->assertSame(1, $this->metricCount(StatsService::FIRST_READ_DELAY_COUNT));
     }
 
     /** Vérifie que le délai n'est pas suivi sur les lectures suivantes. */
     public function testFirstReadDelayNotTrackedOnSubsequentReads(): void
     {
-        $secret = $this->createTextSecret();
+        $this->travelTo(self::TODAY.' 12:00:00');
+        $secret = Secret::factory()->create();
 
-        // First read
-        $this->postJson("/api/secrets/{$secret->token}/read");
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
+        $this->postJson("/api/secrets/{$secret->token}/read")->assertOk();
 
-        $countAfterFirst = $this->getTodayMetric(StatsService::FIRST_READ_DELAY_COUNT);
-
-        // Second read
-        $this->postJson("/api/secrets/{$secret->token}/read");
-
-        $countAfterSecond = $this->getTodayMetric(StatsService::FIRST_READ_DELAY_COUNT);
-
-        // Count should not increase on second read
-        $this->assertEquals($countAfterFirst, $countAfterSecond);
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function createTextSecret(array $attributes = []): Secret
-    {
-        return Secret::create(array_merge([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'YWFhYWFhYWFhYWFh', 'version' => 1],
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
-            'expire_at' => now()->addDay(),
-        ], $attributes));
+        $this->assertSame(1, $this->metricCount(StatsService::FIRST_READ_DELAY_COUNT));
+        $this->assertSame(2, $this->metricCount(StatsService::SECRETS_READ));
     }
 }

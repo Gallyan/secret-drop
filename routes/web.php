@@ -36,7 +36,7 @@ Route::get('/.well-known/security.txt', [GeoController::class, 'securityTxt']);
 
 // IndexNow key verification file (declared after the static .txt routes above so it never captures them)
 Route::get('/{indexnowKey}.txt', [SeoController::class, 'indexNowKey'])
-    ->where(['indexnowKey' => '[A-Za-z0-9-]{8,128}']);
+    ->where(['indexnowKey' => SeoController::INDEXNOW_KEY_PATTERN]);
 
 // Localized pages (public + admin + superadmin)
 Route::prefix('{locale}')
@@ -51,7 +51,7 @@ Route::prefix('{locale}')
             ->name('admin.requestAccess');
         Route::get('/admin/access-sent', fn () => view('admin.access-sent'))->name('admin.accessSent');
         Route::match(['GET', 'POST'], '/admin/verify/{token}', [AdminController::class, 'verify'])
-            ->middleware('throttle:5,1')
+            ->middleware('throttle:5,1,admin-verify')
             ->name('admin.verify');
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/dashboard/poll', [AdminController::class, 'poll'])->name('admin.poll');
@@ -66,7 +66,7 @@ Route::prefix('{locale}')
             ->name('superadmin.requestAccess');
         Route::get('/superadmin/access-sent', fn () => view('superadmin.access-sent'))->name('superadmin.accessSent');
         Route::match(['GET', 'POST'], '/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
-            ->middleware('throttle:5,1')
+            ->middleware('throttle:5,1,superadmin-verify')
             ->name('superadmin.verify');
         Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');
         Route::get('/superadmin/dashboard/poll', [SuperAdminController::class, 'poll'])->name('superadmin.poll');
@@ -79,10 +79,10 @@ Route::prefix('{locale}')
 
 // Secrets
 Route::get('/s/{token}', [SecretsController::class, 'show'])
-    ->middleware(['throttle:30,1', 'no.cache'])
+    ->middleware(['throttle:30,1,secret-page', 'no.cache'])
     ->name('secrets.show');
 Route::get('/s/{token}/download', [SecretsController::class, 'download'])
-    ->middleware(['throttle:30,1', 'no.cache'])
+    ->middleware(['throttle:30,1,secret-page', 'no.cache'])
     ->name('secrets.download');
 
 // Contact

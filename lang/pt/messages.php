@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Consumido',
     'admin_created' => 'Criado',
     'admin_expires' => 'Expira',
+    'admin_no_expiry' => 'Sem expiração',
     'admin_read_count' => 'Contagem de leituras',
     'admin_fetch_count' => 'Contagem de recuperações',
     'admin_fetch_count_hint' => 'Número de vezes que o conteúdo criptografado foi baixado. Se exceder o número de leituras, o link pode ter sido interceptado.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'O endereço de e-mail é obrigatório.',
     'val_email_invalid' => 'O endereço de e-mail não é válido.',
     'val_email_max' => 'O endereço de e-mail não pode exceder 255 caracteres.',
-    'val_days_required' => 'O número de dias é obrigatório.',
-    'val_days_integer' => 'O número de dias deve ser um inteiro.',
-    'val_days_min' => 'O número de dias deve ser pelo menos 1.',
-    'val_days_max' => 'O número de dias não pode exceder 30.',
+    'val_hours_required' => 'O número de horas é obrigatório.',
+    'val_hours_integer' => 'O número de horas deve ser um inteiro.',
+    'val_hours_min' => 'O número de horas deve ser pelo menos 1.',
+    'val_hours_max' => 'O número de horas não pode exceder 720.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Atividade dos segredos',

@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Verbruikt',
     'admin_created' => 'Aangemaakt',
     'admin_expires' => 'Verloopt',
+    'admin_no_expiry' => 'Verloopt niet',
     'admin_read_count' => 'Leesteller',
     'admin_fetch_count' => 'Ophaalteller',
     'admin_fetch_count_hint' => 'Aantal keren dat de versleutelde inhoud is gedownload. Als dit hoger is dan de leesteller, is de link mogelijk onderschept.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'Het e-mailadres is vereist.',
     'val_email_invalid' => 'Het e-mailadres is niet geldig.',
     'val_email_max' => 'Het e-mailadres mag niet meer dan 255 tekens bevatten.',
-    'val_days_required' => 'Het aantal dagen is vereist.',
-    'val_days_integer' => 'Het aantal dagen moet een geheel getal zijn.',
-    'val_days_min' => 'Het aantal dagen moet minstens 1 zijn.',
-    'val_days_max' => 'Het aantal dagen mag niet meer dan 30 zijn.',
+    'val_hours_required' => 'Het aantal uren is vereist.',
+    'val_hours_integer' => 'Het aantal uren moet een geheel getal zijn.',
+    'val_hours_min' => 'Het aantal uren moet minstens 1 zijn.',
+    'val_hours_max' => 'Het aantal uren mag niet meer dan 720 zijn.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Activiteit van geheimen',

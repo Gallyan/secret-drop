@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\SeoController;
 use App\Support\PublicUrls;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
@@ -30,6 +31,12 @@ class SubmitIndexNowUrlsCommand extends Command
             return Command::FAILURE;
         }
 
+        if (preg_match('/\A'.SeoController::INDEXNOW_KEY_PATTERN.'\z/', $key) !== 1) {
+            $this->warn('IndexNow key must be 8 to 128 letters, digits or dashes, otherwise its key file cannot be served: check INDEXNOW_KEY in your environment.');
+
+            return Command::FAILURE;
+        }
+
         $host = (string) parse_url(config_string('app.url'), PHP_URL_HOST);
 
         if ($host === '') {
@@ -40,15 +47,9 @@ class SubmitIndexNowUrlsCommand extends Command
 
         $urls = $this->urlsToSubmit();
 
-        if ($urls === []) {
-            $this->info('No URL to submit.');
-
-            return Command::SUCCESS;
-        }
-
         $dryRun = (bool) $this->option('dry-run');
 
-        $this->info(($dryRun ? '[DRY RUN] ' : '')."Submitting {$this->countLabel($urls)} to IndexNow for host {$host}.");
+        $this->info(($dryRun ? '[DRY RUN] ' : '')."Submitting {$this->countLabel(count($urls))} to IndexNow for host {$host}.");
 
         foreach ($urls as $url) {
             $this->line("  {$url}");
@@ -109,13 +110,13 @@ class SubmitIndexNowUrlsCommand extends Command
         $status = $response->status();
 
         if ($status === 200) {
-            $this->info("IndexNow accepted {$submitted} URLs (HTTP 200).");
+            $this->info("IndexNow accepted {$this->countLabel($submitted)} (HTTP 200).");
 
             return true;
         }
 
         if ($status === 202) {
-            $this->info("IndexNow received {$submitted} URLs (HTTP 202): key validation is pending.");
+            $this->info("IndexNow received {$this->countLabel($submitted)} (HTTP 202): key validation is pending.");
 
             return true;
         }
@@ -179,13 +180,8 @@ class SubmitIndexNowUrlsCommand extends Command
         return PublicUrls::all();
     }
 
-    /**
-     * @param  array<int, string>  $urls
-     */
-    private function countLabel(array $urls): string
+    private function countLabel(int $count): string
     {
-        $count = count($urls);
-
         return $count === 1 ? '1 URL' : "{$count} URLs";
     }
 }

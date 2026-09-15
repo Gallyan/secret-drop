@@ -3,208 +3,161 @@
 namespace Tests\Unit;
 
 use App\Models\MagicLink;
-use App\Services\TokenService;
+use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class MagicLinkModelTest extends TestCase
 {
-    private TokenService $tokenService;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function createMagicLink(array $attributes = []): MagicLink
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-
-        return MagicLink::create(array_merge([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ], $attributes));
-    }
-
     /** Vérifie que isExpired retourne true quand le lien est expiré. */
     public function testIsExpiredReturnsTrueWhenExpired(): void
     {
-        $magicLink = $this->createMagicLink(['expire_at' => now()->subMinute()]);
+        $magicLink = MagicLink::factory()->expired()->make();
 
         $this->assertTrue($magicLink->isExpired());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isExpired retourne false quand le lien est encore valide. */
     public function testIsExpiredReturnsFalseWhenNotExpired(): void
     {
-        $magicLink = $this->createMagicLink(['expire_at' => now()->addMinutes(5)]);
+        $magicLink = MagicLink::factory()->valid()->make();
 
         $this->assertFalse($magicLink->isExpired());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isUsed retourne true quand le lien a été utilisé. */
     public function testIsUsedReturnsTrueWhenUsed(): void
     {
-        $magicLink = $this->createMagicLink(['used_at' => now()]);
+        $magicLink = MagicLink::factory()->used()->make();
 
         $this->assertTrue($magicLink->isUsed());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isUsed retourne false quand le lien n'a pas été utilisé. */
     public function testIsUsedReturnsFalseWhenNotUsed(): void
     {
-        $magicLink = $this->createMagicLink();
+        $magicLink = MagicLink::factory()->valid()->make();
 
         $this->assertFalse($magicLink->isUsed());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isValid retourne true pour un lien frais. */
     public function testIsValidReturnsTrueForFreshLink(): void
     {
-        $magicLink = $this->createMagicLink();
+        $magicLink = MagicLink::factory()->valid()->make();
 
         $this->assertTrue($magicLink->isValid());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isValid retourne false quand le lien est expiré. */
     public function testIsValidReturnsFalseWhenExpired(): void
     {
-        $magicLink = $this->createMagicLink(['expire_at' => now()->subMinute()]);
+        $magicLink = MagicLink::factory()->expired()->make();
 
         $this->assertFalse($magicLink->isValid());
-
-        $magicLink->delete();
     }
 
     /** Vérifie que isValid retourne false quand le lien a été utilisé. */
     public function testIsValidReturnsFalseWhenUsed(): void
     {
-        $magicLink = $this->createMagicLink(['used_at' => now()]);
+        $magicLink = MagicLink::factory()->used()->make();
 
         $this->assertFalse($magicLink->isValid());
-
-        $magicLink->delete();
     }
 
-    /** Vérifie que isValid retourne false quand le lien est expiré ET utilisé. */
-    public function testIsValidReturnsFalseWhenExpiredAndUsed(): void
+    /** Vérifie que markAsUsed consomme un lien valide et enregistre l'instant de consommation. */
+    public function testMarkAsUsedConsumesValidLink(): void
     {
-        $magicLink = $this->createMagicLink([
-            'expire_at' => now()->subMinute(),
-            'used_at' => now()->subMinutes(2),
-        ]);
+        $this->travelTo('2026-09-15 10:00:00');
+        $magicLink = MagicLink::factory()->valid()->create();
 
-        $this->assertFalse($magicLink->isValid());
+        $consumed = $magicLink->markAsUsed();
 
-        $magicLink->delete();
+        $this->assertTrue($consumed);
+        $this->assertSame('2026-09-15 10:00:00', $magicLink->used_at?->toDateTimeString());
+        $this->assertSame('2026-09-15 10:00:00', $magicLink->refresh()->used_at?->toDateTimeString());
     }
 
-    /** Vérifie que markAsUsed définit correctement used_at. */
-    public function testMarkAsUsedSetsUsedAt(): void
+    /** Vérifie que, de deux instances chargées avant consommation, seule la première consomme le lien. */
+    public function testMarkAsUsedFailsForSecondInstanceLoadedBeforeConsumption(): void
     {
-        $magicLink = $this->createMagicLink();
+        $this->freezeTime();
+        $link = MagicLink::factory()->valid()->create();
+        $firstRequestCopy = MagicLink::findOrFail($link->id);
+        $secondRequestCopy = MagicLink::findOrFail($link->id);
+        $firstRequestCopy->markAsUsed();
+        $usedAt = $link->refresh()->used_at?->toDateTimeString();
+        $this->travel(1)->minute();
 
-        $this->assertNull($magicLink->used_at);
+        $consumed = $secondRequestCopy->markAsUsed();
 
-        $magicLink->markAsUsed();
-        $magicLink->refresh();
-
-        $this->assertNotNull($magicLink->used_at);
-        $this->assertTrue($magicLink->isUsed());
-
-        $magicLink->delete();
+        $this->assertFalse($consumed);
+        $this->assertNull($secondRequestCopy->used_at);
+        $this->assertSame($usedAt, $link->refresh()->used_at?->toDateTimeString());
     }
 
-    /** Vérifie que findByToken retrouve le bon lien. */
-    public function testFindByTokenReturnsCorrectLink(): void
+    /** Vérifie que markAsUsed refuse un lien expiré entre sa lecture et sa consommation. */
+    public function testMarkAsUsedFailsWhenLinkExpiredSinceLoading(): void
     {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
+        $this->travelTo('2026-09-15 10:00:00');
+        $magicLink = MagicLink::factory()->create(['expire_at' => '2026-09-15 10:05:00']);
+        $this->travelTo('2026-09-15 10:05:01');
 
-        $magicLink = MagicLink::create([
-            'email_hash' => MagicLink::hashEmail('test@example.com'),
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
+        $consumed = $magicLink->markAsUsed();
 
-        $found = MagicLink::findByToken($tokenData['token']);
-
-        $this->assertNotNull($found);
-        $this->assertEquals($magicLink->id, $found->id);
-
-        $magicLink->delete();
+        $this->assertFalse($consumed);
+        $this->assertNull($magicLink->refresh()->used_at);
     }
 
-    /** Vérifie que findByToken retourne null pour un token invalide. */
-    public function testFindByTokenReturnsNullForInvalidToken(): void
+    /** Vérifie que findByToken retrouve le lien correspondant au jeton en clair. */
+    public function testFindByTokenReturnsMatchingLink(): void
     {
-        $this->createMagicLink();
+        $magicLink = MagicLink::factory()->withToken('plain-token')->create();
+        MagicLink::factory()->withToken('other-token')->create();
 
-        $found = MagicLink::findByToken('invalid_token_that_does_not_exist');
+        $found = MagicLink::findByToken('plain-token');
+
+        $this->assertSame($magicLink->id, $found?->id);
+    }
+
+    /** Vérifie que findByToken retourne null pour un jeton inconnu. */
+    public function testFindByTokenReturnsNullForUnknownToken(): void
+    {
+        MagicLink::factory()->withToken('plain-token')->create();
+
+        $found = MagicLink::findByToken('unknown-token');
 
         $this->assertNull($found);
-
-        MagicLink::query()->delete();
     }
 
-    /** Vérifie que hashEmail est déterministe (insensible à la casse et aux espaces). */
-    public function testHashEmailIsDeterministic(): void
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function spellingsOfTheSameEmail(): array
     {
-        $hash1 = MagicLink::hashEmail('Test@Example.com');
-        $hash2 = MagicLink::hashEmail('test@example.com');
-        $hash3 = MagicLink::hashEmail('  TEST@EXAMPLE.COM  ');
-
-        $this->assertEquals($hash1, $hash2);
-        $this->assertEquals($hash2, $hash3);
+        return [
+            'minuscules' => ['owner@example.com'],
+            'casse mixte' => ['Owner@Example.com'],
+            'majuscules et espaces' => ['  OWNER@EXAMPLE.COM  '],
+        ];
     }
 
-    /** Vérifie que hashEmail produit un SHA-256 valide. */
-    public function testHashEmailProducesSha256(): void
+    /** Vérifie que hashEmail produit le HMAC-SHA256 attendu, insensible à la casse et aux espaces. */
+    #[DataProvider('spellingsOfTheSameEmail')]
+    public function testHashEmailProducesKnownHmacForNormalizedEmail(string $email): void
     {
-        $hash = MagicLink::hashEmail('test@example.com');
+        Config::set('secrets.email_hash_pepper', 'test-pepper');
 
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $hash);
+        $hash = MagicLink::hashEmail($email);
+
+        $this->assertSame('898f59c8b41347886be2d4c52cf0d1b45907ad3d5729452a2e1f865bf046819e', $hash);
     }
 
     /** Vérifie que deux emails différents produisent des hash différents. */
-    public function testHashEmailIsDifferentForDifferentEmails(): void
+    public function testHashEmailDiffersForDifferentEmails(): void
     {
-        $hash1 = MagicLink::hashEmail('user1@example.com');
-        $hash2 = MagicLink::hashEmail('user2@example.com');
+        Config::set('secrets.email_hash_pepper', 'test-pepper');
 
-        $this->assertNotEquals($hash1, $hash2);
-    }
-
-    /** Vérifie que expire_at est casté en datetime. */
-    public function testExpireAtIsCastToDatetime(): void
-    {
-        $magicLink = $this->createMagicLink();
-
-        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $magicLink->expire_at);
-
-        $magicLink->delete();
-    }
-
-    /** Vérifie que used_at est casté en datetime. */
-    public function testUsedAtIsCastToDatetime(): void
-    {
-        $magicLink = $this->createMagicLink(['used_at' => now()]);
-
-        $this->assertInstanceOf(\Illuminate\Support\Carbon::class, $magicLink->used_at);
-
-        $magicLink->delete();
+        $this->assertNotSame(MagicLink::hashEmail('user1@example.com'), MagicLink::hashEmail('user2@example.com'));
     }
 }

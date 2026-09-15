@@ -321,6 +321,7 @@ return [
     'admin_status_consumed' => 'Wykorzystany',
     'admin_created' => 'Utworzono',
     'admin_expires' => 'Wygasa',
+    'admin_no_expiry' => 'Bez daty wygaśnięcia',
     'admin_read_count' => 'Liczba odczytów',
     'admin_fetch_count' => 'Liczba pobrań',
     'admin_fetch_count_hint' => 'Liczba pobrań zaszyfrowanej treści. Jeśli przekracza liczbę odczytów, link mógł zostać przechwycony.',
@@ -562,10 +563,10 @@ return [
     'val_email_required' => 'Adres e-mail jest wymagany.',
     'val_email_invalid' => 'Adres e-mail jest nieprawidłowy.',
     'val_email_max' => 'Adres e-mail nie może przekraczać 255 znaków.',
-    'val_days_required' => 'Liczba dni jest wymagana.',
-    'val_days_integer' => 'Liczba dni musi być liczbą całkowitą.',
-    'val_days_min' => 'Liczba dni musi wynosić co najmniej 1.',
-    'val_days_max' => 'Liczba dni nie może przekraczać 30.',
+    'val_hours_required' => 'Liczba godzin jest wymagana.',
+    'val_hours_integer' => 'Liczba godzin musi być liczbą całkowitą.',
+    'val_hours_min' => 'Liczba godzin musi wynosić co najmniej 1.',
+    'val_hours_max' => 'Liczba godzin nie może przekraczać 720.',
 
     // Dashboard sections
     'superadmin_section_activity' => 'Aktywność sekretów',

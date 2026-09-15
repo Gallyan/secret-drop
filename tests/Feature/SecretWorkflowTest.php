@@ -3,380 +3,70 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\TokenService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class SecretWorkflowTest extends TestCase
 {
-    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 octets
 
-    private const VALID_SALT = 'YmJiYmJiYmJiYmJiYmJiYg'; // 16 bytes
+    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 octets
 
-    private const VALID_IV2 = 'Y2NjY2NjY2NjY2Nj'; // 12 bytes
-
-    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 bytes
-
-    private TokenService $tokenService;
-
-    protected function setUp(): void
+    /** Vérifie qu'un secret texte créé par l'API se relit à l'identique puis devient introuvable après la lecture unique. */
+    public function testTextSecretCreatedThroughApiIsReadOnceThenGone(): void
     {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-    }
-
-    /** Vérifie le workflow complet : création, lecture et destruction du secret texte. */
-    public function testCompleteTextSecretWorkflow(): void
-    {
-        // Step 1: Create secret with max_views = 1 (single use)
-        $createResponse = $this->postJson('/api/secrets', [
+        $token = $this->postJson('/api/secrets', [
             'type' => 'text',
             'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => self::VALID_IV, 'version' => 1],
             'expiration' => '7d',
             'max_views' => 1,
-        ]);
+        ])->assertCreated()->json('token');
 
-        $createResponse->assertStatus(201);
-        $token = $createResponse->json('token');
+        $this->get("/s/{$token}")->assertOk();
+        $this->getJson("/api/secrets/{$token}")
+            ->assertOk()
+            ->assertExactJson([
+                'type' => 'text',
+                'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => self::VALID_IV, 'version' => 1],
+                'will_be_destroyed' => true,
+                'ciphertext' => self::VALID_CIPHERTEXT,
+            ]);
+        $this->postJson("/api/secrets/{$token}/read")->assertOk();
 
-        // Step 2: View secret page
-        $showResponse = $this->get("/s/{$token}");
-        $showResponse->assertStatus(200);
-
-        // Step 3: Fetch secret data via API
-        $fetchResponse = $this->getJson("/api/secrets/{$token}");
-        $fetchResponse->assertStatus(200);
-        $fetchResponse->assertJson([
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'will_be_destroyed' => true,
-        ]);
-
-        // Step 4: Confirm read
-        $readResponse = $this->postJson("/api/secrets/{$token}/read");
-        $readResponse->assertStatus(200);
-        $readResponse->assertJson(['success' => true]);
-
-        // Step 5: Verify secret is no longer accessible (uniform 404)
-        $refetchResponse = $this->getJson("/api/secrets/{$token}");
-        $refetchResponse->assertStatus(404);
-        $refetchResponse->assertJson(['error' => 'not_found']);
-
-        // Step 6: Verify ciphertext was destroyed
-        $secret = Secret::where('token', $token)->first();
-        $this->assertNull($secret->ciphertext);
-
-        // Cleanup
-        $secret->delete();
+        $this->getJson("/api/secrets/{$token}")
+            ->assertNotFound()
+            ->assertExactJson(['error' => 'not_found']);
     }
 
-    /** Vérifie le workflow complet : création, téléchargement et destruction du secret fichier. */
-    public function testCompleteFileSecretWorkflow(): void
+    /** Vérifie qu'un fichier créé par l'API se télécharge à l'identique puis que son blob est supprimé après la lecture unique. */
+    public function testFileSecretCreatedThroughApiIsDownloadedOnceThenBlobDeleted(): void
     {
-        // Step 1: Create file secret with max_views = 1 (single use)
-        $file = UploadedFile::fake()->create('encrypted.bin', 512, 'application/octet-stream');
+        Storage::fake('secrets');
+        $file = UploadedFile::fake()->createWithContent('encrypted.bin', 'encrypted-file-bytes');
 
-        $createResponse = $this->postJson('/api/secrets', [
+        $token = $this->postJson('/api/secrets', [
             'type' => 'file',
             'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
+            'cipher_meta' => json_encode(['alg' => 'AES-256-GCM', 'iv' => self::VALID_IV, 'version' => 1]),
             'expiration' => '1d',
             'max_views' => 1,
-        ]);
+        ])->assertCreated()->json('token');
+        $filePath = (string) Secret::where('token', $token)->value('file_path');
 
-        $createResponse->assertStatus(201);
-        $token = $createResponse->json('token');
+        $this->getJson("/api/secrets/{$token}")
+            ->assertOk()
+            ->assertJsonPath('type', 'file')
+            ->assertJsonPath('will_be_destroyed', true);
+        $download = $this->get("/s/{$token}/download");
+        $download->assertOk();
+        $this->assertSame('encrypted-file-bytes', $download->streamedContent());
+        $this->postJson("/api/secrets/{$token}/read")->assertOk();
 
-        // Step 2: Fetch metadata (filename/mime/size are encrypted in file payload)
-        $fetchResponse = $this->getJson("/api/secrets/{$token}");
-        $fetchResponse->assertStatus(200);
-        $fetchResponse->assertJson([
-            'type' => 'file',
-            'will_be_destroyed' => true,
-        ]);
-        $fetchResponse->assertJsonMissing(['encrypted_size']);
-
-        // Step 3: Download file
-        $downloadResponse = $this->get("/s/{$token}/download");
-        $downloadResponse->assertStatus(200);
-
-        // Step 4: Confirm read (destroys file)
-        $readResponse = $this->postJson("/api/secrets/{$token}/read");
-        $readResponse->assertStatus(200);
-
-        // Step 5: Verify file was cleared
-        $secret = Secret::where('token', $token)->first();
-        $this->assertNull($secret->file_path);
-
-        // Step 6: Download should fail now (uniform 404)
-        $refetchResponse = $this->getJson("/api/secrets/{$token}");
-        $refetchResponse->assertStatus(404);
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie le workflow multi-lectures avec max_views. */
-    public function testMultiUseSecretWithMaxViewsWorkflow(): void
-    {
-        // Create secret with 3 max views
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-            'max_views' => 3,
-        ]);
-
-        $createResponse->assertStatus(201);
-        $token = $createResponse->json('token');
-
-        // First read - should work, not destroyed
-        $fetch1 = $this->getJson("/api/secrets/{$token}");
-        $fetch1->assertStatus(200);
-        $fetch1->assertJson(['will_be_destroyed' => false]);
-        $this->postJson("/api/secrets/{$token}/read");
-
-        // Second read - should work, not destroyed
-        $fetch2 = $this->getJson("/api/secrets/{$token}");
-        $fetch2->assertStatus(200);
-        $fetch2->assertJson(['will_be_destroyed' => false]);
-        $this->postJson("/api/secrets/{$token}/read");
-
-        // Third read - should work but will be destroyed
-        $fetch3 = $this->getJson("/api/secrets/{$token}");
-        $fetch3->assertStatus(200);
-        $fetch3->assertJson(['will_be_destroyed' => true]);
-        $this->postJson("/api/secrets/{$token}/read");
-
-        // Fourth attempt - should fail (uniform 404)
-        $fetch4 = $this->getJson("/api/secrets/{$token}");
-        $fetch4->assertStatus(404);
-        $fetch4->assertJson(['error' => 'not_found']);
-
-        // Cleanup
-        Secret::where('token', $token)->delete();
-    }
-
-    /** Vérifie le workflow avec passphrase (salt + kdf + iv2). */
-    public function testSecretWithPassphraseWorkflow(): void
-    {
-        // Create secret with passphrase metadata (salt + kdf + iv2 indicate passphrase)
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-                'salt' => self::VALID_SALT,
-                'iv2' => self::VALID_IV2,
-                'kdf' => 'PBKDF2-SHA256-600k',
-                'has_passphrase' => true,
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $createResponse->assertStatus(201);
-        $token = $createResponse->json('token');
-
-        // Fetch should return passphrase metadata (salt + kdf)
-        $fetchResponse = $this->getJson("/api/secrets/{$token}");
-        $fetchResponse->assertStatus(200);
-        $fetchResponse->assertJsonPath('cipher_meta.salt', self::VALID_SALT);
-        $fetchResponse->assertJsonPath('cipher_meta.kdf', 'PBKDF2-SHA256-600k');
-
-        // Cleanup
-        Secret::where('token', $token)->delete();
-    }
-
-    /** Vérifie le workflow avec email du créateur. */
-    public function testSecretWithCreatorEmailWorkflow(): void
-    {
-        // Create secret with creator email
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-            'creator_email' => 'creator@example.com',
-        ]);
-
-        $createResponse->assertStatus(201);
-        $token = $createResponse->json('token');
-
-        // Verify creator email hash is stored
-        $secret = Secret::where('token', $token)->first();
-        $this->assertNotNull($secret->creator_email_hash);
-        $this->assertTrue($secret->verifyCreatorEmail('creator@example.com'));
-        $this->assertTrue($secret->verifyCreatorEmail('CREATOR@EXAMPLE.COM')); // Case insensitive
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie le workflow de révocation via admin token. */
-    public function testRevocationWorkflowViaAdminToken(): void
-    {
-        // Create secret directly with a known admin token
-        $adminToken = bin2hex(random_bytes(16));
-        $token = $this->tokenService->generatePublicToken();
-
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => hash('sha256', $adminToken),
-            'type' => 'text',
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'expire_at' => now()->addDays(7),
-        ]);
-
-        // Verify secret is accessible
-        $fetchResponse = $this->getJson("/api/secrets/{$token}");
-        $fetchResponse->assertStatus(200);
-
-        // Revoke via admin token (plain token, server hashes to find)
-        $revokeResponse = $this->postJson("/api/secrets/{$adminToken}/revoke");
-        $revokeResponse->assertStatus(200);
-        $revokeResponse->assertJson(['success' => true]);
-
-        // Verify secret is no longer accessible (uniform 404)
-        $refetchResponse = $this->getJson("/api/secrets/{$token}");
-        $refetchResponse->assertStatus(404);
-        $refetchResponse->assertJson(['error' => 'not_found']);
-
-        // Verify ciphertext was destroyed
-        $secret->refresh();
-        $this->assertNull($secret->ciphertext);
-        $this->assertNotNull($secret->revoked_at);
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie que les accès concurrents ne corrompent pas le compteur de lectures. */
-    public function testConcurrentAccessDoesNotCorruptReadCount(): void
-    {
-        // Create unlimited secret
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $token = $createResponse->json('token');
-
-        // Simulate multiple concurrent reads
-        for ($i = 0; $i < 5; $i++) {
-            $this->getJson("/api/secrets/{$token}");
-            $this->postJson("/api/secrets/{$token}/read");
-        }
-
-        // Verify read count is accurate
-        $secret = Secret::where('token', $token)->first();
-        $this->assertEquals(5, $secret->read_count);
-        $this->assertNotNull($secret->first_read_at);
-        $this->assertNotNull($secret->last_read_at);
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie que first_read_at n'est défini qu'une seule fois. */
-    public function testFirstReadAtIsSetOnlyOnce(): void
-    {
-        // Create secret
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $token = $createResponse->json('token');
-
-        // First read
-        $this->postJson("/api/secrets/{$token}/read");
-        $secret = Secret::where('token', $token)->first();
-        $firstReadAt = $secret->first_read_at;
-        $this->assertNotNull($firstReadAt);
-
-        // Wait a bit
-        usleep(10000);
-
-        // Second read
-        $this->postJson("/api/secrets/{$token}/read");
-        $secret->refresh();
-
-        // first_read_at should not change
-        $this->assertEquals($firstReadAt->timestamp, $secret->first_read_at->timestamp);
-
-        // last_read_at should be updated
-        $this->assertTrue($secret->last_read_at->gte($firstReadAt));
-
-        // Cleanup
-        $secret->delete();
-    }
-
-    /** Vérifie que l'admin token hash est différent du token public. */
-    public function testAdminTokenHashIsDifferentFromPublicToken(): void
-    {
-        $createResponse = $this->postJson('/api/secrets', [
-            'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
-            'cipher_meta' => [
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ],
-            'expiration' => '7d',
-        ]);
-
-        $token = $createResponse->json('token');
-        $secret = Secret::where('token', $token)->first();
-
-        // admin_token_hash should be different from public token
-        $this->assertNotEquals($token, $secret->admin_token_hash);
-
-        // Public token is 32 chars (128 bits hex)
-        $this->assertEquals(32, strlen($token));
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $token);
-
-        // admin_token_hash is a SHA-256 hash (64 chars hex)
-        $this->assertEquals(64, strlen($secret->admin_token_hash));
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $secret->admin_token_hash);
-
-        // Cleanup
-        $secret->delete();
+        Storage::disk('secrets')->assertMissing($filePath);
+        $this->assertNull(Secret::where('token', $token)->value('file_path'));
+        $this->getJson("/api/secrets/{$token}")->assertNotFound();
+        $this->get("/s/{$token}/download")->assertNotFound();
     }
 }

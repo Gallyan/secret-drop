@@ -3,235 +3,103 @@
 namespace Tests\Feature\Middleware;
 
 use App\Http\Middleware\SetLocale;
-use App\Support\LocaleConfig;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class SetLocaleTest extends TestCase
 {
-    private SetLocale $middleware;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->middleware = new SetLocale();
-    }
-
-    /** Vérifie le fallback sur le français sans header Accept-Language. */
-    public function testDefaultsToFrenchWithoutHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->remove('Accept-Language');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie le fallback sur le français avec un header vide. */
-    public function testDefaultsToFrenchWithEmptyHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', '');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la détection de l'anglais depuis le header. */
-    public function testDetectsEnglishFromHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'en');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('en', app()->getLocale());
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la détection du français depuis le header. */
-    public function testDetectsFrenchFromHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'fr');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la gestion des variantes régionales (en-US). */
-    public function testHandlesRegionalVariants(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('en', app()->getLocale());
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la gestion des variantes régionales françaises (fr-CA). */
-    public function testHandlesFrenchRegionalVariants(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'fr-CA,fr;q=0.9');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie le respect des valeurs de qualité (q=). */
-    public function testRespectsQualityValues(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'zh;q=0.9,en;q=0.8,fr;q=0.7');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('en', app()->getLocale());
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie le fallback sur le français pour une langue non supportée. */
-    public function testFallsBackToFrenchForUnsupportedLanguage(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'zh,ru,th');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la préférence du français quand sa qualité est plus élevée. */
-    public function testPrefersFrenchOverEnglishWhenHigherQuality(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'en;q=0.7,fr;q=0.9');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('fr', app()->getLocale());
-        $this->assertEquals('fr', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la préférence de l'anglais quand il est premier sans qualité. */
-    public function testPrefersEnglishWhenFirstWithoutQuality(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'en,fr');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('en', app()->getLocale());
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la gestion de headers Accept-Language complexes. */
-    public function testHandlesComplexAcceptLanguageHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'de-DE,de;q=0.9,en-GB;q=0.8,en;q=0.7,fr;q=0.6');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals('de', app()->getLocale());
-        $this->assertEquals('de', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la présence du header Content-Language. */
-    public function testSetsContentLanguageHeader(): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', 'en');
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertTrue($response->headers->has('Content-Language'));
-        $this->assertEquals('en', $response->headers->get('Content-Language'));
-    }
-
-    /** Vérifie la détection de toutes les locales supportées. */
-    #[\PHPUnit\Framework\Attributes\DataProvider('supportedLocalesProvider')]
-    public function testDetectsAllSupportedLocales(string $locale): void
-    {
-        $request = Request::create('/test', 'GET');
-        $request->headers->set('Accept-Language', $locale);
-
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
-
-        $this->assertEquals($locale, app()->getLocale());
-        $this->assertEquals($locale, $response->headers->get('Content-Language'));
-    }
-
     /**
-     * @return array<string, array{string}>
+     * @return array<string, array{string, string}>
      */
-    public static function supportedLocalesProvider(): array
+    public static function acceptLanguageHeaders(): array
     {
         return [
-            'german' => ['de'],
-            'spanish' => ['es'],
-            'italian' => ['it'],
-            'portuguese' => ['pt'],
-            'dutch' => ['nl'],
-            'polish' => ['pl'],
-            'japanese' => ['ja'],
-            'korean' => ['ko'],
-            'arabic' => ['ar'],
+            'english' => ['en', 'en'],
+            'french' => ['fr', 'fr'],
+            'german' => ['de', 'de'],
+            'spanish' => ['es', 'es'],
+            'italian' => ['it', 'it'],
+            'portuguese' => ['pt', 'pt'],
+            'dutch' => ['nl', 'nl'],
+            'polish' => ['pl', 'pl'],
+            'japanese' => ['ja', 'ja'],
+            'korean' => ['ko', 'ko'],
+            'arabic' => ['ar', 'ar'],
+            'empty header falls back to french' => ['', 'fr'],
+            'only unsupported languages fall back to french' => ['zh,ru,th', 'fr'],
+            'english regional variant' => ['en-US,en;q=0.9', 'en'],
+            'french regional variant' => ['fr-CA,fr;q=0.9', 'fr'],
+            'underscore regional variant' => ['pt_BR', 'pt'],
+            'highest quality wins over header order' => ['zh;q=0.9,en;q=0.8,fr;q=0.7', 'en'],
+            'first listed wins at equal quality' => ['en,fr', 'en'],
+            'complex browser header' => ['de-DE,de;q=0.9,en-GB;q=0.8,en;q=0.7,fr;q=0.6', 'de'],
+            'uppercase language code' => ['EN-US', 'en'],
+            'mixed case language code' => ['De-aT,fr;q=0.5', 'de'],
+            'uppercase quality key' => ['en;Q=0.1,it;q=0.5', 'it'],
+            'q=0 excludes the only supported language' => ['en;q=0,zh', 'fr'],
+            'q=0.000 marks a language as not acceptable' => ['es;q=0.000', 'fr'],
+            'empty segments are ignored' => [', ,,nl', 'nl'],
+            'wildcard is not a language' => ['*,ko;q=0.5', 'ko'],
+            'parameter before quality' => ['en;level=1;q=0.2,it;q=0.5', 'it'],
+            'whitespace around parameters' => ['en ; q=0.2 , pl ; q=0.5', 'pl'],
+            'repeated code keeps its best quality' => ['en,fr;q=0.5,en;q=0.1', 'en'],
+            'repeated code without quality' => ['fr;q=0.1,en;q=0.5,fr', 'fr'],
+            'primary subtag must match exactly' => ['arn,es;q=0.5', 'es'],
         ];
     }
 
-    /** Vérifie la détection de la locale depuis le segment d'URL. */
-    public function testDetectsLocaleFromUrlSegment(): void
+    /** Vérifie que la locale est négociée depuis Accept-Language et reprise dans Content-Language. */
+    #[DataProvider('acceptLanguageHeaders')]
+    public function testResolvesLocaleFromAcceptLanguage(string $header, string $expectedLocale): void
     {
-        $request = Request::create('/en/test', 'GET');
-        $request->headers->set('Accept-Language', 'fr');
+        $request = Request::create('/test', 'GET');
+        $request->headers->set('Accept-Language', $header);
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $response = (new SetLocale())->handle($request, fn (Request $req) => response('OK'));
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertSame($expectedLocale, app()->getLocale());
+        $this->assertSame($expectedLocale, $response->headers->get('Content-Language'));
     }
 
-    /** Vérifie que le segment d'URL a priorité sur le header. */
+    /** Vérifie que le segment d'URL a priorité sur l'en-tête Accept-Language. */
     public function testUrlSegmentTakesPriorityOverHeader(): void
     {
         $request = Request::create('/de/something', 'GET');
         $request->headers->set('Accept-Language', 'en');
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $response = (new SetLocale())->handle($request, fn (Request $req) => response('OK'));
 
-        $this->assertEquals('de', app()->getLocale());
-        $this->assertEquals('de', $response->headers->get('Content-Language'));
+        $this->assertSame('de', app()->getLocale());
+        $this->assertSame('de', $response->headers->get('Content-Language'));
     }
 
-    /** Vérifie le fallback sur le header quand le segment URL n'est pas une locale. */
+    /**
+     * Vérifie le repli sur l'en-tête quand le segment d'URL n'est pas une locale, sans poser Vary.
+     *
+     * Seules les redirections de RedirectController dépendent de la langue négociée et annoncent Vary.
+     */
     public function testFallsBackToHeaderWhenUrlSegmentIsNotLocale(): void
     {
         $request = Request::create('/s/some-token', 'GET');
         $request->headers->set('Accept-Language', 'es');
 
-        $response = $this->middleware->handle($request, fn ($req) => response('OK'));
+        $response = (new SetLocale())->handle($request, fn (Request $req) => response('OK'));
 
-        $this->assertEquals('es', app()->getLocale());
+        $this->assertSame('es', app()->getLocale());
+        $this->assertSame([], $response->getVary());
     }
 
-    /** Vérifie les constantes de configuration des locales. */
-    public function testLocaleConfigConstants(): void
+    /** Vérifie que la locale résolue devient le paramètre par défaut des routes localisées. */
+    public function testResolvedLocaleBecomesTheDefaultRouteParameter(): void
     {
-        $this->assertContains('fr', LocaleConfig::SUPPORTED_LOCALES);
-        $this->assertContains('en', LocaleConfig::SUPPORTED_LOCALES);
-        $this->assertCount(11, LocaleConfig::SUPPORTED_LOCALES);
-        $this->assertEquals('fr', LocaleConfig::DEFAULT_LOCALE);
+        $request = Request::create('/test', 'GET');
+        $request->headers->set('Accept-Language', 'nl');
+
+        (new SetLocale())->handle($request, fn (Request $req) => response('OK'));
+
+        $this->assertSame(['locale' => 'nl'], URL::getDefaultParameters());
+        $this->assertSame('http://localhost/nl/admin', route('admin.index'));
     }
 }

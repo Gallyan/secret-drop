@@ -12,14 +12,26 @@ class ForceHttps
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment('production')) {
-            URL::forceScheme('https');
-
-            if (! $request->secure()) {
-                return redirect()->secure($request->getRequestUri(), 301);
-            }
+        if (! app()->environment('production')) {
+            return $next($request);
         }
 
-        return $next($request);
+        URL::forceScheme('https');
+
+        if ($request->secure()) {
+            return $next($request);
+        }
+
+        return redirect()->secure($request->getRequestUri(), $this->redirectStatus($request));
+    }
+
+    /** Un 301 laisse le navigateur transformer une écriture en GET et perdre le corps ; un 308 conserve les deux. */
+    private function redirectStatus(Request $request): int
+    {
+        if ($request->isMethod('GET') || $request->isMethod('HEAD')) {
+            return Response::HTTP_MOVED_PERMANENTLY;
+        }
+
+        return Response::HTTP_PERMANENTLY_REDIRECT;
     }
 }

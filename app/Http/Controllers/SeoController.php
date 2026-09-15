@@ -8,11 +8,14 @@ use Illuminate\Support\Facades\File;
 
 class SeoController extends Controller
 {
+    /** IndexNow protocol key format, shared by the key file route and the submission command. */
+    public const INDEXNOW_KEY_PATTERN = '[A-Za-z0-9-]{8,128}';
+
     public function robots(): Response
     {
         $sitemap = url('/sitemap.xml');
         $disallowAdmin = collect(LocaleConfig::SUPPORTED_LOCALES)
-            ->map(fn (string $locale) => "Disallow: /{$locale}/admin/")
+            ->map(fn (string $locale) => "Disallow: /{$locale}/admin")
             ->implode("\n");
 
         $content = <<<TXT

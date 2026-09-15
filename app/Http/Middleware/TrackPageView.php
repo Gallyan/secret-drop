@@ -8,6 +8,7 @@ use App\Support\StatsPages;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 /** Fires a pageview tracking event after successful GET responses using the named route as page identifier. */
 class TrackPageView
@@ -31,14 +32,18 @@ class TrackPageView
             return $response;
         }
 
-        $this->pageviewService->track(
-            $page,
-            $request->userAgent() ?? '',
-            $request->header('Accept-Language', ''),
-            (int) $request->cookie('tz_offset', '0'),
-            $this->extractLocale($request),
-            $request->header('Referer', '')
-        );
+        try {
+            $this->pageviewService->track(
+                $page,
+                $request->userAgent() ?? '',
+                $request->header('Accept-Language', ''),
+                (int) $request->cookie('tz_offset', '0'),
+                $this->extractLocale($request),
+                $request->header('Referer', '')
+            );
+        } catch (Throwable $e) {
+            report($e);
+        }
 
         return $response;
     }

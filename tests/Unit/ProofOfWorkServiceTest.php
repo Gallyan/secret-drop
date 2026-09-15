@@ -13,62 +13,64 @@ class ProofOfWorkServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->pow = new ProofOfWorkService();
-        config(['pow.difficulty' => 4]); // Low difficulty for fast tests
+        config(['pow.difficulty' => 4, 'pow.ttl_seconds' => 300]);
     }
 
-    /** Vérifie que generate retourne un token, un challenge et une difficulté. */
-    public function test_generate_returns_token_challenge_and_difficulty(): void
+    /** Vérifie que generate renvoie un jeton et un challenge hexadécimaux de 128 bits et la difficulté configurée. */
+    public function testGenerateReturnsTokenChallengeAndConfiguredDifficulty(): void
     {
         $result = $this->pow->generate('test-identifier');
 
-        $this->assertArrayHasKey('token', $result);
-        $this->assertArrayHasKey('challenge', $result);
-        $this->assertArrayHasKey('difficulty', $result);
-        $this->assertEquals(32, strlen($result['token']));
-        $this->assertEquals(32, strlen($result['challenge']));
         $this->assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $result['token']);
         $this->assertMatchesRegularExpression('/^[0-9a-f]{32}$/', $result['challenge']);
-        $this->assertEquals(4, $result['difficulty']);
+        $this->assertSame(4, $result['difficulty']);
     }
 
-    /** Vérifie que generate crée une entrée en cache. */
-    public function test_generate_creates_cache_entry(): void
+    /** Vérifie que generate mémorise le challenge, la difficulté et l'identifiant sous le jeton. */
+    public function testGenerateStoresChallengeForToken(): void
     {
+        $this->travelTo('2026-09-15 10:00:00');
+
         $result = $this->pow->generate('test-identifier');
 
-        $this->assertNotNull(Cache::get('pow:'.$result['token']));
+        $this->assertSame([
+            'challenge' => $result['challenge'],
+            'difficulty' => 4,
+            'identifier' => 'test-identifier',
+            'created_at' => 1789466400,
+        ], Cache::get("pow:{$result['token']}"));
     }
 
-    /** Vérifie que verify retourne true pour un nonce valide. */
-    public function test_verify_returns_true_for_valid_nonce(): void
+    /** Vérifie que verify accepte un nonce qui résout le challenge. */
+    public function testVerifyReturnsTrueForSolvingNonce(): void
     {
-        $identifier = 'test-identifier';
-        $result = $this->pow->generate($identifier);
-
+        $result = $this->pow->generate('test-identifier');
         $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
 
-        $this->assertTrue($this->pow->verify($result['token'], $nonce, $identifier));
+        $this->assertTrue($this->pow->verify($result['token'], $nonce, 'test-identifier'));
     }
 
-    /** Vérifie que verify retourne false pour un nonce invalide. */
-    public function test_verify_returns_false_for_invalid_nonce(): void
+    /** Vérifie que verify refuse un nonce dont le hash ne commence pas par les bits nuls requis. */
+    public function testVerifyReturnsFalseForNonceThatDoesNotSolve(): void
     {
         config(['pow.difficulty' => 20]);
-        $identifier = 'test-identifier';
-        $result = $this->pow->generate($identifier);
+        $result = $this->pow->generate('test-identifier');
 
-        $this->assertFalse($this->pow->verify($result['token'], 'ffffffff', $identifier));
+        $nonce = $this->nonceWithNonZeroFirstByte($result['challenge']);
+
+        $this->assertFalse($this->pow->verify($result['token'], $nonce, 'test-identifier'));
     }
 
-    /** Vérifie que verify retourne false pour un token invalide. */
-    public function test_verify_returns_false_for_invalid_token(): void
+    /** Vérifie que verify refuse un jeton inconnu. */
+    public function testVerifyReturnsFalseForUnknownToken(): void
     {
         $this->assertFalse($this->pow->verify('invalid-token', '00000000', 'test-identifier'));
     }
 
-    /** Vérifie que verify retourne false pour un mauvais identifiant. */
-    public function test_verify_returns_false_for_wrong_identifier(): void
+    /** Vérifie que verify refuse un challenge généré pour un autre identifiant. */
+    public function testVerifyReturnsFalseForAnotherIdentifier(): void
     {
         $result = $this->pow->generate('identifier-1');
         $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
@@ -76,46 +78,51 @@ class ProofOfWorkServiceTest extends TestCase
         $this->assertFalse($this->pow->verify($result['token'], $nonce, 'identifier-2'));
     }
 
-    /** Vérifie que le token est consommé après vérification réussie. */
-    public function test_verify_consumes_token(): void
+    /** Vérifie que verify refuse un challenge dont la durée de vie est écoulée. */
+    public function testVerifyReturnsFalseOnceChallengeTtlHasElapsed(): void
     {
-        $identifier = 'test-identifier';
-        $result = $this->pow->generate($identifier);
+        $this->freezeTime();
+        config(['pow.ttl_seconds' => 30]);
+        $result = $this->pow->generate('test-identifier');
         $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
+        $this->travel(30)->seconds();
 
-        $this->assertTrue($this->pow->verify($result['token'], $nonce, $identifier));
-        $this->assertFalse($this->pow->verify($result['token'], $nonce, $identifier));
+        $this->assertFalse($this->pow->verify($result['token'], $nonce, 'test-identifier'));
     }
 
-    /** Vérifie que solve trouve un nonce valide. */
-    public function test_solve_finds_valid_nonce(): void
+    /** Vérifie que le jeton est consommé après une vérification réussie. */
+    public function testVerifyConsumesToken(): void
     {
-        $challenge = bin2hex(random_bytes(16));
-        $difficulty = 4;
+        $result = $this->pow->generate('test-identifier');
+        $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
 
-        $nonce = $this->pow->solve($challenge, $difficulty);
+        $this->assertTrue($this->pow->verify($result['token'], $nonce, 'test-identifier'));
+        $this->assertFalse($this->pow->verify($result['token'], $nonce, 'test-identifier'));
+    }
+
+    /** Vérifie que solve trouve un nonce dont le hash commence par les bits nuls demandés. */
+    public function testSolveFindsNonceWithLeadingZeroBits(): void
+    {
+        $challenge = '00112233445566778899aabbccddeeff';
+
+        $nonce = $this->pow->solve($challenge, 4);
 
         $hash = hash('sha256', hex2bin($challenge).hex2bin($nonce), true);
-        $this->assertEquals(0, ord($hash[0]) >> 4, 'First 4 bits should be zero');
+        $this->assertSame(0, ord($hash[0]) >> 4, 'Les 4 premiers bits doivent être nuls');
     }
 
     /** Vérifie que verify rejette un nonce mal formaté. */
-    public function test_verify_rejects_malformed_nonce(): void
+    public function testVerifyRejectsMalformedNonce(): void
     {
         $result = $this->pow->generate('test-identifier');
 
-        // Non-hex nonce
         $this->assertFalse($this->pow->verify($result['token'], 'xyz!@#$%', 'test-identifier'));
-
-        // Too long nonce
-        $this->assertFalse($this->pow->verify($result['token'], str_repeat('a', 33), 'test-identifier'));
-
-        // Empty nonce
+        $this->assertFalse($this->pow->verify($result['token'], str_repeat('a', 34), 'test-identifier'));
         $this->assertFalse($this->pow->verify($result['token'], '', 'test-identifier'));
     }
 
     /** Vérifie qu'un nonce de longueur impaire est rejeté sans warning hex2bin. */
-    public function test_verify_rejects_odd_length_nonce_without_warning(): void
+    public function testVerifyRejectsOddLengthNonceWithoutWarning(): void
     {
         $result = $this->pow->generate('test-identifier');
 
@@ -126,11 +133,22 @@ class ProofOfWorkServiceTest extends TestCase
         try {
             $this->assertFalse($this->pow->verify($result['token'], 'abc', 'test-identifier'));
             $this->assertFalse($this->pow->verify($result['token'], 'a', 'test-identifier'));
-            $this->assertFalse(
-                $this->pow->verify($result['token'], str_repeat('a', 31), 'test-identifier')
-            );
+            $this->assertFalse($this->pow->verify($result['token'], str_repeat('a', 31), 'test-identifier'));
         } finally {
             restore_error_handler();
+        }
+    }
+
+    private function nonceWithNonZeroFirstByte(string $challenge): string
+    {
+        $challengeBytes = (string) hex2bin($challenge);
+
+        for ($candidate = 0; ; $candidate++) {
+            $nonce = sprintf('%08x', $candidate);
+
+            if (ord(hash('sha256', $challengeBytes.hex2bin($nonce), true)[0]) !== 0) {
+                return $nonce;
+            }
         }
     }
 }

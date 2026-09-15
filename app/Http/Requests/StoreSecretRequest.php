@@ -176,6 +176,7 @@ class StoreSecretRequest extends FormRequest
             'max_views.min' => __('messages.val_max_views_min'),
             'max_views.max' => __('messages.val_max_views_max'),
             'creator_email.email' => __('messages.val_email_invalid'),
+            'creator_email.max' => __('messages.val_email_max'),
         ];
     }
 }

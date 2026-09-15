@@ -4,26 +4,27 @@
 @section('description', __('messages.legal_meta_description'))
 
 @push('schema')
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "BreadcrumbList",
-    "itemListElement": [
-        {
-            "@@type": "ListItem",
-            "position": 1,
-            "name": "{{ config('app.name') }}",
-            "item": "{{ route('home') }}"
-        },
-        {
-            "@@type": "ListItem",
-            "position": 2,
-            "name": "{{ __('messages.legal_title') }}",
-            "item": "{{ localized_route('legal') }}"
-        }
-    ]
-}
-</script>
+    @php
+        $breadcrumb = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => config_string('app.name'),
+                    'item' => route('home'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => __('messages.legal_title'),
+                    'item' => localized_route('legal'),
+                ],
+            ],
+        ];
+    @endphp
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($breadcrumb) !!}</script>
 @endpush
 
 @section('content')

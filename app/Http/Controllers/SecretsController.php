@@ -242,6 +242,8 @@ class SecretsController extends Controller
         $secret->revoked_at = now();
         $secret->destroyContent();
 
+        defer(fn () => $this->stats->increment(StatsService::SECRETS_REVOKED));
+
         return response()->json(['success' => true]);
     }
 

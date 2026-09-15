@@ -4,49 +4,50 @@
 @section('description', __('messages.use_cases_meta_description'))
 
 @push('schema')
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "BreadcrumbList",
-    "itemListElement": [
-        {
-            "@@type": "ListItem",
-            "position": 1,
-            "name": "{{ config('app.name') }}",
-            "item": "{{ route('home') }}"
-        },
-        {
-            "@@type": "ListItem",
-            "position": 2,
-            "name": "{{ __('messages.use_cases_title') }}",
-            "item": "{{ localized_route('use-cases') }}"
-        }
-    ]
-}
-</script>
-<script type="application/ld+json" nonce="@nonce">
-{
-    "@@context": "https://schema.org",
-    "@@type": "WebPage",
-    "name": "{{ __('messages.use_cases_title') }}",
-    "description": "{{ __('messages.use_cases_meta_description') }}",
-    "datePublished": "2026-03-01",
-    "dateModified": "{{ date('Y-m-d', filemtime(resource_path('views/use-cases.blade.php'))) }}",
-    "about": {
-        "@@type": "WebApplication",
-        "name": "{{ config('app.name') }}"
-    },
-    "isPartOf": {
-        "@@type": "WebSite",
-        "name": "{{ config('app.name') }}",
-        "url": "{{ url('/') }}"
-    },
-    "speakable": {
-        "@@type": "SpeakableSpecification",
-        "cssSelector": ["h1", "h2", ".text-lg"]
-    }
-}
-</script>
+    @php
+        $breadcrumb = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => config_string('app.name'),
+                    'item' => route('home'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => __('messages.use_cases_title'),
+                    'item' => localized_route('use-cases'),
+                ],
+            ],
+        ];
+
+        $webPage = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebPage',
+            'name' => __('messages.use_cases_title'),
+            'description' => __('messages.use_cases_meta_description'),
+            'datePublished' => '2026-03-01',
+            'dateModified' => date('Y-m-d', filemtime(resource_path('views/use-cases.blade.php'))),
+            'about' => [
+                '@type' => 'WebApplication',
+                'name' => config_string('app.name'),
+            ],
+            'isPartOf' => [
+                '@type' => 'WebSite',
+                'name' => config_string('app.name'),
+                'url' => url('/'),
+            ],
+            'speakable' => [
+                '@type' => 'SpeakableSpecification',
+                'cssSelector' => ['h1', 'h2', '.text-lg'],
+            ],
+        ];
+    @endphp
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($breadcrumb) !!}</script>
+<script type="application/ld+json" nonce="@nonce">{!! json_ld($webPage) !!}</script>
 @endpush
 
 @section('content')

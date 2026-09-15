@@ -2,261 +2,136 @@
 
 namespace Tests\Feature;
 
-use App\Enums\SecretType;
 use App\Models\Secret;
-use App\Services\SecretStorageService;
-use App\Services\TokenService;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class DownloadSecurityTest extends TestCase
 {
-    private TokenService $tokenService;
-
-    private SecretStorageService $storage;
-
-    protected function setUp(): void
+    /** Vérifie que le téléchargement force une pièce jointe générique non interprétable et passe par le middleware anti-cache. */
+    public function testDownloadSendsAttachmentAndSecurityHeaders(): void
     {
-        parent::setUp();
-        $this->tokenService = app(TokenService::class);
-        $this->storage = app(SecretStorageService::class);
-    }
-
-    /** Vérifie le Content-Type application/octet-stream du téléchargement. */
-    public function testDownloadHasCorrectContentType(): void
-    {
-        $secret = $this->createFileSecret();
+        Storage::fake('secrets');
+        $secret = Secret::factory()->withStoredBlob()->create();
 
         $response = $this->get("/s/{$secret->token}/download");
 
+        $response->assertOk();
         $response->assertHeader('Content-Type', 'application/octet-stream');
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie la présence du header X-Content-Type-Options: nosniff. */
-    public function testDownloadHasNoSniffHeader(): void
-    {
-        $secret = $this->createFileSecret();
-
-        $response = $this->get("/s/{$secret->token}/download");
-
+        $response->assertHeader('Content-Disposition', 'attachment; filename="encrypted"');
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie le Content-Disposition: attachment. */
-    public function testDownloadHasAttachmentDisposition(): void
-    {
-        $secret = $this->createFileSecret();
-
-        $response = $this->get("/s/{$secret->token}/download");
-
-        $contentDisposition = $response->headers->get('Content-Disposition');
-        $this->assertStringContainsString('attachment', $contentDisposition);
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie les headers no-cache/no-store. */
-    public function testDownloadHasNoCacheHeaders(): void
-    {
-        $secret = $this->createFileSecret();
-
-        $response = $this->get("/s/{$secret->token}/download");
-
-        $cacheControl = $response->headers->get('Cache-Control');
-        $this->assertStringContainsString('no-store', $cacheControl);
-        $this->assertStringContainsString('no-cache', $cacheControl);
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie le header Pragma: no-cache. */
-    public function testDownloadHasPragmaNoCacheHeader(): void
-    {
-        $secret = $this->createFileSecret();
-
-        $response = $this->get("/s/{$secret->token}/download");
-
-        $response->assertHeader('Pragma', 'no-cache');
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie le header X-Download-Options: noopen. */
-    public function testDownloadHasNoOpenHeader(): void
-    {
-        $secret = $this->createFileSecret();
-
-        $response = $this->get("/s/{$secret->token}/download");
-
         $response->assertHeader('X-Download-Options', 'noopen');
-
-        $this->cleanup($secret);
-    }
-
-    /** Vérifie que le nom de fichier original n'est pas exposé. */
-    public function testDownloadDoesNotExposeOriginalFilename(): void
-    {
-        $secret = $this->createFileSecret('sensitive_document.pdf');
-
-        $response = $this->get("/s/{$secret->token}/download");
-
-        $contentDisposition = $response->headers->get('Content-Disposition');
-        // Should use generic "encrypted" filename, not the original
-        $this->assertStringContainsString('filename="encrypted"', $contentDisposition);
-        $this->assertStringNotContainsString('sensitive_document', $contentDisposition);
-
-        $this->cleanup($secret);
+        $response->assertHeader('Cache-Control', 'max-age=0, must-revalidate, no-cache, no-store, private');
+        $response->assertHeader('Pragma', 'no-cache');
+        $response->assertHeader('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     /** Vérifie que le téléchargement incrémente fetch_count sans toucher read_count. */
-    public function testDownloadIncrementsFetchCount(): void
+    public function testDownloadIncrementsFetchCountWithoutCountingRead(): void
     {
-        $secret = $this->createFileSecret();
+        Storage::fake('secrets');
+        $secret = Secret::factory()->withStoredBlob()->create();
 
-        $this->get("/s/{$secret->token}/download")->assertStatus(200);
+        $this->get("/s/{$secret->token}/download")->assertOk();
 
         $secret->refresh();
-        $this->assertEquals(1, $secret->fetch_count);
-        $this->assertEquals(0, $secret->read_count);
-
-        $this->cleanup($secret);
+        $this->assertSame(1, $secret->fetch_count);
+        $this->assertSame(0, $secret->read_count);
     }
 
-    /** Vérifie qu'un téléchargement refusé n'incrémente pas fetch_count. */
-    public function testDownloadDoesNotIncrementFetchCountForRevokedSecret(): void
+    /**
+     * @return array<string, array{0: 'expired'|'revoked'|'consumed'}>
+     */
+    public static function inaccessibleStates(): array
     {
-        $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create('test.bin', 256);
-        $this->storage->store($token, $file);
+        return [
+            'expiré' => ['expired'],
+            'révoqué' => ['revoked'],
+            'max_views atteint' => ['consumed'],
+        ];
+    }
 
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => SecretType::File,
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $token,
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
+    /**
+     * Vérifie qu'un fichier inaccessible dont le blob existe encore renvoie la page 404 sans incrémenter fetch_count.
+     *
+     * @param  'expired'|'revoked'|'consumed'  $state
+     */
+    #[DataProvider('inaccessibleStates')]
+    public function testDownloadReturns404WithoutCountingFetchForInaccessibleFile(string $state): void
+    {
+        Storage::fake('secrets');
+        $secret = $this->createInaccessibleFileWithBlob($state);
 
-        $this->get("/s/{$secret->token}/download")->assertStatus(404);
+        $response = $this->get("/s/{$secret->token}/download");
+
+        $response->assertNotFound();
+        $response->assertViewIs('secrets.not-found');
 
         $secret->refresh();
-        $this->assertEquals(0, $secret->fetch_count);
-
-        $this->cleanup($secret);
+        $this->assertNotNull($secret->file_path);
+        $this->assertSame(0, $secret->fetch_count);
     }
 
-    /** Vérifie que le download retourne 404 pour un secret texte. */
+    /** Vérifie que le téléchargement d'un secret texte renvoie la page 404. */
     public function testDownloadReturns404ForTextSecret(): void
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'not_a_file',
-            'expire_at' => now()->addDay(),
-        ]);
+        Storage::fake('secrets');
+        $secret = Secret::factory()->text()->create();
 
         $response = $this->get("/s/{$secret->token}/download");
 
-        $response->assertStatus(404);
-
-        $secret->delete();
+        $response->assertNotFound();
+        $response->assertViewIs('secrets.not-found');
     }
 
-    /** Vérifie que le download retourne 404 pour un secret expiré (pas de fuite d'état). */
-    public function testDownloadReturns404ForExpiredSecret(): void
+    /** Vérifie que le téléchargement d'un token inconnu renvoie la page 404. */
+    public function testDownloadReturns404ForUnknownToken(): void
     {
-        $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create('test.bin', 256);
-        $this->storage->store($token, $file);
+        $response = $this->get('/s/nonexistenttoken12345678901/download');
 
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => SecretType::File,
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $token,
-            'expire_at' => now()->subHour(),
-        ]);
+        $response->assertNotFound();
+        $response->assertViewIs('secrets.not-found');
+    }
+
+    /** Vérifie qu'un fichier accessible dont le blob manque renvoie la page 404 sans incrémenter fetch_count. */
+    public function testDownloadReturns404WhenBlobIsMissing(): void
+    {
+        Storage::fake('secrets');
+        $secret = Secret::factory()->file()->create();
 
         $response = $this->get("/s/{$secret->token}/download");
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
+        $response->assertViewIs('secrets.not-found');
 
-        $this->cleanup($secret);
+        $secret->refresh();
+        $this->assertSame(0, $secret->fetch_count);
     }
 
-    /** Vérifie que le download retourne 404 pour un secret révoqué (pas de fuite d'état). */
-    public function testDownloadReturns404ForRevokedSecret(): void
+    /** Vérifie qu'un fichier accessible sans file_path renvoie la page 404. */
+    public function testDownloadReturns404WhenFilePathIsNull(): void
     {
-        $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create('test.bin', 256);
-        $this->storage->store($token, $file);
-
-        $secret = Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => SecretType::File,
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $token,
-            'expire_at' => now()->addDay(),
-            'revoked_at' => now(),
-        ]);
+        Storage::fake('secrets');
+        $secret = Secret::factory()->file()->create(['file_path' => null]);
 
         $response = $this->get("/s/{$secret->token}/download");
 
-        $response->assertStatus(404);
-
-        $this->cleanup($secret);
+        $response->assertNotFound();
+        $response->assertViewIs('secrets.not-found');
     }
 
-    /** Vérifie que le download retourne 404 pour un fichier manquant. */
-    public function testDownloadReturns404ForMissingFile(): void
+    /**
+     * @param  'expired'|'revoked'|'consumed'  $state
+     */
+    private function createInaccessibleFileWithBlob(string $state): Secret
     {
-        $secret = Secret::create([
-            'token' => $this->tokenService->generatePublicToken(),
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => SecretType::File,
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => 'nonexistent_path',
-            'expire_at' => now()->addDay(),
-        ]);
+        $factory = Secret::factory();
 
-        $response = $this->get("/s/{$secret->token}/download");
-
-        $response->assertStatus(404);
-
-        $secret->delete();
-    }
-
-    private function createFileSecret(string $originalFilename = 'test.bin'): Secret
-    {
-        $token = $this->tokenService->generatePublicToken();
-        $file = UploadedFile::fake()->create($originalFilename, 256);
-        $filePath = $this->storage->store($token, $file);
-
-        return Secret::create([
-            'token' => $token,
-            'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
-            'type' => SecretType::File,
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'file_path' => $filePath,
-            'expire_at' => now()->addDay(),
-        ]);
-    }
-
-    private function cleanup(Secret $secret): void
-    {
-        if ($secret->file_path && $this->storage->exists($secret->file_path)) {
-            $this->storage->delete($secret->file_path);
-        }
-        $secret->delete();
+        return match ($state) {
+            'expired' => $factory->expired()->withStoredBlob()->create(),
+            'revoked' => $factory->revoked()->withStoredBlob()->create(),
+            'consumed' => $factory->consumed()->withStoredBlob()->create(),
+        };
     }
 }

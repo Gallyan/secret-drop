@@ -76,6 +76,16 @@ return [
             'processors' => [SanitizeProcessor::class],
         ],
 
+        // Aussi défini par la config par défaut du framework, qui le fusionnerait sinon sans sanitisation
+        'monthly' => [
+            'driver' => 'monthly',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => 3,
+            'replace_placeholders' => true,
+            'processors' => [SanitizeProcessor::class],
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

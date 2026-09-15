@@ -16,6 +16,7 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Sleep;
 use Illuminate\View\View;
 
 class SuperAdminController extends Controller
@@ -39,7 +40,7 @@ class SuperAdminController extends Controller
 
     public function index(Request $request): View|RedirectResponse
     {
-        if ($request->session()->get(self::SESSION_KEY)) {
+        if ($this->getSessionAuth($request)) {
             return redirect()->route('superadmin.dashboard');
         }
 
@@ -51,25 +52,27 @@ class SuperAdminController extends Controller
         $email = strtolower(trim($request->email()));
         $superAdminEmail = strtolower(trim(config_string('app.super_admin_email')));
 
-        if ($superAdminEmail !== '' && hash_equals($superAdminEmail, $email)) {
-            $tokenData = $this->tokenService->generateMagicLinkToken();
-
-            MagicLink::create([
-                'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-                'token_hash' => $tokenData['hash'],
-                'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
-            ]);
-
-            $url = route('superadmin.verify', ['token' => $tokenData['token']]);
-            Mail::to($email)
-                ->locale(app()->getLocale())
-                ->send(new SuperAdminMagicLinkMail($url));
-
-            defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
-        } else {
+        if ($superAdminEmail === '' || ! hash_equals($superAdminEmail, $email)) {
             // Mimic mail-send latency to prevent super-admin email enumeration via response timing.
-            usleep(random_int(150_000, 400_000));
+            Sleep::usleep(random_int(150_000, 400_000));
+
+            return redirect()->route('superadmin.accessSent');
         }
+
+        $tokenData = $this->tokenService->generateMagicLinkToken();
+
+        MagicLink::create([
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
+        ]);
+
+        $url = route('superadmin.verify', ['token' => $tokenData['token']]);
+        Mail::to($email)
+            ->locale(app()->getLocale())
+            ->send(new SuperAdminMagicLinkMail($url));
+
+        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
 
         return redirect()->route('superadmin.accessSent');
     }
@@ -92,7 +95,10 @@ class SuperAdminController extends Controller
             ]);
         }
 
-        $magicLink->markAsUsed();
+        if (! $magicLink->markAsUsed()) {
+            return view('superadmin.invalid-link');
+        }
+
         defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();

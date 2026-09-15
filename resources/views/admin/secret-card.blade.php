@@ -57,7 +57,7 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-xl">
                     <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_expires') }}</p>
-                    <p data-poll-expire class="text-sm font-medium text-gray-900 dark:text-white"><span data-utc="{{ $secret->expire_at->toIso8601String() }}"></span></p>
+                    <p data-poll-expire class="text-sm font-medium text-gray-900 dark:text-white"><span data-utc="{{ $secret->expire_at?->toIso8601String() }}" data-empty-label="{{ __('messages.admin_no_expiry') }}">@if($secret->expire_at === null){{ __('messages.admin_no_expiry') }}@endif</span></p>
                 </div>
                 <div class="p-3 bg-gray-50 dark:bg-slate-900/50 rounded-xl">
                     <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('messages.admin_read_count') }}</p>

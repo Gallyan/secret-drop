@@ -2,152 +2,148 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\SeoController;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class IndexNowKeyRouteTest extends TestCase
 {
     private const KEY = 'test-indexnow-key-0123456789abcdef';
 
-    protected function setUp(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function boundaryLengthKeys(): array
     {
-        parent::setUp();
-        config(['services.indexnow.key' => self::KEY]);
+        return [
+            '8 characters' => ['abcd1234'],
+            '128 characters' => [str_repeat('a', 128)],
+        ];
     }
 
-    /** Vérifie que le fichier de vérification retourne la clé en texte brut. */
-    public function testKeyFileReturnsTheConfiguredKey(): void
+    /** Vérifie que le fichier de vérification retourne la clé en texte brut, aux deux bornes de longueur. */
+    #[DataProvider('boundaryLengthKeys')]
+    public function testKeyFileReturnsTheConfiguredKey(string $key): void
     {
-        $response = $this->get('/'.self::KEY.'.txt');
+        config(['services.indexnow.key' => $key]);
+
+        $response = $this->get("/{$key}.txt");
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'text/plain; charset=UTF-8');
-        $this->assertSame(self::KEY, $response->getContent());
+        $this->assertSame($key, $response->getContent());
     }
 
-    /** Vérifie qu'une clé différente de celle configurée retourne 404. */
-    public function testWrongKeyReturnsNotFound(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function keysOutsideTheRouteFormat(): array
     {
-        $response = $this->get('/wrong-indexnow-key-000000000.txt');
-
-        $response->assertStatus(404);
+        return [
+            '7 characters' => ['abcd123'],
+            '129 characters' => [str_repeat('a', 129)],
+            'underscore' => ['abcd_efgh'],
+            'dot' => ['abcd.efgh'],
+            'tilde' => ['abcd~efgh'],
+            'non ascii letter' => ['clé-indexnow'],
+        ];
     }
 
-    /** Vérifie que la comparaison de clé est sensible à la casse. */
-    public function testKeyComparisonIsCaseSensitive(): void
+    /** Vérifie qu'une clé hors format répond 404 parce que la route ne la capture pas, même si elle est configurée. */
+    #[DataProvider('keysOutsideTheRouteFormat')]
+    public function testKeyOutsideTheFormatIsNotFoundBecauseTheRouteDoesNotMatch(string $key): void
     {
-        $response = $this->get('/'.strtoupper(self::KEY).'.txt');
+        config(['services.indexnow.key' => $key]);
 
-        $response->assertStatus(404);
+        $response = $this->get('/'.rawurlencode($key).'.txt');
+
+        $response->assertNotFound();
+        $this->assertFalse($this->keyRoute()->matches(Request::create('/'.rawurlencode($key).'.txt')));
     }
 
-    /** Vérifie qu'aucune clé configurée donne un 404 sans erreur PHP (hash_equals sur null). */
-    public function testMissingConfiguredKeyReturnsNotFound(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function keysRejectedByTheController(): array
     {
-        config(['services.indexnow.key' => null]);
+        return [
+            'different key' => ['wrong-indexnow-key-000000000'],
+            'same key in uppercase' => [strtoupper(self::KEY)],
+        ];
+    }
+
+    /** Vérifie qu'une clé au bon format mais différente de la clé configurée atteint la route et répond 404. */
+    #[DataProvider('keysRejectedByTheController')]
+    public function testWellFormedKeyDifferentFromTheConfiguredOneIsNotFound(string $requestedKey): void
+    {
+        config(['services.indexnow.key' => self::KEY]);
+
+        $response = $this->get("/{$requestedKey}.txt");
+
+        $response->assertNotFound();
+        $this->assertTrue($this->keyRoute()->matches(Request::create("/{$requestedKey}.txt")));
+    }
+
+    /**
+     * @return array<string, array{?string}>
+     */
+    public static function unconfiguredKeys(): array
+    {
+        return [
+            'null key' => [null],
+            'empty key' => [''],
+        ];
+    }
+
+    /** Vérifie qu'en l'absence de clé configurée la route répond 404 sans erreur PHP. */
+    #[DataProvider('unconfiguredKeys')]
+    public function testMissingConfiguredKeyReturnsNotFound(?string $configuredKey): void
+    {
+        config(['services.indexnow.key' => $configuredKey]);
 
         $response = $this->get('/'.self::KEY.'.txt');
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    /** Vérifie qu'une clé configurée vide donne un 404. */
-    public function testEmptyConfiguredKeyReturnsNotFound(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function staticTxtFilesTooShortForTheKeyFormat(): array
     {
-        config(['services.indexnow.key' => '']);
-
-        $response = $this->get('/'.self::KEY.'.txt');
-
-        $response->assertStatus(404);
+        return [
+            'robots.txt' => ['/robots.txt'],
+            'llms.txt' => ['/llms.txt'],
+        ];
     }
 
-    /** Vérifie qu'une clé plus courte que 8 caractères n'atteint pas la route. */
-    public function testTooShortKeyReturnsNotFound(): void
+    /** Vérifie que robots.txt et llms.txt sont protégés par le format de clé lui-même : la route de clé ne peut pas les capturer. */
+    #[DataProvider('staticTxtFilesTooShortForTheKeyFormat')]
+    public function testShortStaticTxtFilesCannotMatchTheKeyRoute(string $uri): void
     {
-        config(['services.indexnow.key' => 'abc']);
-
-        $response = $this->get('/abc.txt');
-
-        $response->assertStatus(404);
+        $this->assertFalse($this->keyRoute()->matches(Request::create($uri)));
     }
 
-    /** Vérifie qu'une clé plus longue que 128 caractères n'atteint pas la route. */
-    public function testTooLongKeyReturnsNotFound(): void
-    {
-        $tooLong = str_repeat('a', 129);
-        config(['services.indexnow.key' => $tooLong]);
-
-        $response = $this->get('/'.$tooLong.'.txt');
-
-        $response->assertStatus(404);
-    }
-
-    /** Vérifie qu'une clé de 128 caractères reste servie. */
-    public function testMaximumLengthKeyIsServed(): void
-    {
-        $maxLength = str_repeat('a', 128);
-        config(['services.indexnow.key' => $maxLength]);
-
-        $response = $this->get('/'.$maxLength.'.txt');
-
-        $response->assertOk();
-        $this->assertSame($maxLength, $response->getContent());
-    }
-
-    /** Vérifie que robots.txt n'est pas capturé par la route de clé. */
-    public function testRobotsTxtIsNotCapturedByTheKeyRoute(): void
-    {
-        config(['services.indexnow.key' => 'robots']);
-
-        $response = $this->get('/robots.txt');
-
-        $response->assertOk();
-        $content = $response->getContent();
-        $this->assertStringContainsString('User-agent: *', $content);
-        $this->assertStringContainsString('Disallow: /s/', $content);
-        $this->assertStringContainsString('Sitemap:', $content);
-    }
-
-    /** Vérifie que llms.txt n'est pas capturé par la route de clé. */
-    public function testLlmsTxtIsNotCapturedByTheKeyRoute(): void
-    {
-        config(['services.indexnow.key' => 'llms']);
-
-        $response = $this->get('/llms.txt');
-
-        $response->assertOk();
-        $this->assertStringContainsString('# Secret Drop', $response->getContent());
-    }
-
-    /** Vérifie que llms-full.txt n'est pas capturé par la route de clé (il matche pourtant la regex). */
-    public function testLlmsFullTxtIsNotCapturedByTheKeyRoute(): void
+    /** Vérifie que llms-full.txt, qui respecte le format de clé, reste servi par sa propre route déclarée avant la route de clé. */
+    public function testLlmsFullTxtMatchesTheKeyFormatButIsServedByItsOwnRoute(): void
     {
         config(['services.indexnow.key' => 'llms-full']);
 
         $response = $this->get('/llms-full.txt');
 
+        $this->assertTrue($this->keyRoute()->matches(Request::create('/llms-full.txt')));
         $response->assertOk();
-        $response->assertHeader('Content-Type', 'text/plain; charset=utf-8');
-        $content = $response->getContent();
-        $this->assertNotSame('llms-full', $content);
-        $this->assertStringContainsString('Secret Drop', $content);
+        $this->assertStringStartsWith('# Secret Drop -- Full Documentation', $response->getContent());
     }
 
-    /** Vérifie que le sitemap n'est pas capturé par la route de clé. */
-    public function testSitemapIsNotCapturedByTheKeyRoute(): void
+    private function keyRoute(): Route
     {
-        $response = $this->get('/sitemap.xml');
+        $route = app('router')->getRoutes()->getByAction(SeoController::class.'@indexNowKey');
 
-        $response->assertOk();
-        $response->assertHeader('Content-Type', 'application/xml');
-        $this->assertStringContainsString('<urlset', $response->getContent());
-    }
+        $this->assertInstanceOf(Route::class, $route);
 
-    /** Vérifie que security.txt n'est pas capturé par la route de clé. */
-    public function testSecurityTxtIsNotCapturedByTheKeyRoute(): void
-    {
-        $response = $this->get('/.well-known/security.txt');
-
-        $response->assertOk();
-        $this->assertStringContainsString('Contact: mailto:', $response->getContent());
+        return $route;
     }
 }

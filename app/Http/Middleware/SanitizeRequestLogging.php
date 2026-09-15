@@ -11,6 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Zero-knowledge principle: URLs containing tokens or fragments
  * must never be logged in their complete form.
+ *
+ * Seul le server bag est réécrit : l'URI de la requête, le chemin, les paramètres
+ * de route et les en-têtes gardent leurs vraies valeurs (le routage en dépend) ;
+ * les logs sont donc protégés par App\Logging\SanitizeProcessor.
  */
 class SanitizeRequestLogging
 {
@@ -24,6 +28,8 @@ class SanitizeRequestLogging
         '#^(?:/[a-z]{2})?/superadmin/verify/[^/]+#', // /{locale?}/superadmin/verify/{token}
     ];
 
+    private const SENSITIVE_QUERY_PARAMS = ['token', 'key', 'secret', 'admin_token'];
+
     public function handle(Request $request, Closure $next): Response
     {
         $this->sanitizeServerVars($request);
@@ -34,16 +40,19 @@ class SanitizeRequestLogging
     private function sanitizeServerVars(Request $request): void
     {
         $uri = $request->getRequestUri();
+        $queryString = $request->server->getString('QUERY_STRING');
+        $hasSensitiveQuery = $queryString !== '' && $this->containsSensitiveParams($queryString);
+
         $sanitizedUri = $this->sanitizeUri($uri);
+
+        if ($hasSensitiveQuery) {
+            $sanitizedUri = explode('?', $sanitizedUri, 2)[0].'?[REDACTED]';
+            $request->server->set('QUERY_STRING', '[REDACTED]');
+        }
 
         if ($uri !== $sanitizedUri) {
             $request->server->set('REQUEST_URI', $sanitizedUri);
             $request->server->set('ORIGINAL_REQUEST_URI', '[REDACTED]');
-        }
-
-        $queryString = $request->server->getString('QUERY_STRING');
-        if ($queryString !== '' && $this->containsSensitiveParams($queryString)) {
-            $request->server->set('QUERY_STRING', '[REDACTED]');
         }
 
         if ($request->server->has('HTTP_REFERER')) {
@@ -63,27 +72,30 @@ class SanitizeRequestLogging
         return $uri;
     }
 
+    /** Les motifs de route sont ancrés sur le chemin : ils s'appliquent au chemin de l'URL absolue. */
     private function sanitizeFullUrl(string $url): string
     {
-        if (str_contains($url, '#')) {
-            $url = preg_replace('/#.*$/', '#[REDACTED]', $url) ?? $url;
+        $url = preg_replace('/#.*$/s', '#[REDACTED]', $url) ?? $url;
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if (! is_string($path) || $path === '') {
+            return $url;
         }
 
-        foreach (self::SENSITIVE_ROUTE_PATTERNS as $pattern) {
-            if (preg_match($pattern, $url)) {
-                return preg_replace('#(/[^/]+)/[A-Za-z0-9_-]{20,}#', '$1/[TOKEN]', $url) ?? $url;
-            }
+        $sanitizedPath = $this->sanitizeUri($path);
+        $pathPosition = strpos($url, $path);
+
+        if ($sanitizedPath === $path || $pathPosition === false) {
+            return $url;
         }
 
-        return $url;
+        return substr_replace($url, $sanitizedPath, $pathPosition, strlen($path));
     }
 
     private function containsSensitiveParams(string $queryString): bool
     {
-        $sensitiveParams = ['token', 'key', 'secret', 'admin_token'];
-
-        foreach ($sensitiveParams as $param) {
-            if (str_contains(strtolower($queryString), $param.'=')) {
+        foreach (self::SENSITIVE_QUERY_PARAMS as $param) {
+            if (str_contains(strtolower($queryString), "{$param}=")) {
                 return true;
             }
         }

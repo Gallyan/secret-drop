@@ -18,6 +18,7 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Sleep;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -41,7 +42,7 @@ class AdminController extends Controller
 
     public function index(Request $request): View|RedirectResponse
     {
-        if ($request->session()->has(self::SESSION_KEY)) {
+        if ($this->getSessionAuth($request)) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -56,7 +57,7 @@ class AdminController extends Controller
 
         if (! $hasSecrets) {
             // Mimic mail-send latency to prevent email-enumeration via response timing.
-            usleep(random_int(150_000, 400_000));
+            Sleep::usleep(random_int(150_000, 400_000));
 
             return redirect()->route('admin.accessSent');
         }
@@ -101,7 +102,10 @@ class AdminController extends Controller
             ]);
         }
 
-        $magicLink->markAsUsed();
+        if (! $magicLink->markAsUsed()) {
+            return view('admin.invalid-link');
+        }
+
         defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();

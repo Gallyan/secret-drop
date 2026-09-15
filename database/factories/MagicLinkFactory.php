@@ -3,10 +3,14 @@
 namespace Database\Factories;
 
 use App\Models\MagicLink;
+use App\Services\TokenService;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Config;
 
 /**
+ * Builds magic links shaped like the ones AdminController::requestAccess and
+ * SuperAdminController::requestAccess persist.
+ *
  * @extends Factory<MagicLink>
  */
 class MagicLinkFactory extends Factory
@@ -17,23 +21,33 @@ class MagicLinkFactory extends Factory
     public function definition(): array
     {
         return [
-            'email_hash' => hash('sha256', fake()->unique()->safeEmail()),
-            'token_hash' => hash('sha256', Str::random(32)),
-            'expire_at' => now()->addMinutes(5),
+            'email_hash' => MagicLink::hashEmail(fake()->unique()->safeEmail()),
+            'token_hash' => app(TokenService::class)->generateMagicLinkToken()['hash'],
+            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
         ];
     }
 
-    public function forEmail(string $email): static
+    public function forEmail(#[\SensitiveParameter] string $email): static
     {
         return $this->state(fn (array $attributes) => [
             'email_hash' => MagicLink::hashEmail($email),
         ]);
     }
 
-    public function withToken(string $token): static
+    public function superAdmin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'token_hash' => hash('sha256', $token),
+            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
+        ]);
+    }
+
+    /**
+     * Stores the hash MagicLink::findByToken() looks up for this plain token.
+     */
+    public function withToken(#[\SensitiveParameter] string $token): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'token_hash' => app(TokenService::class)->hashToken($token),
         ]);
     }
 
@@ -54,7 +68,7 @@ class MagicLinkFactory extends Factory
     public function valid(): static
     {
         return $this->state(fn (array $attributes) => [
-            'expire_at' => now()->addMinutes(5),
+            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
             'used_at' => null,
         ]);
     }

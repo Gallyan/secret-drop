@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 trait HasSessionAuth
 {
     /**
-     * Get the authenticated session value, or null if expired/missing.
+     * Get the authenticated session value, or null if expired, missing or without expiry.
      * Controllers must define SESSION_KEY and SESSION_EXPIRES_KEY constants.
      */
     private function getSessionAuth(Request $request): mixed
@@ -20,9 +20,8 @@ trait HasSessionAuth
 
         $expiresAt = $request->session()->get(static::SESSION_EXPIRES_KEY);
 
-        if ($expiresAt && $expiresAt < now()->timestamp) {
-            $request->session()->forget(static::SESSION_KEY);
-            $request->session()->forget(static::SESSION_EXPIRES_KEY);
+        if (! is_int($expiresAt) || $expiresAt < now()->timestamp) {
+            $request->session()->forget([static::SESSION_KEY, static::SESSION_EXPIRES_KEY]);
 
             return null;
         }
@@ -34,8 +33,6 @@ trait HasSessionAuth
 
     private function renewSessionExpiry(Request $request): void
     {
-        if ($request->session()->has(static::SESSION_EXPIRES_KEY)) {
-            $request->session()->put(static::SESSION_EXPIRES_KEY, now()->addMinutes($this->sessionTtl())->timestamp);
-        }
+        $request->session()->put(static::SESSION_EXPIRES_KEY, now()->addMinutes($this->sessionTtl())->timestamp);
     }
 }

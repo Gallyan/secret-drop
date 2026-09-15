@@ -1,5 +1,12 @@
 @extends('layouts.app')
 
+{{-- Errors raised before SetLocale (maintenance mode, global middleware) have no locale URL default yet --}}
+@php
+    if (! array_key_exists('locale', url()->getDefaultParameters())) {
+        url()->defaults(['locale' => app()->getLocale()]);
+    }
+@endphp
+
 @section('content')
 @php
     $errColor = trim($__env->yieldContent('color', 'violet'));

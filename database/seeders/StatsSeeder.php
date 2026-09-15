@@ -252,7 +252,7 @@ class StatsSeeder extends Seeder
                         'updated_at' => $date,
                     ],
                     ['date', 'local_hour'],
-                    ['count' => CounterExpression::addTo($humanCount)]
+                    ['count' => CounterExpression::addTo('stats_local_hours', $humanCount)]
                 );
             }
 
@@ -296,7 +296,7 @@ class StatsSeeder extends Seeder
                         'updated_at' => $date,
                     ],
                     ['date', 'day_of_week', 'hour', 'metric'],
-                    ['count' => CounterExpression::addTo($count)]
+                    ['count' => CounterExpression::addTo('stats_heatmap', $count)]
                 );
             }
         }

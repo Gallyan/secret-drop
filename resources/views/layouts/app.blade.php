@@ -77,134 +77,113 @@
 
     {{-- Schema.org JSON-LD @graph (only on homepage) --}}
     @if(request()->routeIs('home'))
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@graph": [
-            {
-                "@@type": "WebSite",
-                "@@id": "{{ url('/') }}/#website",
-                "name": "{{ config('app.name') }}",
-                "url": "{{ url('/') }}",
-                "description": "{{ __('messages.app_description') }}",
-                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-                "publisher": {
-                    "@@id": "{{ url('/') }}/#person"
-                }
-            },
-            {
-                "@@type": "Organization",
-                "@@id": "{{ url('/') }}/#organization",
-                "name": "{{ config('legal.organization_name', config('app.name')) }}",
-                "url": "{{ url('/') }}",
-                "logo": {
-                    "@@type": "ImageObject",
-                    "url": "{{ asset('icon-512.png') }}",
-                    "width": 512,
-                    "height": 512
-                },
-                "description": "{{ __('messages.legal_about_text') }}",
-                "foundingDate": "2026"@if(config('legal.contact_email')),
-                "email": "{{ config('legal.contact_email') }}",
-                "contactPoint": {
-                    "@@type": "ContactPoint",
-                    "contactType": "customer service",
-                    "email": "{{ config('legal.contact_email') }}",
-                    "url": "{{ url('/contact') }}"
-                }@endif,
-                "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
-                "founder": {
-                    "@@id": "{{ url('/') }}/#person"
-                },
-                @if(collect(config('legal.social'))->filter()->isNotEmpty())
-                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-                @endif
-                "owns": {
-                    "@@id": "{{ url('/') }}/#application"
-                }
-            },
-            {
-                "@@type": "Person",
-                "@@id": "{{ url('/') }}/#person",
-                "name": "{{ config('legal.editor_name') }}",
-                "url": "{{ config('legal.social.website', 'https://www.orsal.fr') }}",
-                "jobTitle": "Software Engineer",
-                "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
-                @if(collect(config('legal.social'))->filter()->isNotEmpty())
-                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-                @endif
-                "worksFor": {
-                    "@@id": "{{ url('/') }}/#organization"
-                }
-            },
-            {
-                "@@type": ["WebApplication", "SoftwareApplication"],
-                "@@id": "{{ url('/') }}/#application",
-                "name": "{{ config('app.name') }}",
-                "description": "{{ __('messages.app_description') }}",
-                "url": "{{ url('/') }}",
-                "applicationCategory": "SecurityApplication",
-                "operatingSystem": "Any",
-                "browserRequirements": "Requires JavaScript, Web Crypto API",
-                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-                "image": "{{ asset('icon-512.png') }}",
-                "screenshot": [
-                    {
-                        "@@type": "ImageObject",
-                        "url": "{{ asset('screenshots/home.png') }}",
-                        "caption": "{{ __('messages.app_description') }}"
-                    },
-                    {
-                        "@@type": "ImageObject",
-                        "url": "{{ asset('screenshots/share.png') }}",
-                        "caption": "{{ __('messages.feature_secure_by_design') }}"
-                    },
-                    {
-                        "@@type": "ImageObject",
-                        "url": "{{ asset('screenshots/read.png') }}",
-                        "caption": "{{ __('messages.feature_no_account') }}"
-                    }
+    @php
+        $siteUrl = url('/');
+        $appName = config_string('app.name');
+        $contactEmail = config_string('legal.contact_email');
+        $socialProfiles = collect(config('legal.social'))->filter()->values()->all();
+        $sameAs = $socialProfiles !== [] ? ['sameAs' => $socialProfiles] : [];
+
+        $schemaGraph = [
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                [
+                    '@type' => 'WebSite',
+                    '@id' => "{$siteUrl}/#website",
+                    'name' => $appName,
+                    'url' => $siteUrl,
+                    'description' => __('messages.app_description'),
+                    'inLanguage' => \App\Support\LocaleConfig::SUPPORTED_LOCALES,
+                    'publisher' => ['@id' => "{$siteUrl}/#person"],
                 ],
-                "isAccessibleForFree": true,
-                "license": "https://www.gnu.org/licenses/agpl-3.0",
-                "dateCreated": "2026-01-15",
-                "datePublished": "2026-03-01",
-                "offers": {
-                    "@@type": "Offer",
-                    "price": "0",
-                    "priceCurrency": "EUR"
-                },
-                "featureList": [
-                    "{{ __('messages.feature_secure_by_design') }}",
-                    "{{ __('messages.feature_no_account') }}",
-                    "{{ __('messages.feature_hosted_france') }}",
-                    "{{ __('messages.feature_open_source') }}"
+                [
+                    '@type' => 'Organization',
+                    '@id' => "{$siteUrl}/#organization",
+                    'name' => config_string('legal.organization_name', $appName),
+                    'url' => $siteUrl,
+                    'logo' => [
+                        '@type' => 'ImageObject',
+                        'url' => asset('icon-512.png'),
+                        'width' => 512,
+                        'height' => 512,
+                    ],
+                    'description' => __('messages.legal_about_text'),
+                    'foundingDate' => '2026',
+                    ...($contactEmail !== '' ? [
+                        'email' => $contactEmail,
+                        'contactPoint' => [
+                            '@type' => 'ContactPoint',
+                            'contactType' => 'customer service',
+                            'email' => $contactEmail,
+                            'url' => url('/contact'),
+                        ],
+                    ] : []),
+                    'knowsAbout' => ['zero-knowledge encryption', 'end-to-end encryption', 'secure file sharing', 'password sharing'],
+                    'founder' => ['@id' => "{$siteUrl}/#person"],
+                    ...$sameAs,
+                    'owns' => ['@id' => "{$siteUrl}/#application"],
                 ],
-                "author": {
-                    "@@id": "{{ url('/') }}/#person"
-                },
-                "creator": {
-                    "@@id": "{{ url('/') }}/#person"
-                },
-                "publisher": {
-                    "@@id": "{{ url('/') }}/#organization"
-                },
-                "potentialAction": {
-                    "@@type": "CreateAction",
-                    "name": "{{ __('messages.app_description') }}",
-                    "target": {
-                        "@@type": "EntryPoint",
-                        "urlTemplate": "{{ url('/') }}",
-                        "actionPlatform": [
-                            "http://schema.org/DesktopWebPlatform",
-                            "http://schema.org/MobileWebPlatform"
-                        ]
-                    }
-                }
-            }
-        ]
-    }
-    </script>
+                [
+                    '@type' => 'Person',
+                    '@id' => "{$siteUrl}/#person",
+                    'name' => config_string('legal.editor_name'),
+                    'url' => config_string('legal.social.website', 'https://www.orsal.fr'),
+                    'jobTitle' => 'Software Engineer',
+                    'knowsAbout' => ['web application security', 'zero-knowledge encryption', 'Laravel development', 'end-to-end encryption'],
+                    ...$sameAs,
+                    'worksFor' => ['@id' => "{$siteUrl}/#organization"],
+                ],
+                [
+                    '@type' => ['WebApplication', 'SoftwareApplication'],
+                    '@id' => "{$siteUrl}/#application",
+                    'name' => $appName,
+                    'description' => __('messages.app_description'),
+                    'url' => $siteUrl,
+                    'applicationCategory' => 'SecurityApplication',
+                    'operatingSystem' => 'Any',
+                    'browserRequirements' => 'Requires JavaScript, Web Crypto API',
+                    'inLanguage' => \App\Support\LocaleConfig::SUPPORTED_LOCALES,
+                    'image' => asset('icon-512.png'),
+                    'screenshot' => [
+                        ['@type' => 'ImageObject', 'url' => asset('screenshots/home.png'), 'caption' => __('messages.app_description')],
+                        ['@type' => 'ImageObject', 'url' => asset('screenshots/share.png'), 'caption' => __('messages.feature_secure_by_design')],
+                        ['@type' => 'ImageObject', 'url' => asset('screenshots/read.png'), 'caption' => __('messages.feature_no_account')],
+                    ],
+                    'isAccessibleForFree' => true,
+                    'license' => 'https://www.gnu.org/licenses/agpl-3.0',
+                    'dateCreated' => '2026-01-15',
+                    'datePublished' => '2026-03-01',
+                    'offers' => [
+                        '@type' => 'Offer',
+                        'price' => '0',
+                        'priceCurrency' => 'EUR',
+                    ],
+                    'featureList' => [
+                        __('messages.feature_secure_by_design'),
+                        __('messages.feature_no_account'),
+                        __('messages.feature_hosted_france'),
+                        __('messages.feature_open_source'),
+                    ],
+                    'author' => ['@id' => "{$siteUrl}/#person"],
+                    'creator' => ['@id' => "{$siteUrl}/#person"],
+                    'publisher' => ['@id' => "{$siteUrl}/#organization"],
+                    'potentialAction' => [
+                        '@type' => 'CreateAction',
+                        'name' => __('messages.app_description'),
+                        'target' => [
+                            '@type' => 'EntryPoint',
+                            'urlTemplate' => $siteUrl,
+                            'actionPlatform' => [
+                                'http://schema.org/DesktopWebPlatform',
+                                'http://schema.org/MobileWebPlatform',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json" nonce="@nonce">{!! json_ld($schemaGraph) !!}</script>
     @endif
 
     @stack('schema')

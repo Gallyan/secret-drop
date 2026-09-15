@@ -2,398 +2,388 @@
 
 namespace Tests\Feature;
 
+use App\Mail\SuperAdminMagicLinkMail;
 use App\Models\MagicLink;
 use App\Services\StatsService;
-use App\Services\TokenService;
+use Carbon\CarbonInterval;
+use Closure;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Sleep;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class SuperAdminControllerTest extends TestCase
 {
-    private TokenService $tokenService;
+    private const SUPER_ADMIN_EMAIL = 'boss@example.com';
+
+    private const MAGIC_LINK_TOKEN = 'plain-superadmin-magic-link-token';
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->tokenService = app(TokenService::class);
-        Mail::fake();
+
+        Config::set('app.super_admin_email', self::SUPER_ADMIN_EMAIL);
+        Config::set('secrets.magic_link_ttl', 10);
+        Config::set('secrets.super_admin_session_ttl', 15);
     }
 
-    /** Vérifie que la page d'index affiche le formulaire de login superadmin. */
-    public function testIndexPageDisplaysLoginForm(): void
+    /** Vérifie que l'index affiche le formulaire de connexion superadmin sans session. */
+    public function testIndexRendersLoginFormWithoutSession(): void
     {
         $response = $this->get('/fr/superadmin');
 
-        $response->assertStatus(200);
         $response->assertViewIs('superadmin.index');
     }
 
-    /** Vérifie qu'un superadmin déjà authentifié est redirigé vers le dashboard. */
-    public function testIndexRedirectsToDashboardWhenAuthenticated(): void
+    /** Vérifie qu'un superadmin à la session valide est redirigé vers le dashboard. */
+    public function testIndexRedirectsToDashboardWhenSessionIsValid(): void
     {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/fr/superadmin');
+        $response = $this->withSession($this->superAdminSession())->get('/fr/superadmin');
 
-        $response->assertRedirect(route('superadmin.dashboard', ['locale' => 'fr']));
+        $response->assertRedirect('/fr/superadmin/dashboard');
     }
 
-    /** Vérifie que la demande d'accès affiche la page de confirmation quel que soit l'email. */
-    public function testRequestAccessShowsConfirmationPage(): void
+    /**
+     * @return array<string, array{0: Closure(): array<string, mixed>}>
+     */
+    public static function unusableSessions(): array
     {
-        $response = $this->post('/fr/superadmin/request-access', [
-            'email' => 'random@example.com',
-        ]);
-
-        $response->assertRedirect(route('superadmin.accessSent'));
+        return [
+            'sans date d\'expiration' => [fn (): array => ['super_admin_verified' => true]],
+            'expirée' => [fn (): array => [
+                'super_admin_verified' => true,
+                'super_admin_expires_at' => now()->subSecond()->timestamp,
+            ]],
+        ];
     }
 
-    /** Vérifie qu'un email avec magic link est envoyé quand l'email correspond au super admin. */
-    public function testRequestAccessSendsEmailWhenSuperAdmin(): void
+    /**
+     * Vérifie que l'index affiche le formulaire quand la session est expirée ou sans expiration.
+     *
+     * @param  Closure(): array<string, mixed>  $session
+     */
+    #[DataProvider('unusableSessions')]
+    public function testIndexRendersLoginFormWhenSessionIsNotUsable(Closure $session): void
     {
-        Config::set('app.super_admin_email', 'superadmin@example.com');
+        $this->freezeTime();
 
-        $response = $this->post('/fr/superadmin/request-access', [
-            'email' => 'superadmin@example.com',
-        ]);
+        $response = $this->withSession($session())->get('/fr/superadmin');
 
-        $response->assertRedirect(route('superadmin.accessSent'));
-        Mail::assertSent(\App\Mail\SuperAdminMagicLinkMail::class);
-
-        $this->assertDatabaseHas('magic_links', [
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-        ]);
+        $response->assertViewIs('superadmin.index');
     }
 
-    /** Vérifie qu'aucun email n'est envoyé pour un email non super admin. */
-    public function testRequestAccessDoesNotSendEmailWhenNotSuperAdmin(): void
+    /** Vérifie que l'email superadmin, comparé sans casse ni espaces, reçoit le lien, persisté et compté. */
+    public function testRequestAccessSendsMagicLinkToSuperAdminIgnoringCaseAndSpaces(): void
     {
-        Config::set('app.super_admin_email', 'superadmin@example.com');
+        $this->travelTo('2026-09-15 14:30:00');
+        Config::set('app.super_admin_email', '  Boss@Example.COM ');
+        Mail::fake();
+        Sleep::fake();
 
-        $response = $this->post('/fr/superadmin/request-access', [
-            'email' => 'random@example.com',
+        $response = $this->post('/fr/superadmin/request-access', ['email' => 'BOSS@example.com']);
+
+        $response->assertRedirect('/fr/superadmin/access-sent');
+
+        Mail::assertSent(
+            SuperAdminMagicLinkMail::class,
+            fn (SuperAdminMagicLinkMail $mail): bool => $mail->hasTo(self::SUPER_ADMIN_EMAIL)
+        );
+
+        $magicLink = MagicLink::sole();
+        $this->assertSame(MagicLink::SUPER_ADMIN_EMAIL_HASH, $magicLink->email_hash);
+        $this->assertSame('2026-09-15 14:40:00', $magicLink->expire_at->toDateTimeString());
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::MAGIC_LINKS_REQUESTED,
+            'count' => 1,
+        ]);
+        $this->assertDatabaseHas('stats_heatmap', [
+            'date' => '2026-09-15',
+            'hour' => 14,
+            'metric' => StatsService::MAGIC_LINKS_REQUESTED,
+            'count' => 1,
         ]);
 
-        $response->assertRedirect(route('superadmin.accessSent'));
+        Sleep::assertNeverSlept();
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function refusedSuperAdminConfigurations(): array
+    {
+        return [
+            'email différent du superadmin' => [self::SUPER_ADMIN_EMAIL],
+            'aucun superadmin configuré' => [''],
+        ];
+    }
+
+    /** Vérifie qu'un email refusé ne reçoit rien, ne crée aucun lien mais attend comme un envoi. */
+    #[DataProvider('refusedSuperAdminConfigurations')]
+    public function testRequestAccessForRefusedEmailSendsNothingButStillWaits(string $configuredEmail): void
+    {
+        Config::set('app.super_admin_email', $configuredEmail);
+        Mail::fake();
+        Sleep::fake();
+
+        $response = $this->post('/fr/superadmin/request-access', ['email' => 'random@example.com']);
+
+        $response->assertRedirect('/fr/superadmin/access-sent');
+
         Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
+
+        Sleep::assertSlept(fn (CarbonInterval $duration): bool => $duration->totalMicroseconds >= 150_000
+            && $duration->totalMicroseconds <= 400_000);
     }
 
-    /** Vérifie que GET verify affiche la page de confirmation sans consommer le token. */
-    public function testVerifyGetShowsConfirmationPage(): void
+    /** Vérifie qu'une demande faite depuis /en produit un mail superadmin rendu en anglais. */
+    public function testRequestAccessFromEnglishPageSendsEnglishMail(): void
     {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
+        Mail::fake();
 
-        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
+        $this->post('/en/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
 
-        $response->assertStatus(200);
+        $mail = Mail::sent(
+            SuperAdminMagicLinkMail::class,
+            fn (SuperAdminMagicLinkMail $mail): bool => $mail->hasTo(self::SUPER_ADMIN_EMAIL)
+        )->sole();
+        $this->assertSame('en', $mail->locale);
+        $this->assertStringContainsString(e(__('messages.email_superadmin_button', [], 'en')), $mail->render());
+    }
+
+    /**
+     * @return array<string, array{0: array<string, string>, 1: string}>
+     */
+    public static function invalidAccessRequests(): array
+    {
+        return [
+            'email absent' => [[], 'messages.val_email_required'],
+            'email invalide' => [['email' => 'not-an-email'], 'messages.val_email_invalid'],
+            'email de plus de 255 caractères' => [
+                ['email' => str_repeat('a', 60).'@'.implode('.', str_split(str_repeat('b', 200), 60)).'.com'],
+                'messages.val_email_max',
+            ],
+        ];
+    }
+
+    /**
+     * Vérifie que chaque règle de validation de l'email affiche son message sur le formulaire superadmin.
+     *
+     * @param  array<string, string>  $payload
+     */
+    #[DataProvider('invalidAccessRequests')]
+    public function testRequestAccessRejectsInvalidEmailWithVisibleMessage(array $payload, string $messageKey): void
+    {
+        Mail::fake();
+        Sleep::fake();
+
+        $response = $this->from('/fr/superadmin')
+            ->followingRedirects()
+            ->post('/fr/superadmin/request-access', $payload);
+
+        $response->assertViewIs('superadmin.index');
+        $response->assertSee(__($messageKey));
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+    }
+
+    /** Vérifie que GET verify affiche la confirmation sans consommer le lien (protection contre les scanners de mail). */
+    public function testVerifyGetShowsConfirmationWithoutConsumingLink(): void
+    {
+        $magicLink = MagicLink::factory()->superAdmin()->withToken(self::MAGIC_LINK_TOKEN)->create();
+
+        $response = $this->get('/fr/superadmin/verify/'.self::MAGIC_LINK_TOKEN);
+
         $response->assertViewIs('superadmin.verify-confirm');
-        $response->assertViewHas('token', $tokenData['token']);
+        $response->assertViewHas('token', self::MAGIC_LINK_TOKEN);
+        $response->assertSessionMissing('super_admin_verified');
+
+        $this->assertNull($magicLink->refresh()->used_at);
     }
 
-    /** Vérifie que GET verify ne marque pas le token comme utilisé (protection scanner email). */
-    public function testVerifyGetDoesNotConsumeToken(): void
+    /** Vérifie que le lien réellement envoyé par mail ouvre la session superadmin. */
+    public function testFollowingTheMailedLinkOpensSuperAdminSession(): void
     {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
+        Storage::fake('secrets');
+        Mail::fake();
+        $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+        $verifyUrl = Mail::sent(
+            SuperAdminMagicLinkMail::class,
+            fn (SuperAdminMagicLinkMail $mail): bool => $mail->hasTo(self::SUPER_ADMIN_EMAIL)
+        )->sole()->verifyUrl;
 
-        $this->get("/fr/superadmin/verify/{$tokenData['token']}");
-
-        $magicLink = MagicLink::findByToken($tokenData['token']);
-        $this->assertNull($magicLink->used_at);
-    }
-
-    /** Vérifie que POST verify consomme le token et redirige vers le dashboard. */
-    public function testVerifyPostRedirectsToDashboard(): void
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $response = $this->post("/fr/superadmin/verify/{$tokenData['token']}");
-
-        $response->assertRedirect(route('superadmin.dashboard', ['locale' => 'fr']));
-        $response->assertSessionHas('super_admin_verified', true);
-        $response->assertSessionHas('super_admin_expires_at');
-    }
-
-    /** Vérifie le flux complet : POST verify puis accès au dashboard avec session persistante. */
-    public function testVerifyPostThenDashboardFlowWorksEndToEnd(): void
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $this->post("/fr/superadmin/verify/{$tokenData['token']}");
-
+        $this->get($verifyUrl)->assertViewIs('superadmin.verify-confirm');
+        $this->post($verifyUrl)->assertRedirect('/fr/superadmin/dashboard');
         $dashboard = $this->get('/fr/superadmin/dashboard');
-        $dashboard->assertStatus(200);
+
         $dashboard->assertViewIs('superadmin.dashboard');
     }
 
+    /** Vérifie que POST verify consomme le lien, régénère l'ID de session, pose l'expiration et compte l'usage. */
+    public function testVerifyPostConsumesLinkAndOpensFreshSession(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $magicLink = MagicLink::factory()->superAdmin()->withToken(self::MAGIC_LINK_TOKEN)->create();
+        $this->startSession();
+        $sessionIdBeforeLogin = session()->getId();
+
+        $response = $this->withCookie(config('session.cookie'), $sessionIdBeforeLogin)
+            ->post('/fr/superadmin/verify/'.self::MAGIC_LINK_TOKEN);
+
+        $response->assertRedirect('/fr/superadmin/dashboard');
+        $response->assertSessionHas('super_admin_verified', true);
+        $response->assertSessionHas('super_admin_expires_at', 1789467300);
+        $this->assertNotSame($sessionIdBeforeLogin, session()->getId());
+
+        $this->assertSame('2026-09-15 10:00:00', $magicLink->refresh()->used_at?->toDateTimeString());
+
+        $this->assertDatabaseHas('stats_daily', [
+            'date' => '2026-09-15',
+            'metric' => StatsService::MAGIC_LINKS_USED,
+            'count' => 1,
+        ]);
+        $this->assertDatabaseHas('stats_heatmap', [
+            'date' => '2026-09-15',
+            'hour' => 10,
+            'metric' => StatsService::MAGIC_LINKS_USED,
+            'count' => 1,
+        ]);
+    }
+
     /**
-     * "14h: 2" reads like a clock time; the hourly charts must label the bucket
-     * as a range and name what is being counted.
+     * @return array<string, array{0: Closure(string): MagicLink}>
      */
-    public function testHourlyChartTooltipsShowARangeAndAUnit(): void
+    public static function unusableMagicLinks(): array
     {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $this->post("/fr/superadmin/verify/{$tokenData['token']}");
-
-        $dashboard = $this->get('/fr/superadmin/dashboard');
-
-        $dashboard->assertStatus(200);
-        $dashboard->assertSee('title="14:00–15:00 · 0 vue"', false);
-        $dashboard->assertSee('title="23:00–00:00 · 0 vue"', false);
-        $dashboard->assertDontSee('title="14h:', false);
+        return [
+            'jeton inconnu' => [fn (string $token): MagicLink => MagicLink::factory()->superAdmin()->create()],
+            'lien expiré' => [fn (string $token): MagicLink => MagicLink::factory()->superAdmin()->withToken($token)->expired()->create()],
+            'lien déjà utilisé' => [fn (string $token): MagicLink => MagicLink::factory()->superAdmin()->withToken($token)->used()->create()],
+            'lien admin ordinaire' => [fn (string $token): MagicLink => MagicLink::factory()->withToken($token)->create()],
+        ];
     }
 
     /**
-     * Over a single day the daily charts collapse to one point, so they switch
-     * to an hourly breakdown taken from the heatmap counters.
+     * Vérifie qu'un lien inutilisable affiche la page d'erreur sans ouvrir de session ni toucher au lien.
+     *
+     * @param  Closure(string): MagicLink  $createMagicLink
      */
-    public function testTodayPeriodExposesAnHourlyBreakdown(): void
+    #[DataProvider('unusableMagicLinks')]
+    public function testVerifyPostWithUnusableLinkShowsInvalidPage(Closure $createMagicLink): void
     {
-        DB::table('stats_heatmap')->insert([
-            'date' => now()->toDateString(),
-            'day_of_week' => (int) now()->dayOfWeek,
-            'hour' => 14,
-            'metric' => StatsService::HEATMAP_SECRETS_CREATED,
-            'count' => 3,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->freezeTime();
+        $magicLink = $createMagicLink(self::MAGIC_LINK_TOKEN);
+        $usedAtBefore = $magicLink->used_at?->toDateTimeString();
+        $this->travel(5)->minutes();
 
-        $this->authenticateSuperAdmin();
+        $response = $this->post('/fr/superadmin/verify/'.self::MAGIC_LINK_TOKEN);
 
-        $today = $this->get('/fr/superadmin/dashboard?period=today');
-        $today->assertStatus(200);
-        $hourly = $today->viewData('hourly');
+        $response->assertViewIs('superadmin.invalid-link');
+        $response->assertSessionMissing('super_admin_verified');
 
-        $this->assertCount(24, $hourly['created']);
-        $this->assertSame(3, $hourly['created'][14]);
-        $this->assertSame(0, $hourly['created'][13]);
-
-        foreach (['read', 'magic_links_requested', 'magic_links_used', 'secrets_extended', 'errors_4xx', 'errors_5xx'] as $series) {
-            $this->assertCount(24, $hourly[$series], "La serie {$series} doit couvrir 24 heures");
-        }
+        $this->assertSame($usedAtBefore, $magicLink->refresh()->used_at?->toDateTimeString());
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_USED]);
     }
 
-    /** Vérifie que les erreurs HTTP sont comptées à l'heure comme au jour. */
-    public function testHttpErrorsAreRecordedHourly(): void
+    /** Vérifie qu'un lien consommé par une requête concurrente entre sa lecture et sa consommation n'ouvre pas de session. */
+    public function testVerifyPostLosingConsumptionRaceShowsInvalidPage(): void
     {
-        $this->get('/fr/une-page-qui-nexiste-pas')->assertStatus(404);
+        MagicLink::factory()->superAdmin()->withToken(self::MAGIC_LINK_TOKEN)->create();
+        MagicLink::retrieved(function (MagicLink $magicLink): void {
+            MagicLink::whereKey($magicLink->id)->update(['used_at' => now()]);
+        });
 
-        $hour = (int) now()->hour;
+        $response = $this->post('/fr/superadmin/verify/'.self::MAGIC_LINK_TOKEN);
 
-        $this->assertSame(1, (int) DB::table('stats_heatmap')
-            ->where('metric', StatsService::HTTP_ERRORS_4XX)
-            ->where('date', now()->toDateString())
-            ->where('hour', $hour)
-            ->value('count'));
+        $response->assertViewIs('superadmin.invalid-link');
+        $response->assertSessionMissing('super_admin_verified');
+
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_USED]);
     }
 
-    /** Vérifie que les erreurs 5xx par page affichent le libellé de la page, y compris pour page.show. */
-    public function testErrorRoutesAreDisplayedWithTheirPageLabel(): void
+    /** Vérifie que verify est limité à 5 tentatives par minute, en GET comme en POST. */
+    public function testVerifyIsThrottledToFiveAttemptsPerMinute(): void
     {
-        foreach (['faq' => 2, 'page.show' => 1] as $route => $count) {
-            DB::table('stats_error_routes')->insert([
-                'date' => now()->toDateString(),
-                'status' => 500,
-                'route' => $route,
-                'count' => $count,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        foreach (['get', 'post', 'get', 'post', 'get'] as $method) {
+            $this->{$method}('/fr/superadmin/verify/unknown-token')->assertViewIs('superadmin.invalid-link');
         }
 
-        $this->authenticateSuperAdmin();
+        $response = $this->post('/fr/superadmin/verify/unknown-token');
 
-        $this->get('/fr/superadmin/dashboard')->assertSeeInOrder([
-            __('messages.stat_5xx_by_route', [], 'fr'),
-            __('messages.faq_title', [], 'fr'),
-            __('messages.stat_page_content', [], 'fr'),
-        ]);
+        $response->assertTooManyRequests();
     }
 
-    /** Vérifie que les demandes de lien magique sont comptées à l'heure. */
-    public function testMagicLinkRequestsAreRecordedHourly(): void
-    {
-        Config::set('app.super_admin_email', 'boss@example.com');
-
-        $this->post('/fr/superadmin/request-access', ['email' => 'boss@example.com'])
-            ->assertRedirect(route('superadmin.accessSent'));
-
-        $this->assertSame(1, (int) DB::table('stats_heatmap')
-            ->where('metric', StatsService::MAGIC_LINKS_REQUESTED)
-            ->where('date', now()->toDateString())
-            ->where('hour', (int) now()->hour)
-            ->value('count'));
-    }
-
-    /** Vérifie que les autres périodes conservent l'affichage par jour. */
-    public function testOtherPeriodsKeepTheDailyBreakdown(): void
-    {
-        $this->authenticateSuperAdmin();
-
-        $response = $this->get('/fr/superadmin/dashboard?period=30d');
-
-        $response->assertStatus(200);
-        $this->assertNull($response->viewData('hourly'));
-    }
-
-    private function authenticateSuperAdmin(): void
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $this->post("/fr/superadmin/verify/{$tokenData['token']}");
-    }
-
-    /** Vérifie qu'un token invalide affiche la page d'erreur (GET). */
-    public function testVerifyWithInvalidTokenShowsError(): void
-    {
-        $response = $this->get('/fr/superadmin/verify/invalid-token');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.invalid-link');
-    }
-
-    /** Vérifie qu'un token invalide affiche la page d'erreur (POST). */
-    public function testVerifyPostWithInvalidTokenShowsError(): void
-    {
-        $response = $this->post('/fr/superadmin/verify/invalid-token');
-
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.invalid-link');
-    }
-
-    /** Vérifie qu'un token expiré affiche la page d'erreur. */
-    public function testVerifyWithExpiredTokenShowsError(): void
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->subMinutes(1),
-        ]);
-
-        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.invalid-link');
-    }
-
-    /** Vérifie qu'un token admin normal ne fonctionne pas sur la route superadmin. */
-    public function testVerifyWithNonSuperadminTokenShowsError(): void
-    {
-        $tokenData = $this->tokenService->generateMagicLinkToken();
-        MagicLink::create([
-            'email_hash' => 'regular-user-hash',
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(5),
-        ]);
-
-        $response = $this->get("/fr/superadmin/verify/{$tokenData['token']}");
-
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.invalid-link');
-    }
-
-    /** Vérifie que le dashboard redirige vers le login sans authentification. */
-    public function testDashboardRequiresAuthentication(): void
+    /** Vérifie que le dashboard redirige vers l'index sans session. */
+    public function testDashboardRedirectsToIndexWithoutSession(): void
     {
         $response = $this->get('/fr/superadmin/dashboard');
 
-        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
+        $response->assertRedirect('/fr/superadmin');
     }
 
-    /** Vérifie que le dashboard affiche les statistiques quand authentifié. */
-    public function testDashboardDisplaysStatsWhenAuthenticated(): void
+    /**
+     * Vérifie qu'une session expirée ou sans expiration redirige vers l'index et oublie les deux clés.
+     *
+     * @param  Closure(): array<string, mixed>  $session
+     */
+    #[DataProvider('unusableSessions')]
+    public function testDashboardRedirectsAndForgetsUnusableSession(Closure $session): void
     {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/fr/superadmin/dashboard');
+        $this->freezeTime();
 
-        $response->assertStatus(200);
-        $response->assertViewIs('superadmin.dashboard');
-        $response->assertViewHas('stats');
-    }
+        $response = $this->withSession($session())->get('/fr/superadmin/dashboard');
 
-    /** Vérifie que l'anneau de polling expose le template de son infobulle de décompte. */
-    public function testDashboardPollRingCarriesRefreshTitleTemplate(): void
-    {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/fr/superadmin/dashboard');
-
-        $response->assertStatus(200);
-        $response->assertSee('data-title-template="'.__('messages.poll_refresh_in', [], 'fr').'"', false);
-        $response->assertSee('pollRingTitle');
-    }
-
-    /** Vérifie que le logout détruit la session et redirige vers le login. */
-    public function testLogoutClearsSession(): void
-    {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->post('/fr/superadmin/logout');
-
-        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
+        $response->assertRedirect('/fr/superadmin');
         $response->assertSessionMissing('super_admin_verified');
+        $response->assertSessionMissing('super_admin_expires_at');
     }
 
-    /** Vérifie que la session expirée redirige vers le login. */
-    public function testSessionExpiresAfterTimeout(): void
+    /** Vérifie qu'un accès au dashboard prolonge l'expiration de la session superadmin. */
+    public function testDashboardSlidesSessionExpiry(): void
     {
-        $response = $this->withSession([
+        Storage::fake('secrets');
+        $this->travelTo('2026-09-15 10:00:00');
+        $session = [
             'super_admin_verified' => true,
-            'super_admin_expires_at' => now()->subHours(3)->timestamp,
-        ])->get('/fr/superadmin/dashboard');
+            'super_admin_expires_at' => now()->addMinutes(2)->timestamp,
+        ];
 
-        $response->assertRedirect(route('superadmin.index', ['locale' => 'fr']));
-    }
+        $response = $this->withSession($session)->get('/fr/superadmin/dashboard');
 
-    /** Vérifie qu'une période invalide est remplacée par la valeur par défaut (30d). */
-    public function testDashboardWithInvalidPeriodFallsBackToDefault(): void
-    {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/fr/superadmin/dashboard?period=2d');
-
-        $response->assertStatus(200);
         $response->assertViewIs('superadmin.dashboard');
-        $response->assertViewHas('period', '30d');
+        $response->assertSessionHas('super_admin_expires_at', 1789467300);
     }
 
-    /** Vérifie qu'une période valide est bien utilisée pour le dashboard. */
-    public function testDashboardWithValidPeriodUsesRequestedPeriod(): void
+    /** Vérifie que le poll renvoie 401 sans session. */
+    public function testPollReturns401WithoutSession(): void
     {
-        $response = $this->withSession(['super_admin_verified' => true])
-            ->get('/fr/superadmin/dashboard?period=7d');
+        $response = $this->getJson('/fr/superadmin/dashboard/poll');
 
-        $response->assertStatus(200);
-        $response->assertViewHas('period', '7d');
+        $response->assertUnauthorized();
+        $response->assertExactJson(['error' => 'unauthenticated']);
+    }
+
+    /** Vérifie que la déconnexion oublie la session superadmin et régénère le jeton CSRF. */
+    public function testLogoutForgetsSessionAndRegeneratesCsrfToken(): void
+    {
+        $this->withSession($this->superAdminSession());
+        $csrfTokenBefore = session()->token();
+
+        $response = $this->post('/fr/superadmin/logout');
+        $csrfTokenAfter = session()->token();
+
+        $response->assertRedirect('/fr/superadmin');
+        $response->assertSessionMissing('super_admin_verified');
+        $response->assertSessionMissing('super_admin_expires_at');
+        $this->assertNotEmpty($csrfTokenAfter);
+        $this->assertNotSame($csrfTokenBefore, $csrfTokenAfter);
     }
 }

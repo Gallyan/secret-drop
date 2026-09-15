@@ -19,7 +19,7 @@ class SignEmailWithDkim
             return;
         }
 
-        $fullPath = base_path($privateKeyPath);
+        $fullPath = $this->isAbsolutePath($privateKeyPath) ? $privateKeyPath : base_path($privateKeyPath);
 
         if (! file_exists($fullPath)) {
             Log::warning('DKIM private key not found', ['path' => $privateKeyPath]);
@@ -27,7 +27,7 @@ class SignEmailWithDkim
             return;
         }
 
-        $privateKey = file_get_contents($fullPath);
+        $privateKey = is_readable($fullPath) ? file_get_contents($fullPath) : false;
 
         if ($privateKey === false) {
             Log::warning('DKIM private key is not readable', ['path' => $privateKeyPath]);
@@ -45,5 +45,10 @@ class SignEmailWithDkim
         if ($dkimHeader !== null) {
             $event->message->getHeaders()->add($dkimHeader);
         }
+    }
+
+    private function isAbsolutePath(string $path): bool
+    {
+        return str_starts_with($path, '/') || preg_match('~^[A-Za-z]:[\\\\/]~', $path) === 1;
     }
 }

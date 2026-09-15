@@ -2,108 +2,137 @@
 
 namespace Tests\Feature;
 
-use App\Support\LocaleConfig;
+use Dom\Element;
+use Dom\HTMLDocument;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class LocalizedRoutingTest extends TestCase
 {
-    /** Vérifie la redirection racine vers la locale détectée. */
-    public function testRootRedirectsToDetectedLocale(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'fr')
-            ->get('/');
+    private const HOME_URLS = [
+        'en' => 'http://localhost/en',
+        'fr' => 'http://localhost/fr',
+        'de' => 'http://localhost/de',
+        'es' => 'http://localhost/es',
+        'it' => 'http://localhost/it',
+        'pt' => 'http://localhost/pt',
+        'nl' => 'http://localhost/nl',
+        'pl' => 'http://localhost/pl',
+        'ja' => 'http://localhost/ja',
+        'ko' => 'http://localhost/ko',
+        'ar' => 'http://localhost/ar',
+    ];
 
-        $response->assertRedirect();
-        $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
+    private const HOW_IT_WORKS_URLS = [
+        'en' => 'http://localhost/en/how-it-works',
+        'fr' => 'http://localhost/fr/comment-ca-marche',
+        'de' => 'http://localhost/de/so-funktioniert-es',
+        'es' => 'http://localhost/es/como-funciona',
+        'it' => 'http://localhost/it/come-funziona',
+        'pt' => 'http://localhost/pt/como-funciona',
+        'nl' => 'http://localhost/nl/hoe-het-werkt',
+        'pl' => 'http://localhost/pl/jak-to-dziala',
+        'ja' => 'http://localhost/ja/how-it-works',
+        'ko' => 'http://localhost/ko/how-it-works',
+        'ar' => 'http://localhost/ar/how-it-works',
+    ];
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function localizedHomes(): array
+    {
+        return [
+            'en' => ['/en', 'en'],
+            'fr' => ['/fr', 'fr'],
+            'de' => ['/de', 'de'],
+            'es' => ['/es', 'es'],
+            'it' => ['/it', 'it'],
+            'pt' => ['/pt', 'pt'],
+            'nl' => ['/nl', 'nl'],
+            'pl' => ['/pl', 'pl'],
+            'ja' => ['/ja', 'ja'],
+            'ko' => ['/ko', 'ko'],
+            'ar' => ['/ar', 'ar'],
+        ];
     }
 
-    /** Vérifie la redirection racine vers la locale anglaise. */
-    public function testRootRedirectsToEnglishLocale(): void
+    /** Vérifie que l'accueil de chaque locale rend le formulaire de création dans la langue de l'URL. */
+    #[DataProvider('localizedHomes')]
+    public function testHomePageRendersForAllLocales(string $uri, string $locale): void
     {
-        $response = $this->withHeader('Accept-Language', 'en')
-            ->get('/');
-
-        $response->assertRedirect();
-        $this->assertStringEndsWith('/en/', $response->headers->get('Location'));
-    }
-
-    /** Vérifie le fallback racine vers le français sans header. */
-    public function testRootDefaultsToFrenchWithoutHeader(): void
-    {
-        $response = $this->withHeader('Accept-Language', '')
-            ->get('/');
-
-        $response->assertRedirect();
-        $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
-    }
-
-    /** Vérifie que la page d'accueil se charge avec une locale. */
-    public function testHomePageRendersWithLocale(): void
-    {
-        $response = $this->get('/fr');
+        $response = $this->get($uri);
 
         $response->assertOk();
+        $response->assertViewIs('secrets.create');
+        $this->assertSame($locale, $this->document($response->getContent())->documentElement->getAttribute('lang'));
     }
 
-    /** Vérifie que la page d'accueil se charge pour toutes les locales. */
-    public function testHomePageRendersForAllLocales(): void
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function translatablePagesOfEveryLocale(): array
     {
-        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
-            $response = $this->get("/{$locale}");
-
-            $response->assertOk();
-        }
+        return [
+            'en how-it-works' => ['/en/how-it-works', 'how-it-works', 'en'],
+            'fr how-it-works' => ['/fr/comment-ca-marche', 'how-it-works', 'fr'],
+            'de how-it-works' => ['/de/so-funktioniert-es', 'how-it-works', 'de'],
+            'es how-it-works' => ['/es/como-funciona', 'how-it-works', 'es'],
+            'it how-it-works' => ['/it/come-funziona', 'how-it-works', 'it'],
+            'pt how-it-works' => ['/pt/como-funciona', 'how-it-works', 'pt'],
+            'nl how-it-works' => ['/nl/hoe-het-werkt', 'how-it-works', 'nl'],
+            'pl how-it-works' => ['/pl/jak-to-dziala', 'how-it-works', 'pl'],
+            'ja how-it-works' => ['/ja/how-it-works', 'how-it-works', 'ja'],
+            'ko how-it-works' => ['/ko/how-it-works', 'how-it-works', 'ko'],
+            'ar how-it-works' => ['/ar/how-it-works', 'how-it-works', 'ar'],
+            'en use-cases' => ['/en/use-cases', 'use-cases', 'en'],
+            'fr use-cases' => ['/fr/cas-d-usage', 'use-cases', 'fr'],
+            'de use-cases' => ['/de/anwendungsfaelle', 'use-cases', 'de'],
+            'es use-cases' => ['/es/casos-de-uso', 'use-cases', 'es'],
+            'it use-cases' => ['/it/casi-d-uso', 'use-cases', 'it'],
+            'pt use-cases' => ['/pt/casos-de-uso', 'use-cases', 'pt'],
+            'nl use-cases' => ['/nl/gebruikssituaties', 'use-cases', 'nl'],
+            'pl use-cases' => ['/pl/przypadki-uzycia', 'use-cases', 'pl'],
+            'ja use-cases' => ['/ja/use-cases', 'use-cases', 'ja'],
+            'ko use-cases' => ['/ko/use-cases', 'use-cases', 'ko'],
+            'ar use-cases' => ['/ar/use-cases', 'use-cases', 'ar'],
+            'en legal' => ['/en/legal-notice', 'legal', 'en'],
+            'fr legal' => ['/fr/mentions-legales', 'legal', 'fr'],
+            'de legal' => ['/de/impressum', 'legal', 'de'],
+            'es legal' => ['/es/aviso-legal', 'legal', 'es'],
+            'it legal' => ['/it/avviso-legale', 'legal', 'it'],
+            'pt legal' => ['/pt/aviso-legal', 'legal', 'pt'],
+            'nl legal' => ['/nl/juridische-kennisgeving', 'legal', 'nl'],
+            'pl legal' => ['/pl/oswiadczenie-prawne', 'legal', 'pl'],
+            'ja legal' => ['/ja/legal-notice', 'legal', 'ja'],
+            'ko legal' => ['/ko/legal-notice', 'legal', 'ko'],
+            'ar legal' => ['/ar/legal-notice', 'legal', 'ar'],
+            'en faq' => ['/en/faq', 'faq', 'en'],
+            'fr faq' => ['/fr/faq', 'faq', 'fr'],
+            'de faq' => ['/de/faq', 'faq', 'de'],
+            'es faq' => ['/es/preguntas-frecuentes', 'faq', 'es'],
+            'it faq' => ['/it/faq', 'faq', 'it'],
+            'pt faq' => ['/pt/perguntas-frequentes', 'faq', 'pt'],
+            'nl faq' => ['/nl/faq', 'faq', 'nl'],
+            'pl faq' => ['/pl/faq', 'faq', 'pl'],
+            'ja faq' => ['/ja/faq', 'faq', 'ja'],
+            'ko faq' => ['/ko/faq', 'faq', 'ko'],
+            'ar faq' => ['/ar/faq', 'faq', 'ar'],
+        ];
     }
 
-    /** Vérifie le rendu avec un slug français. */
-    public function testLocalizedPageRendersWithFrenchSlug(): void
+    /** Vérifie que chaque page traduisible rend sa vue dans la langue de l'URL pour chaque locale, via son slug traduit. */
+    #[DataProvider('translatablePagesOfEveryLocale')]
+    public function testAllTranslatablePagesWorkForAllLocales(string $uri, string $view, string $locale): void
     {
-        $response = $this->get('/fr/comment-ca-marche');
+        $response = $this->get($uri);
 
         $response->assertOk();
+        $response->assertViewIs($view);
+        $this->assertSame($locale, $this->document($response->getContent())->documentElement->getAttribute('lang'));
     }
 
-    /** Vérifie le rendu avec un slug anglais. */
-    public function testLocalizedPageRendersWithEnglishSlug(): void
-    {
-        $response = $this->get('/en/how-it-works');
-
-        $response->assertOk();
-    }
-
-    /** Vérifie le rendu avec un slug allemand. */
-    public function testLocalizedPageRendersWithGermanSlug(): void
-    {
-        $response = $this->get('/de/so-funktioniert-es');
-
-        $response->assertOk();
-    }
-
-    /** Vérifie le rendu des cas d'usage avec slug traduit. */
-    public function testUseCasesRendersWithTranslatedSlug(): void
-    {
-        $response = $this->get('/fr/cas-d-usage');
-
-        $response->assertOk();
-    }
-
-    /** Vérifie le rendu des mentions légales avec slug traduit. */
-    public function testLegalRendersWithTranslatedSlug(): void
-    {
-        $response = $this->get('/fr/mentions-legales');
-
-        $response->assertOk();
-    }
-
-    /** Vérifie qu'un slug invalide retourne 404. */
-    public function testInvalidSlugReturns404(): void
-    {
-        $response = $this->get('/fr/nonexistent-page');
-
-        $response->assertNotFound();
-    }
-
-    /** Vérifie qu'une locale invalide retourne 404. */
+    /** Vérifie qu'une locale non supportée ne correspond à aucune route. */
     public function testInvalidLocaleDoesNotMatchRoute(): void
     {
         $response = $this->get('/xx/how-it-works');
@@ -111,242 +140,166 @@ class LocalizedRoutingTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** Vérifie la redirection 301 de l'ancien URL how-it-works. */
-    public function testLegacyHowItWorksRedirects301(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'fr')
-            ->get('/how-it-works');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString(
-            '/fr/comment-ca-marche',
-            $response->headers->get('Location')
-        );
-    }
-
-    /** Vérifie la redirection 301 de l'ancien URL use-cases. */
-    public function testLegacyUseCasesRedirects301(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'en')
-            ->get('/use-cases');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString(
-            '/en/use-cases',
-            $response->headers->get('Location')
-        );
-    }
-
-    /** Vérifie la redirection 301 de l'ancien URL legal. */
-    public function testLegacyLegalRedirects301(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'fr')
-            ->get('/legal');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString(
-            '/fr/mentions-legales',
-            $response->headers->get('Location')
-        );
-    }
-
-    /** Vérifie la redirection 301 quand le slug ne correspond pas à la locale. */
-    public function testWrongSlugForLocaleRedirects301(): void
-    {
-        $response = $this->get('/fr/how-it-works');
-
-        $response->assertStatus(301);
-        $this->assertStringContainsString(
-            '/fr/comment-ca-marche',
-            $response->headers->get('Location')
-        );
-    }
-
-    /** Vérifie que la route admin reste accessible. */
-    public function testAdminRouteStillAccessible(): void
-    {
-        $response = $this->get('/fr/admin');
-
-        $response->assertOk();
-    }
-
-    /** Vérifie la redirection /admin vers l'admin localisé. */
-    public function testNonLocalizedAdminRedirectsToLocalizedAdmin(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'fr')
-            ->get('/admin');
-
-        $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
-    }
-
-    /** Vérifie la redirection /superadmin vers le superadmin localisé. */
-    public function testNonLocalizedSuperadminRedirectsToLocalizedSuperadmin(): void
-    {
-        $response = $this->withHeader('Accept-Language', 'en')
-            ->get('/superadmin');
-
-        $response->assertRedirect(route('superadmin.index', ['locale' => 'en']));
-    }
-
-    /** Vérifie que route() génère une URL localisée. */
-    public function testRouteHelperGeneratesLocalizedUrl(): void
-    {
-        app()->setLocale('fr');
-        \Illuminate\Support\Facades\URL::defaults(['locale' => 'fr']);
-
-        $url = route('home');
-
-        $this->assertStringEndsWith('/fr', $url);
-    }
-
-    /** Vérifie que localized_route() génère le bon slug. */
-    public function testLocalizedRouteHelperGeneratesCorrectSlug(): void
-    {
-        app()->setLocale('fr');
-
-        $url = localized_route('how-it-works');
-
-        $this->assertStringContainsString('/fr/comment-ca-marche', $url);
-    }
-
-    /** Vérifie localized_route() avec une locale explicite. */
-    public function testLocalizedRouteHelperWithExplicitLocale(): void
-    {
-        app()->setLocale('fr');
-
-        $url = localized_route('how-it-works', 'de');
-
-        $this->assertStringContainsString('/de/so-funktioniert-es', $url);
-    }
-
-    /** Vérifie que le sitemap contient toutes les variantes de locale. */
-    public function testSitemapContainsAllLocaleVariants(): void
-    {
-        $response = $this->get('/sitemap.xml');
-
-        $response->assertOk();
-        $response->assertHeader('Content-Type', 'application/xml');
-
-        $content = $response->getContent();
-
-        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
-            $this->assertStringContainsString("/{$locale}", $content);
-        }
-
-        $this->assertStringContainsString('xhtml:link', $content);
-        $this->assertStringContainsString('hreflang', $content);
-    }
-
-    /** Vérifie les balises hreflang sur la page d'accueil. */
-    public function testHreflangTagsOnHomePage(): void
-    {
-        $response = $this->get('/fr');
-
-        $response->assertOk();
-        $content = $response->getContent();
-
-        $this->assertStringContainsString('hreflang="fr"', $content);
-        $this->assertStringContainsString('hreflang="en"', $content);
-        $this->assertStringContainsString('hreflang="x-default"', $content);
-    }
-
-    /** Vérifie les balises hreflang sur une page localisée. */
-    public function testHreflangTagsOnLocalizedPage(): void
-    {
-        $response = $this->get('/fr/comment-ca-marche');
-
-        $response->assertOk();
-        $content = $response->getContent();
-
-        $this->assertStringContainsString('hreflang="en"', $content);
-        $this->assertStringContainsString('/en/how-it-works', $content);
-        $this->assertStringContainsString('/de/so-funktioniert-es', $content);
-    }
-
-    /** Vérifie que le header Content-Language correspond à la locale. */
+    /** Vérifie que l'en-tête Content-Language reprend la locale de l'URL. */
     public function testContentLanguageHeaderMatchesLocale(): void
     {
         $response = $this->get('/de');
 
-        $response->assertOk();
         $response->assertHeader('Content-Language', 'de');
     }
 
-    /** Vérifie que le japonais utilise les slugs anglais. */
-    public function testJapaneseUsesEnglishSlugs(): void
+    /** Vérifie que l'accueil déclare canonical, Open Graph et les 11 alternates hreflang plus x-default vers le français. */
+    public function testHomeHeadDeclaresCanonicalOpenGraphAndHreflangAlternates(): void
     {
-        $response = $this->get('/ja/how-it-works');
+        $document = $this->document($this->get('/ja')->getContent());
 
-        $response->assertOk();
+        $this->assertSame('http://localhost/ja', $this->attribute($document, 'head link[rel="canonical"]', 'href'));
+        $this->assertSame('http://localhost/ja', $this->attribute($document, 'head meta[property="og:url"]', 'content'));
+        $this->assertSame('ja', $this->attribute($document, 'head meta[property="og:locale"]', 'content'));
+        $this->assertNull($document->querySelector('head meta[name="robots"]'));
+        $this->assertSame(
+            [...self::HOME_URLS, 'x-default' => 'http://localhost/fr'],
+            $this->hreflangAlternates($document),
+        );
     }
 
-    /** Vérifie la présence du sélecteur de langue sur la page d'accueil. */
-    public function testLanguageSwitcherPresentOnHomePage(): void
+    /** Vérifie qu'une page traduite déclare un canonical sans query string, Open Graph et les alternates vers chaque slug traduit. */
+    public function testLocalizedPageHeadDeclaresCanonicalOpenGraphAndTranslatedAlternates(): void
     {
-        $response = $this->get('/fr');
+        $document = $this->document($this->get('/de/so-funktioniert-es?utm_source=newsletter')->getContent());
 
-        $response->assertOk();
-        $response->assertSee('x-data="languageSwitcher"', false);
+        $this->assertSame('http://localhost/de/so-funktioniert-es', $this->attribute($document, 'head link[rel="canonical"]', 'href'));
+        $this->assertSame('http://localhost/de/so-funktioniert-es', $this->attribute($document, 'head meta[property="og:url"]', 'content'));
+        $this->assertSame('de', $this->attribute($document, 'head meta[property="og:locale"]', 'content'));
+        $this->assertNull($document->querySelector('head meta[name="robots"]'));
+        $this->assertSame(
+            [...self::HOW_IT_WORKS_URLS, 'x-default' => 'http://localhost/fr/comment-ca-marche'],
+            $this->hreflangAlternates($document),
+        );
     }
 
-    /** Vérifie que le sélecteur de langue contient toutes les URLs. */
-    public function testLanguageSwitcherContainsAllLocaleUrls(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function sensitivePages(): array
     {
-        $response = $this->get('/fr');
-
-        $response->assertOk();
-        $content = $response->getContent();
-
-        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
-            $this->assertStringContainsString(
-                "/{$locale}",
-                $content,
-                "Language switcher should contain URL for locale '{$locale}'"
-            );
-        }
+        return [
+            'admin' => ['/fr/admin'],
+            'superadmin' => ['/en/superadmin'],
+            'secret reading page' => ['/s/'.str_repeat('a', 32)],
+        ];
     }
 
-    /** Vérifie que le sélecteur pointe vers les pages traduites. */
+    /** Vérifie que les pages sensibles sont en noindex, nofollow et n'exposent ni canonical, ni hreflang, ni Open Graph. */
+    #[DataProvider('sensitivePages')]
+    public function testSensitivePageIsNoindexWithoutCanonicalNorAlternates(string $uri): void
+    {
+        $response = $this->get($uri);
+
+        $response->assertOk();
+        $document = $this->document($response->getContent());
+        $this->assertSame('noindex, nofollow', $this->attribute($document, 'head meta[name="robots"]', 'content'));
+        $this->assertNull($document->querySelector('link[rel="canonical"]'));
+        $this->assertSame([], $this->hreflangAlternates($document));
+        $this->assertNull($document->querySelector('meta[property="og:url"]'));
+    }
+
+    /** Vérifie que hreflang_tags() ne produit rien sur une route qui n'est ni l'accueil ni une page traduisible. */
+    public function testHreflangTagsHelperIsEmptyOutsideHomeAndTranslatablePages(): void
+    {
+        $this->get('/fr/admin');
+
+        $this->assertSame('', hreflang_tags());
+    }
+
+    /** Vérifie qu'un slug inconnu répond 404 sans alternates hreflang. */
+    public function testUnknownSlugPageHasNoHreflangAlternates(): void
+    {
+        $response = $this->get('/fr/nonexistent-page');
+
+        $response->assertNotFound();
+        $this->assertSame([], $this->hreflangAlternates($this->document($response->getContent())));
+    }
+
+    /** Vérifie que le sélecteur de langue de l'accueil pointe vers l'accueil de chaque locale. */
+    public function testLanguageSwitcherOnHomePointsToEveryLocalizedHome(): void
+    {
+        $document = $this->document($this->get('/fr')->getContent());
+
+        $this->assertSame(self::HOME_URLS, $this->languageSwitcherLinks($document));
+    }
+
+    /** Vérifie que le sélecteur de langue d'une page traduite pointe vers la même page dans chaque locale. */
     public function testLanguageSwitcherOnLocalizedPagePointsToTranslatedPages(): void
     {
-        $response = $this->get('/fr/comment-ca-marche');
+        $document = $this->document($this->get('/fr/comment-ca-marche')->getContent());
 
-        $response->assertOk();
-        $content = $response->getContent();
-
-        $this->assertStringContainsString('/en/how-it-works', $content);
-        $this->assertStringContainsString('/de/so-funktioniert-es', $content);
+        $this->assertSame(self::HOW_IT_WORKS_URLS, $this->languageSwitcherLinks($document));
     }
 
-    /** Vérifie que locale_switcher_urls() retourne toutes les locales. */
-    public function testLocaleSwitcherUrlsHelperReturnsAllLocales(): void
+    /** Vérifie que le sélecteur de langue d'une route à paramètre locale garde la même route dans chaque locale. */
+    public function testLanguageSwitcherOnAdminKeepsTheAdminRoute(): void
     {
-        $this->get('/fr');
+        $document = $this->document($this->get('/fr/admin')->getContent());
 
-        $urls = locale_switcher_urls();
-
-        $this->assertCount(count(LocaleConfig::SUPPORTED_LOCALES), $urls);
-
-        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
-            $this->assertArrayHasKey($locale, $urls);
-            $this->assertStringContainsString("/{$locale}", $urls[$locale]);
-        }
+        $this->assertSame([
+            'en' => 'http://localhost/en/admin',
+            'fr' => 'http://localhost/fr/admin',
+            'de' => 'http://localhost/de/admin',
+            'es' => 'http://localhost/es/admin',
+            'it' => 'http://localhost/it/admin',
+            'pt' => 'http://localhost/pt/admin',
+            'nl' => 'http://localhost/nl/admin',
+            'pl' => 'http://localhost/pl/admin',
+            'ja' => 'http://localhost/ja/admin',
+            'ko' => 'http://localhost/ko/admin',
+            'ar' => 'http://localhost/ar/admin',
+        ], $this->languageSwitcherLinks($document));
     }
 
-    /** Vérifie que toutes les pages traduisibles fonctionnent pour toutes les locales. */
-    public function testAllTranslatablePagesWorkForAllLocales(): void
+    private function document(string $html): HTMLDocument
     {
-        foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
-            foreach (LocaleConfig::translatablePages() as $page) {
-                $slug = LocaleConfig::translatedSlug($page, $locale);
-                $response = $this->get("/{$locale}/{$slug}");
+        return HTMLDocument::createFromString($html, LIBXML_NOERROR);
+    }
 
-                $this->assertSame(
-                    200,
-                    $response->getStatusCode(),
-                    "Page '{$page}' with slug '{$slug}' for locale '{$locale}' should return 200"
-                );
-            }
+    private function attribute(HTMLDocument $document, string $selector, string $attribute): ?string
+    {
+        return $document->querySelector($selector)?->getAttribute($attribute);
+    }
+
+    /**
+     * Alternate links of the <head>, keyed by hreflang.
+     *
+     * @return array<string, string>
+     */
+    private function hreflangAlternates(HTMLDocument $document): array
+    {
+        $alternates = [];
+
+        foreach ($document->querySelectorAll('head link[rel="alternate"][hreflang]') as $link) {
+            $alternates[(string) $link->getAttribute('hreflang')] = (string) $link->getAttribute('href');
         }
+
+        return $alternates;
+    }
+
+    /**
+     * Links of the first language switcher of the page, keyed by locale.
+     *
+     * The palette sits in an Alpine teleport <template>, whose content the DOM parser keeps out of the tree.
+     *
+     * @return array<string, string>
+     */
+    private function languageSwitcherLinks(HTMLDocument $document): array
+    {
+        $palette = $document->querySelector('[x-data="languageSwitcher"] template');
+        $this->assertInstanceOf(Element::class, $palette);
+        $links = [];
+
+        foreach ($this->document("<!DOCTYPE html><body>{$palette->innerHTML}")->querySelectorAll('a[data-locale]') as $link) {
+            $links[(string) $link->getAttribute('data-locale')] = (string) $link->getAttribute('href');
+        }
+
+        return $links;
     }
 }

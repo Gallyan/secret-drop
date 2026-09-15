@@ -2,26 +2,240 @@
 
 namespace Tests\Feature;
 
-use App\Models\Secret;
-use App\Services\SecretStorageService;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class SecurityHardeningTest extends TestCase
 {
-    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 octets
 
-    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 bytes
+    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 octets
+
+    private const UNKNOWN_TOKEN = 'nonexistenttoken12345678901';
+
+    private const ONE_MEGABYTE = 1048576;
+
+    // ── Honeypot ────────────────────────────────────────────────────
+
+    /** Vérifie qu'un bot remplissant le honeypot reçoit un faux 201 sans qu'aucun secret ne soit créé. */
+    public function testFilledHoneypotReturnsFake201WithoutCreatingSecret(): void
+    {
+        $response = $this->postJson('/api/secrets', [...$this->textPayload(), 'website' => 'http://spam.example.com']);
+
+        $response->assertCreated();
+        $response->assertJsonStructure(['token', 'expire_at']);
+        $this->assertDatabaseCount('secrets', 0);
+    }
+
+    /** Vérifie qu'un bot remplissant le honeypot avec un fichier ne stocke aucun blob. */
+    public function testFilledHoneypotWithFileStoresNoBlob(): void
+    {
+        Storage::fake('secrets');
+
+        $response = $this->postJson('/api/secrets', [...$this->filePayload(), 'website' => 'http://spam.example.com']);
+
+        $response->assertCreated();
+        $this->assertDatabaseCount('secrets', 0);
+        Storage::disk('secrets')->assertDirectoryEmpty('/');
+    }
+
+    // ── Rate limits ─────────────────────────────────────────────────
+
+    /** Vérifie que la limite quotidienne de l'application renvoie 429 daily_limit_exceeded une fois le seuil configuré atteint. */
+    public function testDailyLimitReturns429WithApplicationMessageOnceConfiguredThresholdIsReached(): void
+    {
+        // Seuil sous celui de throttle.pow:3,1 pour que la limite quotidienne réponde avant la preuve de travail
+        config(['secrets.daily_limit_per_ip' => 2]);
+
+        $this->postJson('/api/secrets', $this->textPayload())->assertCreated();
+        $this->postJson('/api/secrets', $this->textPayload())->assertCreated();
+        $response = $this->postJson('/api/secrets', $this->textPayload());
+
+        $response->assertTooManyRequests();
+        $response->assertExactJson([
+            'error' => 'daily_limit_exceeded',
+            'message' => 'Daily limit reached. Please try again tomorrow.',
+        ]);
+        $this->assertDatabaseCount('secrets', 2);
+    }
+
+    /** Vérifie que la page de consultation est limitée à 30 requêtes par minute. */
+    public function testShowPageReturns429AfterThirtyRequestsPerMinute(): void
+    {
+        for ($attempt = 1; $attempt <= 30; $attempt++) {
+            $this->get('/s/'.self::UNKNOWN_TOKEN)->assertOk();
+        }
+
+        $response = $this->get('/s/'.self::UNKNOWN_TOKEN);
+
+        $response->assertTooManyRequests();
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function secretApiRoutes(): array
+    {
+        return [
+            'fetch GET /api/secrets/{token}' => ['GET', '/api/secrets/'.self::UNKNOWN_TOKEN],
+            'confirmation POST /api/secrets/{token}/read' => ['POST', '/api/secrets/'.self::UNKNOWN_TOKEN.'/read'],
+        ];
+    }
+
+    /** Vérifie que les routes API de lecture sont limitées à 20 requêtes par minute. */
+    #[DataProvider('secretApiRoutes')]
+    public function testSecretApiReturns429AfterTwentyRequestsPerMinute(string $method, string $uri): void
+    {
+        for ($attempt = 1; $attempt <= 20; $attempt++) {
+            $this->json($method, $uri)->assertNotFound();
+        }
+
+        $response = $this->json($method, $uri);
+
+        $response->assertTooManyRequests();
+    }
+
+    /** Vérifie que la révocation par admin token est limitée à 10 requêtes par minute. */
+    public function testRevokeReturns429AfterTenRequestsPerMinute(): void
+    {
+        for ($attempt = 1; $attempt <= 10; $attempt++) {
+            $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke')->assertNotFound();
+        }
+
+        $response = $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke');
+
+        $response->assertTooManyRequests();
+    }
+
+    /** Vérifie que les consultations de la page d'un secret n'entament pas la limite des routes API de lecture. */
+    public function testSecretPageRequestsDoNotConsumeSecretApiLimit(): void
+    {
+        for ($attempt = 1; $attempt <= 20; $attempt++) {
+            $this->get('/s/'.self::UNKNOWN_TOKEN)->assertOk();
+        }
+
+        $response = $this->getJson('/api/secrets/'.self::UNKNOWN_TOKEN);
+
+        $response->assertNotFound();
+    }
+
+    /** Vérifie que les lectures API d'un secret n'entament pas la limite de la révocation par admin token. */
+    public function testSecretApiRequestsDoNotConsumeRevokeLimit(): void
+    {
+        for ($attempt = 1; $attempt <= 10; $attempt++) {
+            $this->getJson('/api/secrets/'.self::UNKNOWN_TOKEN)->assertNotFound();
+        }
+
+        $response = $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke');
+
+        $response->assertNotFound();
+    }
+
+    /** Vérifie que les consultations de la page d'un secret n'entament pas la limite de vérification du magic link admin. */
+    public function testSecretPageRequestsDoNotConsumeAdminVerifyLimit(): void
+    {
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $this->get('/s/'.self::UNKNOWN_TOKEN)->assertOk();
+        }
+
+        $response = $this->get('/fr/admin/verify/'.self::UNKNOWN_TOKEN);
+
+        $response->assertViewIs('admin.invalid-link');
+    }
+
+    /** Vérifie que les tentatives de vérification admin n'entament pas la limite de vérification superadmin. */
+    public function testAdminVerifyAttemptsDoNotConsumeSuperAdminVerifyLimit(): void
+    {
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $this->get('/fr/admin/verify/'.self::UNKNOWN_TOKEN)->assertViewIs('admin.invalid-link');
+        }
+
+        $response = $this->get('/fr/superadmin/verify/'.self::UNKNOWN_TOKEN);
+
+        $response->assertViewIs('superadmin.invalid-link');
+    }
+
+    // ── File Storage Quota ──────────────────────────────────────────
+
+    /** Vérifie qu'un upload est refusé en 503 avec le message traduit dès que le stockage atteint exactement le quota. */
+    public function testFileUploadReturns503WhenStoredSizeReachesQuota(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.file_storage_quota_mb' => 1]);
+        Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
+
+        $response = $this->postJson('/api/secrets', $this->filePayload());
+
+        $response->assertServiceUnavailable();
+        $response->assertExactJson([
+            'error' => 'service_unavailable',
+            'message' => 'File sharing service is temporarily unavailable. Please try again later.',
+        ]);
+        $this->assertDatabaseCount('secrets', 0);
+        $this->assertSame(['zz/existing'], Storage::disk('secrets')->allFiles());
+    }
+
+    /** Vérifie qu'un secret texte reste créé quand le quota de fichiers est atteint. */
+    public function testTextSecretIsCreatedWhenFileQuotaIsReached(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.file_storage_quota_mb' => 1]);
+        Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
+
+        $response = $this->postJson('/api/secrets', $this->textPayload());
+
+        $response->assertCreated();
+        $this->assertDatabaseCount('secrets', 1);
+    }
+
+    /** Vérifie qu'un quota à 0 laisse passer l'upload quel que soit l'espace occupé. */
+    public function testFileUploadIsAcceptedWhenQuotaIsZero(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.file_storage_quota_mb' => 0]);
+        Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
+
+        $response = $this->postJson('/api/secrets', $this->filePayload());
+
+        $response->assertCreated();
+        $this->assertCount(2, Storage::disk('secrets')->allFiles());
+    }
+
+    // ── CORS ────────────────────────────────────────────────────────
+
+    /** Vérifie qu'un preflight depuis une origine étrangère ne reçoit que l'origine de l'application. */
+    public function testCorsPreflightFromForeignOriginOnlyAdvertisesApplicationOrigin(): void
+    {
+        $appUrl = config()->string('app.url');
+
+        $response = $this->options('/api/secrets', [], [
+            'HTTP_ORIGIN' => 'https://evil.example.com',
+            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+        ]);
+
+        $response->assertHeader('Access-Control-Allow-Origin', $appUrl);
+    }
+
+    /** Vérifie qu'un preflight depuis l'origine de l'application est autorisé pour GET et POST. */
+    public function testCorsPreflightFromApplicationOriginIsAllowed(): void
+    {
+        $appUrl = config()->string('app.url');
+
+        $response = $this->options('/api/secrets', [], [
+            'HTTP_ORIGIN' => $appUrl,
+            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+        ]);
+
+        $response->assertHeader('Access-Control-Allow-Origin', $appUrl);
+        $response->assertHeader('Access-Control-Allow-Methods', 'GET, POST');
+    }
 
     /**
      * @return array<string, mixed>
      */
-    private function validPayload(): array
+    private function textPayload(): array
     {
         return [
             'type' => 'text',
@@ -35,161 +249,20 @@ class SecurityHardeningTest extends TestCase
         ];
     }
 
-    // ── Honeypot ────────────────────────────────────────────────────
-
-    /** Un bot qui remplit le champ honeypot reçoit un faux succès (201) sans créer de secret. */
-    public function testHoneypotFilledReturnsFakeSuccess(): void
+    /**
+     * @return array<string, mixed>
+     */
+    private function filePayload(): array
     {
-        $payload = $this->validPayload();
-        $payload['website'] = 'http://spam.example.com';
-
-        $response = $this->postJson('/api/secrets', $payload);
-
-        $response->assertStatus(201)
-            ->assertJsonStructure(['token', 'expire_at']);
-
-        // Le faux token ne doit pas exister en base
-        $token = $response->json('token');
-        $this->assertNull(Secret::where('token', $token)->first());
-    }
-
-    /** Un utilisateur normal (honeypot vide) crée un vrai secret. */
-    public function testHoneypotEmptyAllowsCreation(): void
-    {
-        $response = $this->postJson('/api/secrets', $this->validPayload());
-
-        $response->assertStatus(201);
-
-        $token = $response->json('token');
-        $this->assertNotNull(Secret::where('token', $token)->first());
-
-        Secret::where('token', $token)->delete();
-    }
-
-    // ── Daily Rate Limit ────────────────────────────────────────────
-
-    /** La limite quotidienne bloque après N requêtes. */
-    public function testDailyRateLimitBlocksAfterThreshold(): void
-    {
-        $dailyLimit = 3;
-
-        RateLimiter::for('daily', function (Request $request) use ($dailyLimit) {
-            return Limit::perDay($dailyLimit)->by($request->ip());
-        });
-
-        $createdTokens = [];
-
-        for ($i = 0; $i < $dailyLimit; $i++) {
-            $response = $this->postJson('/api/secrets', $this->validPayload());
-            $response->assertStatus(201);
-            $createdTokens[] = $response->json('token');
-        }
-
-        // La requête suivante doit être bloquée
-        $response = $this->postJson('/api/secrets', $this->validPayload());
-        $response->assertStatus(429);
-
-        // Cleanup
-        Secret::whereIn('token', $createdTokens)->delete();
-    }
-
-    // ── File Storage Quota ───���──────────────────────────────────────
-
-    /** L'upload de fichier est refusé quand le quota disque est dépassé. */
-    public function testFileUploadRefusedWhenQuotaExceeded(): void
-    {
-        Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 0]); // 0 MB = always exceeded (except unlimited check)
-
-        // Set quota to 1 MB and fake a file that fills it
-        config(['secrets.file_storage_quota_mb' => 1]);
-        Cache::put('secrets:total_file_size', 2 * 1024 * 1024, 300); // 2 MB cached = over quota
-
-        $file = UploadedFile::fake()->create('encrypted', 100, 'application/octet-stream');
-
-        $response = $this->postJson('/api/secrets', [
+        return [
             'type' => 'file',
-            'encrypted_file' => $file,
+            'encrypted_file' => UploadedFile::fake()->createWithContent('encrypted', 'encrypted-bytes'),
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
                 'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(503)
-            ->assertJson(['error' => 'service_unavailable']);
-
-        Storage::disk('secrets')->assertEmpty();
-    }
-
-    /** L'upload de fichier passe quand le quota n'est pas atteint. */
-    public function testFileUploadAllowedWhenUnderQuota(): void
-    {
-        Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 100]);
-        Cache::forget('secrets:total_file_size');
-
-        $file = UploadedFile::fake()->create('encrypted', 100, 'application/octet-stream');
-
-        $response = $this->postJson('/api/secrets', [
-            'type' => 'file',
-            'encrypted_file' => $file,
-            'cipher_meta' => json_encode([
-                'alg' => 'AES-256-GCM',
-                'iv' => self::VALID_IV,
-                'version' => 1,
-            ]),
-            'expiration' => '7d',
-        ]);
-
-        $response->assertStatus(201);
-
-        $token = $response->json('token');
-        Secret::where('token', $token)->delete();
-    }
-
-    /** Le quota à 0 signifie illimité. */
-    public function testFileQuotaZeroMeansUnlimited(): void
-    {
-        $service = app(SecretStorageService::class);
-        config(['secrets.file_storage_quota_mb' => 0]);
-
-        $this->assertFalse($service->isQuotaExceeded());
-    }
-
-    // ── CORS ────────────────────────────────────────────────────────
-
-    /** Les requêtes preflight cross-origin sont refusées pour une origine étrangère. */
-    public function testCorsBlocksCrossOriginRequests(): void
-    {
-        $response = $this->options('/api/secrets', [], [
-            'HTTP_ORIGIN' => 'https://evil.example.com',
-            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-        ]);
-
-        // L'origine étrangère ne doit pas être autorisée
-        $this->assertNotEquals(
-            'https://evil.example.com',
-            $response->headers->get('Access-Control-Allow-Origin')
-        );
-    }
-
-    /** Les requêtes depuis la même origine sont autorisées. */
-    public function testCorsAllowsSameOriginRequests(): void
-    {
-        $appUrl = config('app.url');
-
-        $response = $this->options('/api/secrets', [], [
-            'HTTP_ORIGIN' => $appUrl,
-            'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
-        ]);
-
-        $allowedOrigin = $response->headers->get('Access-Control-Allow-Origin');
-        $this->assertTrue(
-            $allowedOrigin === $appUrl || $allowedOrigin === '*' || $allowedOrigin === null,
-            "Expected same-origin to be allowed, got: {$allowedOrigin}"
-        );
+        ];
     }
 }
