@@ -13,20 +13,20 @@ class RedirectControllerTest extends TestCase
     public static function rootNegotiations(): array
     {
         return [
-            'french header' => ['fr', 'http://localhost/fr/'],
-            'english header' => ['en', 'http://localhost/en/'],
-            'empty header defaults to french' => ['', 'http://localhost/fr/'],
+            'french header' => ['fr', 'http://localhost/fr'],
+            'english header' => ['en', 'http://localhost/en'],
+            'empty header defaults to french' => ['', 'http://localhost/fr'],
         ];
     }
 
-    /** Vérifie que la racine redirige en 302 vers l'accueil de la locale négociée, avec Vary: Accept-Language. */
+    /** Vérifie que la racine redirige en 302 vers l'accueil de la locale négociée, sans slash final, avec Vary: Accept-Language. */
     #[DataProvider('rootNegotiations')]
     public function testRootRedirectsToNegotiatedHome(string $acceptLanguage, string $expectedLocation): void
     {
         $response = $this->withHeader('Accept-Language', $acceptLanguage)->get('/');
 
         $response->assertFound();
-        $response->assertRedirect($expectedLocation);
+        $response->assertHeader('Location', $expectedLocation);
         $response->assertHeader('Vary', 'Accept-Language');
     }
 

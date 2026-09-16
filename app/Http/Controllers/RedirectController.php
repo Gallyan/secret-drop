@@ -9,7 +9,7 @@ class RedirectController extends Controller
 {
     public function root(): RedirectResponse
     {
-        return $this->negotiated(redirect(route('home', ['locale' => app()->getLocale()]).'/'));
+        return $this->negotiated(redirect(route('home', ['locale' => app()->getLocale()])));
     }
 
     public function howItWorks(): RedirectResponse
