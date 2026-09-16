@@ -8,7 +8,6 @@ window.addEventListener('vite:preloadError', (event) => {
 
 import Alpine from '@alpinejs/csp';
 import collapse from '@alpinejs/collapse';
-import focus from '@alpinejs/focus';
 
 import * as SecretCrypto from './crypto';
 import { solvePow } from './pow-solver.js';
@@ -21,7 +20,6 @@ import footerMenu from './components/footer-menu.js';
 import hintTooltip from './components/hint-tooltip.js';
 
 Alpine.plugin(collapse);
-Alpine.plugin(focus);
 Alpine.data('secretForm', secretForm);
 Alpine.data('secretViewer', secretViewer);
 Alpine.data('themeToggle', themeToggle);
