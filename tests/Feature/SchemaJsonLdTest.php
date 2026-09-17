@@ -65,7 +65,7 @@ class SchemaJsonLdTest extends TestCase
         $faq = $this->findByType($this->extractSchemas('/fr/faq'), 'FAQPage');
 
         $this->assertSame(
-            'Oui, entièrement. Pas de compte, pas d\'abonnement, pas de frais cachés.',
+            'Oui. Pas de compte, pas d\'abonnement, pas de frais cachés.',
             $faq->mainEntity[0]->acceptedAnswer->text,
         );
     }
@@ -79,7 +79,7 @@ class SchemaJsonLdTest extends TestCase
 
         $this->assertSame(
             'Si vous avez fourni votre email, vous pouvez révoquer ou prolonger vos secrets via le lien « Gérer mes secrets » en bas de chaque page. '
-            .'Vous recevrez un lien à usage unique valable 17 minutes — un magic link, sans mot de passe. Rien à voler, rien à pirater.',
+            .'Vous recevrez un magic link à usage unique, valable 17 minutes. Sans mot de passe, il n\'y a rien à voler.',
             $faq->mainEntity[11]->acceptedAnswer->text,
         );
     }
