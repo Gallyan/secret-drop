@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use DOMDocument;
+use DOMElement;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -201,6 +203,33 @@ class SecurityHardeningTest extends TestCase
 
         $response->assertCreated();
         $this->assertCount(2, Storage::disk('secrets')->allFiles());
+    }
+
+    // ── CSP ─────────────────────────────────────────────────────────
+
+    /** Vérifie que le script de résolution du PoW porte le nonce de la CSP, sans quoi la connexion admin serait bloquée en production. */
+    public function testPowScriptOnAdminLoginCarriesTheCspNonce(): void
+    {
+        $response = $this->withSession([
+            'pow_required' => true,
+            'pow_token' => str_repeat('a', 32),
+            'pow_challenge' => str_repeat('b', 32),
+            'pow_difficulty' => 8,
+        ])->get('/fr/admin');
+
+        $response->assertOk();
+
+        preg_match("/'nonce-([^']+)'/", (string) $response->headers->get('Content-Security-Policy'), $csp);
+        $this->assertNotEmpty($csp[1] ?? null);
+
+        $document = new DOMDocument();
+        @$document->loadHTML((string) $response->getContent());
+
+        $powScripts = collect(iterator_to_array($document->getElementsByTagName('script')))
+            ->filter(fn (DOMElement $script): bool => str_contains($script->textContent, 'solvePow'));
+
+        $this->assertCount(1, $powScripts);
+        $this->assertSame($csp[1], $powScripts->first()->getAttribute('nonce'));
     }
 
     // ── CORS ────────────────────────────────────────────────────────

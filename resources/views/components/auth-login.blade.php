@@ -63,7 +63,7 @@
                     </div>
                     <input type="hidden" name="pow_token" value="{{ session('pow_token') }}">
                     <input type="hidden" name="pow_nonce" id="pow-nonce" value="">
-                    <script @nonce>
+                    <script nonce="@nonce">
                         document.addEventListener('DOMContentLoaded', function() {
                             window.solvePow('{{ session('pow_challenge') }}', {{ session('pow_difficulty') }}).then(function(nonce) {
                                 document.getElementById('pow-nonce').value = nonce;
