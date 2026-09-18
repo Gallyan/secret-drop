@@ -201,7 +201,7 @@ return [
     'faq_a8' => 'Op servers in Frankrijk. De server slaat alleen versleutelde gegevens op en heeft nooit toegang tot leesbare inhoud.',
     'faq_q9' => 'Is Secret Drop AVG-conform?',
     'faq_a9' => 'Ja, by design. Zero-knowledge-versleuteling, geen tracking, geen advertentiecookies, automatische verwijdering van verlopen gegevens. Secret Drop slaat geen persoonsgegevens in leesbare vorm op.',
-    'faq_q10' => 'Is Secret Drop open source?',
+    'faq_q10' => 'Is Secret Drop opensource?',
     'faq_a10' => 'Ja, onder de GNU Affero General Public License v3 (AGPL-3.0). U kunt de code inspecteren, controleren of er geen achterdeurtjes zijn en bevestigen dat de architectuur werkt zoals beschreven.',
     'faq_q11' => 'Wat is het verschil met versleutelde e-mail?',
     'faq_a11' => 'Versleutelde e-mail (PGP, S/MIME) vereist dat beide partijen vooraf sleutels instellen. Met Secret Drop heeft uw ontvanger alleen de link nodig. Bovendien vernietigt het geheim zichzelf, terwijl een e-mail in beide inboxen blijft staan.',
