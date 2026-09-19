@@ -50,7 +50,7 @@ jobs:
 
     steps:
       - name: Notify IndexNow
-        uses: appleboy/ssh-action@v1.2.5
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           INDEXNOW_URLS: ${{ inputs.urls }}
           INDEXNOW_DRY_RUN: ${{ inputs.dry_run }}
