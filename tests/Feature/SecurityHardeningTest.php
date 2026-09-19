@@ -205,6 +205,92 @@ class SecurityHardeningTest extends TestCase
         $this->assertCount(2, Storage::disk('secrets')->allFiles());
     }
 
+    // ── Daily Upload Budget ─────────────────────────────────────────
+
+    /** Vérifie qu'un upload dépassant le budget quotidien de l'IP est refusé en 429 daily_limit_exceeded sans stocker de blob. */
+    public function testFileUploadReturns429OnceDailyUploadBudgetOfIpIsExceeded(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(600)))->assertCreated();
+        $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(600)));
+
+        $response->assertTooManyRequests();
+        $response->assertExactJson([
+            'error' => 'daily_limit_exceeded',
+            'message' => 'Daily limit reached. Please try again tomorrow.',
+        ]);
+        $this->assertDatabaseCount('secrets', 1);
+        $this->assertCount(1, Storage::disk('secrets')->allFiles());
+    }
+
+    /** Vérifie qu'un upload remplissant exactement le budget quotidien est accepté. */
+    public function testFileUploadFillingExactlyTheDailyUploadBudgetIsAccepted(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)));
+
+        $response->assertCreated();
+    }
+
+    /** Vérifie qu'une IP ayant épuisé son budget n'empêche pas une autre IP d'envoyer un fichier. */
+    public function testExhaustedUploadBudgetOfOneIpDoesNotBlockAnotherIp(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+            ->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))
+            ->assertCreated();
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
+            ->postJson('/api/secrets', $this->filePayload())
+            ->assertTooManyRequests();
+
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.20'])
+            ->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)));
+
+        $response->assertCreated();
+    }
+
+    /** Vérifie qu'un upload refusé par le budget n'en consomme pas, et que les secrets texte restent possibles. */
+    public function testRejectedUploadDoesNotConsumeBudgetAndTextSecretsRemainAllowed(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(2048)))->assertTooManyRequests();
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+
+        $this->postJson('/api/secrets', $this->textPayload())->assertCreated();
+    }
+
+    /** Vérifie qu'un budget à 0 ne limite pas le volume envoyé. */
+    public function testFileUploadIsAcceptedWhenDailyUploadBudgetIsZero(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 0]);
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(2048)))->assertCreated();
+    }
+
+    /** Vérifie qu'un honeypot rempli ne consomme pas le budget d'upload de l'IP. */
+    public function testFilledHoneypotDoesNotConsumeUploadBudget(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', [
+            ...$this->filePayload($this->fakeFileOfKilobytes(1024)),
+            'website' => 'http://spam.example.com',
+        ])->assertCreated();
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+        $this->assertDatabaseCount('secrets', 1);
+    }
+
     // ── CSP ─────────────────────────────────────────────────────────
 
     /** Vérifie que le script de résolution du PoW porte le nonce de la CSP, sans quoi la connexion admin serait bloquée en production. */
@@ -281,11 +367,11 @@ class SecurityHardeningTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function filePayload(): array
+    private function filePayload(?UploadedFile $file = null): array
     {
         return [
             'type' => 'file',
-            'encrypted_file' => UploadedFile::fake()->createWithContent('encrypted', 'encrypted-bytes'),
+            'encrypted_file' => $file ?? UploadedFile::fake()->createWithContent('encrypted', 'encrypted-bytes'),
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
                 'iv' => self::VALID_IV,
@@ -293,5 +379,10 @@ class SecurityHardeningTest extends TestCase
             ]),
             'expiration' => '7d',
         ];
+    }
+
+    private function fakeFileOfKilobytes(int $kilobytes): UploadedFile
+    {
+        return UploadedFile::fake()->create('encrypted', $kilobytes, 'application/octet-stream');
     }
 }

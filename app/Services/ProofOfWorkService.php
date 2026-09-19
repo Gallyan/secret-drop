@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
@@ -9,6 +10,10 @@ use Illuminate\Support\Facades\Config;
 class ProofOfWorkService
 {
     private const CACHE_PREFIX = 'pow:';
+
+    private const LOCK_SECONDS = 5;
+
+    private const LOCK_WAIT_SECONDS = 3;
 
     /**
      * @return array{token: string, challenge: string, difficulty: int}
@@ -39,8 +44,7 @@ class ProofOfWorkService
 
     public function verify(#[\SensitiveParameter] string $token, string $nonce, string $identifier): bool
     {
-        $cacheKey = self::CACHE_PREFIX.$token;
-        $data = Cache::get($cacheKey);
+        $data = $this->consume($token);
 
         // Defense in depth: the entry is server-generated, but nothing guarantees
         // what the cache hands back, so every field is checked before use.
@@ -74,9 +78,24 @@ class ProofOfWorkService
             return false;
         }
 
-        Cache::forget($cacheKey);
-
         return true;
+    }
+
+    /**
+     * Atomically fetches and deletes the challenge, so a token is single-use
+     * even under concurrent requests. Any attempt burns the token, including
+     * one with a wrong nonce: the client simply receives a new challenge.
+     */
+    private function consume(string $token): mixed
+    {
+        $cacheKey = self::CACHE_PREFIX.$token;
+
+        try {
+            return Cache::lock("{$cacheKey}:lock", self::LOCK_SECONDS)
+                ->block(self::LOCK_WAIT_SECONDS, fn (): mixed => Cache::pull($cacheKey));
+        } catch (LockTimeoutException) {
+            return null;
+        }
     }
 
     /**

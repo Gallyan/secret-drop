@@ -37,10 +37,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Per-IP Daily Upload Budget (MB) — 0 for unlimited
+    |--------------------------------------------------------------------------
+    |
+    | Keeps one requester from filling the global quota on its own.
+    |
+    */
+    'daily_upload_mb_per_ip' => (int) env('SECRETS_DAILY_UPLOAD_MB_PER_IP', 200),
+
+    /*
+    |--------------------------------------------------------------------------
     | Session & Magic Link Durations (minutes)
     |--------------------------------------------------------------------------
     */
     'magic_link_ttl' => (int) env('MAGIC_LINK_TTL', 10),
+    'magic_link_max_per_recipient_per_hour' => (int) env('MAGIC_LINK_MAX_PER_RECIPIENT_PER_HOUR', 3),
     'admin_session_ttl' => (int) env('ADMIN_SESSION_TTL', 15),
     'super_admin_session_ttl' => (int) env('SUPER_ADMIN_SESSION_TTL', 15),
 

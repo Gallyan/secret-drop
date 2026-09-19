@@ -77,8 +77,8 @@ class SecretStorageServiceTest extends TestCase
         $this->assertSame(1024, $this->storage->size('ab/blob'));
     }
 
-    /** Vérifie que delete supprime le fichier et son répertoire devenu vide. */
-    public function testDeleteRemovesFileAndItsEmptyDirectory(): void
+    /** Vérifie que delete supprime le fichier sans élaguer son répertoire de partition. */
+    public function testDeleteRemovesFileButKeepsPartitionDirectory(): void
     {
         Storage::fake('secrets');
         $path = $this->storage->store(self::TOKEN, UploadedFile::fake()->createWithContent('test.bin', 'blob'));
@@ -87,7 +87,7 @@ class SecretStorageServiceTest extends TestCase
 
         $this->assertTrue($result);
         $this->assertFalse($this->storage->exists($path));
-        $this->assertFalse($this->storage->disk()->exists('ab'));
+        $this->assertTrue($this->storage->disk()->directoryExists('ab'));
     }
 
     /** Vérifie que delete conserve le répertoire quand il contient encore un autre fichier. */

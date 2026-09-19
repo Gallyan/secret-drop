@@ -16,7 +16,7 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Sleep;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class SuperAdminController extends Controller
@@ -50,13 +50,31 @@ class SuperAdminController extends Controller
     public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
         $email = strtolower(trim($request->email()));
+        $locale = app()->getLocale();
+
+        defer(fn () => $this->sendMagicLinkIfSuperAdmin($email, $locale));
+
+        return redirect()->route('superadmin.accessSent');
+    }
+
+    /**
+     * Runs after the response is sent, so matching, non-matching and
+     * rate-limited emails all get the same response in the same time.
+     */
+    private function sendMagicLinkIfSuperAdmin(string $email, string $locale): void
+    {
         $superAdminEmail = strtolower(trim(config_string('app.super_admin_email')));
 
-        if ($superAdminEmail === '' || ! hash_equals($superAdminEmail, $email)) {
-            // Mimic mail-send latency to prevent super-admin email enumeration via response timing.
-            Sleep::usleep(random_int(150_000, 400_000));
+        if ($superAdminEmail === '') {
+            return;
+        }
 
-            return redirect()->route('superadmin.accessSent');
+        if (! hash_equals($superAdminEmail, $email)) {
+            return;
+        }
+
+        if ($this->recipientLimitReached('magic-link-recipient:super-admin')) {
+            return;
         }
 
         $tokenData = $this->tokenService->generateMagicLinkToken();
@@ -67,14 +85,29 @@ class SuperAdminController extends Controller
             'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
         ]);
 
-        $url = route('superadmin.verify', ['token' => $tokenData['token']]);
+        $url = route('superadmin.verify', ['locale' => $locale, 'token' => $tokenData['token']]);
         Mail::to($email)
-            ->locale(app()->getLocale())
+            ->locale($locale)
             ->send(new SuperAdminMagicLinkMail($url));
 
-        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
+        $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
+    }
 
-        return redirect()->route('superadmin.accessSent');
+    private function recipientLimitReached(string $key): bool
+    {
+        $maxPerHour = Config::integer('secrets.magic_link_max_per_recipient_per_hour');
+
+        if ($maxPerHour <= 0) {
+            return false;
+        }
+
+        if (RateLimiter::tooManyAttempts($key, $maxPerHour)) {
+            return true;
+        }
+
+        RateLimiter::hit($key, 3600);
+
+        return false;
     }
 
     public function verify(Request $request, string $locale, #[\SensitiveParameter] string $token): View|RedirectResponse

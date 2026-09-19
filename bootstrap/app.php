@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Config;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +24,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustHosts(at: function (): array {
+            $appHost = parse_url(Config::string('app.url'), PHP_URL_HOST);
+
+            return is_string($appHost) ? ['^'.preg_quote($appHost).'$'] : [];
+        }, subdomains: false);
+
         $middleware->prepend(SanitizeRequestLogging::class);
         $middleware->prepend(ForceHttps::class);
         $middleware->append(SetLocale::class);

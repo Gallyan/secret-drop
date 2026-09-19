@@ -18,7 +18,7 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Sleep;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -51,15 +51,28 @@ class AdminController extends Controller
 
     public function requestAccess(RequestAdminAccessRequest $request): RedirectResponse
     {
-        $emailHash = MagicLink::hashEmail($request->email());
+        $email = $request->email();
+        $locale = app()->getLocale();
 
-        $hasSecrets = Secret::where('creator_email_hash', $emailHash)->exists();
+        defer(fn () => $this->sendMagicLinkIfOwner($email, $locale));
 
-        if (! $hasSecrets) {
-            // Mimic mail-send latency to prevent email-enumeration via response timing.
-            Sleep::usleep(random_int(150_000, 400_000));
+        return redirect()->route('admin.accessSent');
+    }
 
-            return redirect()->route('admin.accessSent');
+    /**
+     * Runs after the response is sent, so known, unknown and rate-limited
+     * emails all get the same response in the same time.
+     */
+    private function sendMagicLinkIfOwner(string $email, string $locale): void
+    {
+        $emailHash = MagicLink::hashEmail($email);
+
+        if (! Secret::where('creator_email_hash', $emailHash)->exists()) {
+            return;
+        }
+
+        if ($this->recipientLimitReached("magic-link-recipient:{$emailHash}")) {
+            return;
         }
 
         $tokenData = $this->tokenService->generateMagicLinkToken();
@@ -70,14 +83,29 @@ class AdminController extends Controller
             'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
         ]);
 
-        $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
-        Mail::to($request->email())
-            ->locale(app()->getLocale())
+        $verifyUrl = route('admin.verify', ['locale' => $locale, 'token' => $tokenData['token']]);
+        Mail::to($email)
+            ->locale($locale)
             ->send(new MagicLinkMail($verifyUrl));
 
-        defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED));
+        $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
+    }
 
-        return redirect()->route('admin.accessSent');
+    private function recipientLimitReached(string $key): bool
+    {
+        $maxPerHour = Config::integer('secrets.magic_link_max_per_recipient_per_hour');
+
+        if ($maxPerHour <= 0) {
+            return false;
+        }
+
+        if (RateLimiter::tooManyAttempts($key, $maxPerHour)) {
+            return true;
+        }
+
+        RateLimiter::hit($key, 3600);
+
+        return false;
     }
 
     public function verify(Request $request, string $locale, #[\SensitiveParameter] string $token): View|RedirectResponse

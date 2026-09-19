@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Services\ProofOfWorkService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Sleep;
 use Tests\TestCase;
 
 class ProofOfWorkServiceTest extends TestCase
@@ -98,6 +99,47 @@ class ProofOfWorkServiceTest extends TestCase
 
         $this->assertTrue($this->pow->verify($result['token'], $nonce, 'test-identifier'));
         $this->assertFalse($this->pow->verify($result['token'], $nonce, 'test-identifier'));
+    }
+
+    /** Vérifie qu'une tentative ratée consomme le jeton : le bon nonce ne passe plus ensuite. */
+    public function testFailedAttemptBurnsToken(): void
+    {
+        config(['pow.difficulty' => 20]);
+        $result = $this->pow->generate('test-identifier');
+        $wrongNonce = $this->nonceWithNonZeroFirstByte($result['challenge']);
+        $this->assertFalse($this->pow->verify($result['token'], $wrongNonce, 'test-identifier'));
+
+        $solvingNonce = $this->pow->solve($result['challenge'], $result['difficulty']);
+
+        $this->assertFalse($this->pow->verify($result['token'], $solvingNonce, 'test-identifier'));
+    }
+
+    /** Vérifie que verify retire le challenge du cache et libère le verrou du jeton. */
+    public function testVerifyRemovesChallengeAndReleasesLock(): void
+    {
+        $result = $this->pow->generate('test-identifier');
+        $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
+
+        $this->pow->verify($result['token'], $nonce, 'test-identifier');
+
+        $this->assertFalse(Cache::has("pow:{$result['token']}"));
+        $this->assertTrue(Cache::lock("pow:{$result['token']}:lock", 5)->get());
+    }
+
+    /** Vérifie que verify refuse sans consommer le challenge tant qu'une autre requête tient le verrou du jeton. */
+    public function testVerifyWaitsForTokenLockAndFailsClosedOnTimeout(): void
+    {
+        Sleep::fake(syncWithCarbon: true);
+        $result = $this->pow->generate('test-identifier');
+        $nonce = $this->pow->solve($result['challenge'], $result['difficulty']);
+        $concurrentLock = Cache::lock("pow:{$result['token']}:lock", 60);
+        $concurrentLock->get();
+
+        $this->assertFalse($this->pow->verify($result['token'], $nonce, 'test-identifier'));
+
+        $concurrentLock->release();
+
+        $this->assertTrue($this->pow->verify($result['token'], $nonce, 'test-identifier'));
     }
 
     /** Vérifie que solve trouve un nonce dont le hash commence par les bits nuls demandés. */

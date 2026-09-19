@@ -33,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        $this->forceRootUrlFromAppUrl();
+
         RateLimiter::for('global', function (Request $request) {
             return Limit::perMinute(120)->by($request->ip());
         });
@@ -50,5 +52,28 @@ class AppServiceProvider extends ServiceProvider
 
         Vite::useCspNonce(csp_nonce());
         Blade::directive('nonce', fn () => '<?php echo csp_nonce(); ?>');
+    }
+
+    /**
+     * Builds absolute URLs (magic links, canonical, sitemap) from APP_URL instead of the request Host header.
+     * Skipped in local so the dev server keeps working when APP_URL does not match its host and port.
+     */
+    private function forceRootUrlFromAppUrl(): void
+    {
+        if ($this->app->environment('local')) {
+            return;
+        }
+
+        $appUrl = Config::string('app.url');
+
+        if (! parse_url($appUrl, PHP_URL_SCHEME)) {
+            return;
+        }
+
+        if (! parse_url($appUrl, PHP_URL_HOST)) {
+            return;
+        }
+
+        URL::forceRootUrl($appUrl);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\SecretType;
-use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
 
@@ -29,14 +27,7 @@ class CleanOrphanBlobsCommand extends Command
 
         $this->info('Found '.count($files).' files in storage.');
 
-        $validPaths = Secret::query()
-            ->where('type', SecretType::File)
-            ->whereNotNull('file_path')
-            ->pluck('file_path')
-            ->filter(fn (mixed $path): bool => is_string($path))
-            ->all();
-
-        $orphans = array_diff($files, $validPaths);
+        $orphans = $storage->orphans($files);
 
         if (empty($orphans)) {
             $this->info('No orphan blobs found.');
@@ -47,12 +38,22 @@ class CleanOrphanBlobsCommand extends Command
         $this->info(($dryRun ? '[DRY RUN] ' : '').'Found '.count($orphans).' orphan blobs to delete.');
 
         $deleted = 0;
+
         foreach ($orphans as $file) {
             $this->line("Processing orphan: {$file}...");
 
-            if (! $dryRun) {
-                $storage->delete($file);
+            if ($dryRun) {
+                $deleted++;
+
+                continue;
             }
+
+            if (! $storage->deleteOrphan($file)) {
+                $this->line("Skipped {$file}: now referenced or already gone.");
+
+                continue;
+            }
+
             $deleted++;
         }
 

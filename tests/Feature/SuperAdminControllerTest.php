@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Mail\SuperAdminMagicLinkMail;
 use App\Models\MagicLink;
 use App\Services\StatsService;
-use Carbon\CarbonInterval;
 use Closure;
+use Illuminate\Support\Defer\DeferredCallbackCollection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -80,7 +80,6 @@ class SuperAdminControllerTest extends TestCase
         $this->travelTo('2026-09-15 14:30:00');
         Config::set('app.super_admin_email', '  Boss@Example.COM ');
         Mail::fake();
-        Sleep::fake();
 
         $response = $this->post('/fr/superadmin/request-access', ['email' => 'BOSS@example.com']);
 
@@ -106,8 +105,6 @@ class SuperAdminControllerTest extends TestCase
             'metric' => StatsService::MAGIC_LINKS_REQUESTED,
             'count' => 1,
         ]);
-
-        Sleep::assertNeverSlept();
     }
 
     /**
@@ -121,9 +118,9 @@ class SuperAdminControllerTest extends TestCase
         ];
     }
 
-    /** Vérifie qu'un email refusé ne reçoit rien, ne crée aucun lien mais attend comme un envoi. */
+    /** Vérifie qu'un email refusé ne reçoit rien, ne crée aucun lien et obtient la même réponse, sans délai artificiel. */
     #[DataProvider('refusedSuperAdminConfigurations')]
-    public function testRequestAccessForRefusedEmailSendsNothingButStillWaits(string $configuredEmail): void
+    public function testRequestAccessForRefusedEmailSendsNothing(string $configuredEmail): void
     {
         Config::set('app.super_admin_email', $configuredEmail);
         Mail::fake();
@@ -138,8 +135,57 @@ class SuperAdminControllerTest extends TestCase
         $this->assertDatabaseCount('magic_links', 0);
         $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
 
-        Sleep::assertSlept(fn (CarbonInterval $duration): bool => $duration->totalMicroseconds >= 150_000
-            && $duration->totalMicroseconds <= 400_000);
+        Sleep::assertNeverSlept();
+    }
+
+    /** Vérifie que la comparaison avec l'email superadmin et l'envoi n'ont lieu qu'après une réponse identique. */
+    public function testRequestAccessDefersAllRecipientWorkAfterTheResponse(): void
+    {
+        Config::set('app.super_admin_email', self::SUPER_ADMIN_EMAIL);
+        Mail::fake();
+        $deferred = $this->holdDeferredCallbacks();
+
+        $matchingResponse = $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+        $refusedResponse = $this->post('/fr/superadmin/request-access', ['email' => 'random@example.com']);
+
+        $this->assertSame($matchingResponse->getStatusCode(), $refusedResponse->getStatusCode());
+        $this->assertSame($matchingResponse->headers->get('Location'), $refusedResponse->headers->get('Location'));
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+
+        $deferred->invoke();
+
+        Mail::assertSent(SuperAdminMagicLinkMail::class, 1);
+
+        $this->assertDatabaseCount('magic_links', 1);
+    }
+
+    /** Vérifie que les envois au superadmin sont bornés par heure, quelle que soit l'IP, sans changer la réponse. */
+    public function testRequestAccessIsLimitedPerHourRegardlessOfIp(): void
+    {
+        Config::set('app.super_admin_email', self::SUPER_ADMIN_EMAIL);
+        Config::set('secrets.magic_link_max_per_recipient_per_hour', 2);
+        Mail::fake();
+
+        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3'] as $ip) {
+            $this->withServerVariables(['REMOTE_ADDR' => $ip])
+                ->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL])
+                ->assertRedirect('/fr/superadmin/access-sent')
+                ->assertSessionHasNoErrors();
+        }
+
+        Mail::assertSent(SuperAdminMagicLinkMail::class, 2);
+
+        $this->assertDatabaseCount('magic_links', 2);
+
+        $this->travel(61)->minutes();
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.4'])
+            ->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+
+        Mail::assertSent(SuperAdminMagicLinkMail::class, 3);
     }
 
     /** Vérifie qu'une demande faite depuis /en produit un mail superadmin rendu en anglais. */
@@ -385,5 +431,23 @@ class SuperAdminControllerTest extends TestCase
         $response->assertSessionMissing('super_admin_expires_at');
         $this->assertNotEmpty($csrfTokenAfter);
         $this->assertNotSame($csrfTokenBefore, $csrfTokenAfter);
+    }
+
+    private function holdDeferredCallbacks(): DeferredCallbackCollection
+    {
+        $deferred = new class () extends DeferredCallbackCollection {
+            public function invokeWhen(?Closure $callback = null): void
+            {
+            }
+
+            public function invoke(): void
+            {
+                parent::invokeWhen();
+            }
+        };
+
+        $this->app->instance(DeferredCallbackCollection::class, $deferred);
+
+        return $deferred;
     }
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Services\ProofOfWorkService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Sleep;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -173,6 +174,31 @@ class ThrottleWithPowTest extends TestCase
         $this->postSecret()->assertCreated();
     }
 
+    /** Vérifie qu'un compteur resté sans expiration est réinitialisé avec la fenêtre de décroissance. */
+    public function testCounterWithoutExpirationIsReseededWithWindow(): void
+    {
+        $this->freezeTime();
+        Cache::forever($this->counterKey(), 0);
+        $this->exhaustApiLimit();
+        $this->postSecret()->assertTooManyRequests();
+
+        $this->travel(60)->seconds();
+
+        $this->postSecret()->assertCreated();
+    }
+
+    /** Vérifie que le compteur refuse (challenge PoW) quand son verrou reste pris par une requête concurrente. */
+    public function testCounterFailsClosedWhileLockIsHeld(): void
+    {
+        Sleep::fake(syncWithCarbon: true);
+        Cache::lock("{$this->counterKey()}:lock", 60)->get();
+
+        $response = $this->postSecret();
+
+        $response->assertTooManyRequests();
+        $response->assertJsonPath('pow_required', true);
+    }
+
     /** Vérifie le câblage sur la demande de magic link admin : retour au formulaire avec email saisi, erreur pow et challenge. */
     public function testAdminMagicLinkRequestOverLimitRedirectsBackWithPowChallenge(): void
     {
@@ -226,6 +252,11 @@ class ThrottleWithPowTest extends TestCase
         $response = $this->post('/fr/superadmin/request-access', ['email' => 'nobody@example.com']);
 
         $response->assertSessionHas('pow_required', true);
+    }
+
+    private function counterKey(string $ip = self::CLIENT_IP): string
+    {
+        return 'throttle:'.hash('sha256', $ip).':secrets.store';
     }
 
     private function exhaustApiLimit(string $ip = self::CLIENT_IP): void

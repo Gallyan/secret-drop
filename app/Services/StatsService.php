@@ -65,6 +65,9 @@ class StatsService
 
     public const HTTP_ERRORS_500 = 'http_errors_500';
 
+    /** Number of referrer domains shown on the dashboard. */
+    public const TOP_REFERRERS_LIMIT = 20;
+
     /** Upsert a daily counter (insert or add to existing). */
     public function increment(string $metric, int $amount = 1): void
     {
@@ -447,23 +450,33 @@ class StatsService
     }
 
     /**
+     * Top referrer domains of the period, ordered by human visits.
+     *
      * @return array<string, array{human: int, bot: int}>
      */
     public function getReferrers(?string $startDate = null): array
     {
-        $query = DB::table('stats_referrers');
+        $query = DB::table('stats_referrers')
+            ->select(
+                'referrer_domain',
+                DB::raw('SUM(CASE WHEN is_bot THEN 0 ELSE count END) as human'),
+                DB::raw('SUM(CASE WHEN is_bot THEN count ELSE 0 END) as bot')
+            )
+            ->groupBy('referrer_domain')
+            ->orderByDesc('human')
+            ->orderBy('referrer_domain')
+            ->limit(self::TOP_REFERRERS_LIMIT);
 
         $this->applyDateFilter($query, $startDate);
 
-        $rows = $query->get();
         $byDomain = [];
 
-        foreach ($rows as $row) {
-            $byDomain[$row->referrer_domain] ??= ['human' => 0, 'bot' => 0];
-            $byDomain[$row->referrer_domain][$row->is_bot ? 'bot' : 'human'] += $row->count;
+        foreach ($query->get() as $row) {
+            $byDomain[self::asKey($row->referrer_domain)] = [
+                'human' => self::asInt($row->human),
+                'bot' => self::asInt($row->bot),
+            ];
         }
-
-        uasort($byDomain, fn ($a, $b) => $b['human'] <=> $a['human']);
 
         return $byDomain;
     }

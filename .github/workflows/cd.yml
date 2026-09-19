@@ -1,7 +1,12 @@
 # Continuous Deployment - Déploiement automatique sur VPS
 #
 # Ce workflow se déclenche automatiquement après le succès du CI sur main.
-# Il peut aussi être déclenché manuellement via workflow_dispatch.
+# Il peut aussi être déclenché manuellement via workflow_dispatch (sur main).
+#
+# Seul un CI déclenché par un push sur main de ce dépôt peut lancer un
+# déploiement (jamais une pull request, même depuis un fork nommé « main »).
+# Le commit déployé est exactement celui validé par le CI : les assets sont
+# buildés depuis ce SHA et le serveur avance en fast-forward jusqu'à lui.
 #
 # Les assets sont buildés dans GitHub Actions puis transférés sur le serveur.
 # Node.js/npm ne sont pas nécessaires en production.
@@ -41,17 +46,33 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy to Production
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch == 'main')
+
+    env:
+      DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -89,6 +110,27 @@ jobs:
               ServerAliveInterval 30
           EOF
 
+      # Avant de toucher aux assets du serveur : le SHA doit appartenir à
+      # origin/main et être un descendant du HEAD déployé (sinon un run ancien
+      # relancé écraserait les assets avec un build plus vieux que le code).
+      - name: Verify deploy target
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          [[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "SHA invalide : $DEPLOY_SHA"; exit 1; }
+
+          script=$(cat <<'EOF'
+          git fetch origin main
+          git merge-base --is-ancestor "$DEPLOY_SHA" origin/main || { echo "$DEPLOY_SHA n'appartient pas à origin/main"; exit 1; }
+          git merge-base --is-ancestor HEAD "$DEPLOY_SHA" || { echo "$DEPLOY_SHA n'est pas un descendant du HEAD déployé"; exit 1; }
+          EOF
+          )
+
+          ssh -n production "set -e
+          cd $(printf %q "$SSH_PATH")
+          DEPLOY_SHA=$(printf %q "$DEPLOY_SHA")
+          $script"
+
       - name: Clean old build assets
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
@@ -106,14 +148,15 @@ jobs:
           script=$(cat <<'EOF'
           umask 002
 
-          # Révision avant le pull : sert à détecter les changements de contenu
-          # (git checkout -- . et git pull ne déplacent pas cette référence)
+          # Révision avant le merge : sert à détecter les changements de contenu
+          # (git checkout -- . et git merge ne déplacent pas cette référence)
           BEFORE=$(git rev-parse HEAD)
 
           php artisan down --retry=60 || true
 
           git checkout -- .
-          git pull --ff-only origin main
+          git fetch origin main
+          git merge --ff-only "$DEPLOY_SHA"
 
           printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
 
@@ -148,4 +191,5 @@ jobs:
 
           ssh -n production "set -e
           cd $(printf %q "$SSH_PATH")
+          DEPLOY_SHA=$(printf %q "$DEPLOY_SHA")
           $script"

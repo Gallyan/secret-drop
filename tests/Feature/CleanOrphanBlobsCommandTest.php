@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
+use App\Services\SecretStorageService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class CleanOrphanBlobsCommandTest extends TestCase
@@ -13,12 +15,12 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
     private const ORPHAN_PATH = 'cd/cd34567890abcdef1234567890abcdef';
 
-    /** Vérifie que la commande supprime un blob orphelin et son répertoire devenu vide sans toucher au blob d'un secret existant. */
-    public function testDeletesOrphanBlobAndItsDirectoryButKeepsSecretBlob(): void
+    /** Vérifie que la commande supprime un blob orphelin ancien sans toucher au blob d'un secret existant. */
+    public function testDeletesOldOrphanBlobButKeepsSecretBlob(): void
     {
         Storage::fake('secrets');
         Secret::factory()->withStoredBlob('valid-blob')->create(['token' => self::SECRET_TOKEN]);
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
+        $this->putAgedBlob(self::ORPHAN_PATH, 'orphan-blob');
 
         $this->artisan('secrets:clean-blobs')
             ->expectsOutput('Found 2 files in storage.')
@@ -27,7 +29,6 @@ class CleanOrphanBlobsCommandTest extends TestCase
             ->assertSuccessful();
 
         Storage::disk('secrets')->assertMissing(self::ORPHAN_PATH);
-        $this->assertFalse(Storage::disk('secrets')->directoryExists('cd'));
         Storage::disk('secrets')->assertExists('ab/ab34567890abcdef1234567890abcdef', 'valid-blob');
     }
 
@@ -48,7 +49,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         Storage::fake('secrets');
         $consumedSecret = Secret::factory()->file()->consumed()->create();
         $leftoverPath = substr($consumedSecret->token, 0, 2).'/'.$consumedSecret->token;
-        Storage::disk('secrets')->put($leftoverPath, 'leftover-blob');
+        $this->putAgedBlob($leftoverPath, 'leftover-blob');
 
         $this->artisan('secrets:clean-blobs')
             ->expectsOutput('Deleted 1 orphan blobs.')
@@ -61,7 +62,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
     public function testInvalidatesCachedDiskUsageWhenOrphansAreDeleted(): void
     {
         Storage::fake('secrets');
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
+        $this->putAgedBlob(self::ORPHAN_PATH, 'orphan-blob');
         Cache::put('disk_usage_secrets', 123, 3600);
         Cache::put('secrets:total_file_size', 123, 300);
 
@@ -75,7 +76,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
     public function testDryRunKeepsOrphanBlobAndCachedDiskUsage(): void
     {
         Storage::fake('secrets');
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan-blob');
+        $this->putAgedBlob(self::ORPHAN_PATH, 'orphan-blob');
         Cache::put('disk_usage_secrets', 123, 3600);
 
         $this->artisan('secrets:clean-blobs', ['--dry-run' => true])
@@ -95,5 +96,51 @@ class CleanOrphanBlobsCommandTest extends TestCase
         $this->artisan('secrets:clean-blobs')
             ->expectsOutput('No files in storage.')
             ->assertSuccessful();
+    }
+
+    /** Vérifie qu'un blob non référencé plus récent que le délai de grâce est conservé. */
+    public function testKeepsUnreferencedBlobYoungerThanGracePeriod(): void
+    {
+        Storage::fake('secrets');
+        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'in-flight');
+        touch(
+            Storage::disk('secrets')->path(self::ORPHAN_PATH),
+            now()->subSeconds(SecretStorageService::ORPHAN_GRACE_SECONDS - 60)->getTimestamp(),
+        );
+
+        $this->artisan('secrets:clean-blobs')
+            ->expectsOutput('No orphan blobs found.')
+            ->assertSuccessful();
+
+        Storage::disk('secrets')->assertExists(self::ORPHAN_PATH, 'in-flight');
+    }
+
+    /** Vérifie qu'un blob référencé par un secret créé entre le listage et la suppression est conservé. */
+    public function testKeepsBlobReferencedBySecretCreatedAfterListing(): void
+    {
+        Storage::fake('secrets');
+        $path = 'ab/'.self::SECRET_TOKEN;
+        $this->putAgedBlob($path, 'blob');
+        $this->partialMock(SecretStorageService::class, function (MockInterface $mock) use ($path): void {
+            $mock->shouldReceive('orphans')->andReturnUsing(function () use ($path): array {
+                Secret::factory()->file()->create(['token' => self::SECRET_TOKEN]);
+
+                return [$path];
+            });
+        });
+
+        $this->artisan('secrets:clean-blobs')
+            ->expectsOutput('Found 1 orphan blobs to delete.')
+            ->expectsOutput("Skipped {$path}: now referenced or already gone.")
+            ->expectsOutput('Deleted 0 orphan blobs.')
+            ->assertSuccessful();
+
+        Storage::disk('secrets')->assertExists($path, 'blob');
+    }
+
+    private function putAgedBlob(string $path, string $contents): void
+    {
+        Storage::disk('secrets')->put($path, $contents);
+        touch(Storage::disk('secrets')->path($path), now()->subHours(2)->getTimestamp());
     }
 }

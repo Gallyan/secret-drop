@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Services\ProofOfWorkService;
+use Carbon\CarbonInterface;
 use Closure;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 class ThrottleWithPow
 {
     private const CACHE_PREFIX = 'throttle:';
+
+    private const LOCK_SECONDS = 5;
+
+    private const LOCK_WAIT_SECONDS = 3;
 
     public function __construct(
         private ProofOfWorkService $pow,
@@ -31,20 +37,7 @@ class ThrottleWithPow
         $cacheKey = self::CACHE_PREFIX.$identifier.':'.($request->route()?->getName() ?? $request->path());
         $ttl = now()->addMinutes($decayMinutes);
 
-        // First hit within the window: set counter to 1 with TTL.
-        // Subsequent hits increment without renewing TTL, so the decay window stays fixed.
-        if (Cache::add($cacheKey, 1, $ttl)) {
-            return $next($request);
-        }
-
-        $attempts = Cache::increment($cacheKey);
-
-        // Key may have expired between add() and increment(); re-seed if so.
-        if ($attempts === false) {
-            Cache::put($cacheKey, 1, $ttl);
-
-            return $next($request);
-        }
+        $attempts = $this->hit($cacheKey, $ttl);
 
         if ($attempts <= $maxAttempts) {
             return $next($request);
@@ -66,6 +59,43 @@ class ThrottleWithPow
         $retryAfter = $decayMinutes * 60;
 
         return $this->buildPowResponse($powData, $retryAfter, $request);
+    }
+
+    /**
+     * Counts one hit in a fixed window, serialized by a lock so concurrent
+     * requests cannot race between add() and increment(). Fails closed when
+     * the lock cannot be acquired.
+     */
+    private function hit(string $cacheKey, CarbonInterface $ttl): int
+    {
+        $attempts = PHP_INT_MAX;
+
+        try {
+            Cache::lock("{$cacheKey}:lock", self::LOCK_SECONDS)
+                ->block(self::LOCK_WAIT_SECONDS, function () use ($cacheKey, $ttl, &$attempts): void {
+                    if (Cache::add($cacheKey, 1, $ttl)) {
+                        $attempts = 1;
+
+                        return;
+                    }
+
+                    $incremented = Cache::increment($cacheKey);
+
+                    // A missing or expired key is re-created by increment() without TTL on some stores.
+                    if ($incremented === false || $incremented <= 1) {
+                        Cache::put($cacheKey, 1, $ttl);
+                        $attempts = 1;
+
+                        return;
+                    }
+
+                    $attempts = (int) $incremented;
+                });
+        } catch (LockTimeoutException) {
+            return PHP_INT_MAX;
+        }
+
+        return $attempts;
     }
 
     private function getIdentifier(Request $request): string

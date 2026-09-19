@@ -206,12 +206,13 @@ class PageviewService
             );
         }
 
-        $aiApp = $this->detectAiApp($userAgent);
-        $domain = $this->extractReferrerDomain($referrer);
+        $domain = $this->detectAiApp($userAgent) ?? $this->extractReferrerDomain($referrer);
 
-        if ($aiApp !== null) {
-            $domain = $aiApp;
-        } elseif ($domain === '') {
+        if ($domain === null) {
+            return;
+        }
+
+        if ($domain === '') {
             $domain = '(direct)';
         }
 
@@ -365,7 +366,11 @@ class PageviewService
         return intdiv(($minutesSinceMidnight % 1440 + 1440) % 1440, 60);
     }
 
-    private function extractReferrerDomain(string $referrer): string
+    /**
+     * Referrer host, '' for a direct visit or an own-site referrer,
+     * null when the host is not a valid hostname (not tracked).
+     */
+    private function extractReferrerDomain(string $referrer): ?string
     {
         if ($referrer === '') {
             return '';
@@ -377,20 +382,12 @@ class PageviewService
             return '';
         }
 
-        $host = strtolower($host);
-
-        if (str_starts_with($host, 'www.')) {
-            $host = substr($host, 4);
-        }
+        $host = $this->normalizeHost($host);
 
         $appHost = parse_url(config_string('app.url'), PHP_URL_HOST);
 
         if ($appHost) {
-            $appHost = strtolower($appHost);
-
-            if (str_starts_with($appHost, 'www.')) {
-                $appHost = substr($appHost, 4);
-            }
+            $appHost = $this->normalizeHost($appHost);
 
             $local = ['localhost', '127.0.0.1', '[::1]'];
 
@@ -399,6 +396,39 @@ class PageviewService
             }
         }
 
-        return mb_substr($host, 0, 100);
+        if (! $this->isValidHostname($host)) {
+            return null;
+        }
+
+        return substr($host, 0, 100);
+    }
+
+    private function normalizeHost(string $host): string
+    {
+        if ($this->hasNonAsciiCharacters($host) && function_exists('idn_to_ascii')) {
+            $host = idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46) ?: $host;
+        }
+
+        $host = rtrim(strtolower($host), '.');
+
+        if (str_starts_with($host, 'www.')) {
+            return substr($host, 4);
+        }
+
+        return $host;
+    }
+
+    private function isValidHostname(string $host): bool
+    {
+        if (strlen($host) > 253) {
+            return false;
+        }
+
+        return preg_match('/^[a-z0-9-]+(\.[a-z0-9-]+)*$/', $host) === 1;
+    }
+
+    private function hasNonAsciiCharacters(string $value): bool
+    {
+        return preg_match('/[^\x00-\x7F]/', $value) === 1;
     }
 }

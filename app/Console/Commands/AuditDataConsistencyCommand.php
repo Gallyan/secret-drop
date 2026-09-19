@@ -38,27 +38,28 @@ class AuditDataConsistencyCommand extends Command
     {
         $this->components->info('Checking for orphan files (on disk but not in DB)...');
 
-        $files = $storage->disk()->allFiles();
-        $validPaths = Secret::query()
-            ->where('type', SecretType::File)
-            ->whereNotNull('file_path')
-            ->pluck('file_path')
-            ->filter(fn (mixed $path): bool => is_string($path))
-            ->all();
-
-        $orphans = array_diff($files, $validPaths);
+        $orphans = $storage->orphans($storage->disk()->allFiles());
+        $count = 0;
 
         foreach ($orphans as $file) {
             $size = $storage->disk()->size($file);
             $this->warn("  Orphan file: {$file} ({$this->formatBytes($size)})");
 
-            if ($fix) {
-                $storage->delete($file);
-                $this->line('    -> Deleted');
-            }
-        }
+            if (! $fix) {
+                $count++;
 
-        $count = count($orphans);
+                continue;
+            }
+
+            if (! $storage->deleteOrphan($file)) {
+                $this->line('    -> Skipped (now referenced or already gone)');
+
+                continue;
+            }
+
+            $this->line('    -> Deleted');
+            $count++;
+        }
 
         if ($count > 0) {
             $label = $fix ? "Fixed {$count} orphan files" : "Found {$count} orphan files (use --fix to delete)";

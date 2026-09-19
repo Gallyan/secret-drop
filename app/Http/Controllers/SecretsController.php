@@ -15,6 +15,7 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -52,6 +53,16 @@ class SecretsController extends Controller
             ], 503);
         }
 
+        $uploadBudgetKey = "upload-bytes:{$request->ip()}";
+        $fileSize = $type->isFile() ? (int) $request->file('encrypted_file')->getSize() : 0;
+
+        if ($this->exceedsDailyUploadBudget($uploadBudgetKey, $fileSize)) {
+            return response()->json([
+                'error' => 'daily_limit_exceeded',
+                'message' => __('messages.daily_limit_exceeded'),
+            ], 429);
+        }
+
         $expireAt = $this->calculateExpireAt($request->expiration());
         $token = $this->tokenService->generatePublicToken();
 
@@ -68,28 +79,46 @@ class SecretsController extends Controller
             'creator_email_hash' => $creatorEmail ? MagicLink::hashEmail($creatorEmail) : null,
         ];
 
-        $fileSize = null;
         if ($type->isText()) {
             $secretData['ciphertext'] = $request->ciphertext();
         } else {
-            $file = $request->file('encrypted_file');
-            $fileSize = $file->getSize() ?: null;
-            $filePath = $this->storage->store($token, $file);
-
-            $secretData['file_path'] = $filePath;
+            $secretData['file_path'] = $this->storage->store($token, $request->file('encrypted_file'));
         }
 
         $secret = Secret::create($secretData);
 
+        if ($fileSize > 0) {
+            RateLimiter::increment($uploadBudgetKey, 86400, $fileSize);
+        }
+
         $hasPassphrase = $request->hasPassphrase();
         $splitMode = $request->isSplitMode();
 
-        defer(fn () => $this->trackCreationStats($secret, $hasPassphrase, $splitMode, $fileSize));
+        defer(fn () => $this->trackCreationStats($secret, $hasPassphrase, $splitMode, $fileSize ?: null));
 
         return response()->json([
             'token' => $secret->token,
             'expire_at' => $expireAt->toIso8601String(),
         ], 201);
+    }
+
+    private function exceedsDailyUploadBudget(string $key, int $fileSize): bool
+    {
+        $budgetMb = Config::integer('secrets.daily_upload_mb_per_ip');
+
+        if ($fileSize === 0) {
+            return false;
+        }
+
+        if ($budgetMb <= 0) {
+            return false;
+        }
+
+        // The database cache store returns counters as numeric strings
+        $consumed = RateLimiter::attempts($key);
+        $consumedBytes = is_numeric($consumed) ? (int) $consumed : 0;
+
+        return $consumedBytes + $fileSize > $budgetMb * 1024 * 1024;
     }
 
     private function trackCreationStats(

@@ -107,4 +107,37 @@ class SuperAdminDashboardTest extends TestCase
         $response->assertSee('data-title-template="'.__('messages.poll_refresh_in', [], 'fr').'"', false);
         $response->assertSee('pollRingTitle');
     }
+
+    /** Vérifie que le polling ne renvoie que les principaux référents, triés par visites humaines. */
+    public function testPollReturnsOnlyTopReferrers(): void
+    {
+        Storage::fake('secrets');
+        $this->travelTo('2026-09-15 16:00:00');
+
+        $rows = [];
+
+        foreach (range(1, StatsService::TOP_REFERRERS_LIMIT + 5) as $index) {
+            foreach ([false, true] as $isBot) {
+                $rows[] = [
+                    'date' => '2026-09-15',
+                    'referrer_domain' => "site{$index}.example",
+                    'is_bot' => $isBot,
+                    'count' => $isBot ? 1 : $index,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        DB::table('stats_referrers')->insert($rows);
+
+        $response = $this->withSession($this->superAdminSession())->getJson('/fr/superadmin/dashboard/poll');
+
+        $response->assertOk();
+        $referrers = $response->json('referrers');
+        $this->assertCount(StatsService::TOP_REFERRERS_LIMIT, $referrers);
+        $this->assertSame(['human' => 25, 'bot' => 1], reset($referrers));
+        $this->assertSame('site25.example', array_key_first($referrers));
+        $this->assertArrayNotHasKey('site5.example', $referrers);
+    }
 }

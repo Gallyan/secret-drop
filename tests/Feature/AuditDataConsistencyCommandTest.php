@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
+use App\Services\SecretStorageService;
 use Closure;
 use Illuminate\Support\Facades\Storage;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -73,7 +75,7 @@ class AuditDataConsistencyCommandTest extends TestCase
     public function testReportsOrphanFileWithoutDeletingIt(): void
     {
         Storage::fake('secrets');
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan');
+        $this->putAgedBlob(self::ORPHAN_PATH, 'orphan');
 
         $this->artisan('secrets:audit')
             ->expectsOutput('  Orphan file: cd/cd34567890abcdef1234567890abcdef (6 B)')
@@ -88,7 +90,7 @@ class AuditDataConsistencyCommandTest extends TestCase
     public function testFixDeletesOrphanFileAndStillFails(): void
     {
         Storage::fake('secrets');
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'orphan');
+        $this->putAgedBlob(self::ORPHAN_PATH, 'orphan');
 
         $this->artisan('secrets:audit', ['--fix' => true])
             ->expectsOutput('    -> Deleted')
@@ -176,10 +178,51 @@ class AuditDataConsistencyCommandTest extends TestCase
     public function testDisplaysOrphanFileSizeInReadableUnit(int $bytes, string $expectedSize): void
     {
         Storage::fake('secrets');
-        Storage::disk('secrets')->put(self::ORPHAN_PATH, str_repeat('x', $bytes));
+        $this->putAgedBlob(self::ORPHAN_PATH, str_repeat('x', $bytes));
 
         $this->artisan('secrets:audit')
             ->expectsOutput("  Orphan file: cd/cd34567890abcdef1234567890abcdef ({$expectedSize})")
             ->assertFailed();
+    }
+
+    /** Vérifie qu'un blob non référencé plus récent que le délai de grâce n'est ni signalé ni supprimé. */
+    public function testIgnoresUnreferencedBlobYoungerThanGracePeriod(): void
+    {
+        Storage::fake('secrets');
+        Storage::disk('secrets')->put(self::ORPHAN_PATH, 'in-flight');
+
+        $this->artisan('secrets:audit', ['--fix' => true])
+            ->doesntExpectOutputToContain('Orphan file')
+            ->expectsOutput('No inconsistencies found.')
+            ->assertSuccessful();
+
+        Storage::disk('secrets')->assertExists(self::ORPHAN_PATH, 'in-flight');
+    }
+
+    /** Vérifie que --fix conserve un blob référencé par un secret créé entre le listage et la suppression. */
+    public function testFixKeepsBlobReferencedAfterListing(): void
+    {
+        Storage::fake('secrets');
+        $this->putAgedBlob(self::FILE_PATH, 'blob');
+        $this->partialMock(SecretStorageService::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('orphans')->andReturnUsing(function (): array {
+                Secret::factory()->file()->create(['token' => self::TOKEN]);
+
+                return [self::FILE_PATH];
+            });
+        });
+
+        $this->artisan('secrets:audit', ['--fix' => true])
+            ->expectsOutput('    -> Skipped (now referenced or already gone)')
+            ->expectsOutput('No inconsistencies found.')
+            ->assertSuccessful();
+
+        Storage::disk('secrets')->assertExists(self::FILE_PATH, 'blob');
+    }
+
+    private function putAgedBlob(string $path, string $contents): void
+    {
+        Storage::disk('secrets')->put($path, $contents);
+        touch(Storage::disk('secrets')->path($path), now()->subHours(2)->getTimestamp());
     }
 }

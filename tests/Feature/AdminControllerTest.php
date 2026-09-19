@@ -6,9 +6,9 @@ use App\Mail\MagicLinkMail;
 use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\StatsService;
-use Carbon\CarbonInterval;
 use Closure;
 use Database\Factories\SecretFactory;
+use Illuminate\Support\Defer\DeferredCallbackCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -83,7 +83,6 @@ class AdminControllerTest extends TestCase
     {
         $this->travelTo('2026-09-15 14:30:00');
         Mail::fake();
-        Sleep::fake();
         Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
 
         $response = $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
@@ -108,12 +107,10 @@ class AdminControllerTest extends TestCase
             'metric' => StatsService::MAGIC_LINKS_REQUESTED,
             'count' => 1,
         ]);
-
-        Sleep::assertNeverSlept();
     }
 
-    /** Vérifie qu'un email sans secret ne reçoit rien mais que la réponse est retardée comme un envoi. */
-    public function testRequestAccessForUnknownEmailSendsNothingButStillWaits(): void
+    /** Vérifie qu'un email sans secret ne reçoit rien et obtient la même réponse, sans délai artificiel. */
+    public function testRequestAccessForUnknownEmailSendsNothing(): void
     {
         Mail::fake();
         Sleep::fake();
@@ -127,8 +124,79 @@ class AdminControllerTest extends TestCase
         $this->assertDatabaseCount('magic_links', 0);
         $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
 
-        Sleep::assertSlept(fn (CarbonInterval $duration): bool => $duration->totalMicroseconds >= 150_000
-            && $duration->totalMicroseconds <= 400_000);
+        Sleep::assertNeverSlept();
+    }
+
+    /** Vérifie que la recherche du propriétaire et l'envoi n'ont lieu qu'après la réponse, identique dans tous les cas. */
+    public function testRequestAccessDefersAllRecipientWorkAfterTheResponse(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $deferred = $this->holdDeferredCallbacks();
+
+        $ownerResponse = $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $unknownResponse = $this->post('/fr/admin/request-access', ['email' => 'nobody@example.com']);
+
+        $this->assertSame($ownerResponse->getStatusCode(), $unknownResponse->getStatusCode());
+        $this->assertSame($ownerResponse->headers->get('Location'), $unknownResponse->headers->get('Location'));
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+
+        $deferred->invoke();
+
+        Mail::assertSent(MagicLinkMail::class, 1);
+        Mail::assertSent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL));
+
+        $this->assertDatabaseCount('magic_links', 1);
+    }
+
+    /** Vérifie que les envois vers un même propriétaire sont bornés par heure, quelle que soit l'IP, sans changer la réponse. */
+    public function testRequestAccessIsLimitedPerRecipientRegardlessOfIp(): void
+    {
+        Config::set('secrets.magic_link_max_per_recipient_per_hour', 2);
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        Secret::factory()->withCreatorEmail('other-owner@example.com')->create();
+
+        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3'] as $ip) {
+            $this->withServerVariables(['REMOTE_ADDR' => $ip])
+                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL])
+                ->assertRedirect('/fr/admin/access-sent')
+                ->assertSessionHasNoErrors();
+        }
+
+        Mail::assertSent(MagicLinkMail::class, 2);
+
+        $this->assertSame(2, MagicLink::where('email_hash', MagicLink::hashEmail(self::OWNER_EMAIL))->count());
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.4'])
+            ->post('/fr/admin/request-access', ['email' => 'other-owner@example.com']);
+
+        Mail::assertSent(MagicLinkMail::class, 3);
+
+        $this->travel(61)->minutes();
+
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.5'])
+            ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        Mail::assertSent(MagicLinkMail::class, 4);
+    }
+
+    /** Vérifie qu'une limite par destinataire à zéro désactive la borne. */
+    public function testRequestAccessRecipientLimitDisabledWhenZero(): void
+    {
+        Config::set('secrets.magic_link_max_per_recipient_per_hour', 0);
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3', '203.0.113.4'] as $ip) {
+            $this->withServerVariables(['REMOTE_ADDR' => $ip])
+                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        }
+
+        Mail::assertSent(MagicLinkMail::class, 4);
     }
 
     /** Vérifie qu'une demande faite depuis /en produit un mail rendu en anglais. */
@@ -685,5 +753,23 @@ class AdminControllerTest extends TestCase
             'admin_email_hash' => MagicLink::hashEmail($email),
             'admin_expires_at' => now()->addMinutes(15)->timestamp,
         ];
+    }
+
+    private function holdDeferredCallbacks(): DeferredCallbackCollection
+    {
+        $deferred = new class () extends DeferredCallbackCollection {
+            public function invokeWhen(?Closure $callback = null): void
+            {
+            }
+
+            public function invoke(): void
+            {
+                parent::invokeWhen();
+            }
+        };
+
+        $this->app->instance(DeferredCallbackCollection::class, $deferred);
+
+        return $deferred;
     }
 }

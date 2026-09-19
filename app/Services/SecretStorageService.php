@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Enums\SecretType;
+use App\Models\Secret;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToRetrieveMetadata;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -17,6 +20,9 @@ class SecretStorageService
 
     /** Cache key of StatsService::getCurrentDiskUsage(), shown on the superadmin dashboard. */
     public const DISK_USAGE_CACHE_KEY = 'disk_usage_secrets';
+
+    /** Minimum age of an unreferenced blob before it is treated as orphan, so in-flight uploads are never deleted. */
+    public const ORPHAN_GRACE_SECONDS = 3600;
 
     private const DISK_NAME = 'secrets';
 
@@ -105,7 +111,10 @@ class SecretStorageService
     }
 
     /**
-     * Delete an encrypted file and clean up empty parent directory.
+     * Delete an encrypted file.
+     *
+     * Partition directories are never pruned: removing one could race with a
+     * concurrent upload into the same partition.
      */
     public function delete(#[\SensitiveParameter] string $path): bool
     {
@@ -116,13 +125,43 @@ class SecretStorageService
         $this->disk()->delete($path);
         $this->invalidateSizeCache();
 
-        $dir = dirname($path);
+        return true;
+    }
 
-        if ($dir !== '.' && $this->disk()->exists($dir) && empty($this->disk()->files($dir))) {
-            $this->disk()->deleteDirectory($dir);
+    /**
+     * Blobs not referenced by any file secret and older than the grace period.
+     *
+     * @param  array<int, string>  $files
+     * @return list<string>
+     */
+    public function orphans(array $files): array
+    {
+        $referencedPaths = Secret::query()
+            ->where('type', SecretType::File)
+            ->whereNotNull('file_path')
+            ->pluck('file_path')
+            ->filter(fn (mixed $path): bool => is_string($path))
+            ->flip()
+            ->all();
+
+        $cutoff = now()->subSeconds(self::ORPHAN_GRACE_SECONDS)->getTimestamp();
+
+        return array_values(array_filter(
+            $files,
+            fn (string $file): bool => ! isset($referencedPaths[$file]) && $this->isOlderThan($file, $cutoff),
+        ));
+    }
+
+    /**
+     * Delete a blob only if no secret references it at this moment.
+     */
+    public function deleteOrphan(#[\SensitiveParameter] string $path): bool
+    {
+        if (Secret::query()->where('file_path', $path)->exists()) {
+            return false;
         }
 
-        return true;
+        return $this->delete($path);
     }
 
     /**
@@ -145,6 +184,15 @@ class SecretStorageService
         }
 
         return $this->totalSize() >= $quotaMb * 1024 * 1024;
+    }
+
+    private function isOlderThan(string $path, int $timestamp): bool
+    {
+        try {
+            return $this->disk()->lastModified($path) <= $timestamp;
+        } catch (UnableToRetrieveMetadata) {
+            return false;
+        }
     }
 
     private function invalidateSizeCache(): void
