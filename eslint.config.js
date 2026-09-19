@@ -19,7 +19,18 @@ export default [
         },
     },
     {
-        files: ['vite.config.js', 'eslint.config.js'],
+        files: ['tests/js/**/*.js'],
+        languageOptions: {
+            ecmaVersion: 'latest',
+            sourceType: 'module',
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+            },
+        },
+    },
+    {
+        files: ['vite.config.js', 'vitest.config.js', 'eslint.config.js'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
