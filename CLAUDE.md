@@ -26,7 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Data Model
 
-- `secrets`: token, type (text|file), cipher_meta (JSON), ciphertext/file_path, max_views, read_count, expire_at, revoked_at, creator_email_hash, admin_token
+- `secrets`: token, type (text|file), cipher_meta (JSON), ciphertext/file_path, max_views, read_count, expire_at, revoked_at, creator_email_hash
 - `magic_links`: secret_id, email, token_hash, expire_at, used_at
 
 ### Security Constraints

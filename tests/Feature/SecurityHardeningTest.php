@@ -15,7 +15,7 @@ class SecurityHardeningTest extends TestCase
 
     private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 octets
 
-    private const UNKNOWN_TOKEN = 'nonexistenttoken12345678901';
+    private const UNKNOWN_TOKEN = '0123456789abcdef0123456789abcdef';
 
     private const ONE_MEGABYTE = 1048576;
 
@@ -99,18 +99,6 @@ class SecurityHardeningTest extends TestCase
         $response->assertTooManyRequests();
     }
 
-    /** Vérifie que la révocation par admin token est limitée à 10 requêtes par minute. */
-    public function testRevokeReturns429AfterTenRequestsPerMinute(): void
-    {
-        for ($attempt = 1; $attempt <= 10; $attempt++) {
-            $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke')->assertNotFound();
-        }
-
-        $response = $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke');
-
-        $response->assertTooManyRequests();
-    }
-
     /** Vérifie que les consultations de la page d'un secret n'entament pas la limite des routes API de lecture. */
     public function testSecretPageRequestsDoNotConsumeSecretApiLimit(): void
     {
@@ -119,18 +107,6 @@ class SecurityHardeningTest extends TestCase
         }
 
         $response = $this->getJson('/api/secrets/'.self::UNKNOWN_TOKEN);
-
-        $response->assertNotFound();
-    }
-
-    /** Vérifie que les lectures API d'un secret n'entament pas la limite de la révocation par admin token. */
-    public function testSecretApiRequestsDoNotConsumeRevokeLimit(): void
-    {
-        for ($attempt = 1; $attempt <= 10; $attempt++) {
-            $this->getJson('/api/secrets/'.self::UNKNOWN_TOKEN)->assertNotFound();
-        }
-
-        $response = $this->postJson('/api/secrets/'.self::UNKNOWN_TOKEN.'/revoke');
 
         $response->assertNotFound();
     }

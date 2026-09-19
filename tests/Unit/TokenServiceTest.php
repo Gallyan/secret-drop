@@ -25,15 +25,7 @@ class TokenServiceTest extends TestCase
         $token = $this->tokenService->generatePublicToken();
 
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $token);
-    }
-
-    /** Vérifie que le token admin est composé de 32 caractères hexadécimaux et accompagné de son empreinte SHA-256. */
-    public function testAdminTokenIsThirtyTwoHexadecimalCharactersWithItsSha256Hash(): void
-    {
-        $result = $this->tokenService->generateAdminToken();
-
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $result['token']);
-        $this->assertSame($this->tokenService->hashToken($result['token']), $result['hash']);
+        $this->assertMatchesRegularExpression('/^'.TokenService::PUBLIC_TOKEN_PATTERN.'$/', $token);
     }
 
     /** Vérifie que le token de magic link est composé de 32 caractères hexadécimaux et accompagné de son empreinte SHA-256. */

@@ -9,10 +9,12 @@ use App\Services\SecretStorageService;
 use App\Services\StatsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use function Illuminate\Support\defer;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
@@ -21,6 +23,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SecretsController extends Controller
 {
+    private const READ_ID_PATTERN = '/^[0-9a-f]{32}$/';
+
+    private const READ_ID_TTL_SECONDS = 86400;
+
     public function __construct(
         private TokenService $tokenService,
         private SecretStorageService $storage,
@@ -67,11 +73,9 @@ class SecretsController extends Controller
         $token = $this->tokenService->generatePublicToken();
 
         $creatorEmail = $request->creatorEmail();
-        $adminTokenData = $this->tokenService->generateAdminToken();
 
         $secretData = [
             'token' => $token,
-            'admin_token_hash' => $adminTokenData['hash'],
             'type' => $type,
             'cipher_meta' => $request->cipherMeta(),
             'max_views' => $request->maxViews(),
@@ -176,6 +180,8 @@ class SecretsController extends Controller
             'type' => $secret->type->value,
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => $willBeDestroyed,
+            'single_use' => $secret->max_views === 1,
+            'previous_fetches' => $secret->fetch_count,
         ];
 
         if ($secret->type->isText()) {
@@ -183,18 +189,39 @@ class SecretsController extends Controller
             $secret->recordFetch();
             $data['ciphertext'] = $secret->ciphertext;
         }
-        // For files, metadata (filename, mime, size) is encrypted in the payload
+        // For files, the fetch is counted on download; metadata (filename, mime, size) is encrypted in the payload
 
         return response()->json($data);
     }
 
-    public function confirmRead(#[\SensitiveParameter] string $token): JsonResponse
+    public function confirmRead(Request $request, #[\SensitiveParameter] string $token): JsonResponse
     {
-        return DB::transaction(function () use ($token) {
+        $readId = $request->input('read_id');
+
+        if ($readId !== null && (! is_string($readId) || ! preg_match(self::READ_ID_PATTERN, $readId))) {
+            return response()->json(['error' => 'invalid_read_id'], 422);
+        }
+
+        return DB::transaction(function () use ($token, $readId) {
             $secret = Secret::where('token', $token)->lockForUpdate()->first();
 
-            if (! $secret || ! $secret->isAccessible()) {
+            if (! $secret) {
                 return response()->json(['error' => 'not_found'], 404);
+            }
+
+            $readKey = $readId !== null ? "secret-read:{$token}:{$readId}" : null;
+
+            // A retried confirmation of an already counted read gets the same answer, even once destroyed
+            if ($readKey !== null && Cache::has($readKey)) {
+                return response()->json(['success' => true]);
+            }
+
+            if (! $secret->isAccessible()) {
+                return response()->json(['error' => 'not_found'], 404);
+            }
+
+            if ($readKey !== null && ! Cache::add($readKey, true, self::READ_ID_TTL_SECONDS)) {
+                return response()->json(['success' => true]);
             }
 
             $isFirstRead = $secret->first_read_at === null;
@@ -242,38 +269,15 @@ class SecretsController extends Controller
             return response()->view('secrets.not-found', [], 404);
         }
 
+        $previousFetches = $secret->fetch_count;
+
         // The encrypted file leaves the server here: count it as a fetch
         $secret->recordFetch();
 
-        return $this->storage->download($filePath);
-    }
+        $response = $this->storage->download($filePath);
+        $response->headers->set('X-Previous-Fetches', (string) $previousFetches);
 
-    public function revoke(#[\SensitiveParameter] string $adminToken): JsonResponse
-    {
-        $secret = Secret::findByAdminToken($adminToken);
-
-        if (! $secret) {
-            return response()->json(['error' => 'not_found'], 404);
-        }
-
-        if ($secret->isRevoked()) {
-            return response()->json(['error' => 'already_revoked'], 409);
-        }
-
-        if ($secret->hasReachedMaxViews()) {
-            return response()->json(['error' => 'already_consumed'], 409);
-        }
-
-        if ($secret->type->isFile() && $secret->file_path) {
-            $this->storage->delete($secret->file_path);
-        }
-
-        $secret->revoked_at = now();
-        $secret->destroyContent();
-
-        defer(fn () => $this->stats->increment(StatsService::SECRETS_REVOKED));
-
-        return response()->json(['success' => true]);
+        return $response;
     }
 
     private function calculateExpireAt(string $expiration): \Carbon\Carbon

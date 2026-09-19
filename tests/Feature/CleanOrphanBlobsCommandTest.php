@@ -25,6 +25,8 @@ class CleanOrphanBlobsCommandTest extends TestCase
         $this->artisan('secrets:clean-blobs')
             ->expectsOutput('Found 2 files in storage.')
             ->expectsOutput('Found 1 orphan blobs to delete.')
+            ->expectsOutput('Processing orphan: cd345678…')
+            ->doesntExpectOutputToContain('cd34567890abcdef1234567890abcdef')
             ->expectsOutput('Deleted 1 orphan blobs.')
             ->assertSuccessful();
 
@@ -131,7 +133,8 @@ class CleanOrphanBlobsCommandTest extends TestCase
 
         $this->artisan('secrets:clean-blobs')
             ->expectsOutput('Found 1 orphan blobs to delete.')
-            ->expectsOutput("Skipped {$path}: now referenced or already gone.")
+            ->expectsOutput('Skipped ab345678…: now referenced or already gone.')
+            ->doesntExpectOutputToContain(self::SECRET_TOKEN)
             ->expectsOutput('Deleted 0 orphan blobs.')
             ->assertSuccessful();
 

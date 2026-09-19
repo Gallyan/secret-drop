@@ -6,6 +6,7 @@ use App\Enums\SecretType;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 /** Detects orphan files, missing blobs, and stale content between the database and encrypted file storage. */
 class AuditDataConsistencyCommand extends Command
@@ -43,7 +44,7 @@ class AuditDataConsistencyCommand extends Command
 
         foreach ($orphans as $file) {
             $size = $storage->disk()->size($file);
-            $this->warn("  Orphan file: {$file} ({$this->formatBytes($size)})");
+            $this->warn("  Orphan file: {$this->shorten(basename($file))} ({$this->formatBytes($size)})");
 
             if (! $fix) {
                 $count++;
@@ -82,7 +83,7 @@ class AuditDataConsistencyCommand extends Command
                 $filePath = $secret->file_path;
 
                 if ($filePath !== null && ! $storage->exists($filePath)) {
-                    $this->warn("  Missing file: {$filePath} (secret {$secret->token})");
+                    $this->warn("  Missing file: {$this->shorten(basename($filePath))} (secret {$secret->id})");
                     $count++;
 
                     if ($fix) {
@@ -150,6 +151,11 @@ class AuditDataConsistencyCommand extends Command
         }
 
         return $count;
+    }
+
+    private function shorten(string $value): string
+    {
+        return Str::substr($value, 0, 8).'…';
     }
 
     private function formatBytes(int $bytes): string

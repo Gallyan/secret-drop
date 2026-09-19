@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'これが最後の閲覧です',
     'last_read_warning_text' => '表示後、このシークレットは完全に削除されます。閲覧する準備ができていることを確認してください。',
     'last_read_warning_short' => 'これが最後の閲覧です。表示後、シークレットは完全に削除されます。',
+    'previous_fetches_title' => 'このシークレットはあなたより前に取得されています',
+    'previous_fetches_single_view' => 'この1回限りのシークレットの暗号化コンテンツは、閲覧が確認されないまま取得されました。あなたでない場合（以前の試行、別のタブや端末）、リンクが傍受された可能性があります。送信者に知らせてください。',
+    'previous_fetches_multi_view_title' => 'このシークレットはすでに取得されています',
+    'previous_fetches_count' => 'あなたより前の取得回数: :count',
     'btn_reveal_secret' => 'シークレットを表示',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => '無効なフラグメント形式',
     'crypto_passphrase_required' => 'パスフレーズが必要です',
     'crypto_passphrase_incorrect' => 'パスフレーズが間違っているか、データが改変されています',
+    'crypto_passphrase_too_short' => 'パスフレーズは、先頭と末尾の空白を除いて12文字以上必要です。',
     'crypto_decryption_failed' => '復号化に失敗しました。キーが間違っている可能性があります。',
     'crypto_decryption_error' => '復号化中にエラーが発生しました',
     'crypto_file_download_failed' => '暗号化ファイルをダウンロードできません',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'このシークレットは取り消されました。',
     'admin_error_revoke' => '取り消し中にエラーが発生しました。',
     'admin_error_extend' => '延長中にエラーが発生しました。',
+    'admin_error_expired' => 'このシークレットは有効期限が切れているため、延長できません。',
+    'admin_error_max_expiry_reached' => 'このシークレットはすでに最大有効期間に達しているため、これ以上延長できません。',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Dropアクセスリンク',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'コンテンツページ',
     'stat_page_unknown' => '不明なルート',
     'stat_page_secret_fetch' => '閲覧 (API)',
-    'stat_page_secret_revoke' => '取り消し (API)',
     'stat_page_contact' => 'お問い合わせ',
     'stat_page_sitemap' => 'サイトマップ',
     'stat_page_admin_request_access' => '管理者 - アクセス申請',

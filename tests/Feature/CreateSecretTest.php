@@ -49,8 +49,7 @@ class CreateSecretTest extends TestCase
         $this->assertSame(0, $secret->read_count);
         $this->assertNull($secret->file_path);
         $this->assertNull($secret->creator_email_hash);
-        $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $secret->admin_token_hash);
-        $this->assertNotSame($token, $secret->admin_token_hash);
+        $this->assertArrayNotHasKey('admin_token_hash', $secret->getAttributes());
     }
 
     /** Vérifie qu'un secret avec passphrase, email et mode séparé persiste ces options et incrémente leurs stats. */

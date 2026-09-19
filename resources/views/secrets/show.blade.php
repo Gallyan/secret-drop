@@ -8,6 +8,7 @@
     <div class="w-full max-w-2xl">
         <div
             x-data="secretViewer" data-token="{{ $token }}"
+            data-previous-fetches-count="{{ __('messages.previous_fetches_count') }}"
             class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors"
         >
             <div class="p-5 sm:p-8 lg:p-12">
@@ -80,6 +81,28 @@
                         <div x-show="type === 'file' && !decrypted && !error" class="mt-3 text-sm text-gray-600 dark:text-slate-400">
                             <span class="text-gray-600 dark:text-slate-400">{{ __('messages.file_encrypted_info') }}</span>
                         </div>
+                    </div>
+
+                    {{-- Ciphertext already retrieved before this page load --}}
+                    <div x-show="hasSuspiciousPreviousFetches()" x-cloak role="alert" class="mb-6 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                        <div class="flex gap-3">
+                            <x-icon.warning class="w-5 h-5 text-red-600 dark:text-red-300 shrink-0 mt-0.5" />
+                            <div>
+                                <p class="font-medium text-red-800 dark:text-red-300">
+                                    {{ __('messages.previous_fetches_title') }}
+                                </p>
+                                <p class="mt-1 text-sm text-red-700 dark:text-red-300">
+                                    {{ __('messages.previous_fetches_single_view') }}
+                                </p>
+                                <p class="mt-1 text-sm font-medium text-red-700 dark:text-red-300" x-text="previousFetchesText()"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div x-show="hasNeutralPreviousFetches()" x-cloak role="status" class="mb-6 p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-600/50 rounded-xl transition-colors">
+                        <p class="font-medium text-gray-800 dark:text-slate-200">
+                            {{ __('messages.previous_fetches_multi_view_title') }}
+                        </p>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400" x-text="previousFetchesText()"></p>
                     </div>
 
                     {{-- Confirmation step for last read --}}

@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'This is the last available view',
     'last_read_warning_text' => 'Once displayed, this secret will be permanently deleted. Make sure you are ready to view it.',
     'last_read_warning_short' => 'This is the last available view. The secret will be permanently deleted after viewing.',
+    'previous_fetches_title' => 'This secret was already retrieved before you',
+    'previous_fetches_single_view' => 'The encrypted content of this single-use secret was retrieved without the reading being confirmed. If it was not you (an earlier attempt, another tab or device), the link may have been intercepted: warn the sender.',
+    'previous_fetches_multi_view_title' => 'This secret was already retrieved',
+    'previous_fetches_count' => 'Retrievals before you: :count',
     'btn_reveal_secret' => 'Reveal the secret',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Invalid fragment format',
     'crypto_passphrase_required' => 'Passphrase is required',
     'crypto_passphrase_incorrect' => 'Incorrect passphrase or corrupted data',
+    'crypto_passphrase_too_short' => 'The passphrase must contain at least 12 characters, not counting leading and trailing spaces.',
     'crypto_decryption_failed' => 'Decryption failed. The key may be incorrect.',
     'crypto_decryption_error' => 'An error occurred during decryption',
     'crypto_file_download_failed' => 'Unable to download encrypted file',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'This secret has been revoked.',
     'admin_error_revoke' => 'Error revoking secret.',
     'admin_error_extend' => 'Error extending secret.',
+    'admin_error_expired' => 'This secret has expired and can no longer be extended.',
+    'admin_error_max_expiry_reached' => 'This secret has already reached its maximum lifetime and cannot be extended further.',
 
     // Magic link email
     'email_magic_link_subject' => 'Your access link to Secret Drop',
@@ -499,7 +506,6 @@ return [
     'stat_page_content' => 'Content page',
     'stat_page_unknown' => 'Unknown route',
     'stat_page_secret_fetch' => 'Reading (API)',
-    'stat_page_secret_revoke' => 'Revocation (API)',
     'stat_page_contact' => 'Contact',
     'stat_page_sitemap' => 'Sitemap',
     'stat_page_admin_request_access' => 'Admin - Access request',

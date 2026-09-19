@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Closure;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -24,6 +27,11 @@ class MagicLink extends Model
     use HasUuids;
 
     public const SUPER_ADMIN_EMAIL_HASH = 'superadmin';
+
+    /** Must outlast the mail delivery run while the lock is held. */
+    private const int ISSUE_LOCK_SECONDS = 30;
+
+    private const int ISSUE_LOCK_WAIT_SECONDS = 5;
 
     protected $fillable = [
         'email_hash',
@@ -85,6 +93,61 @@ class MagicLink extends Model
         $this->syncOriginalAttribute('used_at');
 
         return true;
+    }
+
+    /**
+     * Burns the other pending links of the recipient, so that only this link
+     * can open a session.
+     */
+    public function invalidateOtherPendingLinks(): int
+    {
+        $now = now();
+
+        return self::query()
+            ->where('email_hash', $this->email_hash)
+            ->whereKeyNot($this->getKey())
+            ->whereNull('used_at')
+            ->where('expire_at', '>=', $now)
+            ->update(['used_at' => $now]);
+    }
+
+    /**
+     * Creates a link, delivers it, then burns the recipient's other pending
+     * links, all under a per-recipient lock: concurrent requests cannot burn
+     * each other's fresh link, so exactly the latest delivered link stays
+     * valid. A failed delivery throws before the burn and leaves the previous
+     * link usable. Returns false, without issuing anything, when the lock
+     * stays held by another request.
+     *
+     * @param Closure(): void $deliver
+     */
+    public static function issueExclusively(
+        string $emailHash,
+        #[\SensitiveParameter] string $tokenHash,
+        Closure $deliver,
+    ): bool {
+        $issued = false;
+
+        try {
+            Cache::lock("magic-link-issue:{$emailHash}", self::ISSUE_LOCK_SECONDS)
+                ->block(self::ISSUE_LOCK_WAIT_SECONDS, function () use ($emailHash, $tokenHash, $deliver, &$issued): void {
+                    $magicLink = self::create([
+                        'email_hash' => $emailHash,
+                        'token_hash' => $tokenHash,
+                        'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
+                    ]);
+
+                    $deliver();
+
+                    $magicLink->invalidateOtherPendingLinks();
+
+                    $issued = true;
+                });
+        } catch (LockTimeoutException) {
+            return false;
+        }
+
+        return $issued;
     }
 
     public static function findByToken(#[\SensitiveParameter] string $token): ?self

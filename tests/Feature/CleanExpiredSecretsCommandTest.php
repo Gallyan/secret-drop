@@ -84,9 +84,13 @@ class CleanExpiredSecretsCommandTest extends TestCase
         Storage::fake('secrets');
         $fileSecret = Secret::factory()->expired()->withStoredBlob()->create();
         $filePath = (string) $fileSecret->file_path;
+        $tokenPrefix = substr($fileSecret->token, 0, 8);
 
         $this->artisan('secrets:clean')
             ->expectsOutput('Found 1 secrets to delete.')
+            ->expectsOutput("Processing secret {$fileSecret->id}...")
+            ->expectsOutput("  - Deleted file {$tokenPrefix}…")
+            ->doesntExpectOutputToContain($fileSecret->token)
             ->expectsOutput('Deleted 1 secrets and 1 files.')
             ->assertSuccessful();
 

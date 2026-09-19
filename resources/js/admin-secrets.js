@@ -7,6 +7,8 @@ const ERROR_MAP = {
     already_revoked: 'admin_error_already_revoked',
     already_consumed: 'admin_error_already_consumed',
     revoked: 'admin_error_revoked',
+    expired: 'admin_error_expired',
+    max_expiry_reached: 'admin_error_max_expiry_reached',
 };
 
 const BADGE_CONFIG = {

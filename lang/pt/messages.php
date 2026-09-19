@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'Esta é a última leitura disponível',
     'last_read_warning_text' => 'Depois de exibido, este segredo será eliminado permanentemente. Certifique-se de que está pronto para o visualizar.',
     'last_read_warning_short' => 'Esta é a última leitura disponível. O segredo será eliminado permanentemente após a visualização.',
+    'previous_fetches_title' => 'Este segredo já foi obtido antes de si',
+    'previous_fetches_single_view' => 'O conteúdo encriptado deste segredo de utilização única foi obtido sem que a leitura fosse confirmada. Se não foi o próprio (uma tentativa anterior, outro separador ou dispositivo), o link pode ter sido intercetado: avise o remetente.',
+    'previous_fetches_multi_view_title' => 'Este segredo já foi obtido',
+    'previous_fetches_count' => 'Obtenções antes de si: :count',
     'btn_reveal_secret' => 'Revelar o segredo',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Formato de fragmento inválido',
     'crypto_passphrase_required' => 'A frase-passe é obrigatória',
     'crypto_passphrase_incorrect' => 'Frase-passe incorreta ou dados alterados',
+    'crypto_passphrase_too_short' => 'A frase-passe deve conter pelo menos 12 caracteres, sem contar os espaços no início e no fim.',
     'crypto_decryption_failed' => 'A desencriptação falhou. A chave pode estar incorreta.',
     'crypto_decryption_error' => 'Ocorreu um erro durante a desencriptação',
     'crypto_file_download_failed' => 'Não foi possível transferir o ficheiro encriptado',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'Este segredo foi revogado.',
     'admin_error_revoke' => 'Erro ao revogar o segredo.',
     'admin_error_extend' => 'Erro ao estender o segredo.',
+    'admin_error_expired' => 'Este segredo expirou e já não pode ser estendido.',
+    'admin_error_max_expiry_reached' => 'Este segredo já atingiu a duração máxima e não pode ser estendido mais.',
 
     // Magic link email
     'email_magic_link_subject' => 'O seu link de acesso ao Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'Página de conteúdo',
     'stat_page_unknown' => 'Rota desconhecida',
     'stat_page_secret_fetch' => 'Leitura (API)',
-    'stat_page_secret_revoke' => 'Revogação (API)',
     'stat_page_contact' => 'Contacto',
     'stat_page_sitemap' => 'Mapa do site',
     'stat_page_admin_request_access' => 'Admin - Pedido de acesso',

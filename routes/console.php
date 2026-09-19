@@ -6,3 +6,4 @@ use Illuminate\Support\Facades\Schedule;
 Schedule::command('secrets:clean')->hourly()->withoutOverlapping(60);
 Schedule::command('secrets:clean-blobs')->everySixHours()->withoutOverlapping(360);
 Schedule::command('cache:prune-expired')->hourly()->withoutOverlapping(60);
+Schedule::command('stats:prune')->daily()->withoutOverlapping(1440);

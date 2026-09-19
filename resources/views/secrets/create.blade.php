@@ -262,7 +262,7 @@
                                     </div>
                                     {{-- Passphrase strength indicator --}}
                                     <div
-                                        x-show="passphrase.length > 0"
+                                        x-show="trimmedPassphrase().length > 0"
                                         x-transition:enter="transition-opacity duration-200"
                                         x-transition:enter-start="opacity-0"
                                         x-transition:enter-end="opacity-100"

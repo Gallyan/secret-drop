@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property string $id
  * @property string $token
- * @property string $admin_token_hash
  * @property SecretType $type
  * @property array<string, mixed> $cipher_meta
  * @property string|null $ciphertext
@@ -35,7 +34,6 @@ class Secret extends Model
 
     protected $fillable = [
         'token',
-        'admin_token_hash',
         'type',
         'cipher_meta',
         'ciphertext',
@@ -117,11 +115,6 @@ class Secret extends Model
         }
 
         $this->save();
-    }
-
-    public static function findByAdminToken(#[\SensitiveParameter] string $adminToken): ?self
-    {
-        return self::where('admin_token_hash', hash('sha256', $adminToken))->first();
     }
 
     public function hasCreatorEmail(): bool

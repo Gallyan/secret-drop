@@ -27,7 +27,6 @@ class StatsPages
         'secrets.fetch' => 'messages.stat_page_secret_fetch',
         'secrets.confirmRead' => 'messages.stat_route_confirm_read',
         'secrets.download' => 'messages.stat_page_download',
-        'secrets.revoke' => 'messages.stat_page_secret_revoke',
         'admin.index' => 'messages.stat_page_admin_login',
         'admin.requestAccess' => 'messages.stat_page_admin_request_access',
         'admin.accessSent' => 'messages.stat_page_admin_access_sent',

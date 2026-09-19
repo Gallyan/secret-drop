@@ -54,6 +54,10 @@ class SanitizeProcessor implements ProcessorInterface
         // Superadmin verify URLs: /superadmin/verify/{token}
         '#(/superadmin/verify/)[A-Za-z0-9_-]{20,}#' => '$1[TOKEN]',
 
+        // Bare 64-hex hashes and 32-hex tokens (e.g. SQL bindings), never longer hex runs or plain numbers
+        '/\b(?=[0-9]*[a-f])[0-9a-f]{64}\b/i' => '[HASH]',
+        '/\b(?=[0-9]*[a-f])[0-9a-f]{32}\b/i' => '[TOKEN]',
+
         // Base64-encoded data (potential ciphertext) - very long unbroken strings
         // Threshold at 200 to avoid redacting stack traces or long class names
         '/[A-Za-z0-9+\/=_-]{200,}/' => '[REDACTED_DATA]',

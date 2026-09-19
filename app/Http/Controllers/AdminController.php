@@ -76,17 +76,19 @@ class AdminController extends Controller
         }
 
         $tokenData = $this->tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => $emailHash,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
-        ]);
-
         $verifyUrl = route('admin.verify', ['locale' => $locale, 'token' => $tokenData['token']]);
-        Mail::to($email)
-            ->locale($locale)
-            ->send(new MagicLinkMail($verifyUrl));
+
+        $issued = MagicLink::issueExclusively(
+            $emailHash,
+            $tokenData['hash'],
+            function () use ($email, $locale, $verifyUrl): void {
+                Mail::to($email)->locale($locale)->send(new MagicLinkMail($verifyUrl));
+            },
+        );
+
+        if (! $issued) {
+            return;
+        }
 
         $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
     }
@@ -264,10 +266,23 @@ class AdminController extends Controller
             return response()->json(['error' => 'revoked'], 409);
         }
 
-        $baseDate = $secret->expire_at === null || $secret->expire_at->isPast()
-            ? now()
-            : $secret->expire_at;
-        $secret->expire_at = $baseDate->addHours($request->hours());
+        if ($secret->isExpired()) {
+            return response()->json(['error' => 'expired'], 409);
+        }
+
+        if ($secret->hasReachedMaxViews()) {
+            return response()->json(['error' => 'already_consumed'], 409);
+        }
+
+        $baseDate = $secret->expire_at ?? now();
+        $latestExpireAt = $secret->created_at->copy()->addHours($this->longestExpirationHours());
+        $newExpireAt = $baseDate->copy()->addHours($request->hours())->min($latestExpireAt);
+
+        if ($newExpireAt->lessThanOrEqualTo($baseDate)) {
+            return response()->json(['error' => 'max_expiry_reached'], 409);
+        }
+
+        $secret->expire_at = $newExpireAt;
         $secret->save();
 
         defer(fn () => $this->stats->incrementDailyAndHourly(StatsService::SECRETS_EXTENDED));
@@ -278,4 +293,14 @@ class AdminController extends Controller
         ]);
     }
 
+    private function longestExpirationHours(): int
+    {
+        $expirations = array_filter(Config::array('secrets.expirations'), is_int(...));
+
+        if ($expirations === []) {
+            return 0;
+        }
+
+        return max($expirations);
+    }
 }

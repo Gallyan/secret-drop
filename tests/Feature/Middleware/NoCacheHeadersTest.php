@@ -30,9 +30,9 @@ class NoCacheHeadersTest extends TestCase
     public static function sensitiveRoutes(): array
     {
         return [
-            'page de consultation GET /s/{token}' => ['GET', '/s/nonexistenttoken12345678901'],
-            'fetch API GET /api/secrets/{token}' => ['GET', '/api/secrets/nonexistenttoken12345678901'],
-            'confirmation POST /api/secrets/{token}/read' => ['POST', '/api/secrets/nonexistenttoken12345678901/read'],
+            'page de consultation GET /s/{token}' => ['GET', '/s/0123456789abcdef0123456789abcdef'],
+            'fetch API GET /api/secrets/{token}' => ['GET', '/api/secrets/0123456789abcdef0123456789abcdef'],
+            'confirmation POST /api/secrets/{token}/read' => ['POST', '/api/secrets/0123456789abcdef0123456789abcdef/read'],
         ];
     }
 

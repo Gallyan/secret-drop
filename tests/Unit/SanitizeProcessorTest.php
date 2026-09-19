@@ -222,6 +222,75 @@ class SanitizeProcessorTest extends TestCase
         $this->assertStringContainsString('where "token" = ?', $formatted);
     }
 
+    /** @return array<string, array{string, string}> */
+    public static function bareHexValues(): array
+    {
+        return [
+            'token nu' => ['Secret '.self::SECRET_TOKEN.' not found', 'Secret [TOKEN] not found'],
+            'hash nu' => ['Magic link '.self::MAGIC_LINK_TOKEN.' used', 'Magic link [HASH] used'],
+            'chemin de blob' => ['Missing ab/'.self::SECRET_TOKEN, 'Missing ab/[TOKEN]'],
+            'token en majuscules' => [strtoupper(self::SECRET_TOKEN), '[TOKEN]'],
+            'entre guillemets' => ["token = '".self::SECRET_TOKEN."'", "token = '[TOKEN]'"],
+        ];
+    }
+
+    /** Vérifie que les tokens et hashes hexadécimaux isolés sont masqués partout, hors URL comprise. */
+    #[DataProvider('bareHexValues')]
+    public function testRedactsBareHexTokensAndHashes(string $value, string $expected): void
+    {
+        $record = $this->process(
+            message: $value,
+            context: ['detail' => $value, 'list' => [$value]],
+            extra: ['sql' => $value],
+        );
+
+        $this->assertSame($expected, $record->message);
+        $this->assertSame(['detail' => $expected, 'list' => [$expected]], $record->context);
+        $this->assertSame(['sql' => $expected], $record->extra);
+    }
+
+    /** Vérifie qu'un message de type QueryException avec bindings en clair ne laisse fuiter ni token ni hash. */
+    public function testRedactsHexBindingsInQueryExceptionLikeMessage(): void
+    {
+        $message = 'SQLSTATE[23000]: Integrity constraint violation (Connection: mysql, SQL: update `magic_links`'
+            .' set `used_at` = 2026-09-19 10:00:00 where `token_hash` = '.self::MAGIC_LINK_TOKEN
+            .' and `secret_id` = 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d and `token` = '.self::SECRET_TOKEN.')';
+
+        $record = $this->process(message: $message, context: ['exception' => new RuntimeException($message)]);
+
+        $expected = 'SQLSTATE[23000]: Integrity constraint violation (Connection: mysql, SQL: update `magic_links`'
+            .' set `used_at` = 2026-09-19 10:00:00 where `token_hash` = [HASH]'
+            .' and `secret_id` = 9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d and `token` = [TOKEN])';
+
+        $this->assertSame($expected, $record->message);
+        $this->assertIsString($record->context['exception']);
+        $this->assertStringContainsString($expected, $record->context['exception']);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function nonTokenValues(): array
+    {
+        return [
+            'hex de 40 caractères (SHA-1)' => [str_repeat('a1', 20)],
+            'hex de 31 caractères' => [substr(self::SECRET_TOKEN, 0, 31)],
+            'hex de 33 caractères' => [self::SECRET_TOKEN.'a'],
+            'hex de 128 caractères' => [self::MAGIC_LINK_TOKEN.self::MAGIC_LINK_TOKEN],
+            'nombre de 32 chiffres' => [str_repeat('1234567890', 3).'12'],
+            'UUID' => ['9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'],
+            'hex collé à un identifiant' => ['id_'.self::SECRET_TOKEN],
+            'hex suivi de lettres non hex' => [self::SECRET_TOKEN.'xyz'],
+        ];
+    }
+
+    /** Vérifie que les chaînes hexadécimales d'une autre longueur, les nombres et les UUID restent intacts. */
+    #[DataProvider('nonTokenValues')]
+    public function testPreservesHexStringsThatAreNotTokens(string $value): void
+    {
+        $message = "Value {$value} end";
+
+        $this->assertSame($message, $this->process(message: $message)->message);
+    }
+
     /** Vérifie que chaque connexion de base masque les valeurs liées dans les messages de QueryException. */
     public function testEveryDatabaseConnectionMasksBindingsInExceptionMessages(): void
     {

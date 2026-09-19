@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
-/** Generates cryptographically secure tokens and their SHA-256 hashes for URLs, admin access, and magic links. */
+/** Generates cryptographically secure tokens and their SHA-256 hashes for secret URLs and magic links. */
 class TokenService
 {
+    /** Route constraint matching generatePublicToken() output. */
+    public const PUBLIC_TOKEN_PATTERN = '[0-9a-f]{32}';
+
     private const TOKEN_BYTES = 16; // 128 bits
 
     /**
@@ -14,22 +17,6 @@ class TokenService
     public function generatePublicToken(): string
     {
         return bin2hex(random_bytes(self::TOKEN_BYTES));
-    }
-
-    /**
-     * Generate a secure admin token and its hash.
-     * The plain token is returned to the client, only the hash is stored.
-     *
-     * @return array{token: string, hash: string}
-     */
-    public function generateAdminToken(): array
-    {
-        $token = bin2hex(random_bytes(self::TOKEN_BYTES));
-
-        return [
-            'token' => $token,
-            'hash' => $this->hashToken($token),
-        ];
     }
 
     /**

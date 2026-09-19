@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Sleep;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -107,6 +108,66 @@ class AdminControllerTest extends TestCase
             'metric' => StatsService::MAGIC_LINKS_REQUESTED,
             'count' => 1,
         ]);
+    }
+
+    /** Vérifie qu'une nouvelle demande d'accès invalide le lien précédent : seul le dernier lien ouvre la session. */
+    public function testNewAccessRequestInvalidatesPreviousMagicLink(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $sentMails = Mail::sent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL));
+        $this->assertCount(2, $sentMails);
+
+        $firstLinkResponse = $this->post($sentMails->first()->verifyUrl);
+
+        $firstLinkResponse->assertViewIs('admin.invalid-link');
+        $firstLinkResponse->assertSessionMissing('admin_email_hash');
+
+        $secondLinkResponse = $this->post($sentMails->last()->verifyUrl);
+
+        $secondLinkResponse->assertRedirect('/fr/admin/dashboard');
+        $secondLinkResponse->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
+    }
+
+    /** Vérifie qu'un échec d'envoi du nouveau lien laisse le lien précédent utilisable. */
+    public function testFailedMagicLinkMailKeepsPreviousLinkUsable(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $firstMail = Mail::sent(MagicLinkMail::class)->first();
+        Mail::shouldReceive('to')->andThrow(new RuntimeException('Mail transport down'));
+        $deferred = $this->holdDeferredCallbacks();
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $deferred->invoke();
+
+        $this->assertDatabaseCount('magic_links', 2);
+
+        $response = $this->post($firstMail->verifyUrl);
+
+        $response->assertRedirect('/fr/admin/dashboard');
+        $response->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
+    }
+
+    /** Vérifie qu'une demande concurrente dont le verrou reste pris n'émet rien, sans erreur ni réponse différente. */
+    public function testRequestAccessWhileIssueLockIsHeldSendsNothing(): void
+    {
+        Mail::fake();
+        Sleep::fake(syncWithCarbon: true);
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        Cache::lock('magic-link-issue:'.MagicLink::hashEmail(self::OWNER_EMAIL), 60)->get();
+
+        $response = $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $response->assertRedirect('/fr/admin/access-sent');
+
+        Mail::assertNothingSent();
+
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
     }
 
     /** Vérifie qu'un email sans secret ne reçoit rien et obtient la même réponse, sans délai artificiel. */
@@ -656,8 +717,8 @@ class AdminControllerTest extends TestCase
     {
         return [
             'expiration future : ajout à l\'expiration' => [fn (): SecretFactory => Secret::factory()->expiresIn(2), '2026-09-16 12:00:00'],
-            'expiration passée : ajout à maintenant' => [fn (): SecretFactory => Secret::factory()->expired(), '2026-09-16 10:00:00'],
             'sans expiration : ajout à maintenant' => [fn (): SecretFactory => Secret::factory()->withoutExpiry(), '2026-09-16 10:00:00'],
+            'au-delà de la durée maximale : plafond à la création + 90 jours' => [fn (): SecretFactory => Secret::factory()->expiresIn(2159), '2026-12-14 10:00:00'],
         ];
     }
 
@@ -695,21 +756,60 @@ class AdminControllerTest extends TestCase
         ]);
     }
 
-    /** Vérifie qu'un secret révoqué ne peut pas être prolongé : 409 et expiration intacte. */
-    public function testExtendReturns409ForRevokedSecret(): void
+    /**
+     * @return array<string, array{0: Closure(): SecretFactory, 1: string}>
+     */
+    public static function unextendableSecrets(): array
+    {
+        return [
+            'révoqué' => [fn (): SecretFactory => Secret::factory()->revoked(), 'revoked'],
+            'expiré' => [fn (): SecretFactory => Secret::factory()->expired(), 'expired'],
+            'consommé' => [fn (): SecretFactory => Secret::factory()->consumed(), 'already_consumed'],
+            'déjà au plafond de durée' => [fn (): SecretFactory => Secret::factory()->expiresIn(2160), 'max_expiry_reached'],
+            'sans expiration, créé au-delà de la durée maximale' => [
+                fn (): SecretFactory => Secret::factory()->withoutExpiry()->state(['created_at' => now()->subDays(91)]),
+                'max_expiry_reached',
+            ],
+        ];
+    }
+
+    /**
+     * Vérifie qu'un secret révoqué, expiré, consommé ou au plafond de durée ne peut pas être prolongé : 409 et expiration intacte.
+     *
+     * @param  Closure(): SecretFactory  $secretFactory
+     */
+    #[DataProvider('unextendableSecrets')]
+    public function testExtendReturns409ForUnextendableSecret(Closure $secretFactory, string $error): void
     {
         $this->freezeTime();
-        $secret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->revoked()->create();
+        $secret = $secretFactory()->withCreatorEmail(self::OWNER_EMAIL)->create();
         $expireAtBefore = $secret->expire_at?->toDateTimeString();
 
         $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))
             ->postJson("/fr/admin/secrets/{$secret->id}/extend", ['hours' => 24]);
 
         $response->assertConflict();
-        $response->assertExactJson(['error' => 'revoked']);
+        $response->assertExactJson(['error' => $error]);
 
         $this->assertSame($expireAtBefore, $secret->refresh()->expire_at?->toDateTimeString());
         $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_EXTENDED]);
+    }
+
+    /** Vérifie que le dashboard ne propose ni prolongation ni révocation pour un secret expiré ou consommé. */
+    public function testDashboardHidesActionsOfInaccessibleSecrets(): void
+    {
+        $activeSecret = Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->expired()->create();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->consumed()->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))->get('/fr/admin/dashboard');
+
+        $response->assertViewIs('admin.dashboard');
+        $html = $response->getContent() ?: '';
+        $this->assertSame(1, substr_count($html, 'data-poll-actions'));
+        $this->assertSame(1, substr_count($html, '@click="extend($el)"'));
+        $this->assertSame(1, substr_count($html, '@click="openRevokeModal($el)"'));
+        $response->assertSee("data-secret-id=\"{$activeSecret->id}\"", false);
     }
 
     /** Vérifie qu'un admin ne peut pas prolonger le secret d'un autre email : 404 et expiration intacte. */

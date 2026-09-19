@@ -57,7 +57,6 @@ class TrackResponseTimeTest extends TestCase
             'secrets.fetch' => ['secrets.fetch', 'read'],
             'secrets.confirmRead' => ['secrets.confirmRead', 'read'],
             'secrets.download' => ['secrets.download', 'read'],
-            'secrets.revoke' => ['secrets.revoke', 'admin'],
             'admin.index' => ['admin.index', 'admin'],
             'admin.requestAccess' => ['admin.requestAccess', 'admin'],
             'admin.accessSent' => ['admin.accessSent', 'admin'],

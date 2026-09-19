@@ -1,5 +1,13 @@
 import { t, formatFileSize, copyText } from '../utils.js';
 
+const READ_ID_BYTES = 16;
+
+function generateReadId() {
+    const bytes = crypto.getRandomValues(new Uint8Array(READ_ID_BYTES));
+
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+
 export default () => ({
         token: null,
         isLoading: true,
@@ -9,6 +17,11 @@ export default () => ({
         type: null,
         cipherMeta: null,
         willBeDestroyed: false,
+        singleUse: false,
+        previousFetches: 0,
+        ownDownloads: 0,
+        readId: generateReadId(),
+        previousFetchesTemplate: '',
 
         // Text mode
         ciphertext: null,
@@ -34,6 +47,7 @@ export default () => ({
 
         async init() {
             this.token = this.$el.dataset.token;
+            this.previousFetchesTemplate = this.$el.dataset.previousFetchesCount || '';
             await this.loadSecret();
 
             if (!this.loadError && !this.needsPassphrase && !this.needsManualKey && !this.error) {
@@ -75,6 +89,8 @@ export default () => ({
                 this.type = data.type;
                 this.cipherMeta = data.cipher_meta;
                 this.willBeDestroyed = data.will_be_destroyed;
+                this.singleUse = data.single_use === true;
+                this.previousFetches = Number(data.previous_fetches) || 0;
 
                 if (data.type === 'text') {
                     this.ciphertext = data.ciphertext;
@@ -162,9 +178,9 @@ export default () => ({
                 }
 
                 const salt = this.cipherMeta.salt || null;
-                const passphrase = this.needsPassphrase ? this.passphrase : null;
+                const passphrase = this.needsPassphrase ? this.passphrase.trim() : null;
 
-                if (this.needsPassphrase && !passphrase?.trim()) {
+                if (this.needsPassphrase && !passphrase) {
                     throw new Error(t('crypto_passphrase_required'));
                 }
 
@@ -226,6 +242,8 @@ export default () => ({
                 throw new Error(t('crypto_file_download_failed'));
             }
 
+            this.trackDownloadFetches(response.headers.get('X-Previous-Fetches'));
+
             const encryptedData = await response.arrayBuffer();
             const iv2 = this.cipherMeta.iv2 || null;
 
@@ -257,6 +275,28 @@ export default () => ({
             URL.revokeObjectURL(url);
         },
 
+        trackDownloadFetches(header) {
+            const fetchesBeforeDownload = Number(header);
+
+            if (header !== null && Number.isInteger(fetchesBeforeDownload)) {
+                this.previousFetches = Math.max(this.previousFetches, fetchesBeforeDownload - this.ownDownloads);
+            }
+
+            this.ownDownloads++;
+        },
+
+        hasSuspiciousPreviousFetches() {
+            return this.singleUse && this.previousFetches > 0;
+        },
+
+        hasNeutralPreviousFetches() {
+            return !this.singleUse && this.previousFetches > 0;
+        },
+
+        previousFetchesText() {
+            return this.previousFetchesTemplate.replace(':count', String(this.previousFetches));
+        },
+
         formatFileSize,
 
         async copyToClipboard() {
@@ -271,7 +311,8 @@ export default () => ({
 
         async confirmRead() {
             const url = `/api/secrets/${this.token}/read`;
-            const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            // Same id on every attempt so the server counts this read once
+            const body = JSON.stringify({ read_id: this.readId });
 
             for (let attempt = 0; attempt < 3; attempt++) {
                 try {
@@ -279,8 +320,9 @@ export default () => ({
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrf,
+                            'Accept': 'application/json',
                         },
+                        body,
                     });
 
                     if (res.ok) {
@@ -294,13 +336,7 @@ export default () => ({
             }
 
             // Last resort: sendBeacon survives tab close
-            navigator.sendBeacon?.(
-                url,
-                new Blob(
-                    [JSON.stringify({ _token: csrf })],
-                    { type: 'application/json' }
-                )
-            );
+            navigator.sendBeacon?.(url, new Blob([body], { type: 'application/json' }));
         },
 
         secretTypeTitle() {

@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'Questa è l\'ultima lettura disponibile',
     'last_read_warning_text' => 'Una volta visualizzato, questo segreto verrà eliminato definitivamente. Assicurati di essere pronto a visualizzarlo.',
     'last_read_warning_short' => 'Questa è l\'ultima lettura disponibile. Il segreto verrà eliminato definitivamente dopo la visualizzazione.',
+    'previous_fetches_title' => 'Questo segreto è già stato recuperato prima di te',
+    'previous_fetches_single_view' => 'Il contenuto crittografato di questo segreto monouso è stato recuperato senza che la lettura fosse confermata. Se non sei stato tu (un tentativo precedente, un\'altra scheda o un altro dispositivo), il link potrebbe essere stato intercettato: avvisa il mittente.',
+    'previous_fetches_multi_view_title' => 'Questo segreto è già stato recuperato',
+    'previous_fetches_count' => 'Recuperi prima di te: :count',
     'btn_reveal_secret' => 'Mostra il segreto',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Formato del frammento non valido',
     'crypto_passphrase_required' => 'Frase segreta richiesta',
     'crypto_passphrase_incorrect' => 'Frase segreta errata o dati alterati',
+    'crypto_passphrase_too_short' => 'La frase segreta deve contenere almeno 12 caratteri, esclusi gli spazi iniziali e finali.',
     'crypto_decryption_failed' => 'Decrittazione fallita. La chiave potrebbe essere errata.',
     'crypto_decryption_error' => 'Si è verificato un errore durante la decrittazione',
     'crypto_file_download_failed' => 'Impossibile scaricare il file crittografato',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'Questo segreto è stato revocato.',
     'admin_error_revoke' => 'Errore durante la revoca.',
     'admin_error_extend' => 'Errore durante l\'estensione.',
+    'admin_error_expired' => 'Questo segreto è scaduto e non può più essere esteso.',
+    'admin_error_max_expiry_reached' => 'Questo segreto ha già raggiunto la durata massima e non può essere esteso ulteriormente.',
 
     // Magic link email
     'email_magic_link_subject' => 'Il tuo link di accesso a Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'Pagina di contenuto',
     'stat_page_unknown' => 'Percorso sconosciuto',
     'stat_page_secret_fetch' => 'Lettura (API)',
-    'stat_page_secret_revoke' => 'Revoca (API)',
     'stat_page_contact' => 'Contatto',
     'stat_page_sitemap' => 'Mappa del sito',
     'stat_page_admin_request_access' => 'Admin - Richiesta di accesso',

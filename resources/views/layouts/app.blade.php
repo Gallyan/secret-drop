@@ -205,6 +205,7 @@
             'crypto_not_supported',
             'crypto_passphrase_incorrect',
             'crypto_passphrase_required',
+            'crypto_passphrase_too_short',
             'crypto_select_file',
             'decrypting_file',
             'decrypting_message',
@@ -234,6 +235,8 @@
             'admin_error_revoked',
             'admin_error_revoke',
             'admin_error_extend',
+            'admin_error_expired',
+            'admin_error_max_expiry_reached',
         ]));
     @endphp
     <style nonce="@nonce">[x-cloak]{display:none!important}html{background:#e5e7eb}html.dark{background:#0f172a}</style>

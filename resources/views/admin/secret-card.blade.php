@@ -92,7 +92,7 @@
             </div>
 
             {{-- Actions --}}
-            @if(!$secret->isRevoked())
+            @if($secret->isAccessible())
                 <div data-poll-actions class="flex flex-col sm:flex-row gap-3 pt-2">
                     {{-- Extend --}}
                     <div class="flex items-center gap-2">
@@ -120,19 +120,17 @@
                     </div>
 
                     {{-- Revoke --}}
-                    @if($secret->isAccessible())
-                        <button
-                            data-secret-id="{{ $secret->id }}"
-                            @click="openRevokeModal($el)"
-                            :disabled="revoking"
-                            class="relative px-4 py-2 text-red-600 dark:text-red-300 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-xl disabled:opacity-50 transition cursor-pointer"
-                        >
-                            <span :class="revoking && 'invisible'">{{ __('messages.admin_revoke') }}</span>
-                            <span x-show="revoking" class="absolute inset-0 flex items-center justify-center">
-                                <x-spinner />
-                            </span>
-                        </button>
-                    @endif
+                    <button
+                        data-secret-id="{{ $secret->id }}"
+                        @click="openRevokeModal($el)"
+                        :disabled="revoking"
+                        class="relative px-4 py-2 text-red-600 dark:text-red-300 border border-red-300 dark:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/10 text-sm font-medium rounded-xl disabled:opacity-50 transition cursor-pointer"
+                    >
+                        <span :class="revoking && 'invisible'">{{ __('messages.admin_revoke') }}</span>
+                        <span x-show="revoking" class="absolute inset-0 flex items-center justify-center">
+                            <x-spinner />
+                        </span>
+                    </button>
                 </div>
             @endif
         </div>

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 /** Removes encrypted files on disk that no longer have a matching secret record. */
 class CleanOrphanBlobsCommand extends Command
@@ -40,7 +41,7 @@ class CleanOrphanBlobsCommand extends Command
         $deleted = 0;
 
         foreach ($orphans as $file) {
-            $this->line("Processing orphan: {$file}...");
+            $this->line("Processing orphan: {$this->shorten(basename($file))}");
 
             if ($dryRun) {
                 $deleted++;
@@ -49,7 +50,7 @@ class CleanOrphanBlobsCommand extends Command
             }
 
             if (! $storage->deleteOrphan($file)) {
-                $this->line("Skipped {$file}: now referenced or already gone.");
+                $this->line("Skipped {$this->shorten(basename($file))}: now referenced or already gone.");
 
                 continue;
             }
@@ -61,5 +62,10 @@ class CleanOrphanBlobsCommand extends Command
         $this->info("{$prefix} {$deleted} orphan blobs.");
 
         return Command::SUCCESS;
+    }
+
+    private function shorten(string $value): string
+    {
+        return Str::substr($value, 0, 8).'…';
     }
 }

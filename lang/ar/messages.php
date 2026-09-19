@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'هذه آخر قراءة متاحة',
     'last_read_warning_text' => 'بمجرد العرض، سيتم حذف هذا السر نهائياً. تأكد من أنك مستعد لمشاهدته.',
     'last_read_warning_short' => 'هذه آخر قراءة متاحة. سيتم حذف السر نهائياً بعد العرض.',
+    'previous_fetches_title' => 'تم استرداد هذا السر قبلك',
+    'previous_fetches_single_view' => 'تم استرداد المحتوى المشفر لهذا السر أحادي الاستخدام دون تأكيد القراءة. إذا لم تكن أنت (محاولة سابقة أو علامة تبويب أو جهاز آخر)، فقد يكون الرابط قد اعتُرض: نبّه المرسل.',
+    'previous_fetches_multi_view_title' => 'تم استرداد هذا السر مسبقاً',
+    'previous_fetches_count' => 'عدد مرات الاسترداد قبلك: :count',
     'btn_reveal_secret' => 'إظهار السر',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'تنسيق الجزء غير صالح',
     'crypto_passphrase_required' => 'عبارة المرور مطلوبة',
     'crypto_passphrase_incorrect' => 'عبارة المرور غير صحيحة أو البيانات معدلة',
+    'crypto_passphrase_too_short' => 'يجب أن تحتوي عبارة المرور على 12 حرفاً على الأقل، دون احتساب المسافات في البداية والنهاية.',
     'crypto_decryption_failed' => 'فشل فك التشفير. قد يكون المفتاح غير صحيح.',
     'crypto_decryption_error' => 'حدث خطأ أثناء فك التشفير',
     'crypto_file_download_failed' => 'تعذر تحميل الملف المشفر',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'تم إلغاء هذا السر.',
     'admin_error_revoke' => 'حدث خطأ أثناء الإلغاء.',
     'admin_error_extend' => 'حدث خطأ أثناء التمديد.',
+    'admin_error_expired' => 'انتهت صلاحية هذا السر ولم يعد من الممكن تمديده.',
+    'admin_error_max_expiry_reached' => 'بلغ هذا السر بالفعل الحد الأقصى لمدة صلاحيته ولا يمكن تمديده أكثر.',
 
     // Magic link email
     'email_magic_link_subject' => 'رابط الوصول إلى Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'صفحة محتوى',
     'stat_page_unknown' => 'مسار غير معروف',
     'stat_page_secret_fetch' => 'قراءة (API)',
-    'stat_page_secret_revoke' => 'إلغاء (API)',
     'stat_page_contact' => 'اتصل بنا',
     'stat_page_sitemap' => 'خريطة الموقع',
     'stat_page_admin_request_access' => 'المشرف - طلب الوصول',

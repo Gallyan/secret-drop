@@ -78,7 +78,8 @@ class AuditDataConsistencyCommandTest extends TestCase
         $this->putAgedBlob(self::ORPHAN_PATH, 'orphan');
 
         $this->artisan('secrets:audit')
-            ->expectsOutput('  Orphan file: cd/cd34567890abcdef1234567890abcdef (6 B)')
+            ->expectsOutput('  Orphan file: cd345678… (6 B)')
+            ->doesntExpectOutputToContain('cd34567890abcdef1234567890abcdef')
             ->expectsOutputToContain('Found 1 orphan files (use --fix to delete)')
             ->expectsOutput('Found 1 inconsistencies.')
             ->assertFailed();
@@ -109,7 +110,8 @@ class AuditDataConsistencyCommandTest extends TestCase
         $secret = Secret::factory()->file()->create(['token' => self::TOKEN]);
 
         $this->artisan('secrets:audit')
-            ->expectsOutput('  Missing file: ab/ab34567890abcdef1234567890abcdef (secret ab34567890abcdef1234567890abcdef)')
+            ->expectsOutput("  Missing file: ab345678… (secret {$secret->id})")
+            ->doesntExpectOutputToContain(self::TOKEN)
             ->expectsOutputToContain('Found 1 missing files (use --fix to revoke)')
             ->expectsOutput('Found 1 inconsistencies.')
             ->assertFailed();
@@ -181,7 +183,7 @@ class AuditDataConsistencyCommandTest extends TestCase
         $this->putAgedBlob(self::ORPHAN_PATH, str_repeat('x', $bytes));
 
         $this->artisan('secrets:audit')
-            ->expectsOutput("  Orphan file: cd/cd34567890abcdef1234567890abcdef ({$expectedSize})")
+            ->expectsOutput("  Orphan file: cd345678… ({$expectedSize})")
             ->assertFailed();
     }
 

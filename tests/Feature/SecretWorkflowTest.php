@@ -31,6 +31,8 @@ class SecretWorkflowTest extends TestCase
                 'type' => 'text',
                 'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => self::VALID_IV, 'version' => 1],
                 'will_be_destroyed' => true,
+                'single_use' => true,
+                'previous_fetches' => 0,
                 'ciphertext' => self::VALID_CIPHERTEXT,
             ]);
         $this->postJson("/api/secrets/{$token}/read")->assertOk();

@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'To ostatnie dostępne wyświetlenie',
     'last_read_warning_text' => 'Po wyświetleniu ten sekret zostanie trwale usunięty. Upewnij się, że jesteś gotowy go zobaczyć.',
     'last_read_warning_short' => 'To ostatnie dostępne wyświetlenie. Sekret zostanie trwale usunięty po wyświetleniu.',
+    'previous_fetches_title' => 'Ten sekret został już pobrany przed Tobą',
+    'previous_fetches_single_view' => 'Zaszyfrowana treść tego jednorazowego sekretu została pobrana bez potwierdzenia odczytu. Jeśli to nie Ty (wcześniejsza próba, inna karta lub urządzenie), link mógł zostać przechwycony: powiadom nadawcę.',
+    'previous_fetches_multi_view_title' => 'Ten sekret został już pobrany',
+    'previous_fetches_count' => 'Pobrania przed Tobą: :count',
     'btn_reveal_secret' => 'Pokaż sekret',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Nieprawidłowy format fragmentu',
     'crypto_passphrase_required' => 'Hasło jest wymagane',
     'crypto_passphrase_incorrect' => 'Nieprawidłowe hasło lub zmienione dane',
+    'crypto_passphrase_too_short' => 'Hasło musi zawierać co najmniej 12 znaków, nie licząc spacji na początku i na końcu.',
     'crypto_decryption_failed' => 'Deszyfrowanie nie powiodło się. Klucz może być nieprawidłowy.',
     'crypto_decryption_error' => 'Wystąpił błąd podczas deszyfrowania',
     'crypto_file_download_failed' => 'Nie można pobrać zaszyfrowanego pliku',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'Ten sekret został unieważniony.',
     'admin_error_revoke' => 'Błąd podczas unieważniania.',
     'admin_error_extend' => 'Błąd podczas przedłużania.',
+    'admin_error_expired' => 'Ten sekret wygasł i nie można go już przedłużyć.',
+    'admin_error_max_expiry_reached' => 'Ten sekret osiągnął już maksymalny czas życia i nie można go dalej przedłużyć.',
 
     // Magic link email
     'email_magic_link_subject' => 'Twój link dostępu do Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'Strona treści',
     'stat_page_unknown' => 'Nieznana trasa',
     'stat_page_secret_fetch' => 'Odczyt (API)',
-    'stat_page_secret_revoke' => 'Unieważnienie (API)',
     'stat_page_contact' => 'Kontakt',
     'stat_page_sitemap' => 'Mapa strony',
     'stat_page_admin_request_access' => 'Admin - Prośba o dostęp',

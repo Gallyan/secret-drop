@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'Dit is de laatste beschikbare keer',
     'last_read_warning_text' => 'Na weergave wordt dit geheim permanent verwijderd. Zorg ervoor dat u klaar bent om het te bekijken.',
     'last_read_warning_short' => 'Dit is de laatste beschikbare keer. Het geheim wordt permanent verwijderd na weergave.',
+    'previous_fetches_title' => 'Dit geheim is al vóór u opgehaald',
+    'previous_fetches_single_view' => 'De versleutelde inhoud van dit eenmalige geheim is opgehaald zonder dat het lezen werd bevestigd. Als u dat niet was (een eerdere poging, een ander tabblad of apparaat), is de link mogelijk onderschept: waarschuw de afzender.',
+    'previous_fetches_multi_view_title' => 'Dit geheim is al opgehaald',
+    'previous_fetches_count' => 'Keren opgehaald vóór u: :count',
     'btn_reveal_secret' => 'Geheim tonen',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Ongeldig fragmentformaat',
     'crypto_passphrase_required' => 'Wachtwoordzin is vereist',
     'crypto_passphrase_incorrect' => 'Onjuiste wachtwoordzin of gewijzigde gegevens',
+    'crypto_passphrase_too_short' => 'De wachtwoordzin moet minstens 12 tekens bevatten, spaties aan het begin en einde niet meegerekend.',
     'crypto_decryption_failed' => 'Ontsleuteling mislukt. De sleutel is mogelijk onjuist.',
     'crypto_decryption_error' => 'Er is een fout opgetreden tijdens het ontsleutelen',
     'crypto_file_download_failed' => 'Kan versleuteld bestand niet downloaden',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'Dit geheim is ingetrokken.',
     'admin_error_revoke' => 'Fout bij het intrekken.',
     'admin_error_extend' => 'Fout bij het verlengen.',
+    'admin_error_expired' => 'Dit geheim is verlopen en kan niet meer worden verlengd.',
+    'admin_error_max_expiry_reached' => 'Dit geheim heeft zijn maximale levensduur al bereikt en kan niet verder worden verlengd.',
 
     // Magic link email
     'email_magic_link_subject' => 'Uw toegangslink voor Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'Inhoudspagina',
     'stat_page_unknown' => 'Onbekende route',
     'stat_page_secret_fetch' => 'Lezen (API)',
-    'stat_page_secret_revoke' => 'Intrekking (API)',
     'stat_page_contact' => 'Contact',
     'stat_page_sitemap' => 'Sitemap',
     'stat_page_admin_request_access' => 'Admin - Toegangsaanvraag',

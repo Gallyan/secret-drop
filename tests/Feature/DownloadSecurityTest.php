@@ -40,6 +40,16 @@ class DownloadSecurityTest extends TestCase
         $this->assertSame(0, $secret->read_count);
     }
 
+    /** Vérifie que chaque téléchargement annonce le nombre de récupérations qui l'ont précédé. */
+    public function testDownloadExposesFetchCountBeforeThisDownload(): void
+    {
+        Storage::fake('secrets');
+        $secret = Secret::factory()->withStoredBlob()->create();
+
+        $this->get("/s/{$secret->token}/download")->assertHeader('X-Previous-Fetches', '0');
+        $this->get("/s/{$secret->token}/download")->assertHeader('X-Previous-Fetches', '1');
+    }
+
     /**
      * @return array<string, array{0: 'expired'|'revoked'|'consumed'}>
      */
@@ -88,7 +98,7 @@ class DownloadSecurityTest extends TestCase
     /** Vérifie que le téléchargement d'un token inconnu renvoie la page 404. */
     public function testDownloadReturns404ForUnknownToken(): void
     {
-        $response = $this->get('/s/nonexistenttoken12345678901/download');
+        $response = $this->get('/s/'.str_repeat('a', 32).'/download');
 
         $response->assertNotFound();
         $response->assertViewIs('secrets.not-found');

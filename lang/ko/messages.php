@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => '마지막 열람 기회입니다',
     'last_read_warning_text' => '표시되면 이 비밀은 영구적으로 삭제됩니다. 볼 준비가 되었는지 확인하세요.',
     'last_read_warning_short' => '마지막 열람 기회입니다. 표시 후 비밀은 영구적으로 삭제됩니다.',
+    'previous_fetches_title' => '이 비밀은 이미 먼저 가져간 기록이 있습니다',
+    'previous_fetches_single_view' => '이 일회용 비밀의 암호화된 콘텐츠가 열람 확인 없이 가져가졌습니다. 본인이 아니라면(이전 시도, 다른 탭 또는 기기) 링크가 탈취되었을 수 있습니다. 보낸 사람에게 알리세요.',
+    'previous_fetches_multi_view_title' => '이 비밀은 이미 가져간 기록이 있습니다',
+    'previous_fetches_count' => '이전 가져가기 횟수: :count',
     'btn_reveal_secret' => '비밀 보기',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => '잘못된 프래그먼트 형식',
     'crypto_passphrase_required' => '암호문구가 필요합니다',
     'crypto_passphrase_incorrect' => '암호문구가 잘못되었거나 데이터가 변경되었습니다',
+    'crypto_passphrase_too_short' => '암호문구는 앞뒤 공백을 제외하고 12자 이상이어야 합니다.',
     'crypto_decryption_failed' => '복호화 실패. 키가 잘못되었을 수 있습니다.',
     'crypto_decryption_error' => '복호화 중 오류가 발생했습니다',
     'crypto_file_download_failed' => '암호화된 파일을 다운로드할 수 없습니다',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => '이 비밀은 취소되었습니다.',
     'admin_error_revoke' => '취소 중 오류가 발생했습니다.',
     'admin_error_extend' => '연장 중 오류가 발생했습니다.',
+    'admin_error_expired' => '이 비밀은 만료되어 더 이상 연장할 수 없습니다.',
+    'admin_error_max_expiry_reached' => '이 비밀은 이미 최대 보관 기간에 도달하여 더 이상 연장할 수 없습니다.',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Drop 접근 링크',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => '콘텐츠 페이지',
     'stat_page_unknown' => '알 수 없는 경로',
     'stat_page_secret_fetch' => '읽기 (API)',
-    'stat_page_secret_revoke' => '취소 (API)',
     'stat_page_contact' => '문의',
     'stat_page_sitemap' => '사이트맵',
     'stat_page_admin_request_access' => '관리자 - 접근 요청',

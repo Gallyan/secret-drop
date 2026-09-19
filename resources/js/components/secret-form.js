@@ -39,7 +39,7 @@ export default () => ({
         qrCodeDataUrl: null,
 
         getPassphraseStrength() {
-            const passphrase = this.passphrase;
+            const passphrase = this.trimmedPassphrase();
             if (!passphrase) return 0;
 
             let score = 0;
@@ -60,8 +60,27 @@ export default () => ({
             return Math.min(100, score);
         },
 
+        /** Phrase secrète telle qu'elle sera utilisée pour le chiffrement : tous les contrôles s'appuient dessus. */
+        trimmedPassphrase() {
+            return (this.passphrase || '').trim();
+        },
+
         hasMinLength() {
-            return this.passphrase.length >= MIN_PASSPHRASE_LENGTH;
+            return this.trimmedPassphrase().length >= MIN_PASSPHRASE_LENGTH;
+        },
+
+        /** Une phrase secrète vide est permise (pas de phrase secrète), une trop courte non. */
+        isPassphraseTooShort() {
+            const length = this.trimmedPassphrase().length;
+
+            return length > 0 && length < MIN_PASSPHRASE_LENGTH;
+        },
+
+        revealPassphraseCriteria() {
+            this.showAdvanced = true;
+            this.$nextTick(() => {
+                document.getElementById('passphrase')?.focus();
+            });
         },
 
         /** Taille réellement chiffrée : un caractère peut peser plusieurs octets en UTF-8. */
@@ -74,19 +93,19 @@ export default () => ({
         },
 
         hasLowercase() {
-            return /[a-z]/.test(this.passphrase);
+            return /[a-z]/.test(this.trimmedPassphrase());
         },
 
         hasUppercase() {
-            return /[A-Z]/.test(this.passphrase);
+            return /[A-Z]/.test(this.trimmedPassphrase());
         },
 
         hasDigit() {
-            return /[0-9]/.test(this.passphrase);
+            return /[0-9]/.test(this.trimmedPassphrase());
         },
 
         hasSpecial() {
-            return /[^a-zA-Z0-9]/.test(this.passphrase);
+            return /[^a-zA-Z0-9]/.test(this.trimmedPassphrase());
         },
 
         getPassphraseStrengthClass() {
@@ -182,6 +201,13 @@ export default () => ({
 
         async handleSubmit() {
             this.error = null;
+
+            if (this.isPassphraseTooShort()) {
+                this.error = t('crypto_passphrase_too_short');
+                this.revealPassphraseCriteria();
+                return;
+            }
+
             this.isSubmitting = true;
 
             try {
@@ -189,7 +215,7 @@ export default () => ({
                     throw new Error(t('crypto_not_supported'));
                 }
 
-                const passphrase = this.passphrase?.trim() || null;
+                const passphrase = this.trimmedPassphrase() || null;
 
                 if (this.mode === 'text') {
                     await this.submitText(passphrase);

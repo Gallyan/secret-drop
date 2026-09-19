@@ -52,7 +52,7 @@ class StatsPagesTest extends TestCase
     /** Vérifie que les routes API sont nommées, pour les stats d'erreurs et de temps de réponse. */
     public function testApiRoutesAreNamed(): void
     {
-        $this->assertTrue(Route::has(['secrets.store', 'secrets.fetch', 'secrets.confirmRead', 'secrets.revoke']));
+        $this->assertTrue(Route::has(['secrets.store', 'secrets.fetch', 'secrets.confirmRead']));
     }
 
     /** @return array<string, array{string, string, ?string, string|null}> */

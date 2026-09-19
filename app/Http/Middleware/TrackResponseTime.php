@@ -23,7 +23,6 @@ class TrackResponseTime
         'secrets.fetch' => 'read',
         'secrets.confirmRead' => 'read',
         'secrets.download' => 'read',
-        'secrets.revoke' => 'admin',
     ];
 
     /** Toute route admin.* ou superadmin.* appartient à son espace : une nouvelle route n'a pas besoin d'être déclarée. */

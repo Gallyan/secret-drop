@@ -78,17 +78,19 @@ class SuperAdminController extends Controller
         }
 
         $tokenData = $this->tokenService->generateMagicLinkToken();
-
-        MagicLink::create([
-            'email_hash' => MagicLink::SUPER_ADMIN_EMAIL_HASH,
-            'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
-        ]);
-
         $url = route('superadmin.verify', ['locale' => $locale, 'token' => $tokenData['token']]);
-        Mail::to($email)
-            ->locale($locale)
-            ->send(new SuperAdminMagicLinkMail($url));
+
+        $issued = MagicLink::issueExclusively(
+            MagicLink::SUPER_ADMIN_EMAIL_HASH,
+            $tokenData['hash'],
+            function () use ($email, $locale, $url): void {
+                Mail::to($email)->locale($locale)->send(new SuperAdminMagicLinkMail($url));
+            },
+        );
+
+        if (! $issued) {
+            return;
+        }
 
         $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
     }

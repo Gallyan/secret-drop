@@ -7,6 +7,7 @@ use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\StatsService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 /** Purges expired, revoked, or fully-read secrets along with their files and consumed magic links. */
 class CleanExpiredSecretsCommand extends Command
@@ -41,7 +42,7 @@ class CleanExpiredSecretsCommand extends Command
             $expiredUnread = 0;
 
             foreach ($secrets as $secret) {
-                $this->line("Processing secret {$secret->token}...");
+                $this->line("Processing secret {$secret->id}...");
 
                 if ($secret->isExpired() && $secret->read_count === 0 && ! $secret->isRevoked()) {
                     $expiredUnread++;
@@ -53,7 +54,7 @@ class CleanExpiredSecretsCommand extends Command
                             $storage->delete($secret->file_path);
                         }
                         $deletedFiles++;
-                        $this->line("  - Deleted file: {$secret->file_path}");
+                        $this->line("  - Deleted file {$this->shorten(basename($secret->file_path))}");
                     }
                 }
 
@@ -74,6 +75,11 @@ class CleanExpiredSecretsCommand extends Command
         $this->cleanMagicLinks($dryRun);
 
         return Command::SUCCESS;
+    }
+
+    private function shorten(string $value): string
+    {
+        return Str::substr($value, 0, 8).'…';
     }
 
     private function cleanMagicLinks(bool $dryRun): void

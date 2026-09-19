@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'Dies ist die letzte verfügbare Ansicht',
     'last_read_warning_text' => 'Nach der Anzeige wird dieses Geheimnis dauerhaft gelöscht. Stellen Sie sicher, dass Sie bereit sind, es anzusehen.',
     'last_read_warning_short' => 'Dies ist die letzte verfügbare Ansicht. Das Geheimnis wird nach der Anzeige dauerhaft gelöscht.',
+    'previous_fetches_title' => 'Dieses Geheimnis wurde bereits vor Ihnen abgerufen',
+    'previous_fetches_single_view' => 'Der verschlüsselte Inhalt dieses Einmal-Geheimnisses wurde abgerufen, ohne dass das Lesen bestätigt wurde. Falls Sie das nicht waren (früherer Versuch, anderer Tab oder anderes Gerät), wurde der Link möglicherweise abgefangen: Informieren Sie den Absender.',
+    'previous_fetches_multi_view_title' => 'Dieses Geheimnis wurde bereits abgerufen',
+    'previous_fetches_count' => 'Abrufe vor Ihnen: :count',
     'btn_reveal_secret' => 'Geheimnis anzeigen',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Ungültiges Fragment-Format',
     'crypto_passphrase_required' => 'Geheimphrase erforderlich',
     'crypto_passphrase_incorrect' => 'Falsche Geheimphrase oder beschädigte Daten',
+    'crypto_passphrase_too_short' => 'Die Geheimphrase muss mindestens 12 Zeichen enthalten, Leerzeichen am Anfang und Ende nicht mitgezählt.',
     'crypto_decryption_failed' => 'Entschlüsselung fehlgeschlagen. Der Schlüssel könnte falsch sein.',
     'crypto_decryption_error' => 'Bei der Entschlüsselung ist ein Fehler aufgetreten',
     'crypto_file_download_failed' => 'Verschlüsselte Datei konnte nicht heruntergeladen werden',
@@ -343,6 +348,8 @@ return [
     'admin_error_revoked' => 'Dieses Geheimnis wurde widerrufen.',
     'admin_error_revoke' => 'Fehler beim Widerrufen.',
     'admin_error_extend' => 'Fehler beim Verlängern.',
+    'admin_error_expired' => 'Dieses Geheimnis ist abgelaufen und kann nicht mehr verlängert werden.',
+    'admin_error_max_expiry_reached' => 'Dieses Geheimnis hat bereits seine maximale Lebensdauer erreicht und kann nicht weiter verlängert werden.',
 
     // Magic link email
     'email_magic_link_subject' => 'Ihr Zugangslink zu Secret Drop',
@@ -500,7 +507,6 @@ return [
     'stat_page_content' => 'Inhaltsseite',
     'stat_page_unknown' => 'Unbekannte Route',
     'stat_page_secret_fetch' => 'Lesen (API)',
-    'stat_page_secret_revoke' => 'Widerruf (API)',
     'stat_page_contact' => 'Kontakt',
     'stat_page_sitemap' => 'Sitemap',
     'stat_page_admin_request_access' => 'Admin - Zugangsanfrage',

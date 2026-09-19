@@ -273,6 +273,25 @@ class SuperAdminControllerTest extends TestCase
         $dashboard->assertViewIs('superadmin.dashboard');
     }
 
+    /** Vérifie qu'une nouvelle demande d'accès invalide le lien précédent : seul le dernier lien ouvre la session. */
+    public function testNewAccessRequestInvalidatesPreviousMagicLink(): void
+    {
+        Mail::fake();
+        $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+        $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+        $sentMails = Mail::sent(
+            SuperAdminMagicLinkMail::class,
+            fn (SuperAdminMagicLinkMail $mail): bool => $mail->hasTo(self::SUPER_ADMIN_EMAIL)
+        );
+        $this->assertCount(2, $sentMails);
+
+        $firstLinkResponse = $this->post($sentMails->first()->verifyUrl);
+        $secondLinkResponse = $this->post($sentMails->last()->verifyUrl);
+
+        $firstLinkResponse->assertViewIs('superadmin.invalid-link');
+        $secondLinkResponse->assertRedirect('/fr/superadmin/dashboard');
+    }
+
     /** Vérifie que POST verify consomme le lien, régénère l'ID de session, pose l'expiration et compte l'usage. */
     public function testVerifyPostConsumesLinkAndOpensFreshSession(): void
     {

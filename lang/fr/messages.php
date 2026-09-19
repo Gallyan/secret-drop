@@ -98,6 +98,10 @@ return [
     'last_read_warning_title' => 'C\'est la dernière lecture disponible',
     'last_read_warning_text' => 'Une fois affiché, ce secret sera définitivement supprimé. Assurez-vous d\'être prêt à le consulter.',
     'last_read_warning_short' => 'C\'est la dernière lecture disponible. Le secret sera définitivement supprimé après affichage.',
+    'previous_fetches_title' => 'Ce secret a déjà été récupéré avant vous',
+    'previous_fetches_single_view' => 'Le contenu chiffré de ce secret à usage unique a été récupéré sans que la lecture soit confirmée. Si ce n\'était pas vous (tentative précédente, autre onglet ou appareil), le lien a peut-être été intercepté : prévenez l\'expéditeur.',
+    'previous_fetches_multi_view_title' => 'Ce secret a déjà été récupéré',
+    'previous_fetches_count' => 'Récupérations avant vous : :count',
     'btn_reveal_secret' => 'Voir le secret',
 
     // Errors
@@ -120,6 +124,7 @@ return [
     'crypto_fragment_invalid' => 'Format de fragment invalide',
     'crypto_passphrase_required' => 'La phrase secrète est requise',
     'crypto_passphrase_incorrect' => 'Phrase secrète incorrecte ou données altérées',
+    'crypto_passphrase_too_short' => 'La phrase secrète doit contenir au moins 12 caractères, sans compter les espaces au début et à la fin.',
     'crypto_decryption_failed' => 'Échec du déchiffrement. La clé est peut-être incorrecte.',
     'crypto_decryption_error' => 'Une erreur est survenue lors du déchiffrement',
     'crypto_file_download_failed' => 'Impossible de télécharger le fichier chiffré',
@@ -351,6 +356,8 @@ return [
     'admin_error_revoked' => 'Ce secret a été révoqué.',
     'admin_error_revoke' => 'Erreur lors de la révocation.',
     'admin_error_extend' => 'Erreur lors de la prolongation.',
+    'admin_error_expired' => 'Ce secret a expiré et ne peut plus être prolongé.',
+    'admin_error_max_expiry_reached' => 'Ce secret a déjà atteint sa durée de vie maximale et ne peut plus être prolongé.',
 
     // Magic link email
     'email_magic_link_subject' => 'Votre lien d\'accès à Secret Drop',
@@ -507,7 +514,6 @@ return [
     'stat_page_content' => 'Page de contenu',
     'stat_page_unknown' => 'Route inconnue',
     'stat_page_secret_fetch' => 'Lecture (API)',
-    'stat_page_secret_revoke' => 'Révocation (API)',
     'stat_page_contact' => 'Contact',
     'stat_page_sitemap' => 'Plan du site',
     'stat_page_admin_request_access' => 'Admin - Demande d\'accès',

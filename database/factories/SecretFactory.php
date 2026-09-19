@@ -35,11 +35,8 @@ class SecretFactory extends Factory
      */
     public function definition(): array
     {
-        $tokenService = app(TokenService::class);
-
         return [
-            'token' => $tokenService->generatePublicToken(),
-            'admin_token_hash' => $tokenService->generateAdminToken()['hash'],
+            'token' => app(TokenService::class)->generatePublicToken(),
             'type' => SecretType::Text,
             'cipher_meta' => [
                 'alg' => self::ALGORITHM,
@@ -90,13 +87,6 @@ class SecretFactory extends Factory
 
             app(SecretStorageService::class)->disk()->put($secret->file_path, $contents);
         });
-    }
-
-    public function withAdminToken(#[\SensitiveParameter] string $adminToken): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'admin_token_hash' => app(TokenService::class)->hashToken($adminToken),
-        ]);
     }
 
     public function singleUse(): static
@@ -150,7 +140,7 @@ class SecretFactory extends Factory
     }
 
     /**
-     * Revocation always destroys the content (SecretsController::revoke).
+     * Revocation always destroys the content (AdminController::revoke).
      */
     public function revoked(): static
     {

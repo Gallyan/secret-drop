@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
-use App\Services\StatsService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,9 +10,9 @@ use Tests\TestCase;
 
 class ShowSecretTest extends TestCase
 {
-    private const ADMIN_TOKEN = '0123456789abcdef0123456789abcdef';
+    private const UNKNOWN_TOKEN = '0123456789abcdef0123456789abcdef';
 
-    private const UNKNOWN_TOKEN = 'nonexistenttoken12345678901';
+    private const READ_ID = 'fedcba9876543210fedcba9876543210';
 
     /** Vérifie que la page de consultation affiche le token d'un secret existant. */
     public function testShowPageRendersTokenOfExistingSecret(): void
@@ -46,6 +45,8 @@ class ShowSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => false,
+            'single_use' => false,
+            'previous_fetches' => 0,
             'ciphertext' => $secret->ciphertext,
         ]);
 
@@ -84,6 +85,8 @@ class ShowSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => false,
+            'single_use' => false,
+            'previous_fetches' => 0,
         ]);
 
         $secret->refresh();
@@ -281,88 +284,147 @@ class ShowSecretTest extends TestCase
         $this->assertSame(1, $secret->read_count);
     }
 
-    /** Vérifie que la révocation détruit le chiffré, date la révocation, rend le secret inaccessible et compte la stat. */
-    public function testRevokeDestroysCiphertextMarksRevokedAndTracksStat(): void
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function malformedTokenRoutes(): array
     {
-        $this->travelTo('2026-03-10 14:00:00');
-        $secret = Secret::factory()->withAdminToken(self::ADMIN_TOKEN)->create();
-
-        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
-
-        $response->assertOk();
-        $response->assertExactJson(['success' => true]);
-
-        $secret->refresh();
-        $this->assertSame('2026-03-10 14:00:00', $secret->revoked_at?->toDateTimeString());
-        $this->assertNull($secret->ciphertext);
-
-        $this->assertDatabaseHas('stats_daily', [
-            'date' => '2026-03-10',
-            'metric' => StatsService::SECRETS_REVOKED,
-            'count' => 1,
-        ]);
-
-        $this->getJson("/api/secrets/{$secret->token}")->assertNotFound();
-        $this->postJson("/api/secrets/{$secret->token}/read")->assertNotFound();
+        return [
+            'page trop courte' => ['GET', '/s/abc123'],
+            'page en majuscules' => ['GET', '/s/0123456789ABCDEF0123456789ABCDEF'],
+            'téléchargement trop long' => ['GET', '/s/0123456789abcdef0123456789abcdef0/download'],
+            'fetch non hexadécimal' => ['GET', '/api/secrets/0123456789abcdef0123456789abcdeg'],
+            'confirmation trop courte' => ['POST', '/api/secrets/nonexistenttoken12345678901/read'],
+        ];
     }
 
-    /** Vérifie que la révocation d'un secret fichier supprime son blob et invalide l'usage disque en cache. */
-    public function testRevokeDeletesStoredBlobOfFileSecret(): void
+    /** Vérifie qu'un token hors format (32 caractères hexadécimaux minuscules) ne correspond à aucune route. */
+    #[DataProvider('malformedTokenRoutes')]
+    public function testMalformedTokenMatchesNoRoute(string $method, string $uri): void
     {
-        Storage::fake('secrets');
-        Cache::put('disk_usage_secrets', 123, 3600);
-        $secret = Secret::factory()->withStoredBlob()->withAdminToken(self::ADMIN_TOKEN)->create();
-        $filePath = (string) $secret->file_path;
-
-        $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke')->assertOk();
-
-        Storage::disk('secrets')->assertMissing($filePath);
-        $this->assertFalse(Cache::has('disk_usage_secrets'));
-
-        $secret->refresh();
-        $this->assertNotNull($secret->revoked_at);
-        $this->assertNull($secret->file_path);
-    }
-
-    /** Vérifie que la révocation retourne 404 pour un admin token inconnu. */
-    public function testRevokeReturns404ForUnknownAdminToken(): void
-    {
-        $response = $this->postJson('/api/secrets/invalidtoken123/revoke');
+        $response = $this->call($method, $uri);
 
         $response->assertNotFound();
-        $response->assertExactJson(['error' => 'not_found']);
+        $this->assertNull($response->baseRequest->route());
     }
 
-    /** Vérifie que la révocation retourne 409 already_revoked pour un secret déjà révoqué, sans stat. */
-    public function testRevokeReturns409ForAlreadyRevokedSecret(): void
+    /** Vérifie que le fetch renvoie le nombre de récupérations antérieures à la requête et signale l'usage unique. */
+    public function testApiFetchReturnsFetchCountBeforeThisRequestAndSingleUseFlag(): void
     {
-        $this->travelTo('2026-03-10 14:00:00');
-        $secret = Secret::factory()->revoked()->withAdminToken(self::ADMIN_TOKEN)->create();
-        $this->travel(1)->hour();
+        $secret = Secret::factory()->singleUse()->create();
 
-        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
-
-        $response->assertConflict();
-        $response->assertExactJson(['error' => 'already_revoked']);
+        $this->getJson("/api/secrets/{$secret->token}")
+            ->assertOk()
+            ->assertJsonPath('single_use', true)
+            ->assertJsonPath('previous_fetches', 0);
+        $this->getJson("/api/secrets/{$secret->token}")
+            ->assertOk()
+            ->assertJsonPath('previous_fetches', 1);
 
         $secret->refresh();
-        $this->assertSame('2026-03-10 14:00:00', $secret->revoked_at?->toDateTimeString());
-        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_REVOKED]);
+        $this->assertSame(2, $secret->fetch_count);
     }
 
-    /** Vérifie que la révocation retourne 409 already_consumed pour un secret dont les vues sont épuisées, sans stat. */
-    public function testRevokeReturns409ForConsumedSecret(): void
+    /** Vérifie que le fetch d'un fichier annonce les téléchargements déjà effectués sans compter le fetch lui-même. */
+    public function testApiFetchOfFileSecretReturnsPreviousDownloads(): void
     {
-        $secret = Secret::factory()->consumed()->withAdminToken(self::ADMIN_TOKEN)->create();
+        Storage::fake('secrets');
+        $secret = Secret::factory()->withMaxViews(3)->withStoredBlob()->create();
 
-        $response = $this->postJson('/api/secrets/'.self::ADMIN_TOKEN.'/revoke');
+        $this->get("/s/{$secret->token}/download")->assertOk();
 
-        $response->assertConflict();
-        $response->assertExactJson(['error' => 'already_consumed']);
+        $this->getJson("/api/secrets/{$secret->token}")
+            ->assertOk()
+            ->assertJsonPath('single_use', false)
+            ->assertJsonPath('previous_fetches', 1);
 
         $secret->refresh();
-        $this->assertNull($secret->revoked_at);
-        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::SECRETS_REVOKED]);
+        $this->assertSame(1, $secret->fetch_count);
+    }
+
+    /** Vérifie qu'une confirmation rejouée avec le même read_id n'est comptée qu'une fois et reçoit la même réponse. */
+    public function testApiConfirmReadWithSameReadIdCountsOnce(): void
+    {
+        $secret = Secret::factory()->create();
+
+        $first = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
+        $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
+
+        $first->assertOk()->assertExactJson(['success' => true]);
+        $retry->assertOk()->assertExactJson(['success' => true]);
+
+        $secret->refresh();
+        $this->assertSame(1, $secret->read_count);
+    }
+
+    /** Vérifie que deux read_id distincts comptent deux lectures. */
+    public function testApiConfirmReadWithDistinctReadIdsCountsEach(): void
+    {
+        $secret = Secret::factory()->create();
+
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])->assertOk();
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => str_repeat('a', 32)])->assertOk();
+
+        $secret->refresh();
+        $this->assertSame(2, $secret->read_count);
+    }
+
+    /** Vérifie que le rejeu de la confirmation qui a détruit un secret à usage unique reçoit toujours un succès. */
+    public function testApiConfirmReadRetryAfterDestructionStillSucceeds(): void
+    {
+        $secret = Secret::factory()->singleUse()->create();
+
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])->assertOk();
+        $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
+
+        $retry->assertOk()->assertExactJson(['success' => true]);
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => str_repeat('a', 32)])->assertNotFound();
+
+        $secret->refresh();
+        $this->assertSame(1, $secret->read_count);
+        $this->assertNull($secret->ciphertext);
+    }
+
+    /** Vérifie que le read_id est accepté depuis un corps JSON sans en-tête Accept, comme l'envoie sendBeacon. */
+    public function testApiConfirmReadAcceptsBeaconStyleJsonBody(): void
+    {
+        $secret = Secret::factory()->create();
+        $body = (string) json_encode(['read_id' => self::READ_ID]);
+
+        $this->call('POST', "/api/secrets/{$secret->token}/read", [], [], [], ['CONTENT_TYPE' => 'application/json'], $body)->assertOk();
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])->assertOk();
+
+        $secret->refresh();
+        $this->assertSame(1, $secret->read_count);
+    }
+
+    /**
+     * @return array<string, array{0: mixed}>
+     */
+    public static function invalidReadIds(): array
+    {
+        return [
+            'trop court' => ['abc123'],
+            'majuscules' => [strtoupper(self::READ_ID)],
+            'non hexadécimal' => [str_repeat('z', 32)],
+            'tableau' => [[self::READ_ID]],
+            'entier' => [123],
+        ];
+    }
+
+    /** Vérifie qu'un read_id mal formé est refusé en 422 sans compter de lecture. */
+    #[DataProvider('invalidReadIds')]
+    public function testApiConfirmReadRejectsMalformedReadId(mixed $readId): void
+    {
+        $secret = Secret::factory()->create();
+
+        $response = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => $readId]);
+
+        $response->assertUnprocessable();
+        $response->assertExactJson(['error' => 'invalid_read_id']);
+
+        $secret->refresh();
+        $this->assertSame(0, $secret->read_count);
     }
 
     /**
