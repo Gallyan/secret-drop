@@ -28,6 +28,8 @@
 #   - SSH_KEY : clé privée SSH ed25519
 #   - SSH_PORT : port SSH (si différent de 22)
 #   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
+#   - SSH_HOST_KEY : clé publique d'hôte du serveur, soit le contenu de
+#     /etc/ssh/ssh_host_ed25519_key.pub (la connexion échoue si elle ne correspond pas)
 
 name: CD
 run-name: "CD — ${{ github.event_name == 'workflow_dispatch' && 'manual' || format('{0}: {1}', github.event.workflow_run.head_branch, github.event.workflow_run.head_commit.message) }}"
@@ -60,72 +62,90 @@ jobs:
       - name: Build assets
         run: npm ci && npm run build
 
+      - name: Configure SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SSH_HOST_KEY }}
+        run: |
+          : "${SSH_HOST_KEY:?secret SSH_HOST_KEY manquant}"
+
+          install -m 700 -d ~/.ssh
+          (umask 077; printf '%s\n' "$SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key)
+          printf 'production %s\n' "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+
+          cat > ~/.ssh/config <<EOF
+          Host production
+              HostName $SSH_HOST
+              Port ${SSH_PORT:-22}
+              User $SSH_USER
+              IdentityFile ~/.ssh/deploy_key
+              IdentitiesOnly yes
+              HostKeyAlias production
+              StrictHostKeyChecking yes
+              ConnectTimeout 30
+              ServerAliveInterval 30
+          EOF
+
       - name: Clean old build assets
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: rm -rf ${{ secrets.SSH_PATH }}/public/build/
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: ssh -n production "rm -rf $(printf %q "$SSH_PATH")/public/build"
 
       - name: Transfer built assets to server
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "public/build/"
-          target: ${{ secrets.SSH_PATH }}
-          overwrite: true
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: scp -r public/build "production:$SSH_PATH/public/"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            set -e
-            umask 002
-            cd ${{ secrets.SSH_PATH }}
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
+        run: |
+          script=$(cat <<'EOF'
+          umask 002
 
-            # Révision avant le pull : sert à détecter les changements de contenu
-            # (git checkout -- . et git pull ne déplacent pas cette référence)
-            BEFORE=$(git rev-parse HEAD)
+          # Révision avant le pull : sert à détecter les changements de contenu
+          # (git checkout -- . et git pull ne déplacent pas cette référence)
+          BEFORE=$(git rev-parse HEAD)
 
-            php artisan down --retry=60 || true
+          php artisan down --retry=60 || true
 
-            git checkout -- .
-            git pull --ff-only origin main
+          git checkout -- .
+          git pull --ff-only origin main
 
-            printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
+          printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
 
-            rm -f bootstrap/cache/*.php
-            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+          rm -f bootstrap/cache/*.php
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-            php artisan migrate --force
-            php artisan optimize:clear
-            php artisan optimize
+          php artisan migrate --force
+          php artisan optimize:clear
+          php artisan optimize
 
-            sudo /usr/local/bin/restart-php-fpm
+          sudo /usr/local/bin/restart-php-fpm
 
-            php artisan up
+          php artisan up
 
-            # IndexNow : après la remise en ligne, et sans jamais faire échouer
-            # le déploiement. La forme "if ... then" évite qu'un grep sans
-            # correspondance (code 1) n'avorte le script à cause de set -e.
-            AFTER=$(git rev-parse HEAD)
-            CONTENT_PATHS='^(lang/[a-z]{2}/(messages|routes)\.php|resources/views/(layouts|components)/|resources/views/(faq|how-it-works|use-cases|legal|sitemap)\.blade\.php|resources/views/secrets/create\.blade\.php|app/Support/LocaleConfig\.php)'
+          # IndexNow : après la remise en ligne, et sans jamais faire échouer
+          # le déploiement. La forme "if ... then" évite qu'un grep sans
+          # correspondance (code 1) n'avorte le script à cause de set -e.
+          AFTER=$(git rev-parse HEAD)
+          CONTENT_PATHS='^(lang/[a-z]{2}/(messages|routes)\.php|resources/views/(layouts|components)/|resources/views/(faq|how-it-works|use-cases|legal|sitemap)\.blade\.php|resources/views/secrets/create\.blade\.php|app/Support/LocaleConfig\.php)'
 
-            if [ "$BEFORE" = "$AFTER" ]; then
-              echo "IndexNow : soumission sautée — aucun nouveau commit déployé ($BEFORE)"
-            elif git diff --name-only "$BEFORE" "$AFTER" | grep -qE "$CONTENT_PATHS"; then
-              echo "IndexNow : contenu éditorial modifié entre $BEFORE et $AFTER — soumission en cours"
-              git diff --name-only "$BEFORE" "$AFTER" | grep -E "$CONTENT_PATHS" || true
-              php artisan indexnow:submit || echo "IndexNow : soumission en échec (déploiement non impacté)"
-            else
-              echo "IndexNow : soumission sautée — aucun contenu éditorial modifié entre $BEFORE et $AFTER"
-            fi
+          if [ "$BEFORE" = "$AFTER" ]; then
+            echo "IndexNow : soumission sautée — aucun nouveau commit déployé ($BEFORE)"
+          elif git diff --name-only "$BEFORE" "$AFTER" | grep -qE "$CONTENT_PATHS"; then
+            echo "IndexNow : contenu éditorial modifié entre $BEFORE et $AFTER — soumission en cours"
+            git diff --name-only "$BEFORE" "$AFTER" | grep -E "$CONTENT_PATHS" || true
+            php artisan indexnow:submit || echo "IndexNow : soumission en échec (déploiement non impacté)"
+          else
+            echo "IndexNow : soumission sautée — aucun contenu éditorial modifié entre $BEFORE et $AFTER"
+          fi
+          EOF
+          )
+
+          ssh -n production "set -e
+          cd $(printf %q "$SSH_PATH")
+          $script"

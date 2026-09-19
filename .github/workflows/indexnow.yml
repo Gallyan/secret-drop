@@ -22,6 +22,8 @@
 #   - SSH_KEY : clé privée SSH ed25519
 #   - SSH_PORT : port SSH (si différent de 22)
 #   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
+#   - SSH_HOST_KEY : clé publique d'hôte du serveur, soit le contenu de
+#     /etc/ssh/ssh_host_ed25519_key.pub (la connexion échoue si elle ne correspond pas)
 #
 # Note : le bouton « Run workflow » n'apparaît dans l'onglet Actions qu'une fois
 # ce fichier présent sur la branche par défaut.
@@ -49,34 +51,60 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Notify IndexNow
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+      - name: Configure SSH
         env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SSH_HOST_KEY }}
+        run: |
+          : "${SSH_HOST_KEY:?secret SSH_HOST_KEY manquant}"
+
+          install -m 700 -d ~/.ssh
+          (umask 077; printf '%s\n' "$SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key)
+          printf 'production %s\n' "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+
+          cat > ~/.ssh/config <<EOF
+          Host production
+              HostName $SSH_HOST
+              Port ${SSH_PORT:-22}
+              User $SSH_USER
+              IdentityFile ~/.ssh/deploy_key
+              IdentitiesOnly yes
+              HostKeyAlias production
+              StrictHostKeyChecking yes
+              ConnectTimeout 30
+              ServerAliveInterval 30
+          EOF
+
+      - name: Notify IndexNow
+        env:
+          SSH_PATH: ${{ secrets.SSH_PATH }}
           INDEXNOW_URLS: ${{ inputs.urls }}
           INDEXNOW_DRY_RUN: ${{ inputs.dry_run }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          envs: INDEXNOW_URLS,INDEXNOW_DRY_RUN
-          script: |
-            set -e
-            set -f
-            cd ${{ secrets.SSH_PATH }}
+        run: |
+          set -f
+          set --
 
-            set --
+          if [ "$INDEXNOW_DRY_RUN" = "true" ]; then
+              set -- "$@" --dry-run
+          fi
 
-            if [ "$INDEXNOW_DRY_RUN" = "true" ]; then
-                set -- "$@" --dry-run
-            fi
+          if [ -n "$INDEXNOW_URLS" ]; then
+              for url in $(printf '%s' "$INDEXNOW_URLS" | tr ',' ' '); do
+                  set -- "$@" "--url=$url"
+              done
+          fi
 
-            if [ -n "$INDEXNOW_URLS" ]; then
-                for url in $(printf '%s' "$INDEXNOW_URLS" | tr ',' ' '); do
-                    set -- "$@" "--url=$url"
-                done
-            fi
+          echo "IndexNow : php artisan indexnow:submit $*"
 
-            echo "IndexNow : php artisan indexnow:submit $*"
+          arguments=""
 
-            php artisan indexnow:submit "$@"
+          if [ $# -gt 0 ]; then
+              arguments=$(printf '%q ' "$@")
+          fi
+
+          ssh -n production "set -e
+          cd $(printf %q "$SSH_PATH")
+          php artisan indexnow:submit $arguments"
