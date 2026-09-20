@@ -313,8 +313,9 @@ export default () => ({
             const url = `/api/secrets/${this.token}/read`;
             // Same id on every attempt so the server counts this read once
             const body = JSON.stringify({ read_id: this.readId });
+            const maxAttempts = 3;
 
-            for (let attempt = 0; attempt < 3; attempt++) {
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
                 try {
                     const res = await fetch(url, {
                         method: 'POST',
@@ -332,7 +333,10 @@ export default () => ({
                     // Network error — retry
                 }
 
-                await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+                // Wait between attempts only: after the last one, the beacon must fire immediately
+                if (attempt < maxAttempts - 1) {
+                    await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+                }
             }
 
             // Last resort: sendBeacon survives tab close

@@ -4,7 +4,7 @@ import * as SecretCrypto from '../../resources/js/crypto.js';
 import secretForm from '../../resources/js/components/secret-form.js';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MAX_TEXT_BYTES = 50000;
+const MAX_TEXT_CHARS = 50000;
 const MIN_PASSPHRASE_LENGTH = 12;
 
 /** Clés réellement consommées par le composant, valeurs sentinelles pour les assertions. */
@@ -210,23 +210,23 @@ describe('secretForm', () => {
     });
 
     describe('limites de taille et bascule de mode', () => {
-        it('compte la taille du secret en octets UTF-8', () => {
+        it('compte le secret en caractères, pas en octets UTF-8', () => {
             const form = createForm({ secret: 'éàü' });
 
-            expect(form.secret.length).toBe(3);
-            expect(form.secretByteLength()).toBe(6);
+            expect(form.secretLength()).toBe(3);
+            expect(form.isSecretTooLong()).toBe(false);
         });
 
-        it('accepte 50 000 octets et refuse 50 001', () => {
-            const form = createForm({ secret: 'a'.repeat(MAX_TEXT_BYTES) });
+        it('accepte 50 000 caractères et refuse 50 001', () => {
+            const form = createForm({ secret: 'a'.repeat(MAX_TEXT_CHARS) });
             expect(form.isSecretTooLong()).toBe(false);
 
-            form.secret = 'a'.repeat(MAX_TEXT_BYTES + 1);
+            form.secret = 'a'.repeat(MAX_TEXT_CHARS + 1);
             expect(form.isSecretTooLong()).toBe(true);
         });
 
         it('refuse l’envoi d’un texte trop long sans appeler le serveur', async () => {
-            const form = createForm({ secret: 'a'.repeat(MAX_TEXT_BYTES + 1) });
+            const form = createForm({ secret: 'a'.repeat(MAX_TEXT_CHARS + 1) });
 
             await form.handleSubmit();
 
@@ -234,15 +234,23 @@ describe('secretForm', () => {
             expect(form.error).toBe(TRANSLATIONS.text_too_large);
         });
 
-        it('refuse un texte dont seuls les octets UTF-8 dépassent la limite', async () => {
-            const form = createForm({ secret: 'é'.repeat(MAX_TEXT_BYTES / 2 + 1) });
+        it('accepte un texte multi-octets sous la limite en caractères', async () => {
+            const form = createForm({ secret: 'é'.repeat(MAX_TEXT_CHARS / 2 + 1) });
 
-            expect(form.secret.length).toBeLessThan(MAX_TEXT_BYTES);
+            expect(form.secretLength()).toBeLessThan(MAX_TEXT_CHARS);
 
             await form.handleSubmit();
 
-            expect(global.fetch).not.toHaveBeenCalled();
-            expect(form.error).toBe(TRANSLATIONS.text_too_large);
+            expect(form.error).toBeNull();
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+        });
+
+        it('affiche le compteur en caractères', () => {
+            const form = createForm({ secret: 'é'.repeat(1234) });
+
+            expect(form.secretCounterLabel()).toBe(
+                `${(1234).toLocaleString()} / ${MAX_TEXT_CHARS.toLocaleString()}`
+            );
         });
 
         it('refuse un texte vide ou blanc', async () => {

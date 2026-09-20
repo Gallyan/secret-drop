@@ -21,6 +21,8 @@ class CreateSecretTest extends TestCase
 
     private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 octets
 
+    private const MAX_CIPHERTEXT_LENGTH = 210000;
+
     /** Vérifie que la page de création s'affiche. */
     public function testCreatePageRendersApplicationName(): void
     {
@@ -185,10 +187,10 @@ class CreateSecretTest extends TestCase
         $response->assertJsonValidationErrors(['ciphertext' => 'Encrypted text is required for a text secret.']);
     }
 
-    /** Vérifie qu'un chiffré de 70 000 caractères est accepté. */
+    /** Vérifie qu'un chiffré de 210 000 caractères est accepté. */
     public function testAcceptsCiphertextAtMaximumLength(): void
     {
-        $ciphertext = str_repeat('A', 70000);
+        $ciphertext = str_repeat('A', self::MAX_CIPHERTEXT_LENGTH);
 
         $response = $this->postJson('/api/secrets', $this->validPayload(['ciphertext' => $ciphertext]));
 
@@ -196,10 +198,33 @@ class CreateSecretTest extends TestCase
         $this->assertSame($ciphertext, Secret::where('token', $response->json('token'))->value('ciphertext'));
     }
 
-    /** Vérifie qu'un chiffré de 70 001 caractères est refusé avec le message de taille. */
+    /**
+     * Vérifie que le pire cas de 50 000 caractères multi-octets passe : 3 octets par
+     * caractère en UTF-8 + 16 octets de tag AES-GCM par couche (deux avec passphrase),
+     * encodés en base64url.
+     */
+    public function testAcceptsWorstCaseCiphertextOfFiftyThousandMultibyteCharacters(): void
+    {
+        $plaintextBytes = 50000 * 3;
+        $encryptedBytes = $plaintextBytes + 16 + 16;
+        $encodedLength = (int) (ceil($encryptedBytes / 3) * 4);
+
+        $this->assertSame(200044, $encodedLength);
+        $this->assertLessThanOrEqual(self::MAX_CIPHERTEXT_LENGTH, $encodedLength);
+
+        $response = $this->postJson('/api/secrets', $this->validPayload([
+            'ciphertext' => str_repeat('A', $encodedLength),
+        ]));
+
+        $response->assertCreated();
+    }
+
+    /** Vérifie qu'un chiffré de 210 001 caractères est refusé avec le message de taille. */
     public function testRejectsCiphertextOverMaximumLength(): void
     {
-        $response = $this->postJson('/api/secrets', $this->validPayload(['ciphertext' => str_repeat('A', 70001)]));
+        $response = $this->postJson('/api/secrets', $this->validPayload([
+            'ciphertext' => str_repeat('A', self::MAX_CIPHERTEXT_LENGTH + 1),
+        ]));
 
         $response->assertUnprocessable();
         $response->assertJsonValidationErrors(['ciphertext' => 'The text must not exceed 50,000 characters.']);
@@ -291,27 +316,27 @@ class CreateSecretTest extends TestCase
     }
 
     /**
-     * La limite saisie côté client doit garantir que le chiffré passe la règle
-     * serveur : base64url coûte 4 caractères pour 3 octets, et chaque couche
-     * AES-GCM ajoute 16 octets (deux couches avec passphrase).
+     * La limite saisie côté client est exprimée en caractères : un caractère pèse
+     * jusqu'à 3 octets en UTF-8, base64url coûte 4 caractères pour 3 octets, et
+     * chaque couche AES-GCM ajoute 16 octets (deux couches avec passphrase).
      */
     public function testClientTextLimitFitsTheServerCiphertextRule(): void
     {
         $js = (string) file_get_contents(resource_path('js/components/secret-form.js'));
-        $this->assertMatchesRegularExpression('/const MAX_TEXT_BYTES = (\d+);/', $js);
-        preg_match('/const MAX_TEXT_BYTES = (\d+);/', $js, $matches);
-        $maxTextBytes = (int) $matches[1];
+        $this->assertMatchesRegularExpression('/const MAX_TEXT_CHARS = (\d+);/', $js);
+        preg_match('/const MAX_TEXT_CHARS = (\d+);/', $js, $matches);
+        $maxTextChars = (int) $matches[1];
 
         $ciphertextRules = (new StoreSecretRequest())->rules()['ciphertext'];
         $maxRule = collect($ciphertextRules)->first(fn ($rule) => is_string($rule) && str_starts_with($rule, 'max:'));
         $serverMax = (int) str_replace('max:', '', (string) $maxRule);
 
-        $encodedLength = (int) ceil(($maxTextBytes + 32) * 4 / 3);
+        $encodedLength = (int) (ceil(($maxTextChars * 3 + 32) / 3) * 4);
 
         $this->assertLessThanOrEqual(
             $serverMax,
             $encodedLength,
-            "Un texte de {$maxTextBytes} octets produit {$encodedLength} caractères chiffrés, au-delà de la limite serveur de {$serverMax}."
+            "Un texte de {$maxTextChars} caractères produit {$encodedLength} caractères chiffrés, au-delà de la limite serveur de {$serverMax}."
         );
     }
 

@@ -37,10 +37,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Per-IP Daily Upload Budget (MB) — 0 for unlimited
+    | Per-IP Daily Stored Bytes Budget (MB) — 0 for unlimited
     |--------------------------------------------------------------------------
     |
-    | Keeps one requester from filling the global quota on its own.
+    | Keeps one requester from filling the global quota on its own. Counts every
+    | byte stored for that IP: uploaded files and text ciphertexts alike.
     |
     */
     'daily_upload_mb_per_ip' => (int) env('SECRETS_DAILY_UPLOAD_MB_PER_IP', 200),

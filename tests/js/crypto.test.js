@@ -284,10 +284,58 @@ describe('passphrase layer', () => {
             .resolves.toBe('no real passphrase');
     });
 
-    it('derives the key from the untrimmed passphrase, so callers must trim first', async () => {
+    it('trims the passphrase on encryption so the trimmed one decrypts', async () => {
         const encrypted = await encryptSecret('spaced out', '  hunter2  ');
 
         expect(encrypted.salt).toBeTypeOf('string');
+
+        await expect(decryptSecret(
+            encrypted.ciphertext,
+            encrypted.iv,
+            encrypted.keyMaterial,
+            encrypted.salt,
+            encrypted.iv2,
+            'hunter2'
+        )).resolves.toBe('spaced out');
+    });
+
+    it('trims the passphrase on decryption so a padded one still decrypts', async () => {
+        const encrypted = await encryptSecret('spaced out', 'hunter2');
+
+        await expect(decryptSecret(
+            encrypted.ciphertext,
+            encrypted.iv,
+            encrypted.keyMaterial,
+            encrypted.salt,
+            encrypted.iv2,
+            '\t  hunter2 \n'
+        )).resolves.toBe('spaced out');
+    });
+
+    it('keeps rejecting a genuinely wrong passphrase once both sides are trimmed', async () => {
+        const encrypted = await encryptSecret('spaced out', '  hunter2  ');
+
+        await expect(decryptSecret(
+            encrypted.ciphertext,
+            encrypted.iv,
+            encrypted.keyMaterial,
+            encrypted.salt,
+            encrypted.iv2,
+            'hunter 2'
+        )).rejects.toThrow();
+
+        await expect(decryptSecret(
+            encrypted.ciphertext,
+            encrypted.iv,
+            encrypted.keyMaterial,
+            encrypted.salt,
+            encrypted.iv2,
+            'hunter22'
+        )).rejects.toThrow();
+    });
+
+    it('keeps inner whitespace significant', async () => {
+        const encrypted = await encryptSecret('inner spaces', '  hun ter2  ');
 
         await expect(decryptSecret(
             encrypted.ciphertext,
@@ -304,8 +352,43 @@ describe('passphrase layer', () => {
             encrypted.keyMaterial,
             encrypted.salt,
             encrypted.iv2,
-            '  hunter2  '
-        )).resolves.toBe('spaced out');
+            'hun ter2'
+        )).resolves.toBe('inner spaces');
+    });
+
+    it('treats a whitespace-only passphrase as no passphrase on a file too', async () => {
+        const file = new File([new Uint8Array([1, 2, 3])], 'ws.bin');
+        const encrypted = await encryptFile(file, ' \t\n ');
+
+        expect(encrypted.salt).toBeNull();
+        expect(encrypted.iv2).toBeNull();
+
+        const decrypted = await decryptFile(
+            await blobToArrayBuffer(encrypted.encryptedBlob),
+            encrypted.iv,
+            encrypted.keyMaterial
+        );
+
+        expect(Array.from(new Uint8Array(decrypted.data))).toEqual([1, 2, 3]);
+    });
+
+    it('trims the file passphrase on both sides', async () => {
+        const content = new Uint8Array([4, 5, 6]);
+        const file = new File([content], 'trim.bin');
+        const encrypted = await encryptFile(file, '  file passphrase  ');
+
+        expect(encrypted.salt).toBeTypeOf('string');
+
+        const decrypted = await decryptFile(
+            await blobToArrayBuffer(encrypted.encryptedBlob),
+            encrypted.iv,
+            encrypted.keyMaterial,
+            encrypted.salt,
+            encrypted.iv2,
+            'file passphrase'
+        );
+
+        expect(Array.from(new Uint8Array(decrypted.data))).toEqual(Array.from(content));
     });
 
     it('round-trips the trimmed passphrase the components actually pass in', async () => {

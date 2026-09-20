@@ -231,16 +231,61 @@ class SecurityHardeningTest extends TestCase
         $response->assertCreated();
     }
 
-    /** Vérifie qu'un upload refusé par le budget n'en consomme pas, et que les secrets texte restent possibles. */
-    public function testRejectedUploadDoesNotConsumeBudgetAndTextSecretsRemainAllowed(): void
+    /** Vérifie qu'un upload refusé par le budget n'en consomme pas. */
+    public function testRejectedUploadDoesNotConsumeBudget(): void
     {
         Storage::fake('secrets');
         config(['secrets.daily_upload_mb_per_ip' => 1]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(2048)))->assertTooManyRequests();
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+    }
 
-        $this->postJson('/api/secrets', $this->textPayload())->assertCreated();
+    /** Vérifie que le chiffré d'un secret texte pèse sur le budget quotidien de l'IP, au même titre qu'un fichier. */
+    public function testTextCiphertextConsumesTheDailyUploadBudgetOfTheIp(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        // Le mégaoctet suffirait au fichier seul : c'est le texte qui fait déborder le budget
+        $this->postJson('/api/secrets', $this->textPayload(str_repeat('A', 200000)))->assertCreated();
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)));
+
+        $response->assertTooManyRequests();
+        $response->assertExactJson([
+            'error' => 'daily_limit_exceeded',
+            'message' => 'Daily limit reached. Please try again tomorrow.',
+        ]);
+        $this->assertDatabaseCount('secrets', 1);
+        Storage::disk('secrets')->assertDirectoryEmpty('/');
+    }
+
+    /** Vérifie qu'un secret texte est refusé une fois le budget quotidien consommé par un fichier. */
+    public function testTextSecretIsRejectedOnceTheDailyUploadBudgetIsExhaustedByAFile(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+
+        $response = $this->postJson('/api/secrets', $this->textPayload());
+
+        $response->assertTooManyRequests();
+        $this->assertDatabaseCount('secrets', 1);
+    }
+
+    /** Vérifie qu'un budget à 0 laisse passer les secrets texte, même après un fichier qui aurait épuisé le budget. */
+    public function testTextSecretIsAcceptedWhenDailyUploadBudgetIsZero(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.daily_upload_mb_per_ip' => 0]);
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+
+        $this->postJson('/api/secrets', $this->textPayload(str_repeat('A', 200000)))->assertCreated();
+
+        $this->assertDatabaseCount('secrets', 2);
     }
 
     /** Vérifie qu'un budget à 0 ne limite pas le volume envoyé. */
@@ -326,11 +371,11 @@ class SecurityHardeningTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function textPayload(): array
+    private function textPayload(?string $ciphertext = null): array
     {
         return [
             'type' => 'text',
-            'ciphertext' => self::VALID_CIPHERTEXT,
+            'ciphertext' => $ciphertext ?? self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
                 'iv' => self::VALID_IV,

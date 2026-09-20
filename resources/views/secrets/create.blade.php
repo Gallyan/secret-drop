@@ -108,7 +108,7 @@
                                     placeholder="{{ __('messages.secret_placeholder') }}"
                                     class="w-full h-28 px-4 py-3 pb-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition resize-none"
                                 ></textarea>
-                                <div class="absolute bottom-1.5 right-3 text-xs tabular-nums pointer-events-none" aria-hidden="true" :class="secret.length > 50000 ? 'text-red-500 dark:text-red-400' : 'text-gray-500 dark:text-slate-400'" x-text="secret.length.toLocaleString() + ' / 50 000'"></div>
+                                <div class="absolute bottom-1.5 right-3 text-xs tabular-nums pointer-events-none" aria-hidden="true" :class="isSecretTooLong() ? 'text-red-500 dark:text-red-400' : 'text-gray-500 dark:text-slate-400'" x-text="secretCounterLabel()"></div>
                             </div>
                         </div>
 

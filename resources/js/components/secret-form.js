@@ -1,10 +1,12 @@
 import { t, formatFileSize, buildCipherMeta, copyText } from '../utils.js';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-// Le serveur plafonne le chiffré encodé à 70 000 caractères. Le base64url coûte
-// 4 caractères par tranche de 3 octets, et AES-GCM ajoute 16 octets par couche
-// (deux couches avec passphrase) : 50 000 octets clairs laissent de la marge.
-const MAX_TEXT_BYTES = 50000;
+// Limite exprimée en caractères, comme le compteur affiché sous le champ : parler
+// d'octets n'a pas de sens pour l'utilisateur. Pire cas côté serveur : 50 000
+// caractères à 3 octets en UTF-8 (150 000 octets) + 16 octets de tag AES-GCM par
+// couche (deux avec passphrase), encodés en base64url, soit ~200 044 caractères ;
+// le serveur plafonne le chiffré encodé à 210 000 caractères.
+const MAX_TEXT_CHARS = 50000;
 const MIN_PASSPHRASE_LENGTH = 12;
 
 export default () => ({
@@ -83,13 +85,18 @@ export default () => ({
             });
         },
 
-        /** Taille réellement chiffrée : un caractère peut peser plusieurs octets en UTF-8. */
-        secretByteLength() {
-            return new TextEncoder().encode(this.secret).length;
+        /** Longueur affichée par le compteur : unités de code UTF-16, comme String.length. */
+        secretLength() {
+            return this.secret.length;
+        },
+
+        /** Compteur affiché sous le champ, dans le format « 12 345 / 50 000 ». */
+        secretCounterLabel() {
+            return `${this.secretLength().toLocaleString()} / ${MAX_TEXT_CHARS.toLocaleString()}`;
         },
 
         isSecretTooLong() {
-            return this.secretByteLength() > MAX_TEXT_BYTES;
+            return this.secretLength() > MAX_TEXT_CHARS;
         },
 
         hasLowercase() {
@@ -234,7 +241,7 @@ export default () => ({
                 throw new Error(t('crypto_enter_secret'));
             }
 
-            if (this.secretByteLength() > MAX_TEXT_BYTES) {
+            if (this.isSecretTooLong()) {
                 throw new Error(t('text_too_large'));
             }
 

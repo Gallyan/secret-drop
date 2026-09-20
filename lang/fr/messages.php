@@ -51,7 +51,7 @@ return [
     'file_drop_or_drag' => 'ou glissez un fichier',
     'file_max_size' => 'Maximum 10 Mo',
     'file_too_large' => 'Le fichier est trop volumineux (max 10 Mo)',
-    'text_too_large' => 'Le texte est trop long (max 50 Ko)',
+    'text_too_large' => 'Le texte est trop long (max 50 000 caractères)',
 
     // Buttons
     'btn_encrypt' => 'Chiffrer et créer le lien',

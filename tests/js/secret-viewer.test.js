@@ -181,7 +181,7 @@ describe('secretViewer', () => {
             const viewer = createViewer();
 
             const pending = viewer.confirmRead();
-            await vi.advanceTimersByTimeAsync(10000);
+            await vi.runAllTimersAsync();
             await pending;
 
             expect(global.fetch).toHaveBeenCalledTimes(3);
@@ -216,7 +216,7 @@ describe('secretViewer', () => {
             const viewer = createViewer();
 
             const pending = viewer.confirmRead();
-            await vi.advanceTimersByTimeAsync(10000);
+            await vi.runAllTimersAsync();
             await pending;
 
             expect(global.fetch).toHaveBeenCalledTimes(3);
@@ -236,11 +236,45 @@ describe('secretViewer', () => {
             const viewer = createViewer();
 
             const pending = viewer.confirmRead();
-            await vi.advanceTimersByTimeAsync(10000);
+            await vi.runAllTimersAsync();
             await pending;
 
             expect(global.fetch).toHaveBeenCalledTimes(3);
             expect(navigator.sendBeacon).toHaveBeenCalledTimes(1);
+        });
+
+        it('n’attend que entre les tentatives : 1 s puis 2 s, rien après la dernière', async () => {
+            vi.useFakeTimers();
+            const start = Date.now();
+            global.fetch = vi.fn(async () => jsonResponse({}, { ok: false, status: 503 }));
+            const viewer = createViewer();
+
+            const pending = viewer.confirmRead();
+            await vi.runAllTimersAsync();
+            await pending;
+
+            // 1000 + 2000 : les deux seules pauses, celles qui séparent les trois tentatives
+            expect(Date.now() - start).toBe(3000);
+            expect(vi.getTimerCount()).toBe(0);
+        });
+
+        it('déclenche sendBeacon dès l’échec de la dernière tentative, sans pause finale', async () => {
+            vi.useFakeTimers();
+            global.fetch = vi.fn(async () => jsonResponse({}, { ok: false, status: 503 }));
+            const viewer = createViewer();
+
+            const pending = viewer.confirmRead();
+
+            await vi.advanceTimersByTimeAsync(2999);
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+            expect(navigator.sendBeacon).not.toHaveBeenCalled();
+
+            await vi.advanceTimersByTimeAsync(1);
+            await pending;
+
+            expect(global.fetch).toHaveBeenCalledTimes(3);
+            expect(navigator.sendBeacon).toHaveBeenCalledTimes(1);
+            expect(vi.getTimerCount()).toBe(0);
         });
     });
 

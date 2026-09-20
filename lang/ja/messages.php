@@ -51,7 +51,7 @@ return [
     'file_drop_or_drag' => 'またはドラッグ＆ドロップ',
     'file_max_size' => '最大10MB',
     'file_too_large' => 'ファイルが大きすぎます（最大10MB）',
-    'text_too_large' => 'テキストが長すぎます（最大50KB）',
+    'text_too_large' => 'テキストが長すぎます（最大50,000文字）',
 
     // Buttons
     'btn_encrypt' => '暗号化してリンク作成',

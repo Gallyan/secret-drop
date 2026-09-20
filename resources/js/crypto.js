@@ -68,7 +68,25 @@ async function generateKey() {
 }
 
 /**
- * Derive an AES key from a passphrase using PBKDF2
+ * Normalise a passphrase: surrounding whitespace is never significant.
+ * A null/undefined or whitespace-only passphrase normalises to an empty
+ * string, which means "no passphrase".
+ *
+ * @param {string|null|undefined} passphrase
+ * @returns {string}
+ */
+function normalizePassphrase(passphrase) {
+    if (typeof passphrase !== 'string') {
+        return '';
+    }
+
+    return passphrase.trim();
+}
+
+/**
+ * Derive an AES key from a passphrase using PBKDF2.
+ * The passphrase is normalised here too, so every derivation path agrees.
+ *
  * @param {string} passphrase
  * @param {Uint8Array} salt
  * @returns {Promise<CryptoKey>}
@@ -77,7 +95,7 @@ async function deriveKeyFromPassphrase(passphrase, salt) {
     const encoder = new TextEncoder();
     const keyMaterial = await crypto.subtle.importKey(
         'raw',
-        encoder.encode(passphrase),
+        encoder.encode(normalizePassphrase(passphrase)),
         'PBKDF2',
         false,
         ['deriveKey']
@@ -143,11 +161,15 @@ function validateCryptoParams(ivBytes, saltBytes = null) {
  * 1. First layer: random 256-bit key (transmitted in URL fragment)
  * 2. Second layer: key derived from passphrase (shared separately)
  *
+ * The passphrase is trimmed before use: leading and trailing whitespace is
+ * never part of the key material.
+ *
  * @param {string} plaintext - The secret to encrypt
  * @param {string|null} passphrase - Optional passphrase for additional protection
  * @returns {Promise<{ciphertext: string, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number}>}
  */
 export async function encryptSecret(plaintext, passphrase = null) {
+    const normalizedPassphrase = normalizePassphrase(passphrase);
     const encoder = new TextEncoder();
     const plaintextBytes = encoder.encode(plaintext);
 
@@ -169,10 +191,10 @@ export async function encryptSecret(plaintext, passphrase = null) {
     let iv2 = null;
 
     // Second encryption layer with passphrase-derived key
-    if (passphrase && passphrase.trim()) {
+    if (normalizedPassphrase) {
         salt = generateRandomBytes(SALT_LENGTH);
         iv2 = generateRandomBytes(IV_LENGTH);
-        const passphraseKey = await deriveKeyFromPassphrase(passphrase, salt);
+        const passphraseKey = await deriveKeyFromPassphrase(normalizedPassphrase, salt);
 
         ciphertextBytes = await crypto.subtle.encrypt(
             { name: 'AES-GCM', iv: iv2 },
@@ -202,11 +224,13 @@ export async function encryptSecret(plaintext, passphrase = null) {
  * @param {string} keyMaterial - Base64URL encoded random key
  * @param {string|null} salt - Base64URL encoded salt (if passphrase was used)
  * @param {string|null} iv2 - Base64URL encoded IV for passphrase layer
- * @param {string|null} passphrase - Passphrase (if used during encryption)
+ * @param {string|null} passphrase - Passphrase (if used during encryption), trimmed before derivation
  * @param {number} version - Crypto version
  * @returns {Promise<string>}
  */
 export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv2 = null, passphrase = null, version = CRYPTO_VERSION) {
+    const normalizedPassphrase = normalizePassphrase(passphrase);
+
     if (version !== CRYPTO_VERSION) {
         throw new Error(`Unsupported crypto version: ${version}`);
     }
@@ -218,11 +242,11 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
     let dataBytes = base64UrlToBytes(ciphertext);
 
     // First: decrypt passphrase layer if present
-    if (salt && iv2 && passphrase) {
+    if (salt && iv2 && normalizedPassphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
         validateCryptoParams(iv2Bytes, saltBytes);
-        const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
+        const passphraseKey = await deriveKeyFromPassphrase(normalizedPassphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
             { name: 'AES-GCM', iv: iv2Bytes },
@@ -375,11 +399,14 @@ function unpackFileWithMeta(decryptedBytes) {
  * File metadata (filename, mime, size) is encrypted within the payload,
  * never transmitted in plaintext to the server.
  *
+ * The passphrase is trimmed before use, like in encryptSecret.
+ *
  * @param {File} file - The file to encrypt
  * @param {string|null} passphrase - Optional passphrase for additional protection
  * @returns {Promise<{encryptedBlob: Blob, iv: string, salt: string|null, iv2: string|null, keyMaterial: string, version: number}>}
  */
 export async function encryptFile(file, passphrase = null) {
+    const normalizedPassphrase = normalizePassphrase(passphrase);
     const arrayBuffer = await file.arrayBuffer();
     const fileBytes = new Uint8Array(arrayBuffer);
 
@@ -404,10 +431,10 @@ export async function encryptFile(file, passphrase = null) {
     let iv2 = null;
 
     // Second encryption layer with passphrase-derived key
-    if (passphrase && passphrase.trim()) {
+    if (normalizedPassphrase) {
         salt = generateRandomBytes(SALT_LENGTH);
         iv2 = generateRandomBytes(IV_LENGTH);
-        const passphraseKey = await deriveKeyFromPassphrase(passphrase, salt);
+        const passphraseKey = await deriveKeyFromPassphrase(normalizedPassphrase, salt);
 
         ciphertextBytes = await crypto.subtle.encrypt(
             { name: 'AES-GCM', iv: iv2 },
@@ -438,11 +465,13 @@ export async function encryptFile(file, passphrase = null) {
  * @param {string} keyMaterial - Base64URL encoded random key
  * @param {string|null} salt - Base64URL encoded salt (if passphrase was used)
  * @param {string|null} iv2 - Base64URL encoded IV for passphrase layer
- * @param {string|null} passphrase - Passphrase (if used during encryption)
+ * @param {string|null} passphrase - Passphrase (if used during encryption), trimmed before derivation
  * @param {number} version - Crypto version
  * @returns {Promise<{data: ArrayBuffer, filename: string, mime: string, size: number}>}
  */
 export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, iv2 = null, passphrase = null, version = CRYPTO_VERSION) {
+    const normalizedPassphrase = normalizePassphrase(passphrase);
+
     if (version !== CRYPTO_VERSION) {
         throw new Error(`Unsupported crypto version: ${version}`);
     }
@@ -454,11 +483,11 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
     let dataBytes = new Uint8Array(encryptedData);
 
     // First: decrypt passphrase layer if present
-    if (salt && iv2 && passphrase) {
+    if (salt && iv2 && normalizedPassphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
         validateCryptoParams(iv2Bytes, saltBytes);
-        const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
+        const passphraseKey = await deriveKeyFromPassphrase(normalizedPassphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
             { name: 'AES-GCM', iv: iv2Bytes },

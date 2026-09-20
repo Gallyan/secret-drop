@@ -51,7 +51,7 @@ return [
     'file_drop_or_drag' => '또는 파일을 끌어놓기',
     'file_max_size' => '최대 10MB',
     'file_too_large' => '파일이 너무 큽니다 (최대 10MB)',
-    'text_too_large' => '텍스트가 너무 깁니다 (최대 50KB)',
+    'text_too_large' => '텍스트가 너무 깁니다 (최대 50,000자)',
 
     // Buttons
     'btn_encrypt' => '암호화하고 링크 생성',

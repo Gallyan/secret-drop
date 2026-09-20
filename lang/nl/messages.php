@@ -51,7 +51,7 @@ return [
     'file_drop_or_drag' => 'of sleep een bestand',
     'file_max_size' => 'Maximaal 10 MB',
     'file_too_large' => 'Bestand is te groot (max 10 MB)',
-    'text_too_large' => 'Tekst is te lang (max 50 KB)',
+    'text_too_large' => 'Tekst is te lang (max 50.000 tekens)',
 
     // Buttons
     'btn_encrypt' => 'Versleutelen en link maken',

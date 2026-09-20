@@ -61,8 +61,12 @@ class SecretsController extends Controller
 
         $uploadBudgetKey = "upload-bytes:{$request->ip()}";
         $fileSize = $type->isFile() ? (int) $request->file('encrypted_file')->getSize() : 0;
+        $ciphertext = $type->isText() ? $request->ciphertext() : '';
 
-        if ($this->exceedsDailyUploadBudget($uploadBudgetKey, $fileSize)) {
+        // Text secrets weigh on the same per-IP budget as files: their ciphertext is stored too
+        $storedBytes = $type->isFile() ? $fileSize : strlen($ciphertext);
+
+        if ($this->exceedsDailyUploadBudget($uploadBudgetKey, $storedBytes)) {
             return response()->json([
                 'error' => 'daily_limit_exceeded',
                 'message' => __('messages.daily_limit_exceeded'),
@@ -84,15 +88,15 @@ class SecretsController extends Controller
         ];
 
         if ($type->isText()) {
-            $secretData['ciphertext'] = $request->ciphertext();
+            $secretData['ciphertext'] = $ciphertext;
         } else {
             $secretData['file_path'] = $this->storage->store($token, $request->file('encrypted_file'));
         }
 
         $secret = Secret::create($secretData);
 
-        if ($fileSize > 0) {
-            RateLimiter::increment($uploadBudgetKey, 86400, $fileSize);
+        if ($storedBytes > 0) {
+            RateLimiter::increment($uploadBudgetKey, 86400, $storedBytes);
         }
 
         $hasPassphrase = $request->hasPassphrase();
@@ -106,11 +110,12 @@ class SecretsController extends Controller
         ], 201);
     }
 
-    private function exceedsDailyUploadBudget(string $key, int $fileSize): bool
+    /** Daily per-IP budget over everything stored: uploaded files and text ciphertexts alike. */
+    private function exceedsDailyUploadBudget(string $key, int $storedBytes): bool
     {
         $budgetMb = Config::integer('secrets.daily_upload_mb_per_ip');
 
-        if ($fileSize === 0) {
+        if ($storedBytes === 0) {
             return false;
         }
 
@@ -122,7 +127,7 @@ class SecretsController extends Controller
         $consumed = RateLimiter::attempts($key);
         $consumedBytes = is_numeric($consumed) ? (int) $consumed : 0;
 
-        return $consumedBytes + $fileSize > $budgetMb * 1024 * 1024;
+        return $consumedBytes + $storedBytes > $budgetMb * 1024 * 1024;
     }
 
     private function trackCreationStats(

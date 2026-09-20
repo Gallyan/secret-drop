@@ -42,9 +42,12 @@ class StoreSecretRequest extends FormRequest
         return [
             'type' => ['required', Rule::enum(SecretType::class)],
 
-            // Text secrets (~50 KB plaintext = ~70 KB ciphertext in base64)
+            // Text secrets: the browser caps the plaintext at 50 000 characters. Worst case
+            // 3 bytes per character in UTF-8 (150 000 bytes) + 16 bytes of AES-GCM tag per
+            // layer (two with a passphrase) = 150 032 bytes, base64url-encoded at 4 characters
+            // per 3 bytes = 200 044 characters. 210 000 leaves a margin.
             'ciphertext' => [
-                'bail', 'required_if:type,text', 'string', 'max:70000',
+                'bail', 'required_if:type,text', 'string', 'max:210000',
                 new Base64UrlBytes(minBytes: 16),
             ],
 
