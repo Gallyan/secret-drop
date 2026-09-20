@@ -142,7 +142,7 @@ class SecurityHardeningTest extends TestCase
     public function testFileUploadReturns503WhenStoredSizeReachesQuota(): void
     {
         Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 1]);
+        config(['secrets.storage_quota_mb' => 1]);
         Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
 
         $response = $this->postJson('/api/secrets', $this->filePayload());
@@ -160,7 +160,7 @@ class SecurityHardeningTest extends TestCase
     public function testTextSecretReturns503WhenStoredBlobsReachQuota(): void
     {
         Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 1]);
+        config(['secrets.storage_quota_mb' => 1]);
         Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
 
         $response = $this->postJson('/api/secrets', $this->textPayload());
@@ -178,7 +178,7 @@ class SecurityHardeningTest extends TestCase
     public function testCreationReturns503WhenTextCiphertextsAloneReachQuota(string $type): void
     {
         Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 1]);
+        config(['secrets.storage_quota_mb' => 1]);
         Secret::factory()->create(['ciphertext' => str_repeat('a', self::ONE_MEGABYTE)]);
 
         $response = $this->postJson('/api/secrets', $this->payloadOfType($type));
@@ -197,7 +197,7 @@ class SecurityHardeningTest extends TestCase
     public function testCreationIsAcceptedWhenQuotaIsZero(string $type): void
     {
         Storage::fake('secrets');
-        config(['secrets.file_storage_quota_mb' => 0]);
+        config(['secrets.storage_quota_mb' => 0]);
         Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
         Secret::factory()->create(['ciphertext' => str_repeat('a', self::ONE_MEGABYTE)]);
 

@@ -37,8 +37,12 @@ return [
     | disk and text ciphertexts in the database. Creation is refused with a 503
     | once the quota is reached, whatever the secret type.
     |
+    | SECRETS_FILE_STORAGE_QUOTA_MB is the former name, kept as a fallback so a
+    | deployment whose .env still uses it keeps its configured value. Drop it
+    | once every environment has been renamed.
+    |
     */
-    'file_storage_quota_mb' => (int) env('SECRETS_FILE_STORAGE_QUOTA_MB', 5120),
+    'storage_quota_mb' => (int) env('SECRETS_STORAGE_QUOTA_MB', env('SECRETS_FILE_STORAGE_QUOTA_MB', 5120)),
 
     /*
     |--------------------------------------------------------------------------

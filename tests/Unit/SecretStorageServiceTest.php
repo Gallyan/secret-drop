@@ -171,7 +171,7 @@ class SecretStorageServiceTest extends TestCase
     public function testQuotaIsExceededFromTheExactQuotaSize(int $storedBytes, bool $expected): void
     {
         Storage::fake('secrets');
-        Config::set('secrets.file_storage_quota_mb', 1);
+        Config::set('secrets.storage_quota_mb', 1);
         $this->storage->disk()->put('ab/blob', str_repeat('x', $storedBytes));
 
         $this->assertSame($expected, $this->storage->isQuotaExceeded());
@@ -208,7 +208,7 @@ class SecretStorageServiceTest extends TestCase
     public function testQuotaCountsBlobsAndTextCiphertextsTogether(int $blobBytes, int $textBytes, bool $expected): void
     {
         Storage::fake('secrets');
-        Config::set('secrets.file_storage_quota_mb', 1);
+        Config::set('secrets.storage_quota_mb', 1);
 
         if ($blobBytes > 0) {
             $this->storage->disk()->put('ab/blob', str_repeat('x', $blobBytes));
@@ -223,7 +223,7 @@ class SecretStorageServiceTest extends TestCase
     public function testUsageRatioIsTheShareOfTheQuotaAlreadyUsed(): void
     {
         Storage::fake('secrets');
-        Config::set('secrets.file_storage_quota_mb', 1);
+        Config::set('secrets.storage_quota_mb', 1);
         $this->storage->disk()->put('ab/blob', str_repeat('x', 262144));
         Secret::factory()->create(['ciphertext' => str_repeat('a', 262144)]);
 
@@ -235,7 +235,7 @@ class SecretStorageServiceTest extends TestCase
     public function testZeroQuotaMeansUnlimited(): void
     {
         Storage::fake('secrets');
-        Config::set('secrets.file_storage_quota_mb', 0);
+        Config::set('secrets.storage_quota_mb', 0);
         $this->storage->disk()->put('ab/blob', str_repeat('x', 2048));
         Secret::factory()->create(['ciphertext' => str_repeat('a', 2048)]);
 

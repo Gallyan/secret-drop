@@ -211,7 +211,7 @@ class SecretStorageService
     /** Configured global quota in bytes, 0 when unlimited. */
     public function quotaBytes(): int
     {
-        $quotaMb = Config::integer('secrets.file_storage_quota_mb');
+        $quotaMb = Config::integer('secrets.storage_quota_mb');
 
         if ($quotaMb <= 0) {
             return 0;
