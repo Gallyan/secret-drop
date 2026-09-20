@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'Acceder a mis secretos',
     'email_magic_link_warning' => 'Este enlace expira en :minutes minutos y solo puede usarse una vez.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] Almacenamiento al :percent% - :app',
+    'email_storage_quota_title' => 'Alerta de cuota de almacenamiento',
+    'email_storage_quota_level_warning' => 'Advertencia',
+    'email_storage_quota_level_critical' => 'Crítico',
+    'email_storage_quota_intro' => 'El almacenamiento de :app ha alcanzado el :percent% de la cuota configurada.',
+    'email_storage_quota_gauge_label' => 'de la cuota de almacenamiento usada',
+    'email_storage_quota_used_label' => 'Usado',
+    'email_storage_quota_total_label' => 'Cuota',
+    'email_storage_quota_consequence' => 'Cuando la cuota se llene, los nuevos secretos se rechazarán con un error HTTP 503 hasta que se libere espacio.',
+    'email_storage_quota_action' => 'Libera espacio eliminando los secretos caducados o aumenta la cuota de almacenamiento configurada.',
+
     // Super Admin
     'superadmin_title' => 'Super Admin',
     'superadmin_description' => '',

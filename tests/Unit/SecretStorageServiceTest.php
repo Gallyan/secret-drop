@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
@@ -44,6 +45,19 @@ class SecretStorageServiceTest extends TestCase
         return [
             'un octet sous le quota' => [1048575, false],
             'quota atteint exactement' => [1048576, true],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: int, 1: int, 2: bool}>
+     */
+    public static function mixedQuotaBoundaries(): array
+    {
+        return [
+            'texte seul sous le quota' => [0, 1048575, false],
+            'texte seul atteignant le quota' => [0, 1048576, true],
+            'blob et texte cumulés sous le quota' => [1048000, 575, false],
+            'blob et texte cumulés atteignant le quota' => [1048000, 576, true],
         ];
     }
 
@@ -161,6 +175,73 @@ class SecretStorageServiceTest extends TestCase
         $this->storage->disk()->put('ab/blob', str_repeat('x', $storedBytes));
 
         $this->assertSame($expected, $this->storage->isQuotaExceeded());
+    }
+
+    /** Vérifie que totalStoredBytes additionne les blobs du disque et les chiffrés texte de la base. */
+    public function testTotalStoredBytesSumsDiskBlobsAndTextCiphertexts(): void
+    {
+        Storage::fake('secrets');
+        $this->storage->disk()->put('ab/first', str_repeat('x', 100));
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 40)]);
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 10)]);
+        Secret::factory()->file()->create();
+
+        $this->assertSame(50, $this->storage->totalTextSize());
+        $this->assertSame(150, $this->storage->totalStoredBytes());
+    }
+
+    /** Vérifie que le total des chiffrés texte est servi depuis le cache après le premier calcul. */
+    public function testTotalTextSizeServesCachedValue(): void
+    {
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 30)]);
+
+        $firstTotal = $this->storage->totalTextSize();
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 70)]);
+        $secondTotal = $this->storage->totalTextSize();
+
+        $this->assertSame(30, $firstTotal);
+        $this->assertSame(30, $secondTotal);
+    }
+
+    /** Vérifie que le quota est dépassé aussi bien par les chiffrés texte que par le cumul texte + blobs. */
+    #[DataProvider('mixedQuotaBoundaries')]
+    public function testQuotaCountsBlobsAndTextCiphertextsTogether(int $blobBytes, int $textBytes, bool $expected): void
+    {
+        Storage::fake('secrets');
+        Config::set('secrets.file_storage_quota_mb', 1);
+
+        if ($blobBytes > 0) {
+            $this->storage->disk()->put('ab/blob', str_repeat('x', $blobBytes));
+        }
+
+        Secret::factory()->create(['ciphertext' => str_repeat('a', $textBytes)]);
+
+        $this->assertSame($expected, $this->storage->isQuotaExceeded());
+    }
+
+    /** Vérifie que usageRatio rapporte le total stocké au quota converti en octets. */
+    public function testUsageRatioIsTheShareOfTheQuotaAlreadyUsed(): void
+    {
+        Storage::fake('secrets');
+        Config::set('secrets.file_storage_quota_mb', 1);
+        $this->storage->disk()->put('ab/blob', str_repeat('x', 262144));
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 262144)]);
+
+        $this->assertSame(1048576, $this->storage->quotaBytes());
+        $this->assertSame(0.5, $this->storage->usageRatio());
+    }
+
+    /** Vérifie qu'un quota à 0 vaut illimité : aucun octet de quota, aucun ratio, aucun dépassement. */
+    public function testZeroQuotaMeansUnlimited(): void
+    {
+        Storage::fake('secrets');
+        Config::set('secrets.file_storage_quota_mb', 0);
+        $this->storage->disk()->put('ab/blob', str_repeat('x', 2048));
+        Secret::factory()->create(['ciphertext' => str_repeat('a', 2048)]);
+
+        $this->assertSame(0, $this->storage->quotaBytes());
+        $this->assertSame(0.0, $this->storage->usageRatio());
+        $this->assertFalse($this->storage->isQuotaExceeded());
     }
 
     /** Vérifie que download renvoie le contenu chiffré avec les en-têtes de téléchargement sécurisés. */

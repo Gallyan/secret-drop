@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Secret;
 use DOMDocument;
 use DOMElement;
 use Illuminate\Http\UploadedFile;
@@ -135,7 +136,7 @@ class SecurityHardeningTest extends TestCase
         $response->assertViewIs('superadmin.invalid-link');
     }
 
-    // ── File Storage Quota ──────────────────────────────────────────
+    // ── Global Storage Quota ────────────────────────────────────────
 
     /** Vérifie qu'un upload est refusé en 503 avec le message traduit dès que le stockage atteint exactement le quota. */
     public function testFileUploadReturns503WhenStoredSizeReachesQuota(): void
@@ -155,8 +156,8 @@ class SecurityHardeningTest extends TestCase
         $this->assertSame(['zz/existing'], Storage::disk('secrets')->allFiles());
     }
 
-    /** Vérifie qu'un secret texte reste créé quand le quota de fichiers est atteint. */
-    public function testTextSecretIsCreatedWhenFileQuotaIsReached(): void
+    /** Vérifie qu'un secret texte est refusé en 503 quand les blobs stockés atteignent le quota global. */
+    public function testTextSecretReturns503WhenStoredBlobsReachQuota(): void
     {
         Storage::fake('secrets');
         config(['secrets.file_storage_quota_mb' => 1]);
@@ -164,21 +165,65 @@ class SecurityHardeningTest extends TestCase
 
         $response = $this->postJson('/api/secrets', $this->textPayload());
 
-        $response->assertCreated();
-        $this->assertDatabaseCount('secrets', 1);
+        $response->assertServiceUnavailable();
+        $response->assertExactJson([
+            'error' => 'service_unavailable',
+            'message' => 'File sharing service is temporarily unavailable. Please try again later.',
+        ]);
+        $this->assertDatabaseCount('secrets', 0);
     }
 
-    /** Vérifie qu'un quota à 0 laisse passer l'upload quel que soit l'espace occupé. */
-    public function testFileUploadIsAcceptedWhenQuotaIsZero(): void
+    /** Vérifie qu'un quota atteint par les seuls chiffrés texte refuse aussi bien un texte qu'un fichier. */
+    #[DataProvider('secretTypes')]
+    public function testCreationReturns503WhenTextCiphertextsAloneReachQuota(string $type): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.file_storage_quota_mb' => 1]);
+        Secret::factory()->create(['ciphertext' => str_repeat('a', self::ONE_MEGABYTE)]);
+
+        $response = $this->postJson('/api/secrets', $this->payloadOfType($type));
+
+        $response->assertServiceUnavailable();
+        $response->assertExactJson([
+            'error' => 'service_unavailable',
+            'message' => 'File sharing service is temporarily unavailable. Please try again later.',
+        ]);
+        $this->assertDatabaseCount('secrets', 1);
+        Storage::disk('secrets')->assertDirectoryEmpty('/');
+    }
+
+    /** Vérifie qu'un quota à 0 laisse passer texte et fichier quel que soit l'espace occupé. */
+    #[DataProvider('secretTypes')]
+    public function testCreationIsAcceptedWhenQuotaIsZero(string $type): void
     {
         Storage::fake('secrets');
         config(['secrets.file_storage_quota_mb' => 0]);
         Storage::disk('secrets')->put('zz/existing', str_repeat('x', self::ONE_MEGABYTE));
+        Secret::factory()->create(['ciphertext' => str_repeat('a', self::ONE_MEGABYTE)]);
 
-        $response = $this->postJson('/api/secrets', $this->filePayload());
+        $response = $this->postJson('/api/secrets', $this->payloadOfType($type));
 
         $response->assertCreated();
-        $this->assertCount(2, Storage::disk('secrets')->allFiles());
+        $this->assertDatabaseCount('secrets', 2);
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function secretTypes(): array
+    {
+        return [
+            'secret texte' => ['text'],
+            'secret fichier' => ['file'],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function payloadOfType(string $type): array
+    {
+        return $type === 'text' ? $this->textPayload() : $this->filePayload();
     }
 
     // ── Daily Upload Budget ─────────────────────────────────────────

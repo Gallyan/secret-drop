@@ -51,8 +51,8 @@ class SecretsController extends Controller
 
         $type = $request->secretType();
 
-        // Check file storage quota before accepting uploads
-        if ($type->isFile() && $this->storage->isQuotaExceeded()) {
+        // The global storage quota covers blobs and text ciphertexts alike, so both types are refused
+        if ($this->storage->isQuotaExceeded()) {
             return response()->json([
                 'error' => 'service_unavailable',
                 'message' => __('messages.storage_quota_exceeded'),

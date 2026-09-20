@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'الوصول إلى أسراري',
     'email_magic_link_warning' => 'هذا الرابط ينتهي في :minutes دقائق ويمكن استخدامه مرة واحدة فقط.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] التخزين عند :percent% - :app',
+    'email_storage_quota_title' => 'تنبيه حصة التخزين',
+    'email_storage_quota_level_warning' => 'تحذير',
+    'email_storage_quota_level_critical' => 'حرج',
+    'email_storage_quota_intro' => 'بلغ التخزين في :app نسبة :percent% من الحصة المُعدّة.',
+    'email_storage_quota_gauge_label' => 'من حصة التخزين المستخدمة',
+    'email_storage_quota_used_label' => 'المستخدم',
+    'email_storage_quota_total_label' => 'الحصة',
+    'email_storage_quota_consequence' => 'عند امتلاء الحصة، تُرفض الأسرار الجديدة برمز خطأ HTTP 503 حتى يتم تحرير مساحة.',
+    'email_storage_quota_action' => 'حرّر مساحة بحذف الأسرار المنتهية، أو ارفع حصة التخزين المُعدّة.',
+
     // Super Admin
     'superadmin_title' => 'المسؤول الأعلى',
     'superadmin_description' => '',

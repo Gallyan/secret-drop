@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'Auf meine Geheimnisse zugreifen',
     'email_magic_link_warning' => 'Dieser Link läuft in :minutes Minuten ab und kann nur einmal verwendet werden.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] Speicher zu :percent% belegt - :app',
+    'email_storage_quota_title' => 'Warnung zum Speicherkontingent',
+    'email_storage_quota_level_warning' => 'Warnung',
+    'email_storage_quota_level_critical' => 'Kritisch',
+    'email_storage_quota_intro' => 'Der Speicher von :app hat :percent% des konfigurierten Kontingents erreicht.',
+    'email_storage_quota_gauge_label' => 'des Speicherkontingents belegt',
+    'email_storage_quota_used_label' => 'Belegt',
+    'email_storage_quota_total_label' => 'Kontingent',
+    'email_storage_quota_consequence' => 'Ist das Kontingent voll, werden neue Secrets mit einem HTTP-Fehler 503 abgelehnt, bis wieder Speicher frei wird.',
+    'email_storage_quota_action' => 'Geben Sie Speicher frei, indem Sie abgelaufene Secrets löschen, oder erhöhen Sie das konfigurierte Speicherkontingent.',
+
     // Super Admin
     'superadmin_title' => 'Super Admin',
     'superadmin_description' => '',

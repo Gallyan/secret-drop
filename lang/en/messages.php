@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'Access my secrets',
     'email_magic_link_warning' => 'This link expires in :minutes minutes and can only be used once.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] Storage at :percent% - :app',
+    'email_storage_quota_title' => 'Storage quota alert',
+    'email_storage_quota_level_warning' => 'Warning',
+    'email_storage_quota_level_critical' => 'Critical',
+    'email_storage_quota_intro' => 'Storage on :app has reached :percent% of the configured quota.',
+    'email_storage_quota_gauge_label' => 'of the storage quota used',
+    'email_storage_quota_used_label' => 'Used',
+    'email_storage_quota_total_label' => 'Quota',
+    'email_storage_quota_consequence' => 'Once the quota is full, new secrets are refused with an HTTP 503 error until space is freed.',
+    'email_storage_quota_action' => 'Free space by removing expired secrets, or raise the configured storage quota.',
+
     // Super Admin
     'superadmin_title' => 'Super Admin',
     'superadmin_description' => '',

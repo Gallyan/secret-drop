@@ -30,8 +30,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | File Storage Quota (MB) — 0 for unlimited
+    | Global Storage Quota (MB) — 0 for unlimited
     |--------------------------------------------------------------------------
+    |
+    | Covers everything the application stores: encrypted blobs on the secrets
+    | disk and text ciphertexts in the database. Creation is refused with a 503
+    | once the quota is reached, whatever the secret type.
+    |
     */
     'file_storage_quota_mb' => (int) env('SECRETS_FILE_STORAGE_QUOTA_MB', 5120),
 

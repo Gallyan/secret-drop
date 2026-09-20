@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'Mijn geheimen openen',
     'email_magic_link_warning' => 'Deze link verloopt over :minutes minuten en kan slechts één keer worden gebruikt.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] Opslag op :percent% - :app',
+    'email_storage_quota_title' => 'Waarschuwing opslagquotum',
+    'email_storage_quota_level_warning' => 'Waarschuwing',
+    'email_storage_quota_level_critical' => 'Kritiek',
+    'email_storage_quota_intro' => 'De opslag van :app heeft :percent% van het ingestelde quotum bereikt.',
+    'email_storage_quota_gauge_label' => 'van het opslagquotum gebruikt',
+    'email_storage_quota_used_label' => 'Gebruikt',
+    'email_storage_quota_total_label' => 'Quotum',
+    'email_storage_quota_consequence' => 'Zodra het quotum vol is, worden nieuwe secrets geweigerd met een HTTP 503-fout tot er ruimte vrijkomt.',
+    'email_storage_quota_action' => 'Maak ruimte vrij door verlopen secrets te verwijderen, of verhoog het ingestelde opslagquotum.',
+
     // Super Admin
     'superadmin_title' => 'Super Admin',
     'superadmin_description' => '',

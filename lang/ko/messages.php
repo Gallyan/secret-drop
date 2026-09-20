@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => '내 비밀 접근',
     'email_magic_link_warning' => '이 링크는 :minutes분 후 만료되며 한 번만 사용할 수 있습니다.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] 저장 공간 :percent% 사용 - :app',
+    'email_storage_quota_title' => '저장 공간 할당량 경고',
+    'email_storage_quota_level_warning' => '경고',
+    'email_storage_quota_level_critical' => '심각',
+    'email_storage_quota_intro' => ':app의 저장 공간 사용량이 설정된 할당량의 :percent%에 도달했습니다.',
+    'email_storage_quota_gauge_label' => '저장 공간 할당량 사용률',
+    'email_storage_quota_used_label' => '사용량',
+    'email_storage_quota_total_label' => '할당량',
+    'email_storage_quota_consequence' => '할당량이 가득 차면 공간이 확보될 때까지 새 시크릿이 HTTP 503 오류로 거부됩니다.',
+    'email_storage_quota_action' => '만료된 시크릿을 삭제해 공간을 확보하거나, 설정된 저장 공간 할당량을 늘리세요.',
+
     // Super Admin
     'superadmin_title' => '슈퍼 관리자',
     'superadmin_description' => '',

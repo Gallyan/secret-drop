@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'Otwórz moje sekrety',
     'email_magic_link_warning' => 'Ten link wygasa za :minutes minut i może być użyty tylko raz.',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] Pamięć zapełniona w :percent% - :app',
+    'email_storage_quota_title' => 'Alert limitu pamięci',
+    'email_storage_quota_level_warning' => 'Ostrzeżenie',
+    'email_storage_quota_level_critical' => 'Krytyczny',
+    'email_storage_quota_intro' => 'Pamięć :app osiągnęła :percent% skonfigurowanego limitu.',
+    'email_storage_quota_gauge_label' => 'wykorzystanego limitu pamięci',
+    'email_storage_quota_used_label' => 'Wykorzystane',
+    'email_storage_quota_total_label' => 'Limit',
+    'email_storage_quota_consequence' => 'Po wyczerpaniu limitu nowe sekrety będą odrzucane z błędem HTTP 503, dopóki nie zwolni się miejsce.',
+    'email_storage_quota_action' => 'Zwolnij miejsce, usuwając wygasłe sekrety, lub zwiększ skonfigurowany limit pamięci.',
+
     // Super Admin
     'superadmin_title' => 'Super Admin',
     'superadmin_description' => '',

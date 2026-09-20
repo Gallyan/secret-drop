@@ -357,6 +357,18 @@ return [
     'email_magic_link_button' => 'シークレットにアクセス',
     'email_magic_link_warning' => 'このリンクは:minutes分で期限切れになり、1回のみ使用できます。',
 
+    // Storage quota alert email
+    'email_storage_quota_subject' => '[:level] ストレージ使用率 :percent% - :app',
+    'email_storage_quota_title' => 'ストレージ容量の警告',
+    'email_storage_quota_level_warning' => '警告',
+    'email_storage_quota_level_critical' => '緊急',
+    'email_storage_quota_intro' => ':app のストレージ使用量が、設定された上限の :percent% に達しました。',
+    'email_storage_quota_gauge_label' => 'ストレージ上限に対する使用率',
+    'email_storage_quota_used_label' => '使用量',
+    'email_storage_quota_total_label' => '上限',
+    'email_storage_quota_consequence' => '上限に達すると、空き容量ができるまで新しいシークレットは HTTP 503 エラーで拒否されます。',
+    'email_storage_quota_action' => '期限切れのシークレットを削除して空き容量を確保するか、設定されたストレージ上限を引き上げてください。',
+
     // Super Admin
     'superadmin_title' => 'スーパー管理者',
     'superadmin_description' => '',
