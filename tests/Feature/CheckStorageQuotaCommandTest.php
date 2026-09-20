@@ -151,14 +151,132 @@ class CheckStorageQuotaCommandTest extends TestCase
         $this->assertStringContainsString(e(__('messages.email_storage_quota_consequence')), $rendered);
         $this->assertStringContainsString(Number::fileSize(950000, 2), $rendered);
         $this->assertStringContainsString(Number::fileSize(self::QUOTA, 2), $rendered);
-        $this->assertStringContainsString(
-            __('messages.email_storage_quota_subject', [
-                'level' => __('messages.email_storage_quota_level_critical'),
+        $this->assertSame(
+            StorageQuotaAlertMail::CRITICAL_EMOJI.' '.__('messages.email_storage_quota_subject', [
                 'percent' => '95',
                 'app' => config('app.name'),
             ]),
             (string) $mail->envelope()->subject,
         );
+    }
+
+    /** Vérifie que --preview=warning envoie une alerte d'avertissement avec des chiffres simulés annoncés comme tels. */
+    public function testPreviewSendsAWarningAlertWithSimulatedFigures(): void
+    {
+        $this->fakeStorage(1000);
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_WARNING])
+            ->expectsOutputToContain('PREVIEW: sent the warning storage alert to '.self::OPERATOR_EMAIL)
+            ->expectsOutputToContain(sprintf(
+                'Simulated figures, not the real usage: %s / %s (85%%).',
+                Number::fileSize(850000, 2),
+                Number::fileSize(self::QUOTA, 2),
+            ))
+            ->expectsOutputToContain('cache was not read, written or cleared')
+            ->assertSuccessful();
+
+        $this->assertAlertSent(CheckStorageQuotaCommand::LEVEL_WARNING);
+        Mail::assertSentCount(1);
+    }
+
+    /** Vérifie que --preview=critical envoie une alerte critique quel que soit l'usage réel. */
+    public function testPreviewSendsACriticalAlertWhateverTheRealUsageIs(): void
+    {
+        $this->fakeStorage(1000);
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_CRITICAL])
+            ->expectsOutputToContain('PREVIEW: sent the critical storage alert')
+            ->expectsOutputToContain(sprintf(
+                'Simulated figures, not the real usage: %s / %s (92%%).',
+                Number::fileSize(920000, 2),
+                Number::fileSize(self::QUOTA, 2),
+            ))
+            ->assertSuccessful();
+
+        $this->assertAlertSent(CheckStorageQuotaCommand::LEVEL_CRITICAL);
+    }
+
+    /** Vérifie qu'un aperçu reste possible et plausible même quand le quota est illimité. */
+    public function testPreviewWorksWhenTheQuotaIsUnlimited(): void
+    {
+        $this->fakeStorage(1000, 0);
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_WARNING])
+            ->expectsOutputToContain('PREVIEW')
+            ->assertSuccessful();
+
+        $this->assertAlertSent(CheckStorageQuotaCommand::LEVEL_WARNING);
+    }
+
+    /** Vérifie qu'un aperçu n'écrit aucune clé de déduplication et n'empêche donc pas une vraie alerte ensuite. */
+    public function testPreviewDoesNotWriteTheDeduplicationCache(): void
+    {
+        $this->fakeStorage(850000);
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_WARNING])->assertSuccessful();
+
+        $this->assertFalse(Cache::has($this->alertCacheKey(CheckStorageQuotaCommand::LEVEL_WARNING)));
+
+        $this->artisan('storage:check')->assertSuccessful();
+
+        Mail::assertSentCount(2);
+        $this->assertTrue(Cache::has($this->alertCacheKey(CheckStorageQuotaCommand::LEVEL_WARNING)));
+    }
+
+    /** Vérifie qu'un aperçu n'efface pas la clé d'une alerte réelle déjà partie. */
+    public function testPreviewDoesNotClearTheDeduplicationCache(): void
+    {
+        $this->fakeStorage(850000);
+        $this->artisan('storage:check')->assertSuccessful();
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_WARNING])->assertSuccessful();
+
+        $this->assertTrue(Cache::has($this->alertCacheKey(CheckStorageQuotaCommand::LEVEL_WARNING)));
+
+        $this->artisan('storage:check')
+            ->expectsOutputToContain('already sent in the last 24 hours')
+            ->assertSuccessful();
+
+        Mail::assertSentCount(2);
+    }
+
+    /** Vérifie qu'une valeur inconnue de --preview échoue avec un message explicite et sans email. */
+    public function testPreviewRejectsAnUnknownLevel(): void
+    {
+        $this->fakeStorage(850000);
+
+        $this->artisan('storage:check', ['--preview' => 'bogus'])
+            ->expectsOutputToContain('Unknown --preview value "bogus"')
+            ->assertFailed();
+
+        Mail::assertNothingSent();
+        $this->assertFalse(Cache::has($this->alertCacheKey(CheckStorageQuotaCommand::LEVEL_WARNING)));
+    }
+
+    /** Vérifie que --preview sans valeur échoue au lieu de lancer une vérification normale. */
+    public function testPreviewWithoutAValueFails(): void
+    {
+        $this->fakeStorage(850000);
+
+        $this->artisan('storage:check', ['--preview' => null])
+            ->expectsOutputToContain('The --preview option needs a value')
+            ->assertFailed();
+
+        Mail::assertNothingSent();
+        $this->assertFalse(Cache::has($this->alertCacheKey(CheckStorageQuotaCommand::LEVEL_WARNING)));
+    }
+
+    /** Vérifie qu'un aperçu échoue explicitement quand aucune adresse opérateur n'est configurée. */
+    public function testPreviewFailsWhenNoOperatorEmailIsConfigured(): void
+    {
+        Config::set('app.super_admin_email', '');
+        $this->fakeStorage(850000);
+
+        $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_CRITICAL])
+            ->expectsOutputToContain('No operator email configured')
+            ->assertFailed();
+
+        Mail::assertNothingSent();
     }
 
     /** Vérifie que la vérification du quota est planifiée toutes les heures sans chevauchement. */
@@ -180,6 +298,11 @@ class CheckStorageQuotaCommandTest extends TestCase
             $mock->shouldReceive('quotaBytes')->andReturn($quota);
             $mock->shouldReceive('usageRatio')->andReturn($quota > 0 ? $used / $quota : 0.0);
         });
+    }
+
+    private function alertCacheKey(string $level): string
+    {
+        return CheckStorageQuotaCommand::CACHE_KEY_PREFIX.$level;
     }
 
     private function assertAlertSent(string $level): void

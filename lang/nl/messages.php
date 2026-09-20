@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => 'Deze link verloopt over :minutes minuten en kan slechts één keer worden gebruikt.',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] Opslag op :percent% - :app',
+    'email_storage_quota_subject' => 'Opslag op :percent% - :app',
     'email_storage_quota_title' => 'Waarschuwing opslagquotum',
     'email_storage_quota_level_warning' => 'Waarschuwing',
     'email_storage_quota_level_critical' => 'Kritiek',

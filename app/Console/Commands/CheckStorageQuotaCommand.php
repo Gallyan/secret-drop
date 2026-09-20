@@ -18,6 +18,10 @@ use Illuminate\Support\Number;
  * below its threshold, so a usage hovering around a threshold cannot spam the
  * operator. Reaching CRITICAL still sends its own mail even when the WARNING
  * one was already sent, because the two levels hold separate keys.
+ *
+ * The --preview=warning|critical option mails a sample alert built on simulated figures,
+ * whatever the real usage is, and leaves the de-duplication cache untouched so a preview
+ * can neither suppress nor trigger a real alert.
  */
 class CheckStorageQuotaCommand extends Command
 {
@@ -32,14 +36,29 @@ class CheckStorageQuotaCommand extends Command
     /** One alert per level per 24 hours: the cache entry expires exactly when the level is allowed to alert again. */
     public const int ALERT_TTL_SECONDS = 86400;
 
-    private const CACHE_KEY_PREFIX = 'storage-quota-alert:';
+    public const CACHE_KEY_PREFIX = 'storage-quota-alert:';
 
-    protected $signature = 'storage:check';
+    /** Simulated usage ratios of a preview mail, chosen inside each level's own range. */
+    private const PREVIEW_WARNING_RATIO = 0.85;
 
-    protected $description = 'Check the global storage quota and email the operator before it is reached';
+    private const PREVIEW_CRITICAL_RATIO = 0.92;
+
+    /** Fallback quota of a preview when the real quota is unlimited, so the sample figures stay plausible. */
+    private const PREVIEW_FALLBACK_QUOTA_BYTES = 10 * 1024 * 1024 * 1024;
+
+    protected $signature = 'storage:check
+        {--preview= : Send a sample "warning" or "critical" alert mail to the operator, with simulated figures, without reading, writing or clearing the 24h de-duplication cache}';
+
+    protected $description = 'Check the global storage quota and email the operator before it is reached (--preview=warning|critical sends a sample alert instead)';
 
     public function handle(SecretStorageService $storage): int
     {
+        $preview = $this->option('preview');
+
+        if (is_string($preview) || $this->input->hasParameterOption('--preview')) {
+            return $this->sendPreview($storage, is_string($preview) ? $preview : '');
+        }
+
         $quota = $storage->quotaBytes();
         $used = $storage->totalStoredBytes();
 
@@ -87,6 +106,65 @@ class CheckStorageQuotaCommand extends Command
             ->send(new StorageQuotaAlertMail($level, $used, $quota));
 
         $this->warn(sprintf('Sent the %s storage alert (%s%% used) to the operator.', $level, $this->percentage($ratio)));
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Sends a sample alert mail so the operator can review it, whatever the real usage is.
+     *
+     * The de-duplication cache is deliberately left untouched: a preview must neither
+     * suppress a real alert nor be suppressed by one.
+     */
+    private function sendPreview(SecretStorageService $storage, string $level): int
+    {
+        $ratios = [
+            self::LEVEL_WARNING => self::PREVIEW_WARNING_RATIO,
+            self::LEVEL_CRITICAL => self::PREVIEW_CRITICAL_RATIO,
+        ];
+
+        if (! isset($ratios[$level])) {
+            $this->error($level === ''
+                ? sprintf('The --preview option needs a value: "%s" or "%s".', self::LEVEL_WARNING, self::LEVEL_CRITICAL)
+                : sprintf(
+                    'Unknown --preview value "%s": expected "%s" or "%s".',
+                    $level,
+                    self::LEVEL_WARNING,
+                    self::LEVEL_CRITICAL,
+                ));
+
+            return Command::FAILURE;
+        }
+
+        $recipient = trim(config_string('app.super_admin_email'));
+
+        if ($recipient === '') {
+            $this->error('No operator email configured (app.super_admin_email): '.$level.' preview not sent.');
+
+            return Command::FAILURE;
+        }
+
+        $quota = $storage->quotaBytes();
+
+        if ($quota <= 0) {
+            $quota = self::PREVIEW_FALLBACK_QUOTA_BYTES;
+        }
+
+        $ratio = $ratios[$level];
+        $used = (int) round($quota * $ratio);
+
+        Mail::to($recipient)
+            ->locale(config_string('app.fallback_locale', 'en'))
+            ->send(new StorageQuotaAlertMail($level, $used, $quota));
+
+        $this->warn(sprintf('PREVIEW: sent the %s storage alert to %s.', $level, $recipient));
+        $this->info(sprintf(
+            'Simulated figures, not the real usage: %s / %s (%s%%).',
+            Number::fileSize($used, 2),
+            Number::fileSize($quota, 2),
+            $this->percentage($ratio),
+        ));
+        $this->comment('The 24h de-duplication cache was not read, written or cleared: real alerts are unaffected.');
 
         return Command::SUCCESS;
     }

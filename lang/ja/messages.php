@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => 'このリンクは:minutes分で期限切れになり、1回のみ使用できます。',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] ストレージ使用率 :percent% - :app',
+    'email_storage_quota_subject' => 'ストレージ使用率 :percent% - :app',
     'email_storage_quota_title' => 'ストレージ容量の警告',
     'email_storage_quota_level_warning' => '警告',
     'email_storage_quota_level_critical' => '緊急',

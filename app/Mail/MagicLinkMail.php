@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MagicLinkMail extends Mailable
 {
+    use PrefixesSubjectWithEmoji;
     use Queueable;
     use SerializesModels;
 
@@ -21,7 +22,7 @@ class MagicLinkMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('messages.email_magic_link_subject'),
+            subject: $this->emojiSubject(self::BRAND_EMOJI, __('messages.email_magic_link_subject')),
         );
     }
 

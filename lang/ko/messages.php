@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => '이 링크는 :minutes분 후 만료되며 한 번만 사용할 수 있습니다.',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] 저장 공간 :percent% 사용 - :app',
+    'email_storage_quota_subject' => '저장 공간 :percent% 사용 - :app',
     'email_storage_quota_title' => '저장 공간 할당량 경고',
     'email_storage_quota_level_warning' => '경고',
     'email_storage_quota_level_critical' => '심각',

@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => 'Dieser Link läuft in :minutes Minuten ab und kann nur einmal verwendet werden.',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] Speicher zu :percent% belegt - :app',
+    'email_storage_quota_subject' => 'Speicher zu :percent% belegt - :app',
     'email_storage_quota_title' => 'Warnung zum Speicherkontingent',
     'email_storage_quota_level_warning' => 'Warnung',
     'email_storage_quota_level_critical' => 'Kritisch',

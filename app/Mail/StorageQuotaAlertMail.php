@@ -13,6 +13,7 @@ use Illuminate\Support\Number;
 /** Operator alert telling how full the global storage quota is and what happens once it is full. */
 class StorageQuotaAlertMail extends Mailable
 {
+    use PrefixesSubjectWithEmoji;
     use Queueable;
     use SerializesModels;
 
@@ -26,11 +27,10 @@ class StorageQuotaAlertMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('messages.email_storage_quota_subject', [
-                'level' => $this->levelLabel(),
+            subject: $this->emojiSubject($this->levelEmoji(), __('messages.email_storage_quota_subject', [
                 'percent' => $this->percentage(),
                 'app' => config_string('app.name', 'Secret Drop'),
-            ]),
+            ])),
         );
     }
 
@@ -83,6 +83,14 @@ class StorageQuotaAlertMail extends Mailable
             'headerBgDarkStart' => 'rgba(217, 119, 6, 0.12)',
             'headerBgDarkEnd' => 'rgba(234, 88, 12, 0.04)',
         ];
+    }
+
+    /** The subject carries the severity emoji instead of the brand one, the level label stays in the body. */
+    private function levelEmoji(): string
+    {
+        return $this->level === CheckStorageQuotaCommand::LEVEL_CRITICAL
+            ? self::CRITICAL_EMOJI
+            : self::WARNING_EMOJI;
     }
 
     private function levelLabel(): string

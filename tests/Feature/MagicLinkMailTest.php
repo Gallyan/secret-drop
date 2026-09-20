@@ -13,12 +13,15 @@ class MagicLinkMailTest extends TestCase
 
     private const ESCAPED_URL = 'https://example.com/fr/admin/verify/abc?x=1&amp;y=&quot;2&quot;&lt;b&gt;';
 
-    /** Vérifie le sujet de l'email magic link. */
+    /** Vérifie le sujet de l'email magic link, emoji de marque compris. */
     public function testMagicLinkMailHasTranslatedSubject(): void
     {
         $mail = new MagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
-        $this->assertSame(__('messages.email_magic_link_subject'), $mail->envelope()->subject);
+        $this->assertSame(
+            MagicLinkMail::BRAND_EMOJI.' '.__('messages.email_magic_link_subject'),
+            $mail->envelope()->subject,
+        );
     }
 
     /** Vérifie que l'email magic link rend un lien cliquable échappé, le bouton et la durée de validité. */
@@ -35,12 +38,15 @@ class MagicLinkMailTest extends TestCase
         $this->assertStringContainsString(e(__('messages.email_magic_link_warning', ['minutes' => 10])), $rendered);
     }
 
-    /** Vérifie le sujet de l'email magic link superadmin. */
+    /** Vérifie le sujet de l'email magic link superadmin, emoji de marque compris. */
     public function testSuperAdminMagicLinkMailHasTranslatedSubject(): void
     {
         $mail = new SuperAdminMagicLinkMail(self::URL_WITH_SPECIAL_CHARACTERS);
 
-        $this->assertSame(__('messages.email_superadmin_subject'), $mail->envelope()->subject);
+        $this->assertSame(
+            SuperAdminMagicLinkMail::BRAND_EMOJI.' '.__('messages.email_superadmin_subject'),
+            $mail->envelope()->subject,
+        );
     }
 
     /** Vérifie que l'email superadmin rend un lien cliquable échappé, le bouton et le badge Super Admin. */

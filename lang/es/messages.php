@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => 'Este enlace expira en :minutes minutos y solo puede usarse una vez.',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] Almacenamiento al :percent% - :app',
+    'email_storage_quota_subject' => 'Almacenamiento al :percent% - :app',
     'email_storage_quota_title' => 'Alerta de cuota de almacenamiento',
     'email_storage_quota_level_warning' => 'Advertencia',
     'email_storage_quota_level_critical' => 'Crítico',

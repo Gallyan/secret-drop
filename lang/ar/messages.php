@@ -358,7 +358,7 @@ return [
     'email_magic_link_warning' => 'هذا الرابط ينتهي في :minutes دقائق ويمكن استخدامه مرة واحدة فقط.',
 
     // Storage quota alert email
-    'email_storage_quota_subject' => '[:level] التخزين عند :percent% - :app',
+    'email_storage_quota_subject' => 'التخزين عند :percent% - :app',
     'email_storage_quota_title' => 'تنبيه حصة التخزين',
     'email_storage_quota_level_warning' => 'تحذير',
     'email_storage_quota_level_critical' => 'حرج',
