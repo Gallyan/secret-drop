@@ -51,7 +51,7 @@
         }
         .badge {
             display: inline-block;
-            background: linear-gradient(135deg, {{ $gradientStart }}, {{ $gradientEnd }});
+            background: linear-gradient(135deg, {{ $pillStart }}, {{ $pillEnd }});
             color: #ffffff;
             font-size: 11px;
             font-weight: 600;
@@ -78,7 +78,7 @@
             font-size: 40px;
             font-weight: 700;
             letter-spacing: -0.03em;
-            color: {{ $gradientEnd }};
+            color: {{ $gaugeColor }};
         }
         .gauge-label {
             display: block;

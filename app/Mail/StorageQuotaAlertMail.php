@@ -17,6 +17,18 @@ class StorageQuotaAlertMail extends Mailable
     use Queueable;
     use SerializesModels;
 
+    private const IDENTITY_GRADIENT_START = '#d97706';
+
+    private const IDENTITY_GRADIENT_END = '#ea580c';
+
+    private const IDENTITY_HEADER_BG_START = 'rgba(217, 119, 6, 0.06)';
+
+    private const IDENTITY_HEADER_BG_END = 'rgba(234, 88, 12, 0.02)';
+
+    private const IDENTITY_HEADER_BG_DARK_START = 'rgba(217, 119, 6, 0.12)';
+
+    private const IDENTITY_HEADER_BG_DARK_END = 'rgba(234, 88, 12, 0.04)';
+
     public function __construct(
         public string $level,
         public int $usedBytes,
@@ -45,50 +57,47 @@ class StorageQuotaAlertMail extends Mailable
                 'percent' => $this->percentage(),
                 'used' => Number::fileSize($this->usedBytes, 2),
                 'total' => Number::fileSize($this->quotaBytes, 2),
-                ...$this->palette(),
+                'gradientStart' => self::IDENTITY_GRADIENT_START,
+                'gradientEnd' => self::IDENTITY_GRADIENT_END,
+                'headerBgStart' => self::IDENTITY_HEADER_BG_START,
+                'headerBgEnd' => self::IDENTITY_HEADER_BG_END,
+                'headerBgDarkStart' => self::IDENTITY_HEADER_BG_DARK_START,
+                'headerBgDarkEnd' => self::IDENTITY_HEADER_BG_DARK_END,
+                ...$this->severityPalette(),
             ],
         );
     }
 
     /**
-     * Amber for the warning level, deep red for the critical one, in the same shape as the magic link layout.
+     * The severity colour is confined to the level pill and to the gauge percentage.
      *
-     * The critical gradient stays in the darkest half of the Tailwind red scale (red-700 to red-900)
-     * so it cannot be mistaken for the amber warning identity at a glance. Its gauge percentage
-     * switches to red-400 in dark mode, where red-900 would be unreadable on the slate container.
+     * Everything else keeps the amber super-admin identity, so a critical alert still reads as an
+     * operator email rather than a differently branded one. The critical percentage switches to
+     * red-400 in dark mode, where red-700 would only reach a 1.5:1 ratio on the slate container.
      *
      * @return array{
-     *     gradientStart: string,
-     *     gradientEnd: string,
-     *     gaugeDarkColor: string,
-     *     headerBgStart: string,
-     *     headerBgEnd: string,
-     *     headerBgDarkStart: string,
-     *     headerBgDarkEnd: string
+     *     pillStart: string,
+     *     pillEnd: string,
+     *     gaugeColor: string,
+     *     gaugeDarkColor: string
      * }
      */
-    private function palette(): array
+    private function severityPalette(): array
     {
         if ($this->level === CheckStorageQuotaCommand::LEVEL_CRITICAL) {
             return [
-                'gradientStart' => '#b91c1c',
-                'gradientEnd' => '#7f1d1d',
+                'pillStart' => '#b91c1c',
+                'pillEnd' => '#7f1d1d',
+                'gaugeColor' => '#b91c1c',
                 'gaugeDarkColor' => '#f87171',
-                'headerBgStart' => 'rgba(185, 28, 28, 0.10)',
-                'headerBgEnd' => 'rgba(127, 29, 29, 0.04)',
-                'headerBgDarkStart' => 'rgba(185, 28, 28, 0.18)',
-                'headerBgDarkEnd' => 'rgba(127, 29, 29, 0.06)',
             ];
         }
 
         return [
-            'gradientStart' => '#d97706',
-            'gradientEnd' => '#ea580c',
-            'gaugeDarkColor' => '#ea580c',
-            'headerBgStart' => 'rgba(217, 119, 6, 0.06)',
-            'headerBgEnd' => 'rgba(234, 88, 12, 0.02)',
-            'headerBgDarkStart' => 'rgba(217, 119, 6, 0.12)',
-            'headerBgDarkEnd' => 'rgba(234, 88, 12, 0.04)',
+            'pillStart' => self::IDENTITY_GRADIENT_START,
+            'pillEnd' => self::IDENTITY_GRADIENT_END,
+            'gaugeColor' => self::IDENTITY_GRADIENT_END,
+            'gaugeDarkColor' => self::IDENTITY_GRADIENT_END,
         ];
     }
 

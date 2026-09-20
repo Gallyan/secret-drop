@@ -160,21 +160,56 @@ class CheckStorageQuotaCommandTest extends TestCase
         );
     }
 
-    /** Vérifie que le rouge critique reste nettement distinct de l'ambre d'avertissement, jusque dans la jauge en mode sombre. */
-    public function testCriticalPaletteStaysDistinctFromTheWarningOne(): void
+    /** Vérifie que les deux niveaux partagent l'identité ambre du super-admin : ligne d'accent, en-tête, logo et lien de pied de page. */
+    public function testBothLevelsShareTheAmberSuperAdminIdentity(): void
     {
-        $critical = (new StorageQuotaAlertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000, self::QUOTA))->render();
-        $warning = (new StorageQuotaAlertMail(CheckStorageQuotaCommand::LEVEL_WARNING, 850000, self::QUOTA))->render();
+        $critical = $this->renderedAlert(CheckStorageQuotaCommand::LEVEL_CRITICAL);
+        $warning = $this->renderedAlert(CheckStorageQuotaCommand::LEVEL_WARNING);
 
-        foreach (['#b91c1c', '#7f1d1d', '#f87171'] as $red) {
-            $this->assertStringContainsString($red, $critical);
-            $this->assertStringNotContainsString($red, $warning);
+        $shared = [
+            '.accent-line' => 'background',
+            '.header' => 'background',
+            '.footer-brand a' => 'color',
+        ];
+
+        foreach ($shared as $selector => $property) {
+            $criticalValues = $this->styleValues($critical, $selector, $property);
+
+            $this->assertNotEmpty($criticalValues, "No `{$property}` declaration found for `{$selector}`.");
+            $this->assertSame(
+                $this->styleValues($warning, $selector, $property),
+                $criticalValues,
+                "`{$selector}` must keep the same amber identity on both levels.",
+            );
         }
 
-        foreach (['#d97706', '#ea580c'] as $amber) {
-            $this->assertStringContainsString($amber, $warning);
-            $this->assertStringNotContainsString($amber, $critical);
+        $this->assertSame(['#d97706'], $this->styleValues($critical, '.footer-brand a', 'color'));
+        $this->assertStringContainsString('#d97706', $this->styleValues($critical, '.accent-line', 'background')[0]);
+        $this->assertStringContainsString('rgba(217, 119, 6, 0.06)', $this->styleValues($critical, '.header', 'background')[0]);
+        $this->assertStringContainsString('rgba(217, 119, 6, 0.12)', $this->styleValues($critical, '.header', 'background')[1]);
+
+        foreach ([$warning, $critical] as $rendered) {
+            $this->assertStringContainsString('icon-192-amber.png', $rendered);
         }
+    }
+
+    /** Vérifie que seules la pastille de niveau et la jauge portent la couleur de gravité, le rouge restant lisible en mode sombre. */
+    public function testOnlyTheLevelPillAndTheGaugeCarryTheSeverityColour(): void
+    {
+        $critical = $this->renderedAlert(CheckStorageQuotaCommand::LEVEL_CRITICAL);
+        $warning = $this->renderedAlert(CheckStorageQuotaCommand::LEVEL_WARNING);
+
+        $this->assertSame(
+            ['linear-gradient(135deg, #d97706, #ea580c)'],
+            $this->styleValues($warning, '.badge', 'background'),
+        );
+        $this->assertSame(
+            ['linear-gradient(135deg, #b91c1c, #7f1d1d)'],
+            $this->styleValues($critical, '.badge', 'background'),
+        );
+
+        $this->assertSame(['#ea580c', '#ea580c'], $this->styleValues($warning, '.gauge-value', 'color'));
+        $this->assertSame(['#b91c1c', '#f87171'], $this->styleValues($critical, '.gauge-value', 'color'));
     }
 
     /** Vérifie que la phrase d'introduction qui doublait la jauge a bien disparu des deux versions de l'email. */
@@ -331,6 +366,33 @@ class CheckStorageQuotaCommandTest extends TestCase
             $mock->shouldReceive('quotaBytes')->andReturn($quota);
             $mock->shouldReceive('usageRatio')->andReturn($quota > 0 ? $used / $quota : 0.0);
         });
+    }
+
+    private function renderedAlert(string $level): string
+    {
+        $used = $level === CheckStorageQuotaCommand::LEVEL_CRITICAL ? 970000 : 850000;
+
+        return (new StorageQuotaAlertMail($level, $used, self::QUOTA))->render();
+    }
+
+    /**
+     * Collects a CSS declaration from the rendered email, in source order, one entry per rule block.
+     *
+     * @return list<string>
+     */
+    private function styleValues(string $rendered, string $selector, string $property): array
+    {
+        preg_match_all('/(?<![\w-])'.preg_quote($selector, '/').'\s*\{([^}]*)\}/', $rendered, $blocks);
+
+        $values = [];
+
+        foreach ($blocks[1] as $block) {
+            if (preg_match('/(?<![\w-])'.preg_quote($property, '/').'\s*:\s*([^;]+);/', $block, $declaration) === 1) {
+                $values[] = trim($declaration[1]);
+            }
+        }
+
+        return $values;
     }
 
     private function alertCacheKey(string $level): string
