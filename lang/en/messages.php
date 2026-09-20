@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Storage quota alert',
     'email_storage_quota_level_warning' => 'Warning',
     'email_storage_quota_level_critical' => 'Critical',
-    'email_storage_quota_intro' => 'Storage on :app has reached :percent% of the configured quota.',
     'email_storage_quota_gauge_label' => 'of the storage quota used',
     'email_storage_quota_used_label' => 'Used',
     'email_storage_quota_total_label' => 'Quota',

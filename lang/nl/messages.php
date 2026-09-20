@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Waarschuwing opslagquotum',
     'email_storage_quota_level_warning' => 'Waarschuwing',
     'email_storage_quota_level_critical' => 'Kritiek',
-    'email_storage_quota_intro' => 'De opslag van :app heeft :percent% van het ingestelde quotum bereikt.',
     'email_storage_quota_gauge_label' => 'van het opslagquotum gebruikt',
     'email_storage_quota_used_label' => 'Gebruikt',
     'email_storage_quota_total_label' => 'Quotum',

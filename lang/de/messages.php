@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Warnung zum Speicherkontingent',
     'email_storage_quota_level_warning' => 'Warnung',
     'email_storage_quota_level_critical' => 'Kritisch',
-    'email_storage_quota_intro' => 'Der Speicher von :app hat :percent% des konfigurierten Kontingents erreicht.',
     'email_storage_quota_gauge_label' => 'des Speicherkontingents belegt',
     'email_storage_quota_used_label' => 'Belegt',
     'email_storage_quota_total_label' => 'Kontingent',

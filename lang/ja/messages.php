@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'ストレージ容量の警告',
     'email_storage_quota_level_warning' => '警告',
     'email_storage_quota_level_critical' => '緊急',
-    'email_storage_quota_intro' => ':app のストレージ使用量が、設定された上限の :percent% に達しました。',
     'email_storage_quota_gauge_label' => 'ストレージ上限に対する使用率',
     'email_storage_quota_used_label' => '使用量',
     'email_storage_quota_total_label' => '上限',

@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Alert limitu pamięci',
     'email_storage_quota_level_warning' => 'Ostrzeżenie',
     'email_storage_quota_level_critical' => 'Krytyczny',
-    'email_storage_quota_intro' => 'Pamięć :app osiągnęła :percent% skonfigurowanego limitu.',
     'email_storage_quota_gauge_label' => 'wykorzystanego limitu pamięci',
     'email_storage_quota_used_label' => 'Wykorzystane',
     'email_storage_quota_total_label' => 'Limit',

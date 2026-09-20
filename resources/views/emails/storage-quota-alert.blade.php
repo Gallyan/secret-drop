@@ -71,7 +71,7 @@
         }
         .gauge {
             text-align: center;
-            margin: 24px 0 8px;
+            margin: 8px 0;
         }
         .gauge-value {
             display: block;
@@ -165,6 +165,9 @@
             .content p {
                 color: #cbd5e1;
             }
+            .gauge-value {
+                color: {{ $gaugeDarkColor }};
+            }
             .gauge-label {
                 color: #94a3b8;
             }
@@ -201,8 +204,6 @@
         </div>
 
         <div class="content">
-            <p>{{ __('messages.email_storage_quota_intro', ['app' => config('app.name'), 'percent' => $percent]) }}</p>
-
             <div class="gauge">
                 <span class="gauge-value">{{ $percent }}%</span>
                 <span class="gauge-label">{{ __('messages.email_storage_quota_gauge_label') }}</span>

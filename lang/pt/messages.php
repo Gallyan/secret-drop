@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Alerta de quota de armazenamento',
     'email_storage_quota_level_warning' => 'Aviso',
     'email_storage_quota_level_critical' => 'Crítico',
-    'email_storage_quota_intro' => 'O armazenamento de :app atingiu :percent% da quota configurada.',
     'email_storage_quota_gauge_label' => 'da quota de armazenamento utilizada',
     'email_storage_quota_used_label' => 'Utilizado',
     'email_storage_quota_total_label' => 'Quota',

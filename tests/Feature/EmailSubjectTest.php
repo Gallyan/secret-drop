@@ -62,10 +62,10 @@ class EmailSubjectTest extends TestCase
     /** Vérifie que l'alerte critique porte l'emoji de sévérité critique. */
     public function testCriticalAlertSubjectCarriesTheCriticalEmoji(): void
     {
-        $subject = (string) $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 920000)->envelope()->subject;
+        $subject = (string) $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000)->envelope()->subject;
 
         $this->assertSame(
-            '🚨 '.__('messages.email_storage_quota_subject', ['percent' => '92', 'app' => config('app.name')]),
+            '🚨 '.__('messages.email_storage_quota_subject', ['percent' => '97', 'app' => config('app.name')]),
             $subject,
         );
         $this->assertStringNotContainsString('[', $subject);
@@ -74,7 +74,7 @@ class EmailSubjectTest extends TestCase
     /** Vérifie que le niveau reste visible dans le corps de l'alerte alors qu'il a quitté le sujet. */
     public function testAlertBodyStillShowsTheLevel(): void
     {
-        $rendered = $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 920000)->render();
+        $rendered = $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000)->render();
 
         $this->assertStringContainsString(e(__('messages.email_storage_quota_level_critical')), $rendered);
     }
@@ -88,7 +88,7 @@ class EmailSubjectTest extends TestCase
         $mailables = [
             '🔐' => new MagicLinkMail('https://example.com/fr/admin/verify/abc'),
             '⚠️' => $this->alertMail(CheckStorageQuotaCommand::LEVEL_WARNING, 850000),
-            '🚨' => $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 920000),
+            '🚨' => $this->alertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000),
         ];
 
         foreach ($mailables as $emoji => $mailable) {

@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'تنبيه حصة التخزين',
     'email_storage_quota_level_warning' => 'تحذير',
     'email_storage_quota_level_critical' => 'حرج',
-    'email_storage_quota_intro' => 'بلغ التخزين في :app نسبة :percent% من الحصة المُعدّة.',
     'email_storage_quota_gauge_label' => 'من حصة التخزين المستخدمة',
     'email_storage_quota_used_label' => 'المستخدم',
     'email_storage_quota_total_label' => 'الحصة',

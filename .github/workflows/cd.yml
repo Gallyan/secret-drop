@@ -8,7 +8,11 @@
 # Le commit déployé est exactement celui validé par le CI : les assets sont
 # buildés depuis ce SHA et le serveur avance en fast-forward jusqu'à lui.
 #
-# Les assets sont buildés dans GitHub Actions puis transférés sur le serveur.
+# Le workflow est découpé en deux jobs :
+#   - « build » : checkout du commit validé, npm ci + npm run build, puis envoi
+#     de public/build en artefact. C'est le seul job qui voit le code du dépôt.
+#   - « deploy » : récupère l'artefact et ne fait que du SSH. Il n'exécute ni npm
+#     ni le moindre fichier du dépôt, et ne checkout donc rien.
 # Node.js/npm ne sont pas nécessaires en production.
 #
 # En fin de déploiement, IndexNow n'est notifié que si le pull a réellement
@@ -54,8 +58,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to Production
+  build:
+    name: Build Assets
     runs-on: ubuntu-latest
     if: >
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
@@ -68,7 +72,20 @@ jobs:
     env:
       DEPLOY_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
 
+    # Le SHA est exposé au job « deploy » : une seule source de vérité pour le
+    # commit déployé, impossible de builder un commit et d'en déployer un autre.
+    outputs:
+      deploy_sha: ${{ steps.resolve-sha.outputs.sha }}
+
     steps:
+      # Validation du format avant tout : mieux vaut échouer ici qu'une fois
+      # connecté au serveur de production.
+      - name: Resolve deploy SHA
+        id: resolve-sha
+        run: |
+          [[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "SHA invalide : $DEPLOY_SHA"; exit 1; }
+          echo "sha=$DEPLOY_SHA" >> "$GITHUB_OUTPUT"
+
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -82,6 +99,42 @@ jobs:
 
       - name: Build assets
         run: npm ci && npm run build
+
+      # public/build ne contient aucun fichier caché (vérifié : le manifeste est
+      # public/build/manifest.json, pas .vite/manifest.json), rien n'est donc
+      # silencieusement écarté par include-hidden-files: false.
+      - name: Upload built assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: build-assets
+          path: public/build
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    # Pas de `if:` ici : `needs` suffit. Le job « build » porte le filtrage, et
+    # la condition implicite `success()` fait que « deploy » est sauté dès que
+    # « build » l'est. Ne jamais mettre `if: always()` sur ce job.
+    needs: build
+
+    env:
+      DEPLOY_SHA: ${{ needs.build.outputs.deploy_sha }}
+
+    # Aucun checkout : aucune étape ci-dessous ne lit un fichier du dépôt. Seuls
+    # les assets téléchargés dans public/build sont transférés au serveur, qui
+    # récupère le code lui-même via git.
+    steps:
+      - name: Download built assets
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-assets
+          path: public/build
+
+      - name: Verify downloaded assets
+        run: test -f public/build/manifest.json
 
       - name: Configure SSH
         env:

@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Avviso sulla quota di archiviazione',
     'email_storage_quota_level_warning' => 'Avviso',
     'email_storage_quota_level_critical' => 'Critico',
-    'email_storage_quota_intro' => 'Lo spazio di archiviazione di :app ha raggiunto il :percent% della quota configurata.',
     'email_storage_quota_gauge_label' => 'della quota di archiviazione utilizzata',
     'email_storage_quota_used_label' => 'Utilizzato',
     'email_storage_quota_total_label' => 'Quota',

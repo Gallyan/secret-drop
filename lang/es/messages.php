@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => 'Alerta de cuota de almacenamiento',
     'email_storage_quota_level_warning' => 'Advertencia',
     'email_storage_quota_level_critical' => 'Crítico',
-    'email_storage_quota_intro' => 'El almacenamiento de :app ha alcanzado el :percent% de la cuota configurada.',
     'email_storage_quota_gauge_label' => 'de la cuota de almacenamiento usada',
     'email_storage_quota_used_label' => 'Usado',
     'email_storage_quota_total_label' => 'Cuota',

@@ -12,7 +12,7 @@ use Illuminate\Support\Number;
 /**
  * Warns the operator by email before the global storage quota is reached.
  *
- * Two levels are watched: WARNING from 80% of the quota, CRITICAL from 90%.
+ * Two levels are watched: WARNING from 80% of the quota, CRITICAL from 95%.
  * Each level is alerted at most once per ALERT_TTL_SECONDS (24 hours) thanks to
  * a cache key per level, and a level is re-armed as soon as usage falls back
  * below its threshold, so a usage hovering around a threshold cannot spam the
@@ -31,7 +31,7 @@ class CheckStorageQuotaCommand extends Command
 
     public const float WARNING_THRESHOLD = 0.80;
 
-    public const float CRITICAL_THRESHOLD = 0.90;
+    public const float CRITICAL_THRESHOLD = 0.95;
 
     /** One alert per level per 24 hours: the cache entry expires exactly when the level is allowed to alert again. */
     public const int ALERT_TTL_SECONDS = 86400;
@@ -41,7 +41,7 @@ class CheckStorageQuotaCommand extends Command
     /** Simulated usage ratios of a preview mail, chosen inside each level's own range. */
     private const PREVIEW_WARNING_RATIO = 0.85;
 
-    private const PREVIEW_CRITICAL_RATIO = 0.92;
+    private const PREVIEW_CRITICAL_RATIO = 0.97;
 
     /** Fallback quota of a preview when the real quota is unlimited, so the sample figures stay plausible. */
     private const PREVIEW_FALLBACK_QUOTA_BYTES = 10 * 1024 * 1024 * 1024;

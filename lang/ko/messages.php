@@ -362,7 +362,6 @@ return [
     'email_storage_quota_title' => '저장 공간 할당량 경고',
     'email_storage_quota_level_warning' => '경고',
     'email_storage_quota_level_critical' => '심각',
-    'email_storage_quota_intro' => ':app의 저장 공간 사용량이 설정된 할당량의 :percent%에 도달했습니다.',
     'email_storage_quota_gauge_label' => '저장 공간 할당량 사용률',
     'email_storage_quota_used_label' => '사용량',
     'email_storage_quota_total_label' => '할당량',

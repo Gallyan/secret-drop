@@ -62,10 +62,10 @@ class CheckStorageQuotaCommandTest extends TestCase
         $this->assertAlertSent(CheckStorageQuotaCommand::LEVEL_WARNING);
     }
 
-    /** Vérifie qu'une alerte critique part à partir de 90 %. */
+    /** Vérifie qu'une alerte critique part à partir de 95 %. */
     public function testSendsCriticalMailAtTheCriticalThreshold(): void
     {
-        $this->fakeStorage(900000);
+        $this->fakeStorage(950000);
 
         $this->artisan('storage:check')->assertSuccessful();
 
@@ -92,7 +92,7 @@ class CheckStorageQuotaCommandTest extends TestCase
         $this->fakeStorage(850000);
         $this->artisan('storage:check')->assertSuccessful();
 
-        $this->fakeStorage(950000);
+        $this->fakeStorage(960000);
         $this->artisan('storage:check')->assertSuccessful();
 
         Mail::assertSentCount(2);
@@ -160,6 +160,39 @@ class CheckStorageQuotaCommandTest extends TestCase
         );
     }
 
+    /** Vérifie que le rouge critique reste nettement distinct de l'ambre d'avertissement, jusque dans la jauge en mode sombre. */
+    public function testCriticalPaletteStaysDistinctFromTheWarningOne(): void
+    {
+        $critical = (new StorageQuotaAlertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000, self::QUOTA))->render();
+        $warning = (new StorageQuotaAlertMail(CheckStorageQuotaCommand::LEVEL_WARNING, 850000, self::QUOTA))->render();
+
+        foreach (['#b91c1c', '#7f1d1d', '#f87171'] as $red) {
+            $this->assertStringContainsString($red, $critical);
+            $this->assertStringNotContainsString($red, $warning);
+        }
+
+        foreach (['#d97706', '#ea580c'] as $amber) {
+            $this->assertStringContainsString($amber, $warning);
+            $this->assertStringNotContainsString($amber, $critical);
+        }
+    }
+
+    /** Vérifie que la phrase d'introduction qui doublait la jauge a bien disparu des deux versions de l'email. */
+    public function testAlertMailNoLongerRepeatsThePercentageInAnIntroSentence(): void
+    {
+        $mail = new StorageQuotaAlertMail(CheckStorageQuotaCommand::LEVEL_CRITICAL, 970000, self::QUOTA);
+
+        $this->assertStringContainsString('97%', $mail->render());
+        $this->assertSame(1, substr_count($mail->render(), '97%'));
+
+        foreach (glob(lang_path('*/messages.php')) ?: [] as $file) {
+            /** @var array<string, string> $messages */
+            $messages = require $file;
+
+            $this->assertArrayNotHasKey('email_storage_quota_intro', $messages, "Stale intro key in {$file}.");
+        }
+    }
+
     /** Vérifie que --preview=warning envoie une alerte d'avertissement avec des chiffres simulés annoncés comme tels. */
     public function testPreviewSendsAWarningAlertWithSimulatedFigures(): void
     {
@@ -187,8 +220,8 @@ class CheckStorageQuotaCommandTest extends TestCase
         $this->artisan('storage:check', ['--preview' => CheckStorageQuotaCommand::LEVEL_CRITICAL])
             ->expectsOutputToContain('PREVIEW: sent the critical storage alert')
             ->expectsOutputToContain(sprintf(
-                'Simulated figures, not the real usage: %s / %s (92%%).',
-                Number::fileSize(920000, 2),
+                'Simulated figures, not the real usage: %s / %s (97%%).',
+                Number::fileSize(970000, 2),
                 Number::fileSize(self::QUOTA, 2),
             ))
             ->assertSuccessful();

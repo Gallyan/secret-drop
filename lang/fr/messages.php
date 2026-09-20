@@ -370,7 +370,6 @@ return [
     'email_storage_quota_title' => 'Alerte de quota de stockage',
     'email_storage_quota_level_warning' => 'Avertissement',
     'email_storage_quota_level_critical' => 'Critique',
-    'email_storage_quota_intro' => 'Le stockage de :app atteint :percent% du quota configuré.',
     'email_storage_quota_gauge_label' => 'du quota de stockage utilisé',
     'email_storage_quota_used_label' => 'Utilisé',
     'email_storage_quota_total_label' => 'Quota',
