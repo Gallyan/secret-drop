@@ -61,7 +61,7 @@ npm run dev
 
 ### Stack
 
-- Laravel 13 with PHP 8.4+
+- Laravel 13 with PHP 8.5+
 - Alpine.js 3.15 (CSP build) + Tailwind CSS 4.2 + Vite
 - MySQL or SQLite database
 

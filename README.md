@@ -39,7 +39,7 @@ A password you paste into an email or a Slack message sits in the mailboxes, bac
 
 ## Stack
 
-Laravel 13 · PHP 8.4+ · Alpine.js 3 (CSP build) · Tailwind CSS 4 · Vite · MySQL/SQLite
+Laravel 13 · PHP 8.5+ · Alpine.js 3 (CSP build) · Tailwind CSS 4 · Vite · MySQL/SQLite
 
 ## Quick start
 
