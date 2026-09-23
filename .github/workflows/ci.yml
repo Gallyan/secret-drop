@@ -4,15 +4,17 @@ run-name: "CI — ${{ github.event_name == 'pull_request' && format('PR #{0}: {1
 on:
   push:
     branches: [main]
+    paths-ignore: ['**.md', '.agents/**', '.gemini/**', 'articles/**']
   pull_request:
     branches: [main]
+    paths-ignore: ['**.md', '.agents/**', '.gemini/**', 'articles/**']
 
 permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Pint
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -23,64 +25,28 @@ jobs:
           php-version: '8.5'
           coverage: none
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Run Pint
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Pint
         run: vendor/bin/pint --test
 
-  stan:
-    name: Larastan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
-        with:
-          php-version: '8.5'
-          coverage: none
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Run Larastan
+      - name: Larastan
         run: composer stan
 
-  eslint:
-    name: ESLint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Run ESLint
+      - name: ESLint
         run: npm run lint
 
-  js-test:
-    name: Vitest
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Run Vitest
+      - name: Vitest
         run: npm test
 
   test:
