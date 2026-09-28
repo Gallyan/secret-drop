@@ -65,7 +65,7 @@ class SchemaJsonLdTest extends TestCase
         $faq = $this->findByType($this->extractSchemas('/fr/faq'), 'FAQPage');
 
         $this->assertSame(
-            'Oui. Pas de compte, pas d\'abonnement, pas de frais cachés.',
+            'Oui. Pas de compte, pas d’abonnement, pas de frais cachés.',
             $faq->mainEntity[0]->acceptedAnswer->text,
         );
     }
@@ -78,10 +78,20 @@ class SchemaJsonLdTest extends TestCase
         $faq = $this->findByType($this->extractSchemas('/fr/faq'), 'FAQPage');
 
         $this->assertSame(
-            'Si vous avez fourni votre email, vous pouvez révoquer ou prolonger vos secrets via le lien « Gérer mes secrets » en bas de chaque page. '
-            .'Vous recevrez un magic link à usage unique, valable 17 minutes. Sans mot de passe, il n\'y a rien à voler.',
+            "Si vous avez fourni votre email, vous pouvez révoquer ou prolonger vos secrets via le lien «\u{00A0}Gérer mes secrets\u{00A0}» en bas de chaque page. "
+            ."Vous recevrez un magic link à usage unique, valable 17\u{00A0}minutes. Sans mot de passe, il n’y a rien à voler.",
             $faq->mainEntity[11]->acceptedAnswer->text,
         );
+    }
+
+    /** Vérifie que la FAQ anglaise encadre le lien de gestion de guillemets anglais, dans la page comme dans le JSON-LD. */
+    public function testEnglishFaqQuotesTheManageLinkWithEnglishQuotes(): void
+    {
+        $response = $this->get('/en/faq');
+
+        $faq = $this->findByType($this->schemasFromResponse($response), 'FAQPage');
+        $this->assertStringContainsString('via the “Manage my secrets” link', $faq->mainEntity[11]->acceptedAnswer->text);
+        $response->assertSee('hover:underline">Manage my secrets</a>”', false);
     }
 
     /** Vérifie qu'une traduction contenant guillemet, antislash, saut de ligne et balise script reste du JSON valide sans fermer le script. */

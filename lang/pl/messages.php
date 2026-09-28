@@ -36,7 +36,7 @@ return [
     'tab_file' => 'Plik',
 
     // Form placeholders
-    'secret_placeholder' => 'Wprowadź poufną wiadomość...',
+    'secret_placeholder' => 'Wprowadź poufną wiadomość…',
     'max_reads_placeholder' => 'Bez limitu',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Zaszyfruj i utwórz link',
-    'btn_encrypting' => 'Szyfrowanie...',
-    'btn_encrypting_upload' => 'Szyfrowanie i przesyłanie...',
+    'btn_encrypting' => 'Szyfrowanie…',
+    'btn_encrypting_upload' => 'Szyfrowanie i przesyłanie…',
     'btn_copy' => 'Kopiuj',
     'btn_copied' => 'Skopiowano!',
     'btn_decrypt' => 'Odszyfruj',
-    'btn_decrypting' => 'Odszyfrowywanie...',
+    'btn_decrypting' => 'Odszyfrowywanie…',
     'btn_retry' => 'Spróbuj ponownie',
     'btn_request_new_link' => 'Poproś o nowy link',
     'btn_cancel' => 'Anuluj',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Udostępnij ten link odbiorcy',
     'warning_link_contains_key' => 'Ten link zawiera klucz deszyfrujący. Udostępnij tylko zamierzonemu odbiorcy.',
     'warning_passphrase_required' => 'Odbiorca będzie musiał podać hasło, aby odszyfrować sekret.',
-    'success_admin_hint' => 'Możesz zarządzać tym sekretem (unieważnić, przedłużyć) przez link ":link" na dole strony.',
+    'success_admin_hint' => 'Możesz zarządzać tym sekretem (unieważnić, przedłużyć) przez link „:link” na dole strony.',
 
     // QR Code
     'show_qr_code' => 'Pokaż kod QR',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'Ten plik został zaszyfrowany end-to-end',
     'passphrase_protected' => 'Ten sekret jest chroniony hasłem.',
     'passphrase_input_placeholder' => 'Wprowadź hasło',
-    'decrypting_message' => 'Odszyfrowywanie...',
-    'decrypting_file' => 'Pobieranie i odszyfrowywanie...',
+    'decrypting_message' => 'Odszyfrowywanie…',
+    'decrypting_file' => 'Pobieranie i odszyfrowywanie…',
     'file_decrypted' => 'Plik odszyfrowany',
     'file_encrypted_info' => 'Zaszyfrowany plik',
     'note_destroyed_text' => 'Ten sekret został skonfigurowany do zniszczenia po odczytaniu. Nie jest już dostępny.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Błąd podczas tworzenia sekretu',
 
     // Loading
-    'loading' => 'Ładowanie...',
-    'loading_secret' => 'Ładowanie sekretu...',
+    'loading' => 'Ładowanie…',
+    'loading_secret' => 'Ładowanie sekretu…',
 
     // Emails
     'email_link_label' => 'Lub skopiuj ten link:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'Czym różni się od zaszyfrowanego e-maila?',
     'faq_a11' => 'Zaszyfrowany e-mail (PGP, S/MIME) wymaga, aby obie strony wcześniej skonfigurowały klucze. W Secret Drop odbiorca potrzebuje tylko linku. Sekret ulega też samozniszczeniu, podczas gdy e-mail zostaje w obu skrzynkach.',
     'faq_q12' => 'Jak zarządzać sekretami po ich utworzeniu?',
-    'faq_a12' => 'Jeśli podałeś swój e-mail, możesz odwołać lub przedłużyć swoje sekrety przez link :manage_link na dole każdej strony. Otrzymasz jednorazowy magic link ważny :minutes minut. Bez hasła nie ma czego ukraść.',
+    'faq_a12' => 'Jeśli podałeś swój e-mail, możesz odwołać lub przedłużyć swoje sekrety przez link „:manage_link” na dole każdej strony. Otrzymasz jednorazowy magic link ważny :minutes minut. Bez hasła nie ma czego ukraść.',
     'faq_meta_description' => 'Znajdź odpowiedzi na najczęściej zadawane pytania o Secret Drop: szyfrowanie, zero-knowledge, prywatność, udostępnianie plików i więcej.',
     'faq_see_how' => 'Dowiedz się, jak działa Secret Drop',
     'secure_by_design_title' => 'Secure by design',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Wygasły',
     'admin_status_revoked' => 'Unieważniony',
     'admin_status_consumed' => 'Wykorzystany',
-    'admin_created' => 'Utworzono',
+    'admin_created' => 'Utworzono:',
     'admin_expires' => 'Wygasa',
     'admin_no_expiry' => 'Bez daty wygaśnięcia',
     'admin_read_count' => 'Liczba odczytów',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'Według godziny serwera',
     'stat_by_local_hour' => 'Według czasu lokalnego',
     'stat_local_hour_note' => 'Na podstawie czasu przeglądarki odwiedzającego',
+    'stat_server_hour_note' => 'UTC – czas serwera',
     'stat_hour_views' => '{0} :count odsłon|{1} :count odsłona|[2,*] :count odsłon',
     'stat_by_country' => 'Według kraju',
     'stat_by_language' => 'Według języka',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'Jeśli jeden kanał zostanie skompromitowany, atakujący ma tylko część informacji.',
     'share_link_label' => 'Link do udostępnienia',
     'share_key_label' => 'Klucz deszyfrujący',
-    'split_mode_warning' => 'Wyślij klucz innym kanałem (SMS, telefon, osobiście...).',
+    'split_mode_warning' => 'Wyślij klucz innym kanałem (SMS, telefon, osobiście…).',
     'enter_key_manually' => 'Wprowadź klucz deszyfrujący',
     'key_placeholder' => 'Klucz otrzymany osobno',
     'btn_unlock' => 'Odblokuj',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Zbyt wiele żądań. Proszę czekać, weryfikujemy przeglądarkę.',
-    'pow_computing' => 'Weryfikacja przeglądarki...',
+    'pow_computing' => 'Weryfikacja przeglądarki…',
     'pow_failed' => 'Weryfikacja nie powiodła się. Spróbuj ponownie.',
     'pow_timeout' => 'Weryfikacja wygasła. Spróbuj ponownie.',
     'daily_limit_exceeded' => 'Osiągnięto dzienny limit. Spróbuj ponownie jutro.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'Typ sekretu jest wymagany.',
-    'val_type_in' => 'Typ musi być "text" lub "file".',
+    'val_type_in' => 'Typ musi być „text” lub „file”.',
     'val_ciphertext_required' => 'Zaszyfrowany tekst jest wymagany dla sekretu tekstowego.',
     'val_file_required' => 'Zaszyfrowany plik jest wymagany.',
     'val_ciphertext_max' => 'Tekst nie może przekraczać 50 000 znaków.',

@@ -202,12 +202,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <x-card class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_created') }}</h3>
-                    <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
+                    <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_server_hour_note') }}</p>
                     <div id="heatmapCreated" class="heatmap-container"></div>
                 </x-card>
                 <x-card class="p-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ __('messages.chart_heatmap_read') }}</h3>
-                    <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">UTC — heure serveur</p>
+                    <p class="text-xs text-gray-400 dark:text-slate-500 mb-4">{{ __('messages.stat_server_hour_note') }}</p>
                     <div id="heatmapRead" class="heatmap-container"></div>
                 </x-card>
             </div>

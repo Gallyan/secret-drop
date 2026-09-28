@@ -36,7 +36,7 @@ return [
     'tab_file' => 'ملف',
 
     // Form placeholders
-    'secret_placeholder' => 'أدخل رسالتك السرية...',
+    'secret_placeholder' => 'أدخل رسالتك السرية…',
     'max_reads_placeholder' => 'غير محدود',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'تشفير وإنشاء الرابط',
-    'btn_encrypting' => 'جارٍ التشفير...',
-    'btn_encrypting_upload' => 'جارٍ التشفير والرفع...',
+    'btn_encrypting' => 'جارٍ التشفير…',
+    'btn_encrypting_upload' => 'جارٍ التشفير والرفع…',
     'btn_copy' => 'نسخ',
     'btn_copied' => 'تم النسخ!',
     'btn_decrypt' => 'فك التشفير',
-    'btn_decrypting' => 'جارٍ فك التشفير...',
+    'btn_decrypting' => 'جارٍ فك التشفير…',
     'btn_retry' => 'إعادة المحاولة',
     'btn_request_new_link' => 'طلب رابط جديد',
     'btn_cancel' => 'إلغاء',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'تم تشفير هذا الملف من طرف إلى طرف',
     'passphrase_protected' => 'هذا السر محمي بعبارة مرور.',
     'passphrase_input_placeholder' => 'أدخل عبارة المرور',
-    'decrypting_message' => 'جارٍ فك التشفير...',
-    'decrypting_file' => 'جارٍ التحميل وفك التشفير...',
+    'decrypting_message' => 'جارٍ فك التشفير…',
+    'decrypting_file' => 'جارٍ التحميل وفك التشفير…',
     'file_decrypted' => 'تم فك تشفير الملف',
     'file_encrypted_info' => 'ملف مشفر',
     'note_destroyed_text' => 'تم تكوين هذا السر ليتم تدميره بعد القراءة. لم يعد متاحاً.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'خطأ أثناء إنشاء السر',
 
     // Loading
-    'loading' => 'جارٍ التحميل...',
-    'loading_secret' => 'جارٍ تحميل السر...',
+    'loading' => 'جارٍ التحميل…',
+    'loading_secret' => 'جارٍ تحميل السر…',
 
     // Emails
     'email_link_label' => 'أو انسخ هذا الرابط:',
@@ -175,7 +175,7 @@ return [
     'how_feature1_title' => 'معرفة صفرية',
     'how_feature1_desc' => 'لا يملك الخادم أي وسيلة لقراءة أسرارك. إذا أمرتنا محكمة بتسليم البيانات، فلا يمكننا أن نقدّم سوى محتوى مشفر لا نستطيع فك تشفيره.',
     'how_feature2_title' => 'تشفير عسكري',
-    'how_feature2_desc' => 'اعتمد NIST خوارزمية AES-256-GCM معياراً، وتوافق NSA على استخدام AES-256 لحماية المعلومات المصنفة حتى مستوى "سري للغاية" (Top Secret).',
+    'how_feature2_desc' => 'اعتمد NIST خوارزمية AES-256-GCM معياراً، وتوافق NSA على استخدام AES-256 لحماية المعلومات المصنفة حتى مستوى «سري للغاية» (Top Secret).',
     'how_feature3_title' => 'لا يلزم حساب',
     'how_feature3_desc' => 'لا تسجيل، لا تتبع. ما لم تُدخل بريداً إلكترونياً لإدارة أسرارك، لا شيء يربطها بك.',
     'how_feature4_title' => 'التدمير الذاتي',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'ما الفرق مع البريد الإلكتروني المشفر؟',
     'faq_a11' => 'البريد المشفر (PGP، S/MIME) يتطلب من الطرفين إعداد مفاتيح مسبقاً. مع Secret Drop، لا يحتاج المستلم إلا إلى الرابط. كما أن السر يدمّر نفسه، بينما يبقى البريد الإلكتروني في صندوقي بريد الطرفين.',
     'faq_q12' => 'كيف أدير أسراري بعد إنشائها؟',
-    'faq_a12' => 'إذا قدمت بريدك الإلكتروني، يمكنك إلغاء أسرارك أو تمديدها عبر رابط :manage_link أسفل كل صفحة. ستتلقى رابطاً سحرياً للاستخدام مرة واحدة، صالحاً لمدة :minutes دقائق. بدون كلمة مرور، لا يوجد ما يُسرق.',
+    'faq_a12' => 'إذا قدمت بريدك الإلكتروني، يمكنك إلغاء أسرارك أو تمديدها عبر رابط «:manage_link» أسفل كل صفحة. ستتلقى رابطاً سحرياً للاستخدام مرة واحدة، صالحاً لمدة :minutes دقائق. بدون كلمة مرور، لا يوجد ما يُسرق.',
     'faq_meta_description' => 'اعثر على إجابات للأسئلة الشائعة حول Secret Drop: التشفير، المعرفة الصفرية، الخصوصية، مشاركة الملفات والمزيد.',
     'faq_see_how' => 'تعرف على كيفية عمل Secret Drop',
     'secure_by_design_title' => 'آمن بالتصميم',
@@ -284,7 +284,7 @@ return [
     'legal_hosting_text' => 'الاستضافة مقدمة من:',
     'legal_hosting_phone' => 'الهاتف:',
     'legal_data_title' => 'حماية البيانات',
-    'legal_data_text' => 'يتبع Secret Drop تصميم "المعرفة الصفرية". يشفّر متصفحك الأسرار قبل إرسالها إلى الخادم، الذي يخزّن البيانات المشفرة فقط ولا يمكنه الوصول إلى محتواها النصي الواضح.',
+    'legal_data_text' => 'يتبع Secret Drop تصميم «المعرفة الصفرية». يشفّر متصفحك الأسرار قبل إرسالها إلى الخادم، الذي يخزّن البيانات المشفرة فقط ولا يمكنه الوصول إلى محتواها النصي الواضح.',
     'legal_data_stored' => 'البيانات المخزنة:',
     'legal_data_item_ciphertext' => 'البيانات المشفرة (المحتوى ومعلمات التشفير)',
     'legal_data_item_metadata' => 'البيانات الوصفية (تاريخ الإنشاء، انتهاء الصلاحية، عدد القراءات)',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'منتهي الصلاحية',
     'admin_status_revoked' => 'ملغي',
     'admin_status_consumed' => 'مستهلك',
-    'admin_created' => 'تم الإنشاء',
+    'admin_created' => 'تم الإنشاء:',
     'admin_expires' => 'ينتهي',
     'admin_no_expiry' => 'بدون انتهاء صلاحية',
     'admin_read_count' => 'القراءات',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'حسب ساعة الخادم',
     'stat_by_local_hour' => 'حسب التوقيت المحلي',
     'stat_local_hour_note' => 'بناءً على توقيت متصفح الزائر',
+    'stat_server_hour_note' => 'UTC — توقيت الخادم',
     'stat_hour_views' => '{0} :count مشاهدة|{1} مشاهدة واحدة|[2,*] :count مشاهدات',
     'stat_by_country' => 'حسب البلد',
     'stat_by_language' => 'حسب اللغة',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'إذا تم اختراق قناة واحدة، يحصل المهاجم على جزء فقط من المعلومات.',
     'share_link_label' => 'رابط المشاركة',
     'share_key_label' => 'مفتاح فك التشفير',
-    'split_mode_warning' => 'انقل المفتاح عبر قناة مختلفة (رسالة نصية، هاتف، شخصياً...).',
+    'split_mode_warning' => 'انقل المفتاح عبر قناة مختلفة (رسالة نصية، هاتف، شخصياً…).',
     'enter_key_manually' => 'أدخل مفتاح فك التشفير',
     'key_placeholder' => 'المفتاح المستلم بشكل منفصل',
     'btn_unlock' => 'فتح',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'طلبات كثيرة جداً. يرجى الانتظار أثناء التحقق من متصفحك.',
-    'pow_computing' => 'جارٍ التحقق من المتصفح...',
+    'pow_computing' => 'جارٍ التحقق من المتصفح…',
     'pow_failed' => 'فشل التحقق. يرجى المحاولة مرة أخرى.',
     'pow_timeout' => 'انتهت مهلة التحقق. يرجى المحاولة مرة أخرى.',
     'daily_limit_exceeded' => 'تم الوصول إلى الحد اليومي. يرجى المحاولة مرة أخرى غداً.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'نوع السر مطلوب.',
-    'val_type_in' => 'يجب أن يكون النوع "text" أو "file".',
+    'val_type_in' => 'يجب أن يكون النوع «text» أو «file».',
     'val_ciphertext_required' => 'النص المشفر مطلوب للسر النصي.',
     'val_file_required' => 'الملف المشفر مطلوب.',
     'val_ciphertext_max' => 'يجب ألا يتجاوز النص 50,000 حرف.',

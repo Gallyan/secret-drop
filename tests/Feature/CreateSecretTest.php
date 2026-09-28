@@ -172,7 +172,7 @@ class CreateSecretTest extends TestCase
         $response = $this->postJson('/api/secrets', $this->validPayload(['type' => $type]));
 
         $response->assertUnprocessable();
-        $response->assertJsonValidationErrors(['type' => 'The type must be "text" or "file".']);
+        $response->assertJsonValidationErrors(['type' => 'The type must be “text” or “file”.']);
     }
 
     /** Vérifie que le chiffré est requis pour un secret texte. */

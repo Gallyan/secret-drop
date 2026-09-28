@@ -36,7 +36,7 @@ return [
     'tab_file' => 'Ficheiro',
 
     // Form placeholders
-    'secret_placeholder' => 'Escreva a sua mensagem confidencial...',
+    'secret_placeholder' => 'Escreva a sua mensagem confidencial…',
     'max_reads_placeholder' => 'Ilimitado',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Encriptar e criar link',
-    'btn_encrypting' => 'A encriptar...',
-    'btn_encrypting_upload' => 'A encriptar e a enviar...',
+    'btn_encrypting' => 'A encriptar…',
+    'btn_encrypting_upload' => 'A encriptar e a enviar…',
     'btn_copy' => 'Copiar',
     'btn_copied' => 'Copiado!',
     'btn_decrypt' => 'Desencriptar',
-    'btn_decrypting' => 'A desencriptar...',
+    'btn_decrypting' => 'A desencriptar…',
     'btn_retry' => 'Tentar novamente',
     'btn_request_new_link' => 'Solicitar um novo link',
     'btn_cancel' => 'Cancelar',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Partilhe este link com o seu destinatário',
     'warning_link_contains_key' => 'Este link contém a chave de desencriptação. Partilhe-o apenas com o destinatário pretendido.',
     'warning_passphrase_required' => 'O destinatário terá de introduzir a frase-passe para desencriptar o segredo.',
-    'success_admin_hint' => 'Pode gerir este segredo (revogar, estender) através do link ":link" no final da página.',
+    'success_admin_hint' => 'Pode gerir este segredo (revogar, estender) através do link «:link» no final da página.',
 
     // QR Code
     'show_qr_code' => 'Mostrar código QR',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'Este ficheiro foi encriptado de ponta a ponta',
     'passphrase_protected' => 'Este segredo está protegido por uma frase-passe.',
     'passphrase_input_placeholder' => 'Introduza a frase-passe',
-    'decrypting_message' => 'A desencriptar...',
-    'decrypting_file' => 'A transferir e a desencriptar...',
+    'decrypting_message' => 'A desencriptar…',
+    'decrypting_file' => 'A transferir e a desencriptar…',
     'file_decrypted' => 'Ficheiro desencriptado',
     'file_encrypted_info' => 'Ficheiro encriptado',
     'note_destroyed_text' => 'Este segredo foi configurado para ser destruído após a leitura. Já não está acessível.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Erro ao criar o segredo',
 
     // Loading
-    'loading' => 'A carregar...',
-    'loading_secret' => 'A carregar o segredo...',
+    'loading' => 'A carregar…',
+    'loading_secret' => 'A carregar o segredo…',
 
     // Emails
     'email_link_label' => 'Ou copie este link:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'Qual é a diferença para o e-mail encriptado?',
     'faq_a11' => 'O e-mail encriptado (PGP, S/MIME) exige que ambas as partes configurem chaves previamente. Com o Secret Drop, o seu destinatário só precisa do link. Além disso, o segredo autodestrói-se, enquanto um e-mail fica nas duas caixas de entrada.',
     'faq_q12' => 'Como posso gerir os meus segredos depois de os criar?',
-    'faq_a12' => 'Se indicou o seu e-mail, pode revogar ou estender os seus segredos através do link :manage_link no rodapé de cada página. Vai receber um magic link de utilização única, válido durante :minutes minutos. Sem palavra-passe, não há nada para roubar.',
+    'faq_a12' => 'Se indicou o seu e-mail, pode revogar ou estender os seus segredos através do link «:manage_link» no rodapé de cada página. Vai receber um magic link de utilização única, válido durante :minutes minutos. Sem palavra-passe, não há nada para roubar.',
     'faq_meta_description' => 'Encontre respostas às perguntas frequentes sobre o Secret Drop: encriptação, zero-knowledge, privacidade, partilha de ficheiros e mais.',
     'faq_see_how' => 'Saiba como funciona o Secret Drop',
     'secure_by_design_title' => 'Secure by design',
@@ -284,7 +284,7 @@ return [
     'legal_hosting_text' => 'Este site é alojado por:',
     'legal_hosting_phone' => 'Telefone:',
     'legal_data_title' => 'Proteção de Dados',
-    'legal_data_text' => 'O Secret Drop segue o princípio "zero-knowledge". O seu navegador encripta os segredos antes de os enviar ao servidor, que armazena apenas dados encriptados e não pode aceder ao conteúdo em texto simples.',
+    'legal_data_text' => 'O Secret Drop segue o princípio «zero-knowledge». O seu navegador encripta os segredos antes de os enviar ao servidor, que armazena apenas dados encriptados e não pode aceder ao conteúdo em texto simples.',
     'legal_data_stored' => 'Dados armazenados:',
     'legal_data_item_ciphertext' => 'Dados encriptados (conteúdo e parâmetros de encriptação)',
     'legal_data_item_metadata' => 'Metadados (data de criação, expiração, contagem de leituras)',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Expirado',
     'admin_status_revoked' => 'Revogado',
     'admin_status_consumed' => 'Consumido',
-    'admin_created' => 'Criado',
+    'admin_created' => 'Criado:',
     'admin_expires' => 'Expira',
     'admin_no_expiry' => 'Sem expiração',
     'admin_read_count' => 'Contagem de leituras',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'Por hora do servidor',
     'stat_by_local_hour' => 'Por hora local',
     'stat_local_hour_note' => 'Com base na hora do navegador do visitante',
+    'stat_server_hour_note' => 'UTC — hora do servidor',
     'stat_hour_views' => '{0} :count visualizações|{1} :count visualização|[2,*] :count visualizações',
     'stat_by_country' => 'Por país',
     'stat_by_language' => 'Por idioma',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'Se um canal for comprometido, o atacante terá apenas parte da informação.',
     'share_link_label' => 'Link de partilha',
     'share_key_label' => 'Chave de desencriptação',
-    'split_mode_warning' => 'Envie a chave por um canal diferente (SMS, chamada, pessoalmente...).',
+    'split_mode_warning' => 'Envie a chave por um canal diferente (SMS, chamada, pessoalmente…).',
     'enter_key_manually' => 'Introduza a chave de desencriptação',
     'key_placeholder' => 'Chave recebida separadamente',
     'btn_unlock' => 'Desbloquear',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Demasiados pedidos. Aguarde enquanto verificamos o seu navegador.',
-    'pow_computing' => 'A verificar o seu navegador...',
+    'pow_computing' => 'A verificar o seu navegador…',
     'pow_failed' => 'A verificação falhou. Tente novamente.',
     'pow_timeout' => 'A verificação expirou. Tente novamente.',
     'daily_limit_exceeded' => 'Limite diário atingido. Tente novamente amanhã.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'O tipo do segredo é obrigatório.',
-    'val_type_in' => 'O tipo deve ser "text" ou "file".',
+    'val_type_in' => 'O tipo deve ser «text» ou «file».',
     'val_ciphertext_required' => 'O texto encriptado é obrigatório para um segredo de texto.',
     'val_file_required' => 'O ficheiro encriptado é obrigatório.',
     'val_ciphertext_max' => 'O texto não pode exceder 50.000 caracteres.',

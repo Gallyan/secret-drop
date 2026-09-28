@@ -16,9 +16,20 @@ class SuperAdminDashboardTest extends TestCase
 
         $response = $this->withSession($this->superAdminSession())->get('/fr/superadmin/dashboard');
 
-        $response->assertSee('title="14:00–15:00 · 0 vue"', false);
-        $response->assertSee('title="23:00–00:00 · 0 vue"', false);
+        $response->assertSee("title=\"14:00–15:00 · 0\u{00A0}vue\"", false);
+        $response->assertSee("title=\"23:00–00:00 · 0\u{00A0}vue\"", false);
         $response->assertDontSee('title="14h:', false);
+    }
+
+    /** Vérifie que la note d'horaire serveur des heatmaps suit la langue de la page. */
+    public function testHeatmapServerTimeNoteIsTranslated(): void
+    {
+        Storage::fake('secrets');
+
+        $response = $this->withSession($this->superAdminSession())->get('/en/superadmin/dashboard');
+
+        $response->assertSee('UTC — server time');
+        $response->assertDontSee('heure serveur');
     }
 
     /** Vérifie que la période today expose une ventilation horaire issue de la heatmap. */

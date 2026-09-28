@@ -36,7 +36,7 @@ return [
     'tab_file' => 'ファイル',
 
     // Form placeholders
-    'secret_placeholder' => '機密メッセージを入力してください...',
+    'secret_placeholder' => '機密メッセージを入力してください…',
     'max_reads_placeholder' => '無制限',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => '暗号化してリンク作成',
-    'btn_encrypting' => '暗号化中...',
-    'btn_encrypting_upload' => '暗号化＆アップロード中...',
+    'btn_encrypting' => '暗号化中…',
+    'btn_encrypting_upload' => '暗号化＆アップロード中…',
     'btn_copy' => 'コピー',
     'btn_copied' => 'コピー完了！',
     'btn_decrypt' => '復号化',
-    'btn_decrypting' => '復号化中...',
+    'btn_decrypting' => '復号化中…',
     'btn_retry' => '再試行',
     'btn_request_new_link' => '新しいリンクをリクエスト',
     'btn_cancel' => 'キャンセル',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'このファイルはエンドツーエンドで暗号化されています',
     'passphrase_protected' => 'このシークレットはパスフレーズで保護されています。',
     'passphrase_input_placeholder' => 'パスフレーズを入力',
-    'decrypting_message' => '復号化中...',
-    'decrypting_file' => 'ダウンロード＆復号化中...',
+    'decrypting_message' => '復号化中…',
+    'decrypting_file' => 'ダウンロード＆復号化中…',
     'file_decrypted' => 'ファイル復号化完了',
     'file_encrypted_info' => '暗号化されたファイル',
     'note_destroyed_text' => 'このシークレットは読み取り後に削除されるよう設定されていました。もうアクセスできません。',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'シークレット作成エラー',
 
     // Loading
-    'loading' => '読み込み中...',
-    'loading_secret' => 'シークレット読み込み中...',
+    'loading' => '読み込み中…',
+    'loading_secret' => 'シークレット読み込み中…',
 
     // Emails
     'email_link_label' => 'またはこのリンクをコピー：',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => '暗号化メールとの違いは？',
     'faq_a11' => '暗号化メール（PGP、S/MIME）では、双方が事前に鍵を設定する必要があります。Secret Dropなら、受信者に必要なのはリンクだけです。また、メールは双方の受信箱に残りますが、秘密は自動的に消滅します。',
     'faq_q12' => '作成後にシークレットを管理するには？',
-    'faq_a12' => 'メールアドレスを入力した場合は、各ページ下部の:manage_linkリンクからシークレットの取り消しや延長ができます。:minutes分間有効な使い捨てのマジックリンクが届きます。パスワードがないため、盗まれるものもありません。',
+    'faq_a12' => 'メールアドレスを入力した場合は、各ページ下部の「:manage_link」リンクからシークレットの取り消しや延長ができます。:minutes分間有効な使い捨てのマジックリンクが届きます。パスワードがないため、盗まれるものもありません。',
     'faq_meta_description' => 'Secret Dropに関するよくある質問の回答：暗号化、ゼロナレッジ、プライバシー、ファイル共有など。',
     'faq_see_how' => 'Secret Dropの仕組みを見る',
     'secure_by_design_title' => 'Secure by design',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => '期限切れ',
     'admin_status_revoked' => '取り消し済み',
     'admin_status_consumed' => '使用済み',
-    'admin_created' => '作成日',
+    'admin_created' => '作成日：',
     'admin_expires' => '有効期限',
     'admin_no_expiry' => '期限なし',
     'admin_read_count' => '閲覧数',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'サーバー時間別',
     'stat_by_local_hour' => '現地時間別',
     'stat_local_hour_note' => '訪問者のブラウザ時刻に基づく',
+    'stat_server_hour_note' => 'UTC（サーバー時刻）',
     'stat_hour_views' => ':count ビュー',
     'stat_by_country' => '国別',
     'stat_by_language' => '言語別',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'リクエストが多すぎます。ブラウザの検証中です。お待ちください。',
-    'pow_computing' => 'ブラウザを検証中...',
+    'pow_computing' => 'ブラウザを検証中…',
     'pow_failed' => '検証に失敗しました。もう一度お試しください。',
     'pow_timeout' => '検証がタイムアウトしました。もう一度お試しください。',
     'daily_limit_exceeded' => '1日の上限に達しました。明日もう一度お試しください。',

@@ -36,7 +36,7 @@ return [
     'tab_file' => 'Archivo',
 
     // Form placeholders
-    'secret_placeholder' => 'Escribe tu mensaje confidencial...',
+    'secret_placeholder' => 'Escribe tu mensaje confidencial…',
     'max_reads_placeholder' => 'Ilimitado',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Cifrar y crear enlace',
-    'btn_encrypting' => 'Cifrando...',
-    'btn_encrypting_upload' => 'Cifrando y subiendo...',
+    'btn_encrypting' => 'Cifrando…',
+    'btn_encrypting_upload' => 'Cifrando y subiendo…',
     'btn_copy' => 'Copiar',
     'btn_copied' => '¡Copiado!',
     'btn_decrypt' => 'Descifrar',
-    'btn_decrypting' => 'Descifrando...',
+    'btn_decrypting' => 'Descifrando…',
     'btn_retry' => 'Reintentar',
     'btn_request_new_link' => 'Solicitar un nuevo enlace',
     'btn_cancel' => 'Cancelar',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Comparte este enlace con tu destinatario',
     'warning_link_contains_key' => 'Este enlace contiene la clave de descifrado. Compártelo solo con el destinatario previsto.',
     'warning_passphrase_required' => 'El destinatario necesitará introducir la frase secreta para descifrar el secreto.',
-    'success_admin_hint' => 'Puedes gestionar este secreto (revocar, extender) a través del enlace ":link" en la parte inferior de la página.',
+    'success_admin_hint' => 'Puedes gestionar este secreto (revocar, extender) a través del enlace «:link» en la parte inferior de la página.',
 
     // QR Code
     'show_qr_code' => 'Mostrar código QR',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'Este archivo fue cifrado de extremo a extremo',
     'passphrase_protected' => 'Este secreto está protegido por una frase secreta.',
     'passphrase_input_placeholder' => 'Introduce la frase secreta',
-    'decrypting_message' => 'Descifrando...',
-    'decrypting_file' => 'Descargando y descifrando...',
+    'decrypting_message' => 'Descifrando…',
+    'decrypting_file' => 'Descargando y descifrando…',
     'file_decrypted' => 'Archivo descifrado',
     'file_encrypted_info' => 'Archivo cifrado',
     'note_destroyed_text' => 'Este secreto fue configurado para destruirse después de la lectura. Ya no es accesible.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Error al crear el secreto',
 
     // Loading
-    'loading' => 'Cargando...',
-    'loading_secret' => 'Cargando secreto...',
+    'loading' => 'Cargando…',
+    'loading_secret' => 'Cargando secreto…',
 
     // Emails
     'email_link_label' => 'O copia este enlace:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => '¿En qué se diferencia del correo cifrado?',
     'faq_a11' => 'El correo cifrado (PGP, S/MIME) exige que ambas partes configuren claves previamente. Con Secret Drop, su destinatario solo necesita el enlace. Además, el secreto se autodestruye, mientras que un correo permanece en ambas bandejas.',
     'faq_q12' => '¿Cómo gestiono mis secretos después de crearlos?',
-    'faq_a12' => 'Si proporcionó su email, puede revocar o extender sus secretos a través del enlace :manage_link al pie de cada página. Recibirá un magic link de un solo uso, válido durante :minutes minutos. Sin contraseña, no hay nada que robar.',
+    'faq_a12' => 'Si proporcionó su email, puede revocar o extender sus secretos a través del enlace «:manage_link» al pie de cada página. Recibirá un magic link de un solo uso, válido durante :minutes minutos. Sin contraseña, no hay nada que robar.',
     'faq_meta_description' => 'Encuentre respuestas a preguntas frecuentes sobre Secret Drop: cifrado, conocimiento cero, privacidad, compartir archivos y más.',
     'faq_see_how' => 'Descubra cómo funciona Secret Drop',
     'secure_by_design_title' => 'Secure by design',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Expirado',
     'admin_status_revoked' => 'Revocado',
     'admin_status_consumed' => 'Consumido',
-    'admin_created' => 'Creado',
+    'admin_created' => 'Creado:',
     'admin_expires' => 'Expira',
     'admin_no_expiry' => 'Sin caducidad',
     'admin_read_count' => 'Contador de lecturas',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'Por hora del servidor',
     'stat_by_local_hour' => 'Por hora local',
     'stat_local_hour_note' => 'Basado en la hora del navegador del visitante',
+    'stat_server_hour_note' => 'UTC — hora del servidor',
     'stat_hour_views' => '{0} :count visitas|{1} :count visita|[2,*] :count visitas',
     'stat_by_country' => 'Por país',
     'stat_by_language' => 'Por idioma',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'Si un canal es comprometido, el atacante solo tiene parte de la información.',
     'share_link_label' => 'Enlace para compartir',
     'share_key_label' => 'Clave de descifrado',
-    'split_mode_warning' => 'Envía la clave por un canal diferente (SMS, llamada telefónica, en persona...).',
+    'split_mode_warning' => 'Envía la clave por un canal diferente (SMS, llamada telefónica, en persona…).',
     'enter_key_manually' => 'Introduce la clave de descifrado',
     'key_placeholder' => 'Clave recibida por separado',
     'btn_unlock' => 'Desbloquear',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Demasiadas solicitudes. Por favor, espera mientras verificamos tu navegador.',
-    'pow_computing' => 'Verificando tu navegador...',
+    'pow_computing' => 'Verificando tu navegador…',
     'pow_failed' => 'La verificación falló. Por favor, inténtalo de nuevo.',
     'pow_timeout' => 'La verificación expiró. Por favor, inténtalo de nuevo.',
     'daily_limit_exceeded' => 'Límite diario alcanzado. Por favor, inténtalo mañana.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'El tipo de secreto es obligatorio.',
-    'val_type_in' => 'El tipo debe ser "text" o "file".',
+    'val_type_in' => 'El tipo debe ser «text» o «file».',
     'val_ciphertext_required' => 'El texto cifrado es obligatorio para un secreto de texto.',
     'val_file_required' => 'El archivo cifrado es obligatorio.',
     'val_ciphertext_max' => 'El texto no debe superar los 50.000 caracteres.',

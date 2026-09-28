@@ -36,7 +36,7 @@ return [
     'tab_file' => 'Datei',
 
     // Form placeholders
-    'secret_placeholder' => 'Geben Sie Ihre vertrauliche Nachricht ein...',
+    'secret_placeholder' => 'Geben Sie Ihre vertrauliche Nachricht ein…',
     'max_reads_placeholder' => 'Unbegrenzt',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Verschlüsseln und Link erstellen',
-    'btn_encrypting' => 'Verschlüsseln...',
-    'btn_encrypting_upload' => 'Verschlüsseln und hochladen...',
+    'btn_encrypting' => 'Verschlüsseln…',
+    'btn_encrypting_upload' => 'Verschlüsseln und hochladen…',
     'btn_copy' => 'Kopieren',
     'btn_copied' => 'Kopiert!',
     'btn_decrypt' => 'Entschlüsseln',
-    'btn_decrypting' => 'Entschlüsseln...',
+    'btn_decrypting' => 'Entschlüsseln…',
     'btn_retry' => 'Erneut versuchen',
     'btn_request_new_link' => 'Neuen Link anfordern',
     'btn_cancel' => 'Abbrechen',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Teilen Sie diesen Link mit Ihrem Empfänger',
     'warning_link_contains_key' => 'Dieser Link enthält den Entschlüsselungsschlüssel. Teilen Sie ihn nur mit dem beabsichtigten Empfänger.',
     'warning_passphrase_required' => 'Der Empfänger muss die Geheimphrase eingeben, um das Geheimnis zu entschlüsseln.',
-    'success_admin_hint' => 'Sie können dieses Geheimnis (widerrufen, verlängern) über den Link ":link" am unteren Rand der Seite verwalten.',
+    'success_admin_hint' => 'Sie können dieses Geheimnis (widerrufen, verlängern) über den Link „:link“ am unteren Rand der Seite verwalten.',
 
     // QR Code
     'show_qr_code' => 'QR-Code anzeigen',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'Diese Datei wurde Ende-zu-Ende verschlüsselt',
     'passphrase_protected' => 'Dieses Geheimnis ist durch eine Geheimphrase geschützt.',
     'passphrase_input_placeholder' => 'Geheimphrase eingeben',
-    'decrypting_message' => 'Entschlüsseln...',
-    'decrypting_file' => 'Herunterladen und entschlüsseln...',
+    'decrypting_message' => 'Entschlüsseln…',
+    'decrypting_file' => 'Herunterladen und entschlüsseln…',
     'file_decrypted' => 'Datei entschlüsselt',
     'file_encrypted_info' => 'Verschlüsselte Datei',
     'note_destroyed_text' => 'Dieses Geheimnis wurde so konfiguriert, dass es nach dem Lesen zerstört wird. Es ist nicht mehr zugänglich.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Fehler beim Erstellen des Geheimnisses',
 
     // Loading
-    'loading' => 'Laden...',
-    'loading_secret' => 'Geheimnis laden...',
+    'loading' => 'Laden…',
+    'loading_secret' => 'Geheimnis laden…',
 
     // Emails
     'email_link_label' => 'Oder kopieren Sie diesen Link:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'Was unterscheidet Secret Drop von verschlüsselter E-Mail?',
     'faq_a11' => 'Verschlüsselte E-Mail (PGP, S/MIME) erfordert, dass beide Seiten vorab Schlüssel einrichten. Bei Secret Drop braucht Ihr Empfänger nur den Link. Außerdem zerstört sich das Geheimnis selbst, während eine E-Mail in beiden Postfächern bleibt.',
     'faq_q12' => 'Wie verwalte ich meine Geheimnisse nach der Erstellung?',
-    'faq_a12' => 'Wenn Sie Ihre E-Mail angegeben haben, können Sie Ihre Geheimnisse über den Link :manage_link am Ende jeder Seite widerrufen oder verlängern. Sie erhalten einen Magic Link zur einmaligen Verwendung, gültig für :minutes Minuten. Ohne Passwort gibt es nichts zu stehlen.',
+    'faq_a12' => 'Wenn Sie Ihre E-Mail angegeben haben, können Sie Ihre Geheimnisse über den Link „:manage_link“ am Ende jeder Seite widerrufen oder verlängern. Sie erhalten einen Magic Link zur einmaligen Verwendung, gültig für :minutes Minuten. Ohne Passwort gibt es nichts zu stehlen.',
     'faq_meta_description' => 'Antworten auf häufige Fragen zu Secret Drop: Verschlüsselung, Zero-Knowledge, Datenschutz, Dateifreigabe und mehr.',
     'faq_see_how' => 'Erfahren Sie, wie Secret Drop funktioniert',
     'secure_by_design_title' => 'Secure by Design',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Abgelaufen',
     'admin_status_revoked' => 'Widerrufen',
     'admin_status_consumed' => 'Verbraucht',
-    'admin_created' => 'Erstellt',
+    'admin_created' => 'Erstellt:',
     'admin_expires' => 'Läuft ab',
     'admin_no_expiry' => 'Kein Ablaufdatum',
     'admin_read_count' => 'Lesezähler',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'Nach Serverstunde',
     'stat_by_local_hour' => 'Nach Ortszeit',
     'stat_local_hour_note' => 'Basierend auf der Browserzeit des Besuchers',
+    'stat_server_hour_note' => 'UTC – Serverzeit',
     'stat_hour_views' => '{0} :count Aufrufe|{1} :count Aufruf|[2,*] :count Aufrufe',
     'stat_by_country' => 'Nach Land',
     'stat_by_language' => 'Nach Sprache',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'Wenn ein Kanal kompromittiert wird, hat der Angreifer nur einen Teil der Information.',
     'share_link_label' => 'Freigabelink',
     'share_key_label' => 'Entschlüsselungsschlüssel',
-    'split_mode_warning' => 'Senden Sie den Schlüssel über einen anderen Kanal (SMS, Telefonanruf, persönlich...).',
+    'split_mode_warning' => 'Senden Sie den Schlüssel über einen anderen Kanal (SMS, Telefonanruf, persönlich…).',
     'enter_key_manually' => 'Entschlüsselungsschlüssel eingeben',
     'key_placeholder' => 'Separat erhaltener Schlüssel',
     'btn_unlock' => 'Entsperren',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte warten Sie, während wir Ihren Browser verifizieren.',
-    'pow_computing' => 'Verifizierung läuft...',
+    'pow_computing' => 'Verifizierung läuft…',
     'pow_failed' => 'Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
     'pow_timeout' => 'Verifizierung abgelaufen. Bitte versuchen Sie es erneut.',
     'daily_limit_exceeded' => 'Tageslimit erreicht. Bitte versuchen Sie es morgen erneut.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'Der Geheimnis-Typ ist erforderlich.',
-    'val_type_in' => 'Der Typ muss "text" oder "file" sein.',
+    'val_type_in' => 'Der Typ muss „text“ oder „file“ sein.',
     'val_ciphertext_required' => 'Verschlüsselter Text ist für ein Textgeheimnis erforderlich.',
     'val_file_required' => 'Die verschlüsselte Datei ist erforderlich.',
     'val_ciphertext_max' => 'Der Text darf 50.000 Zeichen nicht überschreiten.',

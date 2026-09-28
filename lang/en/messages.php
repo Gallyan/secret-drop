@@ -36,7 +36,7 @@ return [
     'tab_file' => 'File',
 
     // Form placeholders
-    'secret_placeholder' => 'Enter your confidential message...',
+    'secret_placeholder' => 'Enter your confidential message…',
     'max_reads_placeholder' => 'Unlimited',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Encrypt and create link',
-    'btn_encrypting' => 'Encrypting...',
-    'btn_encrypting_upload' => 'Encrypting and uploading...',
+    'btn_encrypting' => 'Encrypting…',
+    'btn_encrypting_upload' => 'Encrypting and uploading…',
     'btn_copy' => 'Copy',
     'btn_copied' => 'Copied!',
     'btn_decrypt' => 'Decrypt',
-    'btn_decrypting' => 'Decrypting...',
+    'btn_decrypting' => 'Decrypting…',
     'btn_retry' => 'Retry',
     'btn_request_new_link' => 'Request a new link',
     'btn_cancel' => 'Cancel',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Share this link with your recipient',
     'warning_link_contains_key' => 'This link contains the decryption key. Only share it with the intended recipient.',
     'warning_passphrase_required' => 'The recipient will need to enter the passphrase to decrypt the secret.',
-    'success_admin_hint' => 'You can manage this secret (revoke, extend) via the ":link" link at the bottom of the page.',
+    'success_admin_hint' => 'You can manage this secret (revoke, extend) via the “:link” link at the bottom of the page.',
 
     // QR Code
     'show_qr_code' => 'Show QR code',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'This file was encrypted end-to-end',
     'passphrase_protected' => 'This secret is protected by a passphrase.',
     'passphrase_input_placeholder' => 'Enter the passphrase',
-    'decrypting_message' => 'Decrypting...',
-    'decrypting_file' => 'Downloading and decrypting...',
+    'decrypting_message' => 'Decrypting…',
+    'decrypting_file' => 'Downloading and decrypting…',
     'file_decrypted' => 'File decrypted',
     'file_encrypted_info' => 'Encrypted file',
     'note_destroyed_text' => 'This secret was configured to be destroyed after reading. It is no longer accessible.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Error creating secret',
 
     // Loading
-    'loading' => 'Loading...',
-    'loading_secret' => 'Loading secret...',
+    'loading' => 'Loading…',
+    'loading_secret' => 'Loading secret…',
 
     // Emails
     'email_link_label' => 'Or copy this link:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'How is this different from encrypted email?',
     'faq_a11' => 'Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand. With Secret Drop, your recipient only needs the link. The secret also self-destructs, while an email stays in both inboxes.',
     'faq_q12' => 'How do I manage my secrets after creating them?',
-    'faq_a12' => 'If you provided your email, you can revoke or extend your secrets via the :manage_link link at the bottom of every page. You will receive a single-use magic link, valid for :minutes minutes. Without a password, there is nothing to steal.',
+    'faq_a12' => 'If you provided your email, you can revoke or extend your secrets via the “:manage_link” link at the bottom of every page. You will receive a single-use magic link, valid for :minutes minutes. Without a password, there is nothing to steal.',
     'faq_meta_description' => 'Find answers to common questions about Secret Drop: encryption, zero-knowledge, privacy, file sharing, and more.',
     'faq_see_how' => 'Learn how Secret Drop works',
     'secure_by_design_title' => 'Secure by design',
@@ -284,7 +284,7 @@ return [
     'legal_hosting_text' => 'This website is hosted by:',
     'legal_hosting_phone' => 'Phone:',
     'legal_data_title' => 'Data Protection',
-    'legal_data_text' => 'Secret Drop follows a "zero-knowledge" design. Your browser encrypts secrets before sending them to the server, which stores only encrypted data and cannot access their plaintext content.',
+    'legal_data_text' => 'Secret Drop follows a “zero-knowledge” design. Your browser encrypts secrets before sending them to the server, which stores only encrypted data and cannot access their plaintext content.',
     'legal_data_stored' => 'Data stored:',
     'legal_data_item_ciphertext' => 'Encrypted data (content and encryption parameters)',
     'legal_data_item_metadata' => 'Metadata (creation date, expiration, read count)',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Expired',
     'admin_status_revoked' => 'Revoked',
     'admin_status_consumed' => 'Consumed',
-    'admin_created' => 'Created',
+    'admin_created' => 'Created:',
     'admin_expires' => 'Expires',
     'admin_no_expiry' => 'No expiry',
     'admin_read_count' => 'Read count',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'By server hour',
     'stat_by_local_hour' => 'By local hour',
     'stat_local_hour_note' => 'Based on visitor browser time',
+    'stat_server_hour_note' => 'UTC — server time',
     'stat_hour_views' => '{0} :count views|{1} :count view|[2,*] :count views',
     'stat_by_country' => 'By country',
     'stat_by_language' => 'By language',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'If one channel is compromised (hacked email, intercepted message), the attacker only has part of the information.',
     'share_link_label' => 'Share link',
     'share_key_label' => 'Decryption key',
-    'split_mode_warning' => 'Send the key through a different channel (SMS, phone call, in person...).',
+    'split_mode_warning' => 'Send the key through a different channel (SMS, phone call, in person…).',
     'enter_key_manually' => 'Enter the decryption key',
     'key_placeholder' => 'Key received separately',
     'btn_unlock' => 'Unlock',
@@ -530,7 +531,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Too many requests. Please wait while we verify your browser.',
-    'pow_computing' => 'Verifying your browser...',
+    'pow_computing' => 'Verifying your browser…',
     'pow_failed' => 'Verification failed. Please try again.',
     'pow_timeout' => 'Verification timed out. Please try again.',
     'daily_limit_exceeded' => 'Daily limit reached. Please try again tomorrow.',
@@ -563,7 +564,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'The secret type is required.',
-    'val_type_in' => 'The type must be "text" or "file".',
+    'val_type_in' => 'The type must be “text” or “file”.',
     'val_ciphertext_required' => 'Encrypted text is required for a text secret.',
     'val_file_required' => 'The encrypted file is required.',
     'val_ciphertext_max' => 'The text must not exceed 50,000 characters.',

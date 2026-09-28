@@ -36,7 +36,7 @@ return [
     'tab_file' => 'Bestand',
 
     // Form placeholders
-    'secret_placeholder' => 'Voer uw vertrouwelijke bericht in...',
+    'secret_placeholder' => 'Voer uw vertrouwelijke bericht in…',
     'max_reads_placeholder' => 'Onbeperkt',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => 'Versleutelen en link maken',
-    'btn_encrypting' => 'Versleutelen...',
-    'btn_encrypting_upload' => 'Versleutelen en uploaden...',
+    'btn_encrypting' => 'Versleutelen…',
+    'btn_encrypting_upload' => 'Versleutelen en uploaden…',
     'btn_copy' => 'Kopiëren',
     'btn_copied' => 'Gekopieerd!',
     'btn_decrypt' => 'Ontsleutelen',
-    'btn_decrypting' => 'Ontsleutelen...',
+    'btn_decrypting' => 'Ontsleutelen…',
     'btn_retry' => 'Opnieuw proberen',
     'btn_request_new_link' => 'Nieuwe link aanvragen',
     'btn_cancel' => 'Annuleren',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => 'Deel deze link met uw ontvanger',
     'warning_link_contains_key' => 'Deze link bevat de ontsleutelingssleutel. Deel alleen met de beoogde ontvanger.',
     'warning_passphrase_required' => 'De ontvanger moet de wachtwoordzin invoeren om het geheim te ontsleutelen.',
-    'success_admin_hint' => 'U kunt dit geheim beheren (intrekken, verlengen) via de ":link" link onderaan de pagina.',
+    'success_admin_hint' => 'U kunt dit geheim beheren (intrekken, verlengen) via de “:link” link onderaan de pagina.',
 
     // QR Code
     'show_qr_code' => 'QR-code tonen',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => 'Dit bestand is end-to-end versleuteld',
     'passphrase_protected' => 'Dit geheim is beveiligd met een wachtwoordzin.',
     'passphrase_input_placeholder' => 'Voer de wachtwoordzin in',
-    'decrypting_message' => 'Ontsleutelen...',
-    'decrypting_file' => 'Downloaden en ontsleutelen...',
+    'decrypting_message' => 'Ontsleutelen…',
+    'decrypting_file' => 'Downloaden en ontsleutelen…',
     'file_decrypted' => 'Bestand ontsleuteld',
     'file_encrypted_info' => 'Versleuteld bestand',
     'note_destroyed_text' => 'Dit geheim was ingesteld om na lezen te worden vernietigd. Het is niet meer toegankelijk.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => 'Fout bij maken van geheim',
 
     // Loading
-    'loading' => 'Laden...',
-    'loading_secret' => 'Geheim laden...',
+    'loading' => 'Laden…',
+    'loading_secret' => 'Geheim laden…',
 
     // Emails
     'email_link_label' => 'Of kopieer deze link:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => 'Wat is het verschil met versleutelde e-mail?',
     'faq_a11' => 'Versleutelde e-mail (PGP, S/MIME) vereist dat beide partijen vooraf sleutels instellen. Met Secret Drop heeft uw ontvanger alleen de link nodig. Bovendien vernietigt het geheim zichzelf, terwijl een e-mail in beide inboxen blijft staan.',
     'faq_q12' => 'Hoe beheer ik mijn geheimen na het aanmaken?',
-    'faq_a12' => 'Als u uw e-mailadres hebt opgegeven, kunt u uw geheimen intrekken of verlengen via de link :manage_link onderaan elke pagina. U ontvangt een eenmalige magic link die :minutes minuten geldig is. Zonder wachtwoord valt er niets te stelen.',
+    'faq_a12' => 'Als u uw e-mailadres hebt opgegeven, kunt u uw geheimen intrekken of verlengen via de link “:manage_link” onderaan elke pagina. U ontvangt een eenmalige magic link die :minutes minuten geldig is. Zonder wachtwoord valt er niets te stelen.',
     'faq_meta_description' => 'Vind antwoorden op veelgestelde vragen over Secret Drop: versleuteling, zero-knowledge, privacy, bestandsdeling en meer.',
     'faq_see_how' => 'Ontdek hoe Secret Drop werkt',
     'secure_by_design_title' => 'Secure by design',
@@ -284,7 +284,7 @@ return [
     'legal_hosting_text' => 'Deze website wordt gehost door:',
     'legal_hosting_phone' => 'Telefoon:',
     'legal_data_title' => 'Gegevensbescherming',
-    'legal_data_text' => 'Secret Drop volgt een "zero-knowledge"-principe. Uw browser versleutelt geheimen voordat hij ze naar de server stuurt, die alleen versleutelde gegevens opslaat en geen toegang heeft tot de onversleutelde inhoud.',
+    'legal_data_text' => 'Secret Drop volgt een “zero-knowledge”-principe. Uw browser versleutelt geheimen voordat hij ze naar de server stuurt, die alleen versleutelde gegevens opslaat en geen toegang heeft tot de onversleutelde inhoud.',
     'legal_data_stored' => 'Opgeslagen gegevens:',
     'legal_data_item_ciphertext' => 'Versleutelde gegevens (inhoud en encryptieparameters)',
     'legal_data_item_metadata' => 'Metadata (aanmaakdatum, vervaldatum, leesteller)',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => 'Verlopen',
     'admin_status_revoked' => 'Ingetrokken',
     'admin_status_consumed' => 'Verbruikt',
-    'admin_created' => 'Aangemaakt',
+    'admin_created' => 'Aangemaakt:',
     'admin_expires' => 'Verloopt',
     'admin_no_expiry' => 'Verloopt niet',
     'admin_read_count' => 'Leesteller',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => 'Per serveruur',
     'stat_by_local_hour' => 'Per lokale tijd',
     'stat_local_hour_note' => 'Gebaseerd op de browsertijd van de bezoeker',
+    'stat_server_hour_note' => 'UTC – servertijd',
     'stat_hour_views' => '{0} :count weergaven|{1} :count weergave|[2,*] :count weergaven',
     'stat_by_country' => 'Per land',
     'stat_by_language' => 'Per taal',
@@ -470,7 +471,7 @@ return [
     'split_mode_tooltip' => 'Als één kanaal wordt gecompromitteerd, heeft de aanvaller slechts een deel van de informatie.',
     'share_link_label' => 'Deellink',
     'share_key_label' => 'Ontsleutelingssleutel',
-    'split_mode_warning' => 'Stuur de sleutel via een ander kanaal (SMS, telefoongesprek, persoonlijk...).',
+    'split_mode_warning' => 'Stuur de sleutel via een ander kanaal (SMS, telefoongesprek, persoonlijk…).',
     'enter_key_manually' => 'Voer de ontsleutelingssleutel in',
     'key_placeholder' => 'Afzonderlijk ontvangen sleutel',
     'btn_unlock' => 'Ontgrendelen',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => 'Te veel verzoeken. Even geduld terwijl we uw browser verifiëren.',
-    'pow_computing' => 'Verificatie bezig...',
+    'pow_computing' => 'Verificatie bezig…',
     'pow_failed' => 'Verificatie mislukt. Probeer het opnieuw.',
     'pow_timeout' => 'Verificatie verlopen. Probeer het opnieuw.',
     'daily_limit_exceeded' => 'Dagelijkse limiet bereikt. Probeer het morgen opnieuw.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => 'Het geheimtype is vereist.',
-    'val_type_in' => 'Het type moet "text" of "file" zijn.',
+    'val_type_in' => 'Het type moet “text” of “file” zijn.',
     'val_ciphertext_required' => 'Versleutelde tekst is vereist voor een tekstgeheim.',
     'val_file_required' => 'Het versleutelde bestand is vereist.',
     'val_ciphertext_max' => 'De tekst mag niet meer dan 50.000 tekens bevatten.',

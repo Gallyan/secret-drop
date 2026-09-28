@@ -36,7 +36,7 @@ return [
     'tab_file' => '파일',
 
     // Form placeholders
-    'secret_placeholder' => '기밀 메시지를 입력하세요...',
+    'secret_placeholder' => '기밀 메시지를 입력하세요…',
     'max_reads_placeholder' => '무제한',
 
     // Expiration options
@@ -55,12 +55,12 @@ return [
 
     // Buttons
     'btn_encrypt' => '암호화하고 링크 생성',
-    'btn_encrypting' => '암호화 중...',
-    'btn_encrypting_upload' => '암호화 및 업로드 중...',
+    'btn_encrypting' => '암호화 중…',
+    'btn_encrypting_upload' => '암호화 및 업로드 중…',
     'btn_copy' => '복사',
     'btn_copied' => '복사됨!',
     'btn_decrypt' => '복호화',
-    'btn_decrypting' => '복호화 중...',
+    'btn_decrypting' => '복호화 중…',
     'btn_retry' => '다시 시도',
     'btn_request_new_link' => '새 링크 요청',
     'btn_cancel' => '취소',
@@ -71,7 +71,7 @@ return [
     'share_link_instruction' => '이 링크를 수신자와 공유하세요',
     'warning_link_contains_key' => '이 링크에는 복호화 키가 포함되어 있습니다. 의도한 수신자에게만 공유하세요.',
     'warning_passphrase_required' => '수신자는 비밀을 복호화하기 위해 암호문구를 입력해야 합니다.',
-    'success_admin_hint' => '페이지 하단의 ":link" 링크를 통해 이 비밀을 관리(취소, 연장)할 수 있습니다.',
+    'success_admin_hint' => '페이지 하단의 “:link” 링크를 통해 이 비밀을 관리(취소, 연장)할 수 있습니다.',
 
     // QR Code
     'show_qr_code' => 'QR 코드 표시',
@@ -89,8 +89,8 @@ return [
     'encrypted_end_to_end_file' => '이 파일은 종단간 암호화되었습니다',
     'passphrase_protected' => '이 비밀은 암호문구로 보호되어 있습니다.',
     'passphrase_input_placeholder' => '암호문구 입력',
-    'decrypting_message' => '복호화 중...',
-    'decrypting_file' => '다운로드 및 복호화 중...',
+    'decrypting_message' => '복호화 중…',
+    'decrypting_file' => '다운로드 및 복호화 중…',
     'file_decrypted' => '파일 복호화 완료',
     'file_encrypted_info' => '암호화된 파일',
     'note_destroyed_text' => '이 비밀은 읽은 후 삭제되도록 설정되었습니다. 더 이상 접근할 수 없습니다.',
@@ -134,8 +134,8 @@ return [
     'crypto_creation_error' => '비밀 생성 오류',
 
     // Loading
-    'loading' => '로딩 중...',
-    'loading_secret' => '비밀 로딩 중...',
+    'loading' => '로딩 중…',
+    'loading_secret' => '비밀 로딩 중…',
 
     // Emails
     'email_link_label' => '또는 이 링크를 복사:',
@@ -211,7 +211,7 @@ return [
     'faq_q11' => '암호화 이메일과의 차이점은?',
     'faq_a11' => '암호화 이메일(PGP, S/MIME)은 양측이 사전에 키를 설정해야 합니다. Secret Drop에서는 수신자에게 링크만 있으면 됩니다. 또한 이메일은 양쪽 메일함에 남지만, 비밀은 자동으로 삭제됩니다.',
     'faq_q12' => '생성 후 비밀을 어떻게 관리하나요?',
-    'faq_a12' => '이메일을 입력했다면 각 페이지 하단의 :manage_link 링크에서 비밀을 취소하거나 연장할 수 있습니다. :minutes분간 유효한 일회용 매직 링크를 받게 됩니다. 비밀번호가 없으므로 훔칠 것도 없습니다.',
+    'faq_a12' => '이메일을 입력했다면 각 페이지 하단의 “:manage_link” 링크에서 비밀을 취소하거나 연장할 수 있습니다. :minutes분간 유효한 일회용 매직 링크를 받게 됩니다. 비밀번호가 없으므로 훔칠 것도 없습니다.',
     'faq_meta_description' => 'Secret Drop에 대한 자주 묻는 질문 답변: 암호화, 제로 지식, 개인정보 보호, 파일 공유 등.',
     'faq_see_how' => 'Secret Drop 작동 방식 알아보기',
     'secure_by_design_title' => 'Secure by design',
@@ -284,7 +284,7 @@ return [
     'legal_hosting_text' => '이 웹사이트 호스팅 제공자:',
     'legal_hosting_phone' => '전화:',
     'legal_data_title' => '데이터 보호',
-    'legal_data_text' => 'Secret Drop은 "제로 지식" 설계를 따릅니다. 브라우저가 비밀을 암호화한 뒤 서버로 보내고, 서버는 암호화된 데이터만 저장하므로 평문 내용에 접근할 수 없습니다.',
+    'legal_data_text' => 'Secret Drop은 “제로 지식” 설계를 따릅니다. 브라우저가 비밀을 암호화한 뒤 서버로 보내고, 서버는 암호화된 데이터만 저장하므로 평문 내용에 접근할 수 없습니다.',
     'legal_data_stored' => '저장되는 데이터:',
     'legal_data_item_ciphertext' => '암호화된 데이터 (내용 및 암호화 매개변수)',
     'legal_data_item_metadata' => '메타데이터 (생성일, 만료일, 조회 수)',
@@ -324,7 +324,7 @@ return [
     'admin_status_expired' => '만료됨',
     'admin_status_revoked' => '취소됨',
     'admin_status_consumed' => '소모됨',
-    'admin_created' => '생성일',
+    'admin_created' => '생성일:',
     'admin_expires' => '만료일',
     'admin_no_expiry' => '만료 없음',
     'admin_read_count' => '조회 수',
@@ -407,6 +407,7 @@ return [
     'stat_by_hour' => '서버 시간별',
     'stat_by_local_hour' => '현지 시간별',
     'stat_local_hour_note' => '방문자 브라우저 시간 기준',
+    'stat_server_hour_note' => 'UTC — 서버 시간',
     'stat_hour_views' => ':count회 조회',
     'stat_by_country' => '국가별',
     'stat_by_language' => '언어별',
@@ -531,7 +532,7 @@ return [
 
     // Rate limiting & Captcha
     'rate_limit_exceeded' => '요청이 너무 많습니다. 브라우저를 확인하는 동안 잠시 기다려 주세요.',
-    'pow_computing' => '브라우저 확인 중...',
+    'pow_computing' => '브라우저 확인 중…',
     'pow_failed' => '확인에 실패했습니다. 다시 시도하세요.',
     'pow_timeout' => '확인 시간이 초과되었습니다. 다시 시도하세요.',
     'daily_limit_exceeded' => '일일 한도에 도달했습니다. 내일 다시 시도하세요.',
@@ -564,7 +565,7 @@ return [
 
     // Validation messages
     'val_type_required' => '비밀 유형은 필수입니다.',
-    'val_type_in' => '유형은 "text" 또는 "file"이어야 합니다.',
+    'val_type_in' => '유형은 “text” 또는 “file”이어야 합니다.',
     'val_ciphertext_required' => '텍스트 비밀에는 암호화된 텍스트가 필요합니다.',
     'val_file_required' => '암호화된 파일은 필수입니다.',
     'val_ciphertext_max' => '텍스트는 50,000자를 초과할 수 없습니다.',

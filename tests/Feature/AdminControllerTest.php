@@ -436,6 +436,16 @@ class AdminControllerTest extends TestCase
         $response->assertTooManyRequests();
     }
 
+    /** Vérifie que la date de création d'un secret est précédée d'un deux-points français avec espace insécable. */
+    public function testDashboardLabelsCreationDateWithFrenchColon(): void
+    {
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $response = $this->withSession($this->adminSession(self::OWNER_EMAIL))->get('/fr/admin/dashboard');
+
+        $response->assertSee("Créé\u{00A0}: <span data-utc=", false);
+    }
+
     /** Vérifie que le dashboard redirige vers l'index sans session. */
     public function testDashboardRedirectsToIndexWithoutSession(): void
     {

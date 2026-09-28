@@ -67,9 +67,9 @@ class Base64UrlBytesTest extends TestCase
     public static function exactByteLengthCases(): array
     {
         return [
-            '11 octets' => ['YWFhYWFhYWFhYWE', ['Taille en octets invalide : 12 attendus, 11 reçus.']],
+            '11 octets' => ['YWFhYWFhYWFhYWE', ["Taille en octets invalide\u{00A0}: 12 attendus, 11 reçus."]],
             '12 octets' => ['YWFhYWFhYWFhYWFh', []],
-            '13 octets' => ['YWFhYWFhYWFhYWFhYQ', ['Taille en octets invalide : 12 attendus, 13 reçus.']],
+            '13 octets' => ['YWFhYWFhYWFhYWFhYQ', ["Taille en octets invalide\u{00A0}: 12 attendus, 13 reçus."]],
         ];
     }
 
@@ -92,7 +92,7 @@ class Base64UrlBytesTest extends TestCase
     public static function minByteLengthCases(): array
     {
         return [
-            '15 octets' => ['YWFhYWFhYWFhYWFhYWFh', ['Taille minimale requise : 16 octets, 15 reçus.']],
+            '15 octets' => ['YWFhYWFhYWFhYWFhYWFh', ["Taille minimale requise\u{00A0}: 16\u{00A0}octets, 15 reçus."]],
             '16 octets' => ['YWFhYWFhYWFhYWFhYWFhYQ', []],
             '17 octets' => ['YWFhYWFhYWFhYWFhYWFhYWE', []],
         ];

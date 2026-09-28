@@ -42,7 +42,7 @@
                     </span>
                 </div>
                 <p class="text-sm text-gray-500 dark:text-slate-400">
-                    {{ __('messages.admin_created') }}: <span data-utc="{{ $secret->created_at->toIso8601String() }}"></span>
+                    {{ __('messages.admin_created') }} <span data-utc="{{ $secret->created_at->toIso8601String() }}"></span>
                 </p>
             </div>
         </div>
