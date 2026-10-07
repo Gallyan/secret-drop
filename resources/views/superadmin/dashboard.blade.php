@@ -104,8 +104,8 @@
         @endphp
 
         {{-- ── Activité ────────────────────────────────────────────────── --}}
-        <section id="section-activity" aria-labelledby="h-activity" class="scroll-mt-40 mb-16">
-            <h2 id="h-activity" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_activity') }}</h2>
+        <section id="section-activity" aria-labelledby="h-activity" class="scroll-mt-40 mb-24">
+            <h2 id="h-activity" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_activity') }}</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <x-stat-card kpi="secrets_created" :value="nfmt(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
@@ -132,8 +132,8 @@
         </section>
 
         {{-- ── Composition ─────────────────────────────────────────────── --}}
-        <section id="section-composition" aria-labelledby="h-composition" class="scroll-mt-40 mb-16">
-            <h2 id="h-composition" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_composition') }}</h2>
+        <section id="section-composition" aria-labelledby="h-composition" class="scroll-mt-40 mb-24">
+            <h2 id="h-composition" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_composition') }}</h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <x-card class="p-6">
@@ -158,8 +158,8 @@
         </section>
 
         {{-- ── Volume & stockage ───────────────────────────────────────── --}}
-        <section id="section-volume" aria-labelledby="h-volume" class="scroll-mt-40 mb-16">
-            <h2 id="h-volume" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_volume') }}</h2>
+        <section id="section-volume" aria-labelledby="h-volume" class="scroll-mt-40 mb-24">
+            <h2 id="h-volume" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_volume') }}</h2>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <x-stat-card kpi="files_shared" :value="nfmt($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
@@ -179,8 +179,8 @@
         </section>
 
         {{-- ── Cycle de vie ────────────────────────────────────────────── --}}
-        <section id="section-lifecycle" aria-labelledby="h-lifecycle" class="scroll-mt-40 mb-16">
-            <h2 id="h-lifecycle" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_lifecycle') }}</h2>
+        <section id="section-lifecycle" aria-labelledby="h-lifecycle" class="scroll-mt-40 mb-24">
+            <h2 id="h-lifecycle" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_lifecycle') }}</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <x-stat-card kpi="creators" :label="__('messages.stat_unique_creators')" :hint="__('messages.stat_gini_tooltip')" hintId="giniHint">
@@ -214,8 +214,8 @@
         </section>
 
         {{-- ── Monitoring ──────────────────────────────────────────────── --}}
-        <section id="section-monitoring" aria-labelledby="h-monitoring" class="scroll-mt-40 mb-16">
-            <h2 id="h-monitoring" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_monitoring') }}</h2>
+        <section id="section-monitoring" aria-labelledby="h-monitoring" class="scroll-mt-40 mb-24">
+            <h2 id="h-monitoring" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_monitoring') }}</h2>
 
             @php
                 $fmtP95 = function (?float $ms): string {
@@ -339,7 +339,7 @@
 
         {{-- ── Audience ────────────────────────────────────────────────── --}}
         <section id="section-audience" aria-labelledby="h-audience" class="scroll-mt-40">
-            <h2 id="h-audience" class="text-2xl font-bold text-gray-900 dark:text-white mb-6 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_audience') }}</h2>
+            <h2 id="h-audience" class="text-3xl font-bold text-gray-900 dark:text-white mb-8 pb-3 border-b border-gray-200 dark:border-slate-700">{{ __('messages.superadmin_section_audience') }}</h2>
 
             @php
                 $totalViews = $pageviews['total_human'];
