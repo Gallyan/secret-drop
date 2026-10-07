@@ -253,6 +253,23 @@ class ErrorTrackingTest extends TestCase
         $this->assertSame(['/admin/{token}/x/{id}'], $this->notFoundPaths());
     }
 
+    /** Vérifie qu'un token collé à une extension est masqué dans le chemin enregistré. */
+    public function testTokenEmbeddedInASegmentIsMasked(): void
+    {
+        $this->get('/fr/s/'.bin2hex(random_bytes(16)).'.php')->assertNotFound();
+
+        $this->assertSame(['/fr/s/{token}.php'], $this->notFoundPaths());
+    }
+
+    /** Vérifie qu'une adresse e-mail saisie dans l'URL n'est jamais enregistrée, encodée ou non. */
+    public function testEmailInUrlIsMasked(): void
+    {
+        $this->get('/fr/jean.dupont@example.org')->assertNotFound();
+        $this->get('/contact/jean.dupont%40example.org')->assertNotFound();
+
+        $this->assertSame(['/contact/{email}', '/fr/{email}'], $this->notFoundPaths());
+    }
+
     /** Vérifie qu'un chemin trop long est tronqué à la taille de la colonne. */
     public function testLongNotFoundPathIsTruncated(): void
     {

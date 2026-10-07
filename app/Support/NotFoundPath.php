@@ -9,8 +9,8 @@ use Illuminate\Routing\Route;
  * Chemin d'une 404 réduit à un gabarit stockable : jamais de token, d'identifiant ni de query string.
  *
  * Le chemin réel est conservé pour les segments statiques (c'est ce qu'on cherche : /wp-login.php,
- * /fr/page-inconnue), mais les valeurs des paramètres de route et les segments qui ressemblent à
- * un token ou à un identifiant sont remplacés par un marqueur.
+ * /fr/page-inconnue), mais les valeurs des paramètres de route et les séquences qui ressemblent à
+ * un token, à un identifiant ou à une adresse e-mail sont remplacés par un marqueur.
  */
 final class NotFoundPath
 {
@@ -68,25 +68,25 @@ final class NotFoundPath
             return "{{$parameterNames[$decoded]}}";
         }
 
+        if (str_contains($decoded, '@')) {
+            return '{email}';
+        }
+
         if (ctype_digit($segment)) {
             return '{id}';
         }
 
-        if (self::looksLikeToken($segment)) {
-            return '{token}';
-        }
-
-        return $segment;
+        return preg_replace_callback(
+            '/[A-Za-z0-9_-]{'.self::TOKEN_MIN_LENGTH.',}/',
+            fn (array $match): string => self::looksLikeToken($match[0]) ? '{token}' : $match[0],
+            $segment
+        ) ?? '{token}';
     }
 
-    /** Une longue chaîne alphanumérique mêlant chiffres ou casse, qu'un slug lisible ne contient pas. */
+    /** Une longue séquence mêlant chiffres ou casse, qu'un slug lisible ne contient pas. */
     private static function looksLikeToken(string $segment): bool
     {
         if (strlen($segment) < self::TOKEN_MIN_LENGTH) {
-            return false;
-        }
-
-        if (! preg_match('/^[A-Za-z0-9_-]+$/', $segment)) {
             return false;
         }
 
