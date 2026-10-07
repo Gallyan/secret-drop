@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = 균등 분포, 1 = 한 명이 독점',
     'hint_first_read_delay' => '생성부터 첫 조회까지의 시간. 중앙값은 이상값의 영향을 받지 않아 더 대표적입니다. 평균이 중앙값보다 훨씬 높으면 일부 비밀이 매우 늦게 조회되고 있습니다.',
     'stat_5xx_by_route' => '페이지별 5xx 오류',
+    'stat_404_paths' => '404 경로',
     'stat_route_create' => '생성',
     'stat_route_read' => '읽기',
     'stat_route_confirm_read' => '읽기 확인',

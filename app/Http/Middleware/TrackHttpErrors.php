@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\StatsService;
+use App\Support\NotFoundPath;
 use App\Support\StatsPages;
 use Closure;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Throwable;
 /**
  * Terminable middleware that records HTTP 4xx/5xx errors in stats_daily.
  * For 5xx errors, also tracks the offending route in stats_error_routes.
+ * For 404 errors, also tracks the sanitized path in stats_not_found_paths.
  *
  * Enregistré en global : les middlewares de groupe ne s'exécutent pas pour une URL
  * sans route, dont les 404 ne seraient alors jamais comptées.
@@ -58,6 +60,10 @@ class TrackHttpErrors
 
         if ($status < 500) {
             $this->stats->incrementDailyAndHourly(StatsService::HTTP_ERRORS_4XX);
+        }
+
+        if ($status === 404) {
+            $this->stats->trackNotFoundPath(NotFoundPath::template($request));
         }
 
         $this->stats->increment("http_errors_{$status}");

@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = równomiernie rozłożone, 1 = jeden twórca dominuje',
     'hint_first_read_delay' => 'Czas między utworzeniem a pierwszym odczytem. Mediana jest bardziej reprezentatywna, ponieważ nie jest wrażliwa na wartości skrajne. Jeśli średnia jest znacznie wyższa od mediany, niektóre sekrety są odczytywane bardzo późno.',
     'stat_5xx_by_route' => 'Błędy 5xx wg strony',
+    'stat_404_paths' => 'Ścieżki z błędem 404',
     'stat_route_create' => 'Tworzenie',
     'stat_route_read' => 'Odczyt',
     'stat_route_confirm_read' => 'Potwierdzenie odczytu',

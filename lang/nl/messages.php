@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = gelijkmatig verdeeld, 1 = één maker domineert',
     'hint_first_read_delay' => 'Tijd tussen aanmaken en eerste lezing. De mediaan is representatiever omdat deze niet wordt beïnvloed door uitschieters. Als het gemiddelde veel hoger is dan de mediaan, worden sommige geheimen zeer laat gelezen.',
     'stat_5xx_by_route' => '5xx-fouten per pagina',
+    'stat_404_paths' => '404-paden',
     'stat_route_create' => 'Aanmaken',
     'stat_route_read' => 'Lezen',
     'stat_route_confirm_read' => 'Leesbevestiging',

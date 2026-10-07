@@ -68,6 +68,8 @@ class StatsService
     /** Number of referrer domains shown on the dashboard. */
     public const TOP_REFERRERS_LIMIT = 20;
 
+    public const TOP_NOT_FOUND_PATHS_LIMIT = 50;
+
     /** Upsert a daily counter (insert or add to existing). */
     public function increment(string $metric, int $amount = 1): void
     {
@@ -550,6 +552,49 @@ class StatsService
             ],
             ['date', 'status', 'route'],
             ['count' => CounterExpression::addTo('stats_error_routes', 1), 'updated_at' => $now]
+        );
+    }
+
+    /**
+     * Chemins en 404 de la période, du plus fréquent au moins fréquent.
+     *
+     * @return array<string, int>
+     */
+    public function getNotFoundPaths(?string $startDate = null): array
+    {
+        $query = DB::table('stats_not_found_paths')
+            ->select('path', DB::raw('SUM(count) as total'))
+            ->groupBy('path')
+            ->orderByDesc('total')
+            ->orderBy('path')
+            ->limit(self::TOP_NOT_FOUND_PATHS_LIMIT);
+
+        $this->applyDateFilter($query, $startDate);
+
+        $paths = [];
+
+        foreach ($query->get() as $row) {
+            $paths[self::asKey($row->path)] = self::asInt($row->total);
+        }
+
+        return $paths;
+    }
+
+    /** Upsert a 404 occurrence for the given sanitized path. */
+    public function trackNotFoundPath(string $path): void
+    {
+        $now = now();
+
+        DB::table('stats_not_found_paths')->upsert(
+            [
+                'date' => $now->toDateString(),
+                'path' => $path,
+                'count' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['date', 'path'],
+            ['count' => CounterExpression::addTo('stats_not_found_paths', 1), 'updated_at' => $now]
         );
     }
 

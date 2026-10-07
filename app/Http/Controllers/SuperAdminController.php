@@ -217,6 +217,7 @@ class SuperAdminController extends Controller
                 'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
                 'by_code' => $this->stats->getErrorCodeBreakdown($startDate),
                 'by_route' => $this->stats->getErrorRoutes($startDate),
+                'not_found_paths' => $this->stats->getNotFoundPaths($startDate),
             ],
             'responseTime' => $this->stats->getResponseTimeP95($startDate),
             'avgSecretSize' => $this->stats->getAverageSecretSize($startDate),

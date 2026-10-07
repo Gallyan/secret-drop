@@ -28,7 +28,7 @@ class PruneStatsCommandTest extends TestCase
             $command->expectsOutput("Deleted 1 rows from `{$table}`.");
         }
 
-        $command->expectsOutput('Deleted 8 statistics rows in total.')
+        $command->expectsOutput('Deleted 9 statistics rows in total.')
             ->assertSuccessful()
             ->run();
 
@@ -65,7 +65,7 @@ class PruneStatsCommandTest extends TestCase
         $this->seedEveryTable($keptDate);
 
         $this->artisan('stats:prune', ['--days' => '30'])
-            ->expectsOutput('Deleted 8 statistics rows in total.')
+            ->expectsOutput('Deleted 9 statistics rows in total.')
             ->assertSuccessful();
 
         foreach (PruneStatsCommand::TABLES as $table) {
@@ -114,6 +114,7 @@ class PruneStatsCommandTest extends TestCase
             'stats_devices' => ['device_type' => 'desktop'],
             'stats_bots' => ['bot_name' => 'Googlebot'],
             'stats_error_routes' => ['status' => 404, 'route' => 'secrets.show'],
+            'stats_not_found_paths' => ['path' => '/wp-login.php'],
             'stats_response_times' => ['route_group' => 'secrets', 'bucket' => 100],
         ];
 

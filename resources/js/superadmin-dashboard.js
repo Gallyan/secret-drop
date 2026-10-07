@@ -501,6 +501,23 @@ function updateLists(data) {
         }
     }
 
+    // 404 by path
+    const elNotFound = document.getElementById('pollNotFoundPaths');
+    if (elNotFound) {
+        const entries = Object.entries((data.errorStats || {}).not_found_paths || {}).sort((a, b) => b[1] - a[1]);
+        if (entries.length === 0) {
+            const et = window.superAdminData?.errorTranslations || {};
+            elNotFound.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${esc(et.no_errors || 'No errors')}</p>`;
+        } else {
+            elNotFound.innerHTML = entries.map(([path, count]) =>
+                `<div class="flex items-center justify-between gap-3 text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-mono truncate">${esc(path)}</span>
+                    <span class="text-gray-900 dark:text-white font-medium">${fmt(count)}</span>
+                </div>`
+            ).join('');
+        }
+    }
+
     // P95 by route group
     const elP95 = document.getElementById('pollP95Groups');
     if (elP95) {

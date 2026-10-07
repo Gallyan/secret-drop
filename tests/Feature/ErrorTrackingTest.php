@@ -198,4 +198,81 @@ class ErrorTrackingTest extends TestCase
 
         Exceptions::assertReported(QueryException::class);
     }
+
+    /** @return list<string> */
+    private function notFoundPaths(): array
+    {
+        return DB::table('stats_not_found_paths')->orderBy('path')->pluck('path')->all();
+    }
+
+    /** Vérifie qu'une 404 sans route enregistre le chemin demandé, sans la query string. */
+    public function testUnroutedNotFoundRecordsThePathWithoutQueryString(): void
+    {
+        $this->get('/wp-login.php?redirect_to=secret')->assertNotFound();
+
+        $this->assertSame(['/wp-login.php'], $this->notFoundPaths());
+    }
+
+    /** Vérifie que les 404 d'un même chemin sont agrégées sur la journée. */
+    public function testRepeatedNotFoundIsAggregatedPerDay(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+
+        $this->get('/.env')->assertNotFound();
+        $this->get('/.env')->assertNotFound();
+
+        $this->assertDatabaseHas('stats_not_found_paths', ['date' => '2026-09-15', 'path' => '/.env', 'count' => 2]);
+        $this->assertDatabaseCount('stats_not_found_paths', 1);
+    }
+
+    /** Vérifie qu'une 404 sur le slug d'une page localisée garde le slug lisible. */
+    public function testUnknownLocalizedPageKeepsItsSlug(): void
+    {
+        $this->get('/fr/une-page-qui-nexiste-pas')->assertNotFound();
+
+        $this->assertSame(['/fr/une-page-qui-nexiste-pas'], $this->notFoundPaths());
+    }
+
+    /** Vérifie que les valeurs de paramètres de route sont remplacées par leur nom, jamais stockées. */
+    public function testRouteParameterValuesAreMasked(): void
+    {
+        Route::middleware('web')->get('/probe/{token}/page', function (): never {
+            abort(404);
+        });
+
+        $this->get('/probe/super-secret-value/page')->assertNotFound();
+
+        $this->assertSame(['/probe/{token}/page'], $this->notFoundPaths());
+    }
+
+    /** Vérifie que les segments qui ressemblent à un token ou à un identifiant sont masqués. */
+    public function testTokenLikeAndNumericSegmentsAreMasked(): void
+    {
+        $this->get('/admin/'.bin2hex(random_bytes(16)).'/x/12345')->assertNotFound();
+
+        $this->assertSame(['/admin/{token}/x/{id}'], $this->notFoundPaths());
+    }
+
+    /** Vérifie qu'un chemin trop long est tronqué à la taille de la colonne. */
+    public function testLongNotFoundPathIsTruncated(): void
+    {
+        $this->get('/'.str_repeat('a', 300))->assertNotFound();
+
+        $this->assertSame(['/'.str_repeat('a', 149)], $this->notFoundPaths());
+    }
+
+    /** Vérifie que les autres erreurs 4xx et les 5xx n'alimentent pas les chemins en 404. */
+    public function testOtherErrorsDoNotRecordNotFoundPaths(): void
+    {
+        Exceptions::fake([RuntimeException::class]);
+        Route::middleware('web')->get('/test-5xx', function (): void {
+            throw new RuntimeException('boom');
+        });
+        Route::middleware('web')->get('/test-403', fn () => abort(403));
+
+        $this->get('/test-5xx')->assertInternalServerError();
+        $this->get('/test-403')->assertForbidden();
+
+        $this->assertDatabaseCount('stats_not_found_paths', 0);
+    }
 }

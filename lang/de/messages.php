@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = gleichmäßig verteilt, 1 = ein Ersteller dominiert',
     'hint_first_read_delay' => 'Zeit zwischen Erstellung und erstem Abruf. Der Median ist aussagekräftiger, da er nicht von Extremwerten beeinflusst wird. Liegt der Durchschnitt deutlich über dem Median, werden einige Geheimnisse sehr spät abgerufen.',
     'stat_5xx_by_route' => '5xx-Fehler nach Seite',
+    'stat_404_paths' => '404-Pfade',
     'stat_route_create' => 'Erstellung',
     'stat_route_read' => 'Lesen',
     'stat_route_confirm_read' => 'Lesebestätigung',

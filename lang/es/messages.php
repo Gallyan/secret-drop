@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = uso distribuido, 1 = un solo creador domina',
     'hint_first_read_delay' => 'Tiempo entre la creación y la primera lectura. La mediana es más representativa porque no se ve afectada por valores extremos. Si el promedio es mucho mayor que la mediana, algunos secretos se leen muy tarde.',
     'stat_5xx_by_route' => 'Errores 5xx por página',
+    'stat_404_paths' => 'Rutas con 404',
     'stat_route_create' => 'Creación',
     'stat_route_read' => 'Lectura',
     'stat_route_confirm_read' => 'Confirmación de lectura',

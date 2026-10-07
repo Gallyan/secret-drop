@@ -292,6 +292,21 @@
                     </div>
                 </x-card>
 
+                {{-- 404 by path --}}
+                <x-card class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_404_paths') }}</h3>
+                    <div id="pollNotFoundPaths" class="space-y-2">
+                        @forelse($errorStats['not_found_paths'] ?? [] as $path => $count)
+                            <div class="flex items-center justify-between gap-3 text-sm">
+                                <span class="text-gray-700 dark:text-slate-300 font-mono truncate">{{ $path }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($count) }}</span>
+                            </div>
+                        @empty
+                            <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                        @endforelse
+                    </div>
+                </x-card>
+
                 {{-- P95 by route group --}}
                 @php
                     $groupLabels = [

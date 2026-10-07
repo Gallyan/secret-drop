@@ -502,6 +502,7 @@ return [
     'stat_gini_tooltip' => "Gini\u{00A0}: 0 = usage réparti également, 1 = un seul créateur domine",
     'hint_first_read_delay' => 'Temps entre la création et la première lecture. La médiane est plus représentative car elle est insensible aux valeurs extrêmes. Si la moyenne est bien supérieure à la médiane, quelques secrets sont lus très tardivement.',
     'stat_5xx_by_route' => 'Erreurs 5xx par page',
+    'stat_404_paths' => 'Chemins en 404',
     'stat_route_create' => 'Création',
     'stat_route_read' => 'Lecture',
     'stat_route_confirm_read' => 'Confirmation lecture',

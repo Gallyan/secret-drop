@@ -494,6 +494,7 @@ return [
     'stat_gini_tooltip' => 'Gini: 0 = evenly distributed usage, 1 = one creator dominates',
     'hint_first_read_delay' => 'Time between creation and first read. The median is more representative as it is not affected by outliers. If the average is much higher than the median, a few secrets are being read very late.',
     'stat_5xx_by_route' => '5xx errors by page',
+    'stat_404_paths' => '404 paths',
     'stat_route_create' => 'Creation',
     'stat_route_read' => 'Reading',
     'stat_route_confirm_read' => 'Read confirmation',

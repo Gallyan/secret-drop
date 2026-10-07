@@ -26,6 +26,7 @@ class PruneStatsCommand extends Command
         'stats_devices',
         'stats_bots',
         'stats_error_routes',
+        'stats_not_found_paths',
         'stats_response_times',
     ];
 

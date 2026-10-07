@@ -151,4 +151,56 @@ class SuperAdminDashboardTest extends TestCase
         $this->assertSame('site25.example', array_key_first($referrers));
         $this->assertArrayNotHasKey('site5.example', $referrers);
     }
+
+    /** Vérifie que les chemins en 404 de la période sont renvoyés par volume décroissant et bornés. */
+    public function testPollReturnsNotFoundPathsByDescendingVolume(): void
+    {
+        Storage::fake('secrets');
+        $this->travelTo('2026-09-15 16:00:00');
+
+        $rows = [];
+
+        foreach (range(1, StatsService::TOP_NOT_FOUND_PATHS_LIMIT + 5) as $index) {
+            $rows[] = [
+                'date' => '2026-09-15',
+                'path' => "/probe-{$index}",
+                'count' => $index,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        $rows[] = ['date' => '2025-01-01', 'path' => '/ancien', 'count' => 999, 'created_at' => now(), 'updated_at' => now()];
+
+        DB::table('stats_not_found_paths')->insert($rows);
+
+        $response = $this->withSession($this->superAdminSession())->getJson('/fr/superadmin/dashboard/poll?period=7d');
+
+        $paths = $response->json('errorStats.not_found_paths');
+        $this->assertCount(StatsService::TOP_NOT_FOUND_PATHS_LIMIT, $paths);
+        $this->assertSame('/probe-55', array_key_first($paths));
+        $this->assertArrayNotHasKey('/ancien', $paths);
+        $counts = array_values($paths);
+        rsort($counts);
+        $this->assertSame($counts, array_values($paths));
+    }
+
+    /** Vérifie que le dashboard affiche les chemins en 404. */
+    public function testDashboardDisplaysNotFoundPaths(): void
+    {
+        Storage::fake('secrets');
+        $this->travelTo('2026-09-15 16:00:00');
+
+        DB::table('stats_not_found_paths')->insert([
+            'date' => '2026-09-15',
+            'path' => '/wp-login.php',
+            'count' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->withSession($this->superAdminSession())->get('/fr/superadmin/dashboard');
+
+        $response->assertSeeInOrder([__('messages.stat_404_paths', [], 'fr'), '/wp-login.php']);
+    }
 }
