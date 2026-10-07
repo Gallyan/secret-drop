@@ -253,6 +253,22 @@ class ErrorTrackingTest extends TestCase
         $this->assertSame(['/admin/{token}/x/{id}'], $this->notFoundPaths());
     }
 
+    /** Vérifie qu'un slug lisible contenant des chiffres, séparé par des tirets, n'est pas pris pour un token. */
+    public function testHyphenatedSlugWithDigitsIsKept(): void
+    {
+        $this->get('/test-404-claude-verif')->assertNotFound();
+
+        $this->assertSame(['/test-404-claude-verif'], $this->notFoundPaths());
+    }
+
+    /** Vérifie qu'un token base64url long, tirets compris, est masqué en entier. */
+    public function testLongBase64UrlTokenWithHyphensIsMasked(): void
+    {
+        $this->get('/x/Ab3-dE5fGh7_iJ9kLm1nOp3qRs5tUv7wXy')->assertNotFound();
+
+        $this->assertSame(['/x/{token}'], $this->notFoundPaths());
+    }
+
     /** Vérifie qu'un token collé à une extension est masqué dans le chemin enregistré. */
     public function testTokenEmbeddedInASegmentIsMasked(): void
     {

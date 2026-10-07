@@ -18,6 +18,8 @@ final class NotFoundPath
 
     private const TOKEN_MIN_LENGTH = 16;
 
+    private const LONG_RUN_LENGTH = 32;
+
     /** Paramètres dont la valeur reste lisible : ils décrivent la page demandée, pas une donnée sensible. */
     private const READABLE_PARAMETERS = ['locale', 'pageSlug'];
 
@@ -78,20 +80,33 @@ final class NotFoundPath
 
         return preg_replace_callback(
             '/[A-Za-z0-9_-]{'.self::TOKEN_MIN_LENGTH.',}/',
-            fn (array $match): string => self::looksLikeToken($match[0]) ? '{token}' : $match[0],
+            fn (array $match): string => self::maskRun($match[0]),
             $segment
         ) ?? '{token}';
     }
 
-    /** Une longue séquence mêlant chiffres ou casse, qu'un slug lisible ne contient pas. */
-    private static function looksLikeToken(string $segment): bool
+    /**
+     * Les tirets et soulignés séparent les mots d'un slug lisible (`test-404-page`) : on juge chaque morceau.
+     * Une séquence très longue reste masquée en entier, car un token base64url en contient quelques-uns.
+     */
+    private static function maskRun(string $run): string
     {
-        if (strlen($segment) < self::TOKEN_MIN_LENGTH) {
-            return false;
+        if (strlen($run) >= self::LONG_RUN_LENGTH && self::looksRandom($run)) {
+            return '{token}';
         }
 
-        $hasDigit = preg_match('/\d/', $segment) === 1;
-        $mixedCase = preg_match('/[a-z]/', $segment) === 1 && preg_match('/[A-Z]/', $segment) === 1;
+        return preg_replace_callback(
+            '/[A-Za-z0-9]{'.self::TOKEN_MIN_LENGTH.',}/',
+            fn (array $match): string => self::looksRandom($match[0]) ? '{token}' : $match[0],
+            $run
+        ) ?? '{token}';
+    }
+
+    /** Mêle chiffres ou casse, ce qu'un mot lisible ne fait pas. */
+    private static function looksRandom(string $text): bool
+    {
+        $hasDigit = preg_match('/\d/', $text) === 1;
+        $mixedCase = preg_match('/[a-z]/', $text) === 1 && preg_match('/[A-Z]/', $text) === 1;
 
         return $hasDigit || $mixedCase;
     }
