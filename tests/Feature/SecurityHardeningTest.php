@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
+use App\Services\StatsService;
 use DOMDocument;
 use DOMElement;
 use Illuminate\Http\UploadedFile;
@@ -450,5 +451,13 @@ class SecurityHardeningTest extends TestCase
     private function fakeFileOfKilobytes(int $kilobytes): UploadedFile
     {
         return UploadedFile::fake()->create('encrypted', $kilobytes, 'application/octet-stream');
+    }
+
+    /** Vérifie que chaque déclenchement du honeypot de création est compté. */
+    public function testFilledHoneypotOnSecretCreationIsCounted(): void
+    {
+        $this->postJson('/api/secrets', [...$this->textPayload(), 'website' => 'http://spam.example.com'])->assertCreated();
+
+        $this->assertDatabaseHas('stats_daily', ['metric' => StatsService::HONEYPOT_HITS, 'count' => 1]);
     }
 }

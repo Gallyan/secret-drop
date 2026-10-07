@@ -615,6 +615,8 @@ return [
     'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue: check the logs right away.',
     'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
     'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'stat_honeypot' => 'Bots trapped (honeypot)',
+    'hint_honeypot' => 'Submissions where the hidden trap field was filled: bots detected and silently ignored.',
     'hint_conversion' => 'Percentage of human visitors who created a secret during the displayed period. Conversion = secrets created ÷ human visitors.',
 
     // Structural cipher validation

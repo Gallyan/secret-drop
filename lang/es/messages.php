@@ -616,6 +616,8 @@ return [
     'hint_errors_5xx' => 'Total de errores de servidor (500-599). Cualquier valor superior a 0 indica un bug o un problema de infraestructura: revise los logs de inmediato.',
     'hint_errors_422' => 'Solicitudes rechazadas por validación (formato de payload inválido, tamaños de campos criptográficos incorrectos). Un pico puede indicar uso indebido de la API o ataques con datos malformados.',
     'hint_errors_429' => 'Solicitudes bloqueadas por limitación de peticiones. Un pico indica abuso o ataques automatizados contra el servicio.',
+    'stat_honeypot' => 'Bots atrapados (honeypot)',
+    'hint_honeypot' => 'Envíos en los que se rellenó el campo trampa oculto: bots detectados e ignorados sin efecto.',
     'hint_conversion' => 'Porcentaje de visitantes humanos que crearon un secreto durante el período mostrado. Conversión = secretos creados ÷ visitantes humanos.',
 
     // Validación estructural del cifrado

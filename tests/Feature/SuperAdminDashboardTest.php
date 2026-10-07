@@ -203,4 +203,23 @@ class SuperAdminDashboardTest extends TestCase
 
         $response->assertSeeInOrder([__('messages.stat_404_paths', [], 'fr'), '/wp-login.php']);
     }
+
+    /** Vérifie que le polling expose le nombre de déclenchements du honeypot sur la période. */
+    public function testPollReturnsHoneypotTotal(): void
+    {
+        Storage::fake('secrets');
+        $this->travelTo('2026-09-15 16:00:00');
+
+        DB::table('stats_daily')->insert([
+            'date' => '2026-09-15',
+            'metric' => StatsService::HONEYPOT_HITS,
+            'count' => 7,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->withSession($this->superAdminSession())->getJson('/fr/superadmin/dashboard/poll');
+
+        $this->assertSame(7, $response->json('errorStats.total_honeypot'));
+    }
 }

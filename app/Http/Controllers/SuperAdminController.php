@@ -49,6 +49,12 @@ class SuperAdminController extends Controller
 
     public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
+        if ($request->filled('website')) {
+            defer(fn () => $this->stats->increment(StatsService::HONEYPOT_HITS));
+
+            return redirect()->route('superadmin.accessSent');
+        }
+
         $email = strtolower(trim($request->email()));
         $locale = app()->getLocale();
 
@@ -215,6 +221,7 @@ class SuperAdminController extends Controller
             'errorStats' => [
                 'total_4xx' => $stats['totals'][StatsService::HTTP_ERRORS_4XX] ?? 0,
                 'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
+                'total_honeypot' => $stats['totals'][StatsService::HONEYPOT_HITS] ?? 0,
                 'by_code' => $this->stats->getErrorCodeBreakdown($startDate),
                 'by_route' => $this->stats->getErrorRoutes($startDate),
                 'not_found_paths' => $this->stats->getNotFoundPaths($startDate),

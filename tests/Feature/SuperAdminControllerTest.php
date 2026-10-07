@@ -469,4 +469,26 @@ class SuperAdminControllerTest extends TestCase
 
         return $deferred;
     }
+
+    /** Vérifie qu'un bot remplissant le honeypot reçoit la réponse habituelle, sans lien envoyé, et que l'échec est compté. */
+    public function testFilledHoneypotOnAccessRequestSendsNothingAndIsCounted(): void
+    {
+        $this->travelTo('2026-09-15 14:30:00');
+        Config::set('app.super_admin_email', self::SUPER_ADMIN_EMAIL);
+        Mail::fake();
+
+        $response = $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL, 'website' => 'http://spam.example.com']);
+
+        $response->assertRedirect('/fr/superadmin/access-sent');
+        Mail::assertNothingSent();
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertDatabaseHas('stats_daily', ['date' => '2026-09-15', 'metric' => StatsService::HONEYPOT_HITS, 'count' => 1]);
+    }
+
+    /** Vérifie que les formulaires d'accès admin et superadmin portent le champ honeypot. */
+    public function testAccessFormsContainTheHoneypotField(): void
+    {
+        $this->get('/fr/superadmin')->assertSee('name="website"', false);
+        $this->get('/fr/admin')->assertSee('name="website"', false);
+    }
 }

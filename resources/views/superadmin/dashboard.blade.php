@@ -228,11 +228,12 @@
                     return nfmt($ms / 1000, 1) . ' s';
                 };
             @endphp
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
                 <x-stat-card kpi="errors_4xx" :value="nfmt($errorStats['total_4xx'])" :label="__('messages.stat_errors_4xx')" :hint="__('messages.hint_errors_4xx')" hintId="hint4xx" />
                 <x-stat-card kpi="errors_5xx" :value="nfmt($errorStats['total_5xx'])" :label="__('messages.stat_errors_5xx')" :hint="__('messages.hint_errors_5xx')" hintId="hint5xx" />
                 <x-stat-card kpi="errors_422" :value="nfmt($errorStats['by_code'][422] ?? 0)" :label="__('messages.stat_errors_422')" :hint="__('messages.hint_errors_422')" hintId="hint422" />
                 <x-stat-card kpi="errors_429" :value="nfmt($errorStats['by_code'][429] ?? 0)" :label="__('messages.stat_errors_429')" :hint="__('messages.hint_errors_429')" hintId="hint429" />
+                <x-stat-card kpi="honeypot" :value="nfmt($errorStats['total_honeypot'])" :label="__('messages.stat_honeypot')" :hint="__('messages.hint_honeypot')" hintId="hintHoneypot" />
                 <x-stat-card kpi="response_p95" :value="$fmtP95($responseTime['p95'])" :label="__('messages.stat_response_p95')" :hint="__('messages.hint_response_p95')" hintId="hintP95" hintPosition="end" />
             </div>
 

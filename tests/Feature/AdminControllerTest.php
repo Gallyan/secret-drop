@@ -882,4 +882,20 @@ class AdminControllerTest extends TestCase
 
         return $deferred;
     }
+
+    /** Vérifie qu'un bot remplissant le honeypot reçoit la réponse habituelle, sans lien envoyé, et que l'échec est compté. */
+    public function testFilledHoneypotOnAccessRequestSendsNothingAndIsCounted(): void
+    {
+        $this->travelTo('2026-09-15 14:30:00');
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        $response = $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL, 'website' => 'http://spam.example.com']);
+
+        $response->assertRedirect('/fr/admin/access-sent');
+        Mail::assertNothingSent();
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertDatabaseHas('stats_daily', ['date' => '2026-09-15', 'metric' => StatsService::HONEYPOT_HITS, 'count' => 1]);
+        $this->assertDatabaseMissing('stats_daily', ['metric' => StatsService::MAGIC_LINKS_REQUESTED]);
+    }
 }

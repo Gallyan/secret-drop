@@ -616,6 +616,8 @@ return [
     'hint_errors_5xx' => 'Gesamtzahl der Serverfehler (500-599). Jeder Wert über 0 weist auf einen Bug oder ein Infrastrukturproblem hin: Prüfen Sie umgehend die Logs.',
     'hint_errors_422' => 'Anfragen, die von der Validierung abgelehnt wurden (ungültiges Payload-Format, falsche Krypto-Feldgrößen). Ein Anstieg kann auf API-Missbrauch oder Angriffe mit fehlerhaften Daten hinweisen.',
     'hint_errors_429' => 'Anfragen, die durch Ratenlimitierung blockiert wurden. Ein Anstieg deutet auf Missbrauch oder automatisierte Angriffe gegen den Dienst hin.',
+    'stat_honeypot' => 'Bots in der Falle (Honeypot)',
+    'hint_honeypot' => 'Übermittlungen, bei denen das versteckte Fallenfeld ausgefüllt wurde: Bots werden erkannt und stillschweigend ignoriert.',
     'hint_conversion' => 'Anteil der menschlichen Besucher, die im angezeigten Zeitraum ein Secret erstellt haben. Konversion = erstellte Secrets ÷ menschliche Besucher.',
 
     // Strukturelle Verschlüsselungsvalidierung

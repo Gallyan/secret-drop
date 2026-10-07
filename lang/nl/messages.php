@@ -616,6 +616,8 @@ return [
     'hint_errors_5xx' => 'Totaal serverfouten (500-599). Elke waarde boven 0 betekent een bug of infrastructuurprobleem: controleer direct de logs.',
     'hint_errors_422' => 'Verzoeken afgewezen door validatie (ongeldig payloadformaat, verkeerde cryptografische veldgroottes). Een piek kan duiden op API-misbruik of aanvallen met onjuiste gegevens.',
     'hint_errors_429' => 'Verzoeken geblokkeerd door snelheidslimitering. Een piek duidt op misbruik of geautomatiseerde aanvallen tegen de dienst.',
+    'stat_honeypot' => 'Bots in de val (honeypot)',
+    'hint_honeypot' => 'Inzendingen waarbij het verborgen valstrikveld is ingevuld: bots worden herkend en zonder effect genegeerd.',
     'hint_conversion' => 'Percentage menselijke bezoekers dat een geheim heeft aangemaakt in de weergegeven periode. Conversie = aangemaakte geheimen ÷ menselijke bezoekers.',
 
     // Structurele versleutelingsvalidatie

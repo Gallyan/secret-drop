@@ -51,6 +51,12 @@ class AdminController extends Controller
 
     public function requestAccess(RequestAdminAccessRequest $request): RedirectResponse
     {
+        if ($request->filled('website')) {
+            defer(fn () => $this->stats->increment(StatsService::HONEYPOT_HITS));
+
+            return redirect()->route('admin.accessSent');
+        }
+
         $email = $request->email();
         $locale = app()->getLocale();
 

@@ -156,6 +156,7 @@ function updateKpis(data) {
     kpi('errors_5xx', fmt(err.total_5xx || 0));
     kpi('errors_422', fmt(byCode[422] || 0));
     kpi('errors_429', fmt(byCode[429] || 0));
+    kpi('honeypot', fmt(err.total_honeypot || 0));
     kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
 
     kpi('response_p95', fmtMs(data.responseTime?.p95));

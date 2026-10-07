@@ -43,6 +43,8 @@ class SecretsController extends Controller
     {
         // Honeypot: bots fill hidden fields, humans don't — return fake success to avoid retries
         if ($request->filled('website')) {
+            defer(fn () => $this->stats->increment(StatsService::HONEYPOT_HITS));
+
             return response()->json([
                 'token' => bin2hex(random_bytes(16)),
                 'expire_at' => now()->addDays(7)->toIso8601String(),

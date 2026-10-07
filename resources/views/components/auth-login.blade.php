@@ -30,6 +30,12 @@
             <form action="{{ $formAction }}" method="POST" class="space-y-6" autocomplete="off">
                 @csrf
 
+                {{-- Honeypot: invisible to users, bots fill it --}}
+                <div class="absolute -left-[9999px]" aria-hidden="true">
+                    <label for="website">Website</label>
+                    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+                </div>
+
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                         {{ __('messages.your_email') }}

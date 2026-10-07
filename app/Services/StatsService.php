@@ -53,6 +53,8 @@ class StatsService
 
     public const HEATMAP_SECRETS_READ = 'secrets_read';
 
+    public const HONEYPOT_HITS = 'honeypot_hits';
+
     public const HTTP_ERRORS_4XX = 'http_errors_4xx';
 
     public const HTTP_ERRORS_5XX = 'http_errors_5xx';
