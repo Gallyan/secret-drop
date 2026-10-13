@@ -149,7 +149,7 @@ return [
 
     // Footer
     'footer_manage' => 'إدارة أسراري',
-    'footer_legal' => 'الإشعارات القانونية',
+    'footer_legal' => 'الإشعارات القانونية والخصوصية',
     'footer_how_it_works' => 'كيف يعمل',
     'footer_use_cases' => 'حالات الاستخدام',
 

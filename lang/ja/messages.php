@@ -149,7 +149,7 @@ return [
 
     // Footer
     'footer_manage' => 'シークレットを管理',
-    'footer_legal' => '法的情報',
+    'footer_legal' => '法的情報・プライバシー',
     'footer_how_it_works' => '仕組み',
     'footer_use_cases' => '使用例',
 

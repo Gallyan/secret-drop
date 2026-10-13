@@ -149,7 +149,7 @@ return [
 
     // Footer
     'footer_manage' => 'Manage my secrets',
-    'footer_legal' => 'Legal notice',
+    'footer_legal' => 'Legal notice & privacy',
     'footer_how_it_works' => 'How it works',
     'footer_use_cases' => 'Use cases',
 

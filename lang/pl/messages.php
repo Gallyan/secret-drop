@@ -149,7 +149,7 @@ return [
 
     // Footer
     'footer_manage' => 'Zarządzaj moimi sekretami',
-    'footer_legal' => 'Informacje prawne',
+    'footer_legal' => 'Informacje prawne i prywatność',
     'footer_how_it_works' => 'Jak to działa',
     'footer_use_cases' => 'Przypadki użycia',
 

@@ -84,7 +84,7 @@
                 </section>
 
                 {{-- Data Protection --}}
-                <section class="mb-8">
+                <section id="privacy" class="mb-8">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         {{ __('messages.legal_data_title') }}
                     </h2>
@@ -149,7 +149,7 @@
                 </section>
 
                 {{-- Contact --}}
-                <section>
+                <section id="contact">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         {{ __('messages.legal_contact_title') }}
                     </h2>

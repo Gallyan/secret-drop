@@ -153,6 +153,7 @@
                     'license' => 'https://www.gnu.org/licenses/agpl-3.0',
                     'dateCreated' => '2026-01-15',
                     'datePublished' => '2026-03-01',
+                    'dateModified' => date('Y-m-d', filemtime(resource_path('views/secrets/create.blade.php'))),
                     'offers' => [
                         '@type' => 'Offer',
                         'price' => '0',
@@ -315,6 +316,10 @@
                 <span aria-hidden="true">·</span>
                 <a href="{{ localized_route('legal') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     {{ __('messages.footer_legal') }}
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href="{{ localized_route('legal') }}#contact" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.legal_contact_title') }}
                 </a>
             </nav>
             <div class="flex items-center gap-2">

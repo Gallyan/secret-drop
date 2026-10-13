@@ -253,6 +253,7 @@
                                         <button
                                             type="button"
                                             @click="showPassphrase = !showPassphrase"
+                                            aria-label="{{ __('messages.a11y_show_passphrase') }}"
                                             :aria-label="passphraseAriaLabel()"
                                             class="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-300 hover:text-gray-700 dark:hover:text-white transition cursor-pointer"
                                         >
@@ -495,13 +496,13 @@
                                 class="w-full flex items-center justify-center gap-2 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition cursor-pointer"
                             >
                                 <x-icon.qr-code class="w-5 h-5" />
-                                <span x-text="showQrCode ? '{{ __('messages.hide_qr_code') }}' : '{{ __('messages.show_qr_code') }}'"></span>
+                                <span x-text="showQrCode ? '{{ __('messages.hide_qr_code') }}' : '{{ __('messages.show_qr_code') }}'">{{ __('messages.show_qr_code') }}</span>
                             </button>
 
                             <div id="qr-code-panel" x-show="showQrCode" x-collapse class="mt-4">
                                 <div class="flex flex-col items-center gap-4">
                                     <div class="p-4 bg-white rounded-xl shadow-sm">
-                                        <img :src="qrCodeDataUrl" :alt="'{{ __('messages.qr_code_alt') }}'" width="256" height="256" class="w-64 h-64">
+                                        <img :src="qrCodeDataUrl" alt="{{ __('messages.qr_code_alt') }}" width="256" height="256" class="w-64 h-64">
                                     </div>
                                     <button
                                         type="button"
