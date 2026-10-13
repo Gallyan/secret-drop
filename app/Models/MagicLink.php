@@ -35,6 +35,9 @@ class MagicLink extends Model
 
     private const int ISSUE_LOCK_WAIT_SECONDS = 5;
 
+    /** Enough for any base cooldown to reach the link lifetime; keeps the power of two small. */
+    private const int MAX_COOLDOWN_DOUBLINGS = 10;
+
     protected $fillable = [
         'email_hash',
         'token_hash',
@@ -109,23 +112,37 @@ class MagicLink extends Model
     }
 
     /**
-     * Whether a link was issued to the recipient within the resend cooldown.
-     * The cooldown bounds the mails to an address without a counter that a
-     * third party could exhaust: the owner waits at most the cooldown, and
-     * only right after a fresh link has reached their inbox.
+     * Whether the recipient's last link is more recent than the resend cooldown.
+     *
+     * The cooldown doubles with each link issued within the past hour, from
+     * the configured base up to the link lifetime, which bounds the mails to an
+     * address without a counter that a third party could exhaust. Capped at the
+     * lifetime, the cooldown never outlasts the last link sent: whoever waits
+     * for it still holds a valid link in their inbox.
      */
     public static function wasIssuedRecently(string $emailHash): bool
     {
-        $cooldownSeconds = Config::integer('secrets.magic_link_resend_cooldown_seconds');
+        $baseSeconds = Config::integer('secrets.magic_link_resend_cooldown_seconds');
 
-        if ($cooldownSeconds <= 0) {
+        if ($baseSeconds <= 0) {
             return false;
         }
 
-        return self::query()
+        $recentLinks = self::query()
             ->where('email_hash', $emailHash)
-            ->where('created_at', '>', now()->subSeconds($cooldownSeconds))
-            ->exists();
+            ->where('created_at', '>', now()->subHour());
+
+        $lastLink = (clone $recentLinks)->latest()->first();
+
+        if ($lastLink === null) {
+            return false;
+        }
+
+        $doublings = min($recentLinks->count() - 1, self::MAX_COOLDOWN_DOUBLINGS);
+        $lifetimeSeconds = Config::integer('secrets.magic_link_ttl') * 60;
+        $cooldownSeconds = min($baseSeconds * 2 ** $doublings, max($baseSeconds, $lifetimeSeconds));
+
+        return $lastLink->created_at->copy()->addSeconds($cooldownSeconds)->isFuture();
     }
 
     /** @return Builder<self> */

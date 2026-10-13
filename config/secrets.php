@@ -66,6 +66,7 @@ return [
     |
     | A new magic link can be requested at any time; only the latest one stays
     | valid. Two links to one address are spaced by the resend cooldown, which
+    | doubles with each link sent within the hour, up to the link lifetime: it
     | bounds the mails without a counter a third party could exhaust. The hourly
     | cap applies to the +tag aliases of one mailbox taken together (each alias
     | owns its secrets separately); the base address itself is exempt.

@@ -76,7 +76,8 @@ class ShowSecretTest extends TestCase
     /**
      * Vérifie que le fetch d'un secret fichier renvoie uniquement les métadonnées sans incrémenter fetch_count.
      *
-     * Le compteur n'y figure pas : sinon ce fetch gratuit servirait d'oracle pour guetter le téléchargement du destinataire.
+     * Le compteur n'y figure pas : sinon ce fetch gratuit servirait d'oracle pour guetter le téléchargement du
+     * destinataire.
      */
     public function testApiFetchReturnsOnlyMetadataForFileSecretWithoutCountingFetch(): void
     {
@@ -352,7 +353,10 @@ class ShowSecretTest extends TestCase
             ->assertExactJson(['success' => true, 'fetch_count' => 2]);
     }
 
-    /** Vérifie qu'une confirmation rejouée avec le même read_id n'est comptée qu'une fois et reçoit la même réponse. */
+    /**
+     * Vérifie qu'une confirmation rejouée avec le même read_id n'est comptée qu'une fois et ne renvoie pas le
+     * compteur, qu'elle permettrait de sonder sans consommer de vue.
+     */
     public function testApiConfirmReadWithSameReadIdCountsOnce(): void
     {
         $secret = Secret::factory()->create();
@@ -361,7 +365,7 @@ class ShowSecretTest extends TestCase
         $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
 
         $first->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
-        $retry->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
+        $retry->assertOk()->assertExactJson(['success' => true]);
 
         $secret->refresh();
         $this->assertSame(1, $secret->read_count);
@@ -387,7 +391,7 @@ class ShowSecretTest extends TestCase
         $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])->assertOk();
         $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
 
-        $retry->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
+        $retry->assertOk()->assertExactJson(['success' => true]);
         $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => str_repeat('a', 32)])->assertNotFound();
 
         $secret->refresh();

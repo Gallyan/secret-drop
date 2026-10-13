@@ -196,6 +196,57 @@ class MagicLinkModelTest extends TestCase
         $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
     }
 
+    /** Vérifie que le délai de renvoi double à chaque lien émis dans l'heure. */
+    public function testResendCooldownDoublesWithEachLinkIssuedWithinTheHour(): void
+    {
+        config(['secrets.magic_link_resend_cooldown_seconds' => 60, 'secrets.magic_link_ttl' => 10]);
+        $this->travelTo('2026-09-15 10:00:00');
+        $emailHash = MagicLink::hashEmail('owner@example.com');
+        MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+        $this->travelTo('2026-09-15 10:01:00');
+        MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+
+        $this->travelTo('2026-09-15 10:02:30');
+        $this->assertTrue(MagicLink::wasIssuedRecently($emailHash));
+
+        $this->travelTo('2026-09-15 10:03:01');
+        $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
+    }
+
+    /** Vérifie que le délai de renvoi ne dépasse jamais la durée de vie d'un lien, qui reste valide pendant l'attente. */
+    public function testResendCooldownIsCappedAtTheLinkLifetime(): void
+    {
+        config(['secrets.magic_link_resend_cooldown_seconds' => 60, 'secrets.magic_link_ttl' => 10]);
+        $this->travelTo('2026-09-15 10:00:00');
+        $emailHash = MagicLink::hashEmail('owner@example.com');
+
+        foreach (range(0, 7) as $minute) {
+            $this->travelTo("2026-09-15 10:0{$minute}:00");
+            MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+        }
+
+        $this->travelTo('2026-09-15 10:16:59');
+        $this->assertTrue(MagicLink::wasIssuedRecently($emailHash));
+
+        $this->travelTo('2026-09-15 10:17:01');
+        $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
+    }
+
+    /** Vérifie que le délai repart de sa base une fois l'heure écoulée sans nouveau lien. */
+    public function testResendCooldownResetsAfterAnHourWithoutLinks(): void
+    {
+        config(['secrets.magic_link_resend_cooldown_seconds' => 60, 'secrets.magic_link_ttl' => 10]);
+        $this->travelTo('2026-09-15 10:00:00');
+        $emailHash = MagicLink::hashEmail('owner@example.com');
+        MagicLink::factory()->count(5)->forEmail('owner@example.com')->valid()->create();
+
+        $this->travelTo('2026-09-15 11:30:00');
+        MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+
+        $this->travelTo('2026-09-15 11:31:01');
+        $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
+    }
+
     /** Vérifie qu'un délai de renvoi à zéro n'empêche aucun renvoi. */
     public function testWasIssuedRecentlyIsFalseWhenCooldownIsZero(): void
     {

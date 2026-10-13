@@ -171,6 +171,32 @@ class AdminControllerTest extends TestCase
         $this->post($sentMails->last()->verifyUrl)->assertRedirect('/fr/admin/dashboard');
     }
 
+    /**
+     * Vérifie qu'une heure de demandes à la minute n'envoie qu'une poignée de mails, le délai doublant à chaque envoi,
+     * tout en laissant au propriétaire un lien valide à chaque instant.
+     */
+    public function testRequestsEveryMinuteForAnHourSendFewMailsAndAlwaysLeaveAValidLink(): void
+    {
+        Mail::fake();
+        $this->travelTo('2026-09-15 10:00:00');
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $emailHash = MagicLink::hashEmail(self::OWNER_EMAIL);
+
+        foreach (range(0, 59) as $minute) {
+            $this->travelTo(now()->setTime(10, $minute, 30));
+            $this->withServerVariables(['REMOTE_ADDR' => "198.51.100.{$minute}"])
+                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+            $hasValidLink = MagicLink::where('email_hash', $emailHash)
+                ->whereNull('used_at')
+                ->where('expire_at', '>=', now())
+                ->exists();
+            $this->assertTrue($hasValidLink, "Aucun lien valide à 10:{$minute}");
+        }
+
+        $this->assertLessThanOrEqual(10, Mail::sent(MagicLinkMail::class)->count());
+    }
+
     /** Vérifie qu'un échec d'envoi ne laisse pas de lien fantôme qui serait compté comme récent et retiendrait la demande suivante. */
     public function testFailedMagicLinkMailDoesNotHoldBackTheNextRequest(): void
     {

@@ -207,8 +207,9 @@ class SecretsController extends Controller
             $readKey = $readId !== null ? "secret-read:{$token}:{$readId}" : null;
 
             // A retried confirmation of an already counted read gets the same answer, even once destroyed
+            // No counter here: replaying one counted read_id would otherwise poll it without consuming a view
             if ($readKey !== null && Cache::has($readKey)) {
-                return $this->readConfirmed($secret);
+                return response()->json(['success' => true]);
             }
 
             if (! $secret->isAccessible()) {
@@ -216,7 +217,7 @@ class SecretsController extends Controller
             }
 
             if ($readKey !== null && ! Cache::add($readKey, true, self::READ_ID_TTL_SECONDS)) {
-                return $this->readConfirmed($secret);
+                return response()->json(['success' => true]);
             }
 
             $isFirstRead = $secret->first_read_at === null;
