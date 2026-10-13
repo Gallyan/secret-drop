@@ -200,12 +200,16 @@ jobs:
         run: |
           script=$(cat <<'EOF'
           umask 002
+          # Le code de l'appli ne s'exécute que sous www-data, comme sur le web : deploy
+          # se limite à git et à composer sans scripts, qui ne lisent que du code qu'il
+          # est seul à pouvoir modifier (storage/ et bootstrap/cache/ sont à www-data).
+          artisan() { sudo -n -u www-data /usr/local/bin/www-artisan "$@"; }
 
           # Révision avant le merge : sert à détecter les changements de contenu
           # (git checkout -- . et git merge ne déplacent pas cette référence)
           BEFORE=$(git rev-parse HEAD)
 
-          php artisan down --retry=60 || true
+          artisan down --retry=60 || true
 
           git checkout -- .
           git fetch origin main
@@ -214,15 +218,16 @@ jobs:
           printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
 
           rm -f bootstrap/cache/*.php
-          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+          artisan package:discover --ansi
 
-          php artisan migrate --force
-          php artisan optimize:clear
-          php artisan optimize
+          artisan migrate --force
+          artisan optimize:clear
+          artisan optimize
 
           sudo /usr/local/bin/restart-php-fpm
 
-          php artisan up
+          artisan up
 
           # IndexNow : après la remise en ligne, et sans jamais faire échouer
           # le déploiement. La forme "if ... then" évite qu'un grep sans
@@ -235,7 +240,7 @@ jobs:
           elif git diff --name-only "$BEFORE" "$AFTER" | grep -qE "$CONTENT_PATHS"; then
             echo "IndexNow : contenu éditorial modifié entre $BEFORE et $AFTER — soumission en cours"
             git diff --name-only "$BEFORE" "$AFTER" | grep -E "$CONTENT_PATHS" || true
-            php artisan indexnow:submit || echo "IndexNow : soumission en échec (déploiement non impacté)"
+            artisan indexnow:submit || echo "IndexNow : soumission en échec (déploiement non impacté)"
           else
             echo "IndexNow : soumission sautée — aucun contenu éditorial modifié entre $BEFORE et $AFTER"
           fi
