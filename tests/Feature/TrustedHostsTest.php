@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Sleep;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Tests\TestCase;
 
 class TrustedHostsTest extends TestCase
@@ -64,15 +66,41 @@ class TrustedHostsTest extends TestCase
         });
     }
 
-    /** Vérifie qu'un APP_URL sans hôte ne force pas la racine des URLs générées. */
-    public function testRootUrlIsNotForcedWhenAppUrlHasNoHost(): void
+    /** @return array<string, array{string}> */
+    public static function malformedAppUrls(): array
     {
+        return [
+            'sans schéma' => ['localhost-without-scheme'],
+            'sans hôte' => ['https://'],
+            'vide' => [''],
+        ];
+    }
+
+    /**
+     * Vérifie qu'hors local un APP_URL mal formé fait échouer le démarrage, au lieu de retomber sur l'en-tête Host
+     * pour les liens magiques et d'autoriser tous les hôtes.
+     */
+    #[DataProvider('malformedAppUrls')]
+    public function testMalformedAppUrlStopsTheBootOutsideLocal(string $appUrl): void
+    {
+        Config::set('app.url', $appUrl);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('APP_URL must be an absolute URL');
+
+        $this->bootAppServiceProvider();
+    }
+
+    /** Vérifie qu'en local un APP_URL mal formé est toléré, pour que le serveur de développement démarre quand même. */
+    public function testMalformedAppUrlIsToleratedInLocal(): void
+    {
+        $this->app->detectEnvironment(fn () => 'local');
         Config::set('app.url', 'localhost-without-scheme');
         URL::forceRootUrl(null);
+
         $this->bootAppServiceProvider();
 
         $this->get('https://other.test/fr/admin');
-
         $this->assertSame('https://other.test/fr/admin', route('admin.index', ['locale' => 'fr']));
     }
 

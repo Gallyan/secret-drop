@@ -287,10 +287,14 @@ function updateCharts(data) {
 
 // ── List renderers (by page, country, language, hours, referrers) ────────
 
+// Quotes included, so the result is also safe inside an attribute value
 function esc(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
+    return String(str ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
 }
 
 function updateLists(data) {
@@ -587,10 +591,14 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
     const allDays = translations.days || ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
     const days = dayOrder.map(i => allDays[i]);
 
+    // Quotes included, so the result is also safe inside an attribute value
     function esc(str) {
-        const d = document.createElement('div');
-        d.textContent = str;
-        return d.innerHTML;
+        return String(str ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
     }
 
     let maxValue = 0;

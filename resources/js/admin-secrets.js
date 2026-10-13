@@ -44,11 +44,14 @@ function getSecretStatus(secret) {
     return 'active';
 }
 
+// Quotes included, so the result is also safe inside an attribute value
 function esc(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-
-    return d.innerHTML;
+    return String(str ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
 }
 
 function formatLocal(isoString) {

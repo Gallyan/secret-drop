@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Builds absolute URLs (magic links, canonical, sitemap) from APP_URL instead of the request Host header.
      * Skipped in local so the dev server keeps working when APP_URL does not match its host and port.
+     *
+     * Elsewhere a malformed APP_URL stops the boot: falling back to the request Host would put attacker-chosen
+     * hosts in magic links, and the trusted-host list, also derived from APP_URL, would accept any host.
      */
     private function forceRootUrlFromAppUrl(): void
     {
@@ -66,12 +70,10 @@ class AppServiceProvider extends ServiceProvider
 
         $appUrl = Config::string('app.url');
 
-        if (! parse_url($appUrl, PHP_URL_SCHEME)) {
-            return;
-        }
-
-        if (! parse_url($appUrl, PHP_URL_HOST)) {
-            return;
+        if (! parse_url($appUrl, PHP_URL_SCHEME) || ! parse_url($appUrl, PHP_URL_HOST)) {
+            throw new RuntimeException(
+                'APP_URL must be an absolute URL with a scheme and a host, such as https://example.com.'
+            );
         }
 
         URL::forceRootUrl($appUrl);

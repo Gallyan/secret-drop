@@ -53,6 +53,9 @@ jobs:
     name: Submit URLs to IndexNow
     runs-on: ubuntu-latest
 
+    # Même environnement que le déploiement : ses secrets SSH ne sont servis qu'à la branche main
+    environment: production
+
     steps:
       - name: Configure SSH
         env:

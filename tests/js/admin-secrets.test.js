@@ -195,6 +195,19 @@ describe('revoke', () => {
         expect(component.errorMessage).toBe('');
     });
 
+    it('renders the revoked label as text, never as markup', async () => {
+        const { component, rootEl } = mount();
+        const label = `<img src=x onerror="alert(1)"> 'quoted'`;
+        rootEl.dataset.labelRevoked = label;
+        fetch.mockResolvedValue(jsonResponse({ success: true }));
+
+        await component.revoke('1');
+
+        const badge = rootEl.querySelector('[data-secret-id="1"] [data-poll-badge]');
+        expect(badge.textContent).toBe(label);
+        expect(badge.querySelector('img')).toBeNull();
+    });
+
     it('shows the mapped message on a 409 and refreshes through a poll', async () => {
         window.translations = { admin_error_already_revoked: 'Déjà révoqué.' };
         const { component, rootEl } = mount();
