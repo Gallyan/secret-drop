@@ -120,10 +120,6 @@ jobs:
     # « build » l'est. Ne jamais mettre `if: always()` sur ce job.
     needs: build
 
-    # Les secrets SSH vivent dans cet environnement, restreint à la branche main :
-    # un workflow lancé depuis une autre branche ne peut pas les lire.
-    environment: production
-
     env:
       DEPLOY_SHA: ${{ needs.build.outputs.deploy_sha }}
 
