@@ -318,6 +318,10 @@
                     {{ __('messages.footer_legal') }}
                 </a>
                 <span aria-hidden="true">·</span>
+                <a href="{{ localized_route('legal') }}#privacy" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    {{ __('messages.footer_privacy') }}
+                </a>
+                <span aria-hidden="true">·</span>
                 <a href="{{ localized_route('legal') }}#contact" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     {{ __('messages.legal_contact_title') }}
                 </a>

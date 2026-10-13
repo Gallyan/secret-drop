@@ -149,7 +149,8 @@ return [
 
     // Footer
     'footer_manage' => '내 비밀 관리',
-    'footer_legal' => '법적 고지 및 개인정보 보호',
+    'footer_legal' => '법적 고지',
+    'footer_privacy' => '개인정보 보호',
     'footer_how_it_works' => '작동 방식',
     'footer_use_cases' => '사용 사례',
 

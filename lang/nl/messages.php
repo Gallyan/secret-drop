@@ -149,7 +149,8 @@ return [
 
     // Footer
     'footer_manage' => 'Mijn geheimen beheren',
-    'footer_legal' => 'Juridische informatie en privacy',
+    'footer_legal' => 'Juridische informatie',
+    'footer_privacy' => 'Privacy',
     'footer_how_it_works' => 'Hoe het werkt',
     'footer_use_cases' => 'Toepassingen',
 

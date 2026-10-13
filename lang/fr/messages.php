@@ -149,7 +149,8 @@ return [
 
     // Footer
     'footer_manage' => 'Gérer mes secrets',
-    'footer_legal' => 'Mentions légales et confidentialité',
+    'footer_legal' => 'Mentions légales',
+    'footer_privacy' => 'Confidentialité',
     'footer_how_it_works' => 'Comment ça marche',
     'footer_use_cases' => 'Cas d’usage',
 
