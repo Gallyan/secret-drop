@@ -134,7 +134,7 @@
                     'worksFor' => ['@id' => "{$siteUrl}/#organization"],
                 ],
                 [
-                    '@type' => ['WebApplication', 'SoftwareApplication'],
+                    '@type' => 'WebApplication',
                     '@id' => "{$siteUrl}/#application",
                     'name' => $appName,
                     'description' => __('messages.app_description'),

@@ -135,14 +135,14 @@ class SchemaJsonLdTest extends TestCase
             })
             ->all();
 
-        $this->assertSame(['WebSite', 'Organization', 'Person', 'WebApplication', 'SoftwareApplication'], $types);
+        $this->assertSame(['WebSite', 'Organization', 'Person', 'WebApplication'], $types);
     }
 
     /** Vérifie que l'entité WebApplication porte les métadonnées riches attendues. */
     public function testWebApplicationHasRichMetadata(): void
     {
         $app = collect($this->extractGraph('/en'))->first(
-            fn (object $schema): bool => $schema->{'@type'} === ['WebApplication', 'SoftwareApplication']
+            fn (object $schema): bool => $schema->{'@type'} === 'WebApplication'
         );
 
         $this->assertNotNull($app, 'Le graphe doit contenir une entité WebApplication');
