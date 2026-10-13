@@ -536,6 +536,35 @@ describe('secretViewer', () => {
             expect(viewer.previousFetches).toBe(2);
             expect(viewer.hasSuspiciousPreviousFetches()).toBe(true);
         });
+
+        it('signale un téléchargement intercalé avant la confirmation de lecture', async () => {
+            stubObjectUrls();
+            vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+            global.fetch = vi.fn(async (url) => {
+                if (url.endsWith('/download')) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        headers: { get: (name) => (name === 'X-Previous-Fetches' ? '0' : null) },
+                        arrayBuffer: async () => fileBytes.buffer,
+                    };
+                }
+
+                return jsonResponse({ success: true, fetch_count: 2 });
+            });
+            vi.spyOn(window.SecretCrypto, 'decryptFile').mockResolvedValue({
+                data: fileBytes.buffer,
+                filename: 'a.bin',
+                mime: 'application/octet-stream',
+                size: 4,
+            });
+            const viewer = fileViewer({ singleUse: true });
+
+            await viewer.decrypt();
+
+            expect(viewer.previousFetches).toBe(1);
+            expect(viewer.hasSuspiciousPreviousFetches()).toBe(true);
+        });
     });
 
     describe('chargement du secret', () => {

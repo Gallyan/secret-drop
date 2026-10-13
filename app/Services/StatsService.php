@@ -72,6 +72,12 @@ class StatsService
 
     public const TOP_NOT_FOUND_PATHS_LIMIT = 50;
 
+    /** Distinct 404 paths kept per day; the paths are attacker-chosen, so beyond this they share one row. */
+    public const NOT_FOUND_PATHS_PER_DAY = 1000;
+
+    /** Row that counts the 404s whose path is not kept on its own. */
+    public const NOT_FOUND_OVERFLOW_PATH = '(other)';
+
     /** Upsert a daily counter (insert or add to existing). */
     public function increment(string $metric, int $amount = 1): void
     {
@@ -587,6 +593,10 @@ class StatsService
     {
         $now = now();
 
+        if ($this->notFoundPathsFullFor($now->toDateString(), $path)) {
+            $path = self::NOT_FOUND_OVERFLOW_PATH;
+        }
+
         DB::table('stats_not_found_paths')->upsert(
             [
                 'date' => $now->toDateString(),
@@ -598,6 +608,18 @@ class StatsService
             ['date', 'path'],
             ['count' => CounterExpression::addTo('stats_not_found_paths', 1), 'updated_at' => $now]
         );
+    }
+
+    /** A path already recorded today keeps counting on its own row; a new one needs room under the daily cap. */
+    private function notFoundPathsFullFor(string $date, string $path): bool
+    {
+        $paths = DB::table('stats_not_found_paths')->where('date', $date);
+
+        if ((clone $paths)->where('path', $path)->exists()) {
+            return false;
+        }
+
+        return $paths->count() >= self::NOT_FOUND_PATHS_PER_DAY;
     }
 
     /**

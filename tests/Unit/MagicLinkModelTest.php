@@ -158,7 +158,7 @@ class MagicLinkModelTest extends TestCase
         $this->assertSame('2026-09-15 10:00:00', $previousLink->refresh()->used_at?->toDateTimeString());
     }
 
-    /** Vérifie qu'un échec de livraison laisse le lien précédent utilisable et libère le verrou. */
+    /** Vérifie qu'un échec de livraison laisse le lien précédent utilisable, supprime le lien non livré et libère le verrou. */
     public function testIssueExclusivelyKeepsPreviousLinkWhenDeliveryFails(): void
     {
         $emailHash = MagicLink::hashEmail('owner@example.com');
@@ -174,7 +174,54 @@ class MagicLinkModelTest extends TestCase
         }
 
         $this->assertNull($previousLink->refresh()->used_at);
+        $this->assertDatabaseMissing('magic_links', ['token_hash' => 'new-token-hash']);
         $this->assertTrue(Cache::lock("magic-link-issue:{$emailHash}", 1)->get());
+    }
+
+    /** Vérifie qu'un lien n'est récent que pendant le délai de renvoi, et pour son seul destinataire. */
+    public function testWasIssuedRecentlyOnlyWithinTheResendCooldownOfTheRecipient(): void
+    {
+        config(['secrets.magic_link_resend_cooldown_seconds' => 60]);
+        $emailHash = MagicLink::hashEmail('owner@example.com');
+        MagicLink::factory()->forEmail('other@example.com')->valid()->create();
+
+        $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
+
+        MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+
+        $this->assertTrue(MagicLink::wasIssuedRecently($emailHash));
+
+        $this->travel(61)->seconds();
+
+        $this->assertFalse(MagicLink::wasIssuedRecently($emailHash));
+    }
+
+    /** Vérifie qu'un délai de renvoi à zéro n'empêche aucun renvoi. */
+    public function testWasIssuedRecentlyIsFalseWhenCooldownIsZero(): void
+    {
+        config(['secrets.magic_link_resend_cooldown_seconds' => 0]);
+        MagicLink::factory()->forEmail('owner@example.com')->valid()->create();
+
+        $this->assertFalse(MagicLink::wasIssuedRecently(MagicLink::hashEmail('owner@example.com')));
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function mailboxes(): array
+    {
+        return [
+            'adresse simple' => ['Owner@Example.com ', 'owner@example.com'],
+            'sous-adresse' => ['owner+tag@example.com', 'owner@example.com'],
+            'plusieurs plus' => ['owner+a+b@example.com', 'owner@example.com'],
+            'points conservés' => ['first.last+x@example.com', 'first.last@example.com'],
+            'plus dans le domaine ignoré' => ['owner@ex+ample.com', 'owner@ex+ample.com'],
+        ];
+    }
+
+    /** Vérifie que la boîte canonique retire la sous-adresse +tag sans toucher aux points ni au domaine. */
+    #[DataProvider('mailboxes')]
+    public function testCanonicalMailboxDropsSubAddress(string $email, string $expected): void
+    {
+        $this->assertSame($expected, MagicLink::canonicalMailbox($email));
     }
 
     /** Vérifie que issueExclusively abandonne sans exception ni lien quand le verrou du destinataire reste pris. */

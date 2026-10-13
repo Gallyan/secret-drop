@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'Weryfikacja nie powiodła się. Spróbuj ponownie.',
     'pow_timeout' => 'Weryfikacja wygasła. Spróbuj ponownie.',
     'daily_limit_exceeded' => 'Osiągnięto dzienny limit. Spróbuj ponownie jutro.',
+    'upload_budget_exceeded' => 'Osiągnięto limit przechowywania dla Twojego połączenia. Spróbuj ponownie, gdy wygasną Twoje wcześniejsze sekrety.',
     'storage_quota_exceeded' => 'Usługa udostępniania plików jest tymczasowo niedostępna. Spróbuj ponownie później.',
 
     // Labels

@@ -22,7 +22,13 @@ class ForceHttps
             return $next($request);
         }
 
-        return redirect()->secure($request->getRequestUri(), $this->redirectStatus($request));
+        return redirect()->secure($this->localPath($request), $this->redirectStatus($request));
+    }
+
+    /** Un URI brut commençant par « // » serait pris pour une URL protocol-relative et redirigerait hors du site. */
+    private function localPath(Request $request): string
+    {
+        return '/'.ltrim($request->getRequestUri(), '/');
     }
 
     /** Un 301 laisse le navigateur transformer une écriture en GET et perdre le corps ; un 308 conserve les deux. */

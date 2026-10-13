@@ -16,7 +16,6 @@ use function Illuminate\Support\defer;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class SuperAdminController extends Controller
@@ -79,7 +78,9 @@ class SuperAdminController extends Controller
             return;
         }
 
-        if ($this->recipientLimitReached('magic-link-recipient:super-admin')) {
+        // The resend cooldown bounds the mails; an hourly counter would let anyone knowing the
+        // address exhaust it and keep the super-admin out
+        if (MagicLink::wasIssuedRecently(MagicLink::SUPER_ADMIN_EMAIL_HASH)) {
             return;
         }
 
@@ -99,23 +100,6 @@ class SuperAdminController extends Controller
         }
 
         $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
-    }
-
-    private function recipientLimitReached(string $key): bool
-    {
-        $maxPerHour = Config::integer('secrets.magic_link_max_per_recipient_per_hour');
-
-        if ($maxPerHour <= 0) {
-            return false;
-        }
-
-        if (RateLimiter::tooManyAttempts($key, $maxPerHour)) {
-            return true;
-        }
-
-        RateLimiter::hit($key, 3600);
-
-        return false;
     }
 
     public function verify(Request $request, string $locale, #[\SensitiveParameter] string $token): View|RedirectResponse

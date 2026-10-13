@@ -5,11 +5,13 @@ namespace App\Models;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Throwable;
 
 /**
  * @property string $id
@@ -101,22 +103,46 @@ class MagicLink extends Model
      */
     public function invalidateOtherPendingLinks(): int
     {
-        $now = now();
+        return self::pendingFor($this->email_hash)
+            ->whereKeyNot($this->getKey())
+            ->update(['used_at' => now()]);
+    }
+
+    /**
+     * Whether a link was issued to the recipient within the resend cooldown.
+     * The cooldown bounds the mails to an address without a counter that a
+     * third party could exhaust: the owner waits at most the cooldown, and
+     * only right after a fresh link has reached their inbox.
+     */
+    public static function wasIssuedRecently(string $emailHash): bool
+    {
+        $cooldownSeconds = Config::integer('secrets.magic_link_resend_cooldown_seconds');
+
+        if ($cooldownSeconds <= 0) {
+            return false;
+        }
 
         return self::query()
-            ->where('email_hash', $this->email_hash)
-            ->whereKeyNot($this->getKey())
+            ->where('email_hash', $emailHash)
+            ->where('created_at', '>', now()->subSeconds($cooldownSeconds))
+            ->exists();
+    }
+
+    /** @return Builder<self> */
+    private static function pendingFor(string $emailHash): Builder
+    {
+        return self::query()
+            ->where('email_hash', $emailHash)
             ->whereNull('used_at')
-            ->where('expire_at', '>=', $now)
-            ->update(['used_at' => $now]);
+            ->where('expire_at', '>=', now());
     }
 
     /**
      * Creates a link, delivers it, then burns the recipient's other pending
      * links, all under a per-recipient lock: concurrent requests cannot burn
      * each other's fresh link, so exactly the latest delivered link stays
-     * valid. A failed delivery throws before the burn and leaves the previous
-     * link usable. Returns false, without issuing anything, when the lock
+     * valid. A failed delivery throws before the burn, removes the undelivered
+     * link and leaves the previous link usable. Returns false, without issuing anything, when the lock
      * stays held by another request.
      *
      * @param Closure(): void $deliver
@@ -137,7 +163,14 @@ class MagicLink extends Model
                         'expire_at' => now()->addMinutes(Config::integer('secrets.magic_link_ttl')),
                     ]);
 
-                    $deliver();
+                    try {
+                        $deliver();
+                    } catch (Throwable $exception) {
+                        // An undelivered link would count as recently issued and hold back the next request
+                        $magicLink->delete();
+
+                        throw $exception;
+                    }
 
                     $magicLink->invalidateOtherPendingLinks();
 
@@ -153,6 +186,30 @@ class MagicLink extends Model
     public static function findByToken(#[\SensitiveParameter] string $token): ?self
     {
         return self::where('token_hash', hash('sha256', $token))->first();
+    }
+
+    /**
+     * The mailbox an address delivers to, with any +tag sub-address dropped:
+     * victim+a@example.com and victim@example.com reach the same inbox.
+     * Dots are left alone, since only some providers fold them.
+     */
+    public static function canonicalMailbox(#[\SensitiveParameter] string $email): string
+    {
+        $email = strtolower(trim($email));
+        $at = strrpos($email, '@');
+
+        if ($at === false) {
+            return $email;
+        }
+
+        $localPart = substr($email, 0, $at);
+        $plus = strpos($localPart, '+');
+
+        if ($plus === false) {
+            return $email;
+        }
+
+        return substr($localPart, 0, $plus).substr($email, $at);
     }
 
     public static function hashEmail(#[\SensitiveParameter] string $email): string

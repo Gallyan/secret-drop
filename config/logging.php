@@ -1,6 +1,6 @@
 <?php
 
-use App\Logging\SanitizeProcessor;
+use App\Logging\SanitizeTap;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -64,7 +64,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'daily' => [
@@ -73,7 +73,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         // Aussi défini par la config par défaut du framework, qui le fusionnerait sinon sans sanitisation
@@ -83,7 +83,7 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => 3,
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'slack' => [
@@ -93,7 +93,7 @@ return [
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'papertrail' => [
@@ -105,7 +105,8 @@ return [
                 'port' => env('PAPERTRAIL_PORT'),
                 'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
             ],
-            'processors' => [SanitizeProcessor::class, PsrLogMessageProcessor::class],
+            'processors' => [PsrLogMessageProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'stderr' => [
@@ -116,7 +117,8 @@ return [
                 'stream' => 'php://stderr',
             ],
             'formatter' => env('LOG_STDERR_FORMATTER'),
-            'processors' => [SanitizeProcessor::class, PsrLogMessageProcessor::class],
+            'processors' => [PsrLogMessageProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'syslog' => [
@@ -124,14 +126,14 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
-            'processors' => [SanitizeProcessor::class],
+            'tap' => [SanitizeTap::class],
         ],
 
         'null' => [

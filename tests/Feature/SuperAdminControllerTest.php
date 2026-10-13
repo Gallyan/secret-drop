@@ -162,30 +162,33 @@ class SuperAdminControllerTest extends TestCase
         $this->assertDatabaseCount('magic_links', 1);
     }
 
-    /** Vérifie que les envois au superadmin sont bornés par heure, quelle que soit l'IP, sans changer la réponse. */
-    public function testRequestAccessIsLimitedPerHourRegardlessOfIp(): void
+    /**
+     * Vérifie que les demandes répétées, quelle que soit l'IP, n'envoient rien pendant le délai de renvoi et ne
+     * privent pas le superadmin de lien : il en obtient un nouveau sur demande, sans attendre l'expiration.
+     */
+    public function testRepeatedRequestsAreSpacedByTheCooldownAndCannotLockTheSuperAdminOut(): void
     {
         Config::set('app.super_admin_email', self::SUPER_ADMIN_EMAIL);
-        Config::set('secrets.magic_link_max_per_recipient_per_hour', 2);
         Mail::fake();
 
-        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3'] as $ip) {
+        foreach (['198.51.100.1', '198.51.100.2', '198.51.100.3', '198.51.100.4', '198.51.100.5'] as $ip) {
             $this->withServerVariables(['REMOTE_ADDR' => $ip])
                 ->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL])
                 ->assertRedirect('/fr/superadmin/access-sent')
                 ->assertSessionHasNoErrors();
         }
 
-        Mail::assertSent(SuperAdminMagicLinkMail::class, 2);
+        Mail::assertSent(SuperAdminMagicLinkMail::class, 1);
 
-        $this->assertDatabaseCount('magic_links', 2);
+        $this->travel(2)->minutes();
 
-        $this->travel(61)->minutes();
-
-        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.4'])
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.200'])
             ->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
 
-        Mail::assertSent(SuperAdminMagicLinkMail::class, 3);
+        $sentMails = Mail::sent(SuperAdminMagicLinkMail::class);
+        $this->assertCount(2, $sentMails);
+
+        $this->post($sentMails->last()->verifyUrl)->assertRedirect('/fr/superadmin/dashboard');
     }
 
     /** Vérifie qu'une demande faite depuis /en produit un mail superadmin rendu en anglais. */
@@ -273,11 +276,12 @@ class SuperAdminControllerTest extends TestCase
         $dashboard->assertViewIs('superadmin.dashboard');
     }
 
-    /** Vérifie qu'une nouvelle demande d'accès invalide le lien précédent : seul le dernier lien ouvre la session. */
-    public function testNewAccessRequestInvalidatesPreviousMagicLink(): void
+    /** Vérifie qu'un renvoi après le délai de renvoi émet un nouveau lien, seul valide, sans attendre l'expiration du précédent. */
+    public function testResendAfterCooldownInvalidatesPreviousMagicLink(): void
     {
         Mail::fake();
         $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
+        $this->travel(61)->seconds();
         $this->post('/fr/superadmin/request-access', ['email' => self::SUPER_ADMIN_EMAIL]);
         $sentMails = Mail::sent(
             SuperAdminMagicLinkMail::class,
@@ -285,11 +289,8 @@ class SuperAdminControllerTest extends TestCase
         );
         $this->assertCount(2, $sentMails);
 
-        $firstLinkResponse = $this->post($sentMails->first()->verifyUrl);
-        $secondLinkResponse = $this->post($sentMails->last()->verifyUrl);
-
-        $firstLinkResponse->assertViewIs('superadmin.invalid-link');
-        $secondLinkResponse->assertRedirect('/fr/superadmin/dashboard');
+        $this->post($sentMails->first()->verifyUrl)->assertViewIs('superadmin.invalid-link');
+        $this->post($sentMails->last()->verifyUrl)->assertRedirect('/fr/superadmin/dashboard');
     }
 
     /** Vérifie que POST verify consomme le lien, régénère l'ID de session, pose l'expiration et compte l'usage. */

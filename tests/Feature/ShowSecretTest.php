@@ -73,7 +73,11 @@ class ShowSecretTest extends TestCase
         $this->assertNotNull($secret->ciphertext);
     }
 
-    /** Vérifie que le fetch d'un secret fichier renvoie uniquement les métadonnées sans incrémenter fetch_count. */
+    /**
+     * Vérifie que le fetch d'un secret fichier renvoie uniquement les métadonnées sans incrémenter fetch_count.
+     *
+     * Le compteur n'y figure pas : sinon ce fetch gratuit servirait d'oracle pour guetter le téléchargement du destinataire.
+     */
     public function testApiFetchReturnsOnlyMetadataForFileSecretWithoutCountingFetch(): void
     {
         $secret = Secret::factory()->file()->create();
@@ -86,7 +90,6 @@ class ShowSecretTest extends TestCase
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => false,
             'single_use' => false,
-            'previous_fetches' => 0,
         ]);
 
         $secret->refresh();
@@ -144,8 +147,8 @@ class ShowSecretTest extends TestCase
         $this->travel(5)->minutes();
         $second = $this->postJson("/api/secrets/{$secret->token}/read");
 
-        $first->assertOk()->assertExactJson(['success' => true]);
-        $second->assertOk()->assertExactJson(['success' => true]);
+        $first->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
+        $second->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
 
         $secret->refresh();
         $this->assertSame(2, $secret->read_count);
@@ -277,7 +280,7 @@ class ShowSecretTest extends TestCase
         $response = $this->postJson("/api/secrets/{$secret->token}/read");
 
         $response->assertOk();
-        $response->assertExactJson(['success' => true]);
+        $response->assertExactJson(['success' => true, 'fetch_count' => 0]);
 
         $secret->refresh();
         $this->assertNull($secret->file_path);
@@ -325,21 +328,28 @@ class ShowSecretTest extends TestCase
         $this->assertSame(2, $secret->fetch_count);
     }
 
-    /** Vérifie que le fetch d'un fichier annonce les téléchargements déjà effectués sans compter le fetch lui-même. */
-    public function testApiFetchOfFileSecretReturnsPreviousDownloads(): void
+    /**
+     * Vérifie qu'un détenteur du lien ne peut pas guetter le téléchargement du destinataire par le fetch non compté
+     * d'un fichier, et que le destinataire apprend le téléchargement intercalé à la confirmation de lecture.
+     */
+    public function testInterleavedDownloadOfSingleUseFileIsReportedAtReadConfirmation(): void
     {
         Storage::fake('secrets');
-        $secret = Secret::factory()->withMaxViews(3)->withStoredBlob()->create();
+        $secret = Secret::factory()->singleUse()->withStoredBlob()->create();
 
-        $this->get("/s/{$secret->token}/download")->assertOk();
+        $this->get("/s/{$secret->token}/download")
+            ->assertOk()
+            ->assertHeader('X-Previous-Fetches', '0');
 
         $this->getJson("/api/secrets/{$secret->token}")
             ->assertOk()
-            ->assertJsonPath('single_use', false)
-            ->assertJsonPath('previous_fetches', 1);
+            ->assertJsonMissingPath('previous_fetches');
 
-        $secret->refresh();
-        $this->assertSame(1, $secret->fetch_count);
+        $this->get("/s/{$secret->token}/download")->assertOk();
+
+        $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])
+            ->assertOk()
+            ->assertExactJson(['success' => true, 'fetch_count' => 2]);
     }
 
     /** Vérifie qu'une confirmation rejouée avec le même read_id n'est comptée qu'une fois et reçoit la même réponse. */
@@ -350,8 +360,8 @@ class ShowSecretTest extends TestCase
         $first = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
         $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
 
-        $first->assertOk()->assertExactJson(['success' => true]);
-        $retry->assertOk()->assertExactJson(['success' => true]);
+        $first->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
+        $retry->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
 
         $secret->refresh();
         $this->assertSame(1, $secret->read_count);
@@ -377,7 +387,7 @@ class ShowSecretTest extends TestCase
         $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID])->assertOk();
         $retry = $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => self::READ_ID]);
 
-        $retry->assertOk()->assertExactJson(['success' => true]);
+        $retry->assertOk()->assertExactJson(['success' => true, 'fetch_count' => 0]);
         $this->postJson("/api/secrets/{$secret->token}/read", ['read_id' => str_repeat('a', 32)])->assertNotFound();
 
         $secret->refresh();

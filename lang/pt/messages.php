@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'A verificação falhou. Tente novamente.',
     'pow_timeout' => 'A verificação expirou. Tente novamente.',
     'daily_limit_exceeded' => 'Limite diário atingido. Tente novamente amanhã.',
+    'upload_budget_exceeded' => 'Limite de armazenamento atingido para a sua ligação. Tente novamente quando os seus segredos anteriores tiverem expirado.',
     'storage_quota_exceeded' => 'O serviço de partilha de ficheiros está temporariamente indisponível. Tente novamente mais tarde.',
 
     // Labels

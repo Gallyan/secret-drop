@@ -46,6 +46,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('api', TrackResponseTime::class);
         $middleware->appendToGroup('api', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
 
+        // Framework order, except that throttling runs before cookies and session: a request refused with a
+        // 429 must not leave a session file behind, or the per-IP limit would not bound session storage
+        $middleware->priority([
+            \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
+            \Illuminate\Routing\Middleware\ThrottleRequests::class,
+            \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
+            \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Auth\Middleware\Authorize::class,
+        ]);
+
         $middleware->prependToPriorityList(
             before: \Illuminate\Routing\Middleware\SubstituteBindings::class,
             prepend: SetLocale::class,

@@ -225,6 +225,50 @@ class ErrorTrackingTest extends TestCase
         $this->assertDatabaseCount('stats_not_found_paths', 1);
     }
 
+    /**
+     * Vérifie qu'une même IP ne peut ajouter qu'un nombre borné de chemins distincts par minute, les URL sans route
+     * échappant au throttle de groupe : au-delà, ses 404 restent comptées sur la ligne commune, sans brider une autre IP.
+     */
+    public function testDistinctNotFoundPathsAreBoundedPerIp(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+
+        for ($i = 0; $i < 35; $i++) {
+            $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.7'])->get("/probe/word{$i}")->assertNotFound();
+        }
+
+        $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.8'])->get('/probe/elsewhere')->assertNotFound();
+
+        $this->assertSame(32, DB::table('stats_not_found_paths')->count());
+        $this->assertDatabaseHas('stats_not_found_paths', [
+            'date' => '2026-09-15',
+            'path' => StatsService::NOT_FOUND_OVERFLOW_PATH,
+            'count' => 5,
+        ]);
+        $this->assertContains('/probe/elsewhere', $this->notFoundPaths());
+    }
+
+    /** Vérifie qu'une fois le plafond quotidien atteint, un nouveau chemin va sur la ligne commune et un chemin connu continue de compter. */
+    public function testNewNotFoundPathGoesToOverflowOnceTheDailyCapIsReached(): void
+    {
+        $this->travelTo('2026-09-15 10:00:00');
+        $rows = array_map(fn (int $i): array => [
+            'date' => '2026-09-15',
+            'path' => "/seeded/x{$i}",
+            'count' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ], range(1, StatsService::NOT_FOUND_PATHS_PER_DAY));
+        DB::table('stats_not_found_paths')->insert($rows);
+
+        $this->get('/brand-new')->assertNotFound();
+        $this->get('/seeded/x1')->assertNotFound();
+
+        $this->assertDatabaseMissing('stats_not_found_paths', ['path' => '/brand-new']);
+        $this->assertDatabaseHas('stats_not_found_paths', ['path' => StatsService::NOT_FOUND_OVERFLOW_PATH, 'count' => 1]);
+        $this->assertDatabaseHas('stats_not_found_paths', ['path' => '/seeded/x1', 'count' => 2]);
+    }
+
     /** Vérifie qu'une 404 sur le slug d'une page localisée garde le slug lisible. */
     public function testUnknownLocalizedPageKeepsItsSlug(): void
     {

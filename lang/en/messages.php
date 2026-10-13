@@ -536,6 +536,7 @@ return [
     'pow_failed' => 'Verification failed. Please try again.',
     'pow_timeout' => 'Verification timed out. Please try again.',
     'daily_limit_exceeded' => 'Daily limit reached. Please try again tomorrow.',
+    'upload_budget_exceeded' => 'Storage limit reached for your connection. Please try again once your earlier secrets have expired.',
     'storage_quota_exceeded' => 'File sharing service is temporarily unavailable. Please try again later.',
 
     // Labels

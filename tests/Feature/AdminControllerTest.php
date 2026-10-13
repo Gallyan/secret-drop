@@ -110,46 +110,80 @@ class AdminControllerTest extends TestCase
         ]);
     }
 
-    /** Vérifie qu'une nouvelle demande d'accès invalide le lien précédent : seul le dernier lien ouvre la session. */
-    public function testNewAccessRequestInvalidatesPreviousMagicLink(): void
+    /** Vérifie qu'un renvoi demandé avant l'expiration du lien en émet un nouveau, seul valide, une fois le délai de renvoi passé. */
+    public function testResendRequestedWhileLinkIsValidIssuesANewLinkAfterTheCooldown(): void
     {
         Mail::fake();
         Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
         $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $this->travel(61)->seconds();
         $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
         $sentMails = Mail::sent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL));
         $this->assertCount(2, $sentMails);
 
-        $firstLinkResponse = $this->post($sentMails->first()->verifyUrl);
+        $this->post($sentMails->first()->verifyUrl)->assertViewIs('admin.invalid-link');
 
-        $firstLinkResponse->assertViewIs('admin.invalid-link');
-        $firstLinkResponse->assertSessionMissing('admin_email_hash');
+        $response = $this->post($sentMails->last()->verifyUrl);
 
-        $secondLinkResponse = $this->post($sentMails->last()->verifyUrl);
-
-        $secondLinkResponse->assertRedirect('/fr/admin/dashboard');
-        $secondLinkResponse->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
+        $response->assertRedirect('/fr/admin/dashboard');
+        $response->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
     }
 
-    /** Vérifie qu'un échec d'envoi du nouveau lien laisse le lien précédent utilisable. */
-    public function testFailedMagicLinkMailKeepsPreviousLinkUsable(): void
+    /** Vérifie qu'une demande dans le délai de renvoi n'envoie rien et laisse le lien qui vient d'arriver ouvrir la session. */
+    public function testRequestWithinResendCooldownSendsNothingAndKeepsTheLink(): void
     {
         Mail::fake();
         Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
         $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
-        $firstMail = Mail::sent(MagicLinkMail::class)->first();
-        Mail::shouldReceive('to')->andThrow(new RuntimeException('Mail transport down'));
+        $this->travel(30)->seconds();
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $sentMails = Mail::sent(MagicLinkMail::class);
+        $this->assertCount(1, $sentMails);
+
+        $this->post($sentMails->first()->verifyUrl)->assertRedirect('/fr/admin/dashboard');
+    }
+
+    /**
+     * Vérifie que des demandes anonymes répétées ne privent pas le propriétaire de lien : il garde celui qu'elles
+     * ont déclenché dans sa boîte, puis en obtient un nouveau sur demande, sans attendre l'expiration.
+     */
+    public function testAnonymousRequestsCannotLockTheOwnerOutOfTheAdminFlow(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+
+        foreach (['198.51.100.1', '198.51.100.2', '198.51.100.3', '198.51.100.4', '198.51.100.5'] as $ip) {
+            $this->withServerVariables(['REMOTE_ADDR' => $ip])
+                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        }
+
+        $this->assertCount(1, Mail::sent(MagicLinkMail::class));
+
+        $this->travel(2)->minutes();
+        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.200'])
+            ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+
+        $sentMails = Mail::sent(MagicLinkMail::class);
+        $this->assertCount(2, $sentMails);
+
+        $this->post($sentMails->last()->verifyUrl)->assertRedirect('/fr/admin/dashboard');
+    }
+
+    /** Vérifie qu'un échec d'envoi ne laisse pas de lien fantôme qui serait compté comme récent et retiendrait la demande suivante. */
+    public function testFailedMagicLinkMailDoesNotHoldBackTheNextRequest(): void
+    {
+        Mail::fake();
+        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        Mail::shouldReceive('to')->once()->andThrow(new RuntimeException('Mail transport down'));
         $deferred = $this->holdDeferredCallbacks();
         $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
 
         $deferred->invoke();
 
-        $this->assertDatabaseCount('magic_links', 2);
-
-        $response = $this->post($firstMail->verifyUrl);
-
-        $response->assertRedirect('/fr/admin/dashboard');
-        $response->assertSessionHas('admin_email_hash', MagicLink::hashEmail(self::OWNER_EMAIL));
+        $this->assertDatabaseCount('magic_links', 0);
+        $this->assertFalse(MagicLink::wasIssuedRecently(MagicLink::hashEmail(self::OWNER_EMAIL)));
     }
 
     /** Vérifie qu'une demande concurrente dont le verrou reste pris n'émet rien, sans erreur ni réponse différente. */
@@ -213,48 +247,52 @@ class AdminControllerTest extends TestCase
         $this->assertDatabaseCount('magic_links', 1);
     }
 
-    /** Vérifie que les envois vers un même propriétaire sont bornés par heure, quelle que soit l'IP, sans changer la réponse. */
-    public function testRequestAccessIsLimitedPerRecipientRegardlessOfIp(): void
+    /**
+     * Vérifie que les alias +tag d'une même boîte partagent une borne horaire, quelle que soit l'IP, sans changer la
+     * réponse, et que l'adresse de base n'en est pas privée.
+     */
+    public function testRequestAccessForAliasesOfOneMailboxIsCappedPerHour(): void
     {
         Config::set('secrets.magic_link_max_per_recipient_per_hour', 2);
         Mail::fake();
-        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
-        Secret::factory()->withCreatorEmail('other-owner@example.com')->create();
+        $aliases = ['owner+a@example.com', 'owner+b@example.com', 'owner+c@example.com'];
 
-        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3'] as $ip) {
-            $this->withServerVariables(['REMOTE_ADDR' => $ip])
-                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL])
+        foreach ([self::OWNER_EMAIL, ...$aliases] as $email) {
+            Secret::factory()->withCreatorEmail($email)->create();
+        }
+
+        foreach ($aliases as $index => $alias) {
+            $this->withServerVariables(['REMOTE_ADDR' => "203.0.113.{$index}"])
+                ->post('/fr/admin/request-access', ['email' => $alias])
                 ->assertRedirect('/fr/admin/access-sent')
                 ->assertSessionHasNoErrors();
         }
 
         Mail::assertSent(MagicLinkMail::class, 2);
 
-        $this->assertSame(2, MagicLink::where('email_hash', MagicLink::hashEmail(self::OWNER_EMAIL))->count());
-
-        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.4'])
-            ->post('/fr/admin/request-access', ['email' => 'other-owner@example.com']);
+        $this->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
 
         Mail::assertSent(MagicLinkMail::class, 3);
+        Mail::assertSent(MagicLinkMail::class, fn (MagicLinkMail $mail): bool => $mail->hasTo(self::OWNER_EMAIL));
 
         $this->travel(61)->minutes();
 
-        $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.5'])
-            ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        $this->post('/fr/admin/request-access', ['email' => 'owner+c@example.com']);
 
         Mail::assertSent(MagicLinkMail::class, 4);
     }
 
-    /** Vérifie qu'une limite par destinataire à zéro désactive la borne. */
-    public function testRequestAccessRecipientLimitDisabledWhenZero(): void
+    /** Vérifie qu'une borne à zéro ne limite pas les alias d'une même boîte. */
+    public function testRequestAccessAliasLimitDisabledWhenZero(): void
     {
         Config::set('secrets.magic_link_max_per_recipient_per_hour', 0);
         Mail::fake();
-        Secret::factory()->withCreatorEmail(self::OWNER_EMAIL)->create();
+        $aliases = ['owner+a@example.com', 'owner+b@example.com', 'owner+c@example.com', 'owner+d@example.com'];
 
-        foreach (['203.0.113.1', '203.0.113.2', '203.0.113.3', '203.0.113.4'] as $ip) {
-            $this->withServerVariables(['REMOTE_ADDR' => $ip])
-                ->post('/fr/admin/request-access', ['email' => self::OWNER_EMAIL]);
+        foreach ($aliases as $index => $alias) {
+            Secret::factory()->withCreatorEmail($alias)->create();
+            $this->withServerVariables(['REMOTE_ADDR' => "203.0.113.{$index}"])
+                ->post('/fr/admin/request-access', ['email' => $alias]);
         }
 
         Mail::assertSent(MagicLinkMail::class, 4);

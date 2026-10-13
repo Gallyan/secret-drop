@@ -9,11 +9,13 @@ use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use LogicException;
+use Monolog\Handler\ProcessableHandlerInterface;
 use Monolog\Handler\TestHandler;
 use Monolog\Level;
 use Monolog\Logger as MonologLogger;
 use Monolog\LogRecord;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
 use RuntimeException;
 use Tests\TestCase;
 use Throwable;
@@ -306,20 +308,83 @@ class SanitizeProcessorTest extends TestCase
         $this->assertSame([], $unmasked);
     }
 
-    /** Vérifie que chaque canal qui écrit des logs applique le processeur de sanitisation. */
-    public function testEveryWritingChannelAppliesTheProcessor(): void
+    /**
+     * Vérifie que chaque canal qui écrit des logs porte le processeur sur ses handlers une fois construit.
+     *
+     * Le framework ignore la clé « processors » hors du driver monolog : seul le logger construit fait foi.
+     */
+    public function testEveryWritingChannelAttachesTheProcessorToItsHandlers(): void
     {
+        config([
+            'logging.channels.slack.url' => 'https://hooks.slack.test/audit',
+            'logging.channels.papertrail.handler_with.host' => 'logs.papertrail.test',
+            'logging.channels.papertrail.handler_with.port' => 514,
+        ]);
+
         $channels = config('logging.channels');
         $this->assertIsArray($channels);
 
-        $unsanitized = collect($channels)
-            ->except(['stack', 'null', 'emergency'])
-            ->reject(fn (mixed $channel): bool => is_array($channel)
-                && in_array(SanitizeProcessor::class, (array) ($channel['processors'] ?? []), true))
-            ->keys()
+        $unsanitized = collect(array_keys($channels))
+            ->reject(fn (string $name): bool => in_array($name, ['stack', 'null', 'emergency'], true))
+            ->reject(fn (string $name): bool => $this->everyHandlerSanitizes($name))
+            ->values()
             ->all();
 
         $this->assertSame([], $unsanitized);
+    }
+
+    /** Vérifie qu'un token écrit par le canal daily, celui de la pile de production, n'atteint pas le fichier. */
+    public function testDailyChannelRedactsTokensInTheLogFile(): void
+    {
+        $directory = storage_path('framework/testing/logs-'.getmypid());
+        config(['logging.channels.daily.path' => "{$directory}/laravel.log"]);
+        Log::forgetChannel('daily');
+
+        $token = self::SECRET_TOKEN;
+        Log::channel('daily')->error("download failed https://example.test/s/{$token}#keymaterial", ['token' => $token]);
+
+        $files = glob("{$directory}/laravel-*.log") ?: [];
+        $this->assertCount(1, $files);
+        $written = (string) file_get_contents($files[0]);
+
+        array_map('unlink', $files);
+        rmdir($directory);
+
+        $this->assertStringContainsString('download failed', $written);
+        $this->assertStringNotContainsString($token, $written);
+        $this->assertStringNotContainsString('keymaterial', $written);
+    }
+
+    private function everyHandlerSanitizes(string $channel): bool
+    {
+        Log::forgetChannel($channel);
+        $logger = Log::channel($channel);
+        $this->assertInstanceOf(Logger::class, $logger);
+        $monolog = $logger->getLogger();
+        $this->assertInstanceOf(MonologLogger::class, $monolog);
+
+        $handlers = $monolog->getHandlers();
+
+        if ($handlers === []) {
+            return false;
+        }
+
+        foreach ($handlers as $handler) {
+            if (! $handler instanceof ProcessableHandlerInterface) {
+                return false;
+            }
+
+            $processors = (new ReflectionProperty($handler, 'processors'))->getValue($handler);
+            $this->assertIsArray($processors);
+
+            $hasSanitizer = collect($processors)->contains(fn (mixed $processor): bool => $processor instanceof SanitizeProcessor);
+
+            if (! $hasSanitizer) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function formatThroughSanitizedChannel(Throwable $exception): string

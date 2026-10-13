@@ -54,6 +54,33 @@ class ForceHttpsTest extends TestCase
     }
 
     /** @return array<string, array{string}> */
+    public static function protocolRelativeUris(): array
+    {
+        return [
+            'deux barres' => ['//evil.example/x'],
+            'trois barres' => ['///evil.example/x'],
+        ];
+    }
+
+    /** Vérifie qu'un URI brut commençant par « // » reste redirigé vers le site lui-même et non vers un autre hôte. */
+    #[DataProvider('protocolRelativeUris')]
+    public function testProtocolRelativeRequestUriStaysOnSiteInProduction(string $requestUri): void
+    {
+        $this->app->detectEnvironment(fn () => 'production');
+        $request = new Request(server: [
+            'REQUEST_METHOD' => 'GET',
+            'REQUEST_URI' => $requestUri,
+            'HTTP_HOST' => 'localhost',
+            'SERVER_PORT' => 80,
+        ]);
+
+        $response = $this->middleware->handle($request, fn () => response('OK'));
+
+        $this->assertSame(Response::HTTP_MOVED_PERMANENTLY, $response->getStatusCode());
+        $this->assertSame('https://localhost/evil.example/x', $response->headers->get('Location'));
+    }
+
+    /** @return array<string, array{string}> */
     public static function writeMethods(): array
     {
         return [

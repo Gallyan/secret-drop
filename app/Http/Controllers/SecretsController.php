@@ -8,6 +8,7 @@ use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\StatsService;
 use App\Services\TokenService;
+use App\Services\UploadBudgetService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,9 +18,9 @@ use function Illuminate\Support\defer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
 
 class SecretsController extends Controller
 {
@@ -31,6 +32,7 @@ class SecretsController extends Controller
         private TokenService $tokenService,
         private SecretStorageService $storage,
         private StatsService $stats,
+        private UploadBudgetService $uploadBudget,
     ) {
     }
 
@@ -61,17 +63,19 @@ class SecretsController extends Controller
             ], 503);
         }
 
-        $uploadBudgetKey = "upload-bytes:{$request->ip()}";
         $fileSize = $type->isFile() ? (int) $request->file('encrypted_file')->getSize() : 0;
         $ciphertext = $type->isText() ? $request->ciphertext() : '';
 
         // Text secrets weigh on the same per-IP budget as files: their ciphertext is stored too
         $storedBytes = $type->isFile() ? $fileSize : strlen($ciphertext);
 
-        if ($this->exceedsDailyUploadBudget($uploadBudgetKey, $storedBytes)) {
+        $ip = (string) $request->ip();
+        $bucket = $this->uploadBudget->reserve($ip, $request->expiration(), $storedBytes);
+
+        if ($bucket === null) {
             return response()->json([
-                'error' => 'daily_limit_exceeded',
-                'message' => __('messages.daily_limit_exceeded'),
+                'error' => 'upload_budget_exceeded',
+                'message' => __('messages.upload_budget_exceeded'),
             ], 429);
         }
 
@@ -89,16 +93,18 @@ class SecretsController extends Controller
             'creator_email_hash' => $creatorEmail ? MagicLink::hashEmail($creatorEmail) : null,
         ];
 
-        if ($type->isText()) {
-            $secretData['ciphertext'] = $ciphertext;
-        } else {
-            $secretData['file_path'] = $this->storage->store($token, $request->file('encrypted_file'));
-        }
+        try {
+            if ($type->isText()) {
+                $secretData['ciphertext'] = $ciphertext;
+            } else {
+                $secretData['file_path'] = $this->storage->store($token, $request->file('encrypted_file'));
+            }
 
-        $secret = Secret::create($secretData);
+            $secret = Secret::create($secretData);
+        } catch (Throwable $exception) {
+            $this->uploadBudget->release($ip, $bucket, $storedBytes);
 
-        if ($storedBytes > 0) {
-            RateLimiter::increment($uploadBudgetKey, 86400, $storedBytes);
+            throw $exception;
         }
 
         $hasPassphrase = $request->hasPassphrase();
@@ -110,26 +116,6 @@ class SecretsController extends Controller
             'token' => $secret->token,
             'expire_at' => $expireAt->toIso8601String(),
         ], 201);
-    }
-
-    /** Daily per-IP budget over everything stored: uploaded files and text ciphertexts alike. */
-    private function exceedsDailyUploadBudget(string $key, int $storedBytes): bool
-    {
-        $budgetMb = Config::integer('secrets.daily_upload_mb_per_ip');
-
-        if ($storedBytes === 0) {
-            return false;
-        }
-
-        if ($budgetMb <= 0) {
-            return false;
-        }
-
-        // The database cache store returns counters as numeric strings
-        $consumed = RateLimiter::attempts($key);
-        $consumedBytes = is_numeric($consumed) ? (int) $consumed : 0;
-
-        return $consumedBytes + $storedBytes > $budgetMb * 1024 * 1024;
     }
 
     private function trackCreationStats(
@@ -188,15 +174,17 @@ class SecretsController extends Controller
             'cipher_meta' => $secret->cipher_meta,
             'will_be_destroyed' => $willBeDestroyed,
             'single_use' => $secret->max_views === 1,
-            'previous_fetches' => $secret->fetch_count,
         ];
 
         if ($secret->type->isText()) {
+            $data['previous_fetches'] = $secret->fetch_count;
             // The ciphertext leaves the server here: count it as a fetch
             $secret->recordFetch();
             $data['ciphertext'] = $secret->ciphertext;
         }
-        // For files, the fetch is counted on download; metadata (filename, mime, size) is encrypted in the payload
+        // For files, the fetch is counted on download, which reports the counter itself: exposing it on this
+        // uncounted request would let a link holder watch for the recipient's download without leaving a trace.
+        // Metadata (filename, mime, size) is encrypted in the payload.
 
         return response()->json($data);
     }
@@ -220,7 +208,7 @@ class SecretsController extends Controller
 
             // A retried confirmation of an already counted read gets the same answer, even once destroyed
             if ($readKey !== null && Cache::has($readKey)) {
-                return response()->json(['success' => true]);
+                return $this->readConfirmed($secret);
             }
 
             if (! $secret->isAccessible()) {
@@ -228,7 +216,7 @@ class SecretsController extends Controller
             }
 
             if ($readKey !== null && ! Cache::add($readKey, true, self::READ_ID_TTL_SECONDS)) {
-                return response()->json(['success' => true]);
+                return $this->readConfirmed($secret);
             }
 
             $isFirstRead = $secret->first_read_at === null;
@@ -258,8 +246,17 @@ class SecretsController extends Controller
                 }
             });
 
-            return response()->json(['success' => true]);
+            return $this->readConfirmed($secret);
         });
+    }
+
+    /**
+     * The final fetch count lets the viewer warn after the fact about a download that landed
+     * between its own download and this confirmation.
+     */
+    private function readConfirmed(Secret $secret): JsonResponse
+    {
+        return response()->json(['success' => true, 'fetch_count' => $secret->fetch_count]);
     }
 
     public function download(#[\SensitiveParameter] string $token): StreamedResponse|Response

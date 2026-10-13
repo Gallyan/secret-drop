@@ -285,6 +285,20 @@ export default () => ({
             this.ownDownloads++;
         },
 
+        // A download that landed between ours and the read confirmation only shows in the final counter
+        async trackConfirmedFetches(response) {
+            if (this.type !== 'file') {
+                return;
+            }
+
+            const data = await response.json().catch(() => ({}));
+            const fetchCount = Number(data?.fetch_count);
+
+            if (Number.isInteger(fetchCount)) {
+                this.previousFetches = Math.max(this.previousFetches, fetchCount - this.ownDownloads);
+            }
+        },
+
         hasSuspiciousPreviousFetches() {
             return this.singleUse && this.previousFetches > 0;
         },
@@ -327,6 +341,8 @@ export default () => ({
                     });
 
                     if (res.ok) {
+                        await this.trackConfirmedFetches(res);
+
                         return;
                     }
                 } catch {

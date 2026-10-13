@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'Verificatie mislukt. Probeer het opnieuw.',
     'pow_timeout' => 'Verificatie verlopen. Probeer het opnieuw.',
     'daily_limit_exceeded' => 'Dagelijkse limiet bereikt. Probeer het morgen opnieuw.',
+    'upload_budget_exceeded' => 'Opslaglimiet bereikt voor je verbinding. Probeer het opnieuw zodra je eerdere geheimen zijn verlopen.',
     'storage_quota_exceeded' => 'De bestandsdelingsservice is tijdelijk niet beschikbaar. Probeer het later opnieuw.',
 
     // Labels

@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'La verificación falló. Por favor, inténtalo de nuevo.',
     'pow_timeout' => 'La verificación expiró. Por favor, inténtalo de nuevo.',
     'daily_limit_exceeded' => 'Límite diario alcanzado. Por favor, inténtalo mañana.',
+    'upload_budget_exceeded' => 'Límite de almacenamiento alcanzado para tu conexión. Inténtalo de nuevo cuando tus secretos anteriores hayan caducado.',
     'storage_quota_exceeded' => 'El servicio para compartir archivos no está disponible temporalmente. Por favor, inténtalo más tarde.',
 
     // Labels

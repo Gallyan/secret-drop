@@ -46,22 +46,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Per-IP Daily Stored Bytes Budget (MB) — 0 for unlimited
+    | Per-IP Stored Bytes Budget (MB) — 0 for unlimited
     |--------------------------------------------------------------------------
     |
     | Keeps one requester from filling the global quota on its own. Counts every
-    | byte stored for that IP: uploaded files and text ciphertexts alike.
+    | byte stored for that IP, uploaded files and text ciphertexts alike, for as
+    | long as the secret can live (up to the longest expiration), not per day.
+    |
+    | SECRETS_DAILY_UPLOAD_MB_PER_IP is the former name, from when the budget
+    | was reset daily, kept as a fallback so an existing .env keeps its value.
     |
     */
-    'daily_upload_mb_per_ip' => (int) env('SECRETS_DAILY_UPLOAD_MB_PER_IP', 200),
+    'upload_mb_per_ip' => (int) env('SECRETS_UPLOAD_MB_PER_IP', env('SECRETS_DAILY_UPLOAD_MB_PER_IP', 1024)),
 
     /*
     |--------------------------------------------------------------------------
     | Session & Magic Link Durations (minutes)
     |--------------------------------------------------------------------------
+    |
+    | A new magic link can be requested at any time; only the latest one stays
+    | valid. Two links to one address are spaced by the resend cooldown, which
+    | bounds the mails without a counter a third party could exhaust. The hourly
+    | cap applies to the +tag aliases of one mailbox taken together (each alias
+    | owns its secrets separately); the base address itself is exempt.
+    |
     */
     'magic_link_ttl' => (int) env('MAGIC_LINK_TTL', 10),
     'magic_link_max_per_recipient_per_hour' => (int) env('MAGIC_LINK_MAX_PER_RECIPIENT_PER_HOUR', 5),
+    'magic_link_resend_cooldown_seconds' => (int) env('MAGIC_LINK_RESEND_COOLDOWN_SECONDS', 60),
     'admin_session_ttl' => (int) env('ADMIN_SESSION_TTL', 15),
     'super_admin_session_ttl' => (int) env('SUPER_ADMIN_SESSION_TTL', 15),
 

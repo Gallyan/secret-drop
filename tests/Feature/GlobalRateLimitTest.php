@@ -19,6 +19,19 @@ class GlobalRateLimitTest extends TestCase
         $firstFromOtherIp->assertHeader('X-RateLimit-Remaining', '119');
     }
 
+    /** Vérifie qu'une requête refusée par le limiteur global ne démarre pas de session : aucun cookie posé, donc aucun fichier de session. */
+    public function testThrottledRequestDoesNotStartASession(): void
+    {
+        for ($i = 0; $i < 120; $i++) {
+            $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.9'])->get('/robots.txt');
+        }
+
+        $throttled = $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.9'])->get('/robots.txt');
+
+        $throttled->assertTooManyRequests();
+        $this->assertSame([], $throttled->headers->getCookies());
+    }
+
     /** Vérifie que le limiteur global s'applique aussi au groupe API. */
     public function testGlobalRateLimitAppliesToApiGroup(): void
     {

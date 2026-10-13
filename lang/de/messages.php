@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
     'pow_timeout' => 'Verifizierung abgelaufen. Bitte versuchen Sie es erneut.',
     'daily_limit_exceeded' => 'Tageslimit erreicht. Bitte versuchen Sie es morgen erneut.',
+    'upload_budget_exceeded' => 'Speicherlimit für Ihre Verbindung erreicht. Bitte versuchen Sie es erneut, sobald Ihre früheren Geheimnisse abgelaufen sind.',
     'storage_quota_exceeded' => 'Der Dateifreigabedienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.',
 
     // Labels

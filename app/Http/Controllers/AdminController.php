@@ -77,7 +77,12 @@ class AdminController extends Controller
             return;
         }
 
-        if ($this->recipientLimitReached("magic-link-recipient:{$emailHash}")) {
+        // A link has just reached the owner's inbox: a third party cannot trigger more mail
+        if (MagicLink::wasIssuedRecently($emailHash)) {
+            return;
+        }
+
+        if ($this->aliasLimitReached($email)) {
             return;
         }
 
@@ -99,13 +104,24 @@ class AdminController extends Controller
         $this->stats->incrementDailyAndHourly(StatsService::MAGIC_LINKS_REQUESTED);
     }
 
-    private function recipientLimitReached(string $key): bool
+    /**
+     * Each +tag alias of a mailbox is a distinct owner with its own pending link, so aliases share an hourly
+     * cap on their mailbox. The base address is exempt: aliases registered by someone else cannot exhaust it.
+     */
+    private function aliasLimitReached(string $email): bool
     {
+        $mailbox = MagicLink::canonicalMailbox($email);
         $maxPerHour = Config::integer('secrets.magic_link_max_per_recipient_per_hour');
+
+        if ($mailbox === strtolower(trim($email))) {
+            return false;
+        }
 
         if ($maxPerHour <= 0) {
             return false;
         }
+
+        $key = 'magic-link-recipient:'.MagicLink::hashEmail($mailbox);
 
         if (RateLimiter::tooManyAttempts($key, $maxPerHour)) {
             return true;

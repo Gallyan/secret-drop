@@ -3,12 +3,17 @@
 namespace Tests\Feature;
 
 use App\Models\Secret;
+use App\Services\SecretStorageService;
 use App\Services\StatsService;
+use App\Services\UploadBudgetService;
 use DOMDocument;
 use DOMElement;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Sleep;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Tests\TestCase;
 
 class SecurityHardeningTest extends TestCase
@@ -227,31 +232,31 @@ class SecurityHardeningTest extends TestCase
         return $type === 'text' ? $this->textPayload() : $this->filePayload();
     }
 
-    // ── Daily Upload Budget ─────────────────────────────────────────
+    // ── Per-IP Upload Budget ────────────────────────────────────────
 
-    /** Vérifie qu'un upload dépassant le budget quotidien de l'IP est refusé en 429 daily_limit_exceeded sans stocker de blob. */
-    public function testFileUploadReturns429OnceDailyUploadBudgetOfIpIsExceeded(): void
+    /** Vérifie qu'un upload dépassant le budget de l'IP est refusé en 429 upload_budget_exceeded sans stocker de blob. */
+    public function testFileUploadReturns429OnceUploadBudgetOfIpIsExceeded(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(600)))->assertCreated();
         $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(600)));
 
         $response->assertTooManyRequests();
         $response->assertExactJson([
-            'error' => 'daily_limit_exceeded',
-            'message' => 'Daily limit reached. Please try again tomorrow.',
+            'error' => 'upload_budget_exceeded',
+            'message' => 'Storage limit reached for your connection. Please try again once your earlier secrets have expired.',
         ]);
         $this->assertDatabaseCount('secrets', 1);
         $this->assertCount(1, Storage::disk('secrets')->allFiles());
     }
 
-    /** Vérifie qu'un upload remplissant exactement le budget quotidien est accepté. */
-    public function testFileUploadFillingExactlyTheDailyUploadBudgetIsAccepted(): void
+    /** Vérifie qu'un upload remplissant exactement le budget est accepté. */
+    public function testFileUploadFillingExactlyTheUploadBudgetIsAccepted(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)));
 
@@ -262,7 +267,7 @@ class SecurityHardeningTest extends TestCase
     public function testExhaustedUploadBudgetOfOneIpDoesNotBlockAnotherIp(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10'])
             ->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))
@@ -281,17 +286,17 @@ class SecurityHardeningTest extends TestCase
     public function testRejectedUploadDoesNotConsumeBudget(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(2048)))->assertTooManyRequests();
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
     }
 
-    /** Vérifie que le chiffré d'un secret texte pèse sur le budget quotidien de l'IP, au même titre qu'un fichier. */
-    public function testTextCiphertextConsumesTheDailyUploadBudgetOfTheIp(): void
+    /** Vérifie que le chiffré d'un secret texte pèse sur le budget de l'IP, au même titre qu'un fichier. */
+    public function testTextCiphertextConsumesTheUploadBudgetOfTheIp(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         // Le mégaoctet suffirait au fichier seul : c'est le texte qui fait déborder le budget
         $this->postJson('/api/secrets', $this->textPayload(str_repeat('A', 200000)))->assertCreated();
@@ -300,18 +305,18 @@ class SecurityHardeningTest extends TestCase
 
         $response->assertTooManyRequests();
         $response->assertExactJson([
-            'error' => 'daily_limit_exceeded',
-            'message' => 'Daily limit reached. Please try again tomorrow.',
+            'error' => 'upload_budget_exceeded',
+            'message' => 'Storage limit reached for your connection. Please try again once your earlier secrets have expired.',
         ]);
         $this->assertDatabaseCount('secrets', 1);
         Storage::disk('secrets')->assertDirectoryEmpty('/');
     }
 
-    /** Vérifie qu'un secret texte est refusé une fois le budget quotidien consommé par un fichier. */
-    public function testTextSecretIsRejectedOnceTheDailyUploadBudgetIsExhaustedByAFile(): void
+    /** Vérifie qu'un secret texte est refusé une fois le budget consommé par un fichier. */
+    public function testTextSecretIsRejectedOnceTheUploadBudgetIsExhaustedByAFile(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
 
@@ -322,10 +327,10 @@ class SecurityHardeningTest extends TestCase
     }
 
     /** Vérifie qu'un budget à 0 laisse passer les secrets texte, même après un fichier qui aurait épuisé le budget. */
-    public function testTextSecretIsAcceptedWhenDailyUploadBudgetIsZero(): void
+    public function testTextSecretIsAcceptedWhenUploadBudgetIsZero(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 0]);
+        config(['secrets.upload_mb_per_ip' => 0]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
 
@@ -335,10 +340,10 @@ class SecurityHardeningTest extends TestCase
     }
 
     /** Vérifie qu'un budget à 0 ne limite pas le volume envoyé. */
-    public function testFileUploadIsAcceptedWhenDailyUploadBudgetIsZero(): void
+    public function testFileUploadIsAcceptedWhenUploadBudgetIsZero(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 0]);
+        config(['secrets.upload_mb_per_ip' => 0]);
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(2048)))->assertCreated();
     }
@@ -347,7 +352,7 @@ class SecurityHardeningTest extends TestCase
     public function testFilledHoneypotDoesNotConsumeUploadBudget(): void
     {
         Storage::fake('secrets');
-        config(['secrets.daily_upload_mb_per_ip' => 1]);
+        config(['secrets.upload_mb_per_ip' => 1]);
 
         $this->postJson('/api/secrets', [
             ...$this->filePayload($this->fakeFileOfKilobytes(1024)),
@@ -356,6 +361,62 @@ class SecurityHardeningTest extends TestCase
 
         $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
         $this->assertDatabaseCount('secrets', 1);
+    }
+
+    /** Vérifie que les octets d'un secret longue durée restent imputés à l'IP après la journée, sans quoi une IP remplirait le quota global jour après jour. */
+    public function testBytesOfLongLivedSecretStayChargedBeyondOneDay(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', [...$this->filePayload($this->fakeFileOfKilobytes(1024)), 'expiration' => '90d'])->assertCreated();
+        $this->travel(3)->days();
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(600)));
+
+        $response->assertTooManyRequests();
+        $response->assertJsonPath('error', 'upload_budget_exceeded');
+    }
+
+    /** Vérifie que les octets d'un secret d'une heure cessent d'être imputés une fois qu'il a forcément expiré. */
+    public function testBytesOfShortLivedSecretAreReleasedOnceItHasExpired(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.upload_mb_per_ip' => 1]);
+
+        $this->postJson('/api/secrets', [...$this->filePayload($this->fakeFileOfKilobytes(1024)), 'expiration' => '1h'])->assertCreated();
+        $this->travel(121)->minutes();
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertCreated();
+    }
+
+    /** Vérifie que l'upload est refusé tant qu'une requête concurrente tient le verrou du budget, plutôt que de compter sans le verrou. */
+    public function testUploadFailsClosedWhileBudgetLockIsHeld(): void
+    {
+        Storage::fake('secrets');
+        Sleep::fake(syncWithCarbon: true);
+        config(['secrets.upload_mb_per_ip' => 1]);
+        Cache::lock('upload-bytes:127.0.0.1:lock', 60)->get();
+
+        $response = $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(10)));
+
+        $response->assertTooManyRequests();
+        $this->assertDatabaseCount('secrets', 0);
+    }
+
+    /** Vérifie qu'un upload dont le stockage échoue rend les octets réservés au budget de l'IP. */
+    public function testFailedStorageRefundsTheReservedBudget(): void
+    {
+        Storage::fake('secrets');
+        config(['secrets.upload_mb_per_ip' => 1]);
+        $this->partialMock(SecretStorageService::class)
+            ->shouldReceive('store')
+            ->once()
+            ->andThrow(new RuntimeException('disk full'));
+
+        $this->postJson('/api/secrets', $this->filePayload($this->fakeFileOfKilobytes(1024)))->assertServerError();
+
+        $this->assertSame(0, app(UploadBudgetService::class)->storedBytes('127.0.0.1'));
     }
 
     // ── CSP ─────────────────────────────────────────────────────────

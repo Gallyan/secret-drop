@@ -537,6 +537,7 @@ return [
     'pow_failed' => 'Verifica fallita. Per favore riprova.',
     'pow_timeout' => 'Verifica scaduta. Per favore riprova.',
     'daily_limit_exceeded' => 'Limite giornaliero raggiunto. Riprova domani.',
+    'upload_budget_exceeded' => 'Limite di archiviazione raggiunto per la tua connessione. Riprova quando i tuoi segreti precedenti saranno scaduti.',
     'storage_quota_exceeded' => 'Il servizio di condivisione file è temporaneamente non disponibile. Riprova più tardi.',
 
     // Labels

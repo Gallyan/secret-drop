@@ -537,6 +537,7 @@ return [
     'pow_failed' => '확인에 실패했습니다. 다시 시도하세요.',
     'pow_timeout' => '확인 시간이 초과되었습니다. 다시 시도하세요.',
     'daily_limit_exceeded' => '일일 한도에 도달했습니다. 내일 다시 시도하세요.',
+    'upload_budget_exceeded' => '이 연결의 저장 한도에 도달했습니다. 이전 비밀이 만료된 후 다시 시도하세요.',
     'storage_quota_exceeded' => '파일 공유 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요.',
 
     // Labels

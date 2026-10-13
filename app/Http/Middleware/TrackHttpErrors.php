@@ -8,6 +8,7 @@ use App\Support\StatsPages;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -21,6 +22,8 @@ use Throwable;
  */
 class TrackHttpErrors
 {
+    private const NOT_FOUND_PATHS_PER_IP_PER_MINUTE = 30;
+
     public function __construct(
         private StatsService $stats,
     ) {
@@ -63,10 +66,27 @@ class TrackHttpErrors
         }
 
         if ($status === 404) {
-            $this->stats->trackNotFoundPath(NotFoundPath::template($request));
+            $this->stats->trackNotFoundPath($this->notFoundPath($request));
         }
 
         $this->stats->increment("http_errors_{$status}");
+    }
+
+    /**
+     * URLs without a route escape the group throttle, so each IP gets its own bound on the distinct paths it can
+     * add; beyond it, its 404s are still counted, under the shared overflow row.
+     */
+    private function notFoundPath(Request $request): string
+    {
+        $key = 'not-found-paths:'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, self::NOT_FOUND_PATHS_PER_IP_PER_MINUTE)) {
+            return StatsService::NOT_FOUND_OVERFLOW_PATH;
+        }
+
+        RateLimiter::hit($key, 60);
+
+        return NotFoundPath::template($request);
     }
 
     /** Page identifier, or the route URI template: the actual path may carry secret or admin tokens. */
