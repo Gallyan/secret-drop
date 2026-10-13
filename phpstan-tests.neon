@@ -3,6 +3,7 @@
 # the application code until that is fixed upstream.
 includes:
   - vendor/larastan/larastan/extension.neon
+  - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
   paths:

@@ -86,7 +86,7 @@ class StatsSeeder extends Seeder
             $this->seedBots($dateStr, $trafficMultiplier);
             $this->seedDevices($dateStr, $trafficMultiplier);
             $this->seedSecretMetrics($dateStr, $trafficMultiplier);
-            $this->seedPageviews($dateStr, $trafficMultiplier, $isWeekend);
+            $this->seedPageviews($dateStr, $trafficMultiplier);
             $this->seedHeatmap($dateStr, $dayOfWeek, $trafficMultiplier);
             $this->seedReferrers($dateStr, $trafficMultiplier);
             $this->seedSecrets($date, $trafficMultiplier);
@@ -214,7 +214,7 @@ class StatsSeeder extends Seeder
         }
     }
 
-    private function seedPageviews(string $date, float $multiplier, bool $isWeekend): void
+    private function seedPageviews(string $date, float $multiplier): void
     {
         $locales = ['fr', 'en', 'de', 'es'];
 
