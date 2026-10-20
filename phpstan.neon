@@ -8,3 +8,12 @@ parameters:
     - database/
     - routes/
   level: 9
+  ignoreErrors:
+    # Temporaire : Larastan ne résout plus les options des commandes depuis
+    # laravel/framework 13.37 (larastan/larastan#2606), à retirer une fois corrigé
+    -
+      identifier: argument.type
+      message: '#\$(fix|dryRun) of method .+ expects bool, array\|bool\|float\|int\|string\|null given\.#'
+      paths:
+        - app/Console/Commands/AuditDataConsistencyCommand.php
+        - app/Console/Commands/CleanExpiredSecretsCommand.php
