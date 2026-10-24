@@ -12,16 +12,16 @@ class DemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->command->info('Génération des secrets de démo...');
+        $this->command?->info('Génération des secrets de démo...');
         $this->seedSecrets();
 
-        $this->command->info('Génération des statistiques...');
+        $this->command?->info('Génération des statistiques...');
         $this->seedStats();
 
-        $this->command->info('Génération des magic links...');
+        $this->command?->info('Génération des magic links...');
         $this->seedMagicLinks();
 
-        $this->command->info('Données de démo générées avec succès !');
+        $this->command?->info('Données de démo générées avec succès !');
     }
 
     private function seedSecrets(): void
@@ -51,7 +51,7 @@ class DemoSeeder extends Seeder
         // Secrets ayant atteint max_views
         Secret::factory()->count(2)->withMaxViews(3)->consumed()->withCreatorEmail($email)->create();
 
-        $this->command->info('  -> '.Secret::count().' secrets créés');
+        $this->command?->info('  -> '.Secret::count().' secrets créés');
     }
 
     private function seedStats(): void
@@ -122,7 +122,7 @@ class DemoSeeder extends Seeder
 
         $this->seedHeatmap();
 
-        $this->command->info('  -> 90 jours de statistiques générées');
+        $this->command?->info('  -> 90 jours de statistiques générées');
     }
 
     private function seedHeatmap(): void
@@ -195,6 +195,6 @@ class DemoSeeder extends Seeder
         // Magic link valide
         MagicLink::factory()->forEmail($email)->valid()->withToken('demo-token')->create();
 
-        $this->command->info('  -> '.MagicLink::count().' magic links créés');
+        $this->command?->info('  -> '.MagicLink::count().' magic links créés');
     }
 }

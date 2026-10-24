@@ -92,7 +92,7 @@ class StatsSeeder extends Seeder
             $this->seedSecrets($date, $trafficMultiplier);
         }
 
-        $this->command->info("Seeded {$days} days of stats data.");
+        $this->command?->info("Seeded {$days} days of stats data.");
     }
 
     private function seedBots(string $date, float $multiplier): void
