@@ -166,35 +166,51 @@ jobs:
       # Avant de toucher aux assets du serveur : le SHA doit appartenir à
       # origin/main et être un descendant du HEAD déployé (sinon un run ancien
       # relancé écraserait les assets avec un build plus vieux que le code).
+      # Un SHA déjà inclus dans le HEAD déployé (CI d'un commit plus ancien
+      # terminé après celui du suivant) n'est pas une erreur : rien à déployer.
       - name: Verify deploy target
+        id: verify
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
         run: |
           [[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "SHA invalide : $DEPLOY_SHA"; exit 1; }
 
           script=$(cat <<'EOF'
-          git fetch origin main
-          git merge-base --is-ancestor "$DEPLOY_SHA" origin/main || { echo "$DEPLOY_SHA n'appartient pas à origin/main"; exit 1; }
-          git merge-base --is-ancestor HEAD "$DEPLOY_SHA" || { echo "$DEPLOY_SHA n'est pas un descendant du HEAD déployé"; exit 1; }
+          git fetch -q origin main
+          git merge-base --is-ancestor "$DEPLOY_SHA" origin/main || { echo "$DEPLOY_SHA n'appartient pas à origin/main" >&2; exit 1; }
+          if [ "$(git rev-parse HEAD)" != "$DEPLOY_SHA" ] && git merge-base --is-ancestor "$DEPLOY_SHA" HEAD; then
+              echo already-deployed
+              exit 0
+          fi
+          git merge-base --is-ancestor HEAD "$DEPLOY_SHA" || { echo "$DEPLOY_SHA n'est pas un descendant du HEAD déployé" >&2; exit 1; }
+          echo deploy
           EOF
           )
 
-          ssh -n production "set -e
+          result=$(ssh -n production "set -e
           cd $(printf %q "$SSH_PATH")
           DEPLOY_SHA=$(printf %q "$DEPLOY_SHA")
-          $script"
+          $script")
+
+          if [ "$(printf %s "$result" | tail -n 1)" = already-deployed ]; then
+              echo "::notice::$DEPLOY_SHA est déjà inclus dans le HEAD déployé, déploiement ignoré"
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Clean old build assets
+        if: steps.verify.outputs.skip != 'true'
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
         run: ssh -n production "rm -rf $(printf %q "$SSH_PATH")/public/build"
 
       - name: Transfer built assets to server
+        if: steps.verify.outputs.skip != 'true'
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
         run: scp -r public/build "production:$SSH_PATH/public/"
 
       - name: Deploy to server
+        if: steps.verify.outputs.skip != 'true'
         env:
           SSH_PATH: ${{ secrets.SSH_PATH }}
         run: |
