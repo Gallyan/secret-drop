@@ -60,7 +60,7 @@ concurrency:
 jobs:
   build:
     name: Build Assets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     if: >
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'workflow_run' &&
@@ -113,7 +113,7 @@ jobs:
 
   deploy:
     name: Deploy to Production
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     # Pas de `if:` ici : `needs` suffit. Le job « build » porte le filtrage, et
     # la condition implicite `success()` fait que « deploy » est sauté dès que
