@@ -217,10 +217,12 @@ input:focus, textarea:focus, select:focus {
 
 /* Custom scrollbar */
 html {
+    color-scheme: light;
     scrollbar-width: thin;
     scrollbar-color: rgba(107, 114, 128, 0.4) rgb(229, 231, 235);
 }
 html.dark {
+    color-scheme: dark;
     scrollbar-color: rgba(148, 163, 184, 0.25) rgb(15, 23, 42);
 }
 
