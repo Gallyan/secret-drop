@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@tailwindcss/vite": "^4.3.3",
+        "@tailwindcss/vite": "^4.3.5",
         "@vitest/coverage-v8": "^5.0.1",
         "concurrently": "^10.0.4",
         "eslint": "^10.10.0",
