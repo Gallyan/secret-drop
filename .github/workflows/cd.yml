@@ -225,10 +225,11 @@ jobs:
           # (git checkout -- . et git merge ne déplacent pas cette référence)
           BEFORE=$(git rev-parse HEAD)
 
+          timeout 60 git fetch origin main
+
           artisan down --retry=60 || true
 
           git checkout -- .
-          timeout 60 git fetch origin main
           git merge --ff-only "$DEPLOY_SHA"
 
           printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
