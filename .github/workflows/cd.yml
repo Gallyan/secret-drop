@@ -176,7 +176,7 @@ jobs:
           [[ "$DEPLOY_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "SHA invalide : $DEPLOY_SHA"; exit 1; }
 
           script=$(cat <<'EOF'
-          git fetch -q origin main
+          timeout 60 git fetch -q origin main
           git merge-base --is-ancestor "$DEPLOY_SHA" origin/main || { echo "$DEPLOY_SHA n'appartient pas à origin/main" >&2; exit 1; }
           if [ "$(git rev-parse HEAD)" != "$DEPLOY_SHA" ] && git merge-base --is-ancestor "$DEPLOY_SHA" HEAD; then
               echo already-deployed
@@ -228,7 +228,7 @@ jobs:
           artisan down --retry=60 || true
 
           git checkout -- .
-          git fetch origin main
+          timeout 60 git fetch origin main
           git merge --ff-only "$DEPLOY_SHA"
 
           printf '%s\n%s\n' "$(git rev-parse --short HEAD)" "$(git log -1 --format=%cI)" > VERSION
