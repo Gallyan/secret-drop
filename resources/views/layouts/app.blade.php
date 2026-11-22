@@ -9,7 +9,8 @@
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="theme-color" content="#8b5cf6">
+    {{-- Haut du fond de page (slate-900 / gray-50), resynchronisé par le sélecteur de thème --}}
+    <meta name="theme-color" content="#0f172a">
 
     <meta name="msapplication-TileColor" content="#8b5cf6">
 
@@ -250,6 +251,7 @@
             const theme = localStorage.getItem('theme');
             if (theme === 'light') {
                 document.documentElement.classList.remove('dark');
+                document.querySelector('meta[name="theme-color"]').content = '#f9fafb';
             }
             if (!document.cookie.includes('tz_offset=')) {
                 document.cookie = 'tz_offset=' + new Date().getTimezoneOffset() + ';path=/;max-age=86400;SameSite=Lax';
