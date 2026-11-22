@@ -214,9 +214,9 @@ class SuperAdminControllerTest extends TestCase
         return [
             'email absent' => [[], 'messages.val_email_required'],
             'email invalide' => [['email' => 'not-an-email'], 'messages.val_email_invalid'],
-            'email de plus de 255 caractères' => [
+            'email de plus de 254 caractères' => [
                 ['email' => str_repeat('a', 60).'@'.implode('.', str_split(str_repeat('b', 200), 60)).'.com'],
-                'messages.val_email_max',
+                'messages.val_email_invalid',
             ],
         ];
     }
